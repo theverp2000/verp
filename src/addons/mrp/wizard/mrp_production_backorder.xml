@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        
+        <!-- MO Backorder -->
+        <record id="viewMrpProductionBackorderForm" model="ir.ui.view">
+            <field name="label">Create Backorder</field>
+            <field name="model">mrp.production.backorder</field>
+            <field name="arch" type="xml">
+                <form string="Create a Backorder">
+                    <group>
+                        <p>
+                            Create a backorder if you expect to process the remaining products later. Do not create a backorder if you will not process the remaining products.
+                        </p>
+                    </group>
+                    <field name="showBackorderLines" invisible="1"/>
+                    <field name="mrpProductionBackorderLineIds" nolabel="1" attrs="{'invisible': [['showBackorderLines', '=', false]]}">
+                        <tree create="0" delete="0" editable="top">
+                            <field name="mrpProductionId" forceSave="1"/>
+                            <field name="toBackorder" widget="booleanToggle"/>
+                        </tree>
+                    </field>
+                    <footer>
+                        <button name="actionBackorder" string="Create backorder" data-hotkey="q"
+                            colspan="1" type="object" class="btn-primary" attrs="{'invisible': [['showBackorderLines', '!=', false]]}"/>
+                        <button name="actionBackorder" string="Validate" data-hotkey="q"
+                            colspan="1" type="object" class="btn-primary" attrs="{'invisible': [['showBackorderLines', '=', false]]}"/>
+                        <button name="actionCloseMo" type="object" string="No Backorder" attrs="{'invisible': [['showBackorderLines', '!=', false]]}" data-hotkey="x"/>
+                        <button string="Discard" class="btn-secondary" special="cancel" data-hotkey="z" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="actionMrpProductionBackorder" model="ir.actions.actwindow">
+            <field name="label">You produced less than initial demand</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">mrp.production.backorder</field>
+            <field name="viewMode">form</field>
+            <field name="target">new</field>
+        </record>
+       
+    </data>
+</verp>    

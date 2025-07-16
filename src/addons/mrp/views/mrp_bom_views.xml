@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        <!-- Bill of Materials -->
+        <record id="actionReportMrpBom" model="ir.actions.client">
+            <field name="label">BoM Structure &amp; Cost</field>
+            <field name="tag">mrpBomReport</field>
+            <field name="context" eval="{'model': 'report.mrp.bomstructure'}" />
+        </record>
+
+        <record id="mrpBomByproductFormView" model="ir.ui.view">
+            <field name="label">mrp.bom.byproduct.form</field>
+            <field name="model">mrp.bom.byproduct</field>
+            <field name="arch" type="xml">
+                <form string="Byproduct">
+                    <group>
+                        <field name="allowedOperationIds" invisible="1"/>
+                        <field name="companyId"/>
+                        <field name="productId"/>
+                        <field name="productUomCategoryId" invisible="1"/>
+                        <label for="productQty"/>
+                        <div class="o-row">
+                            <field name="productQty"/>
+                            <field name="productUomId" groups="uom.groupUom"/>
+                        </div>
+                        <field name="operationId" groups="mrp.groupMrpRoutings" options="{'noQuickCreate':true,'noCreateEdit':true}"/>
+                        <field name="possibleBomProductTemplateAttributeValueIds" invisible="1"/>
+                        <field name="bomProductTemplateAttributeValueIds" widget="many2manyTags" options="{'noCreate': true}" groups="product.groupProductVariant"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="mrpBomFormView" model="ir.ui.view">
+            <field name="label">mrp.bom.form</field>
+            <field name="model">mrp.bom</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <form string="Bill of Material">
+                    <sheet>
+                        <div class="oe-button-box" name="buttonBox">
+                            <button name="%(actionMrpRoutingTime)d" type="action" class="oe-stat-button" icon="fa-clock-o" groups="mrp.groupMrpRoutings">
+                                <div class="o-field-widget o-stat-info">
+                                    <span class="o-stat-text">Routing<br/>Performance</span>
+                                </div>
+                            </button>
+                            <button name="%(actionReportMrpBom)d" type="action"
+                                class="oe-stat-button" icon="fa-bars" string="Structure &amp; Cost"/>
+                        </div>
+                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="productTemplateId" context="{'default_detailedType': 'product'}"/>
+                            <field name="productUomCategoryId" invisible="1"/>
+                            <field name="productId" groups="product.groupProductVariant" context="{'default_detailedType': 'product'}"/>
+                            <label for="productQty" string="Quantity"/>
+                            <div class="o-row">
+                                <field name="productQty"/>
+                                <field name="productUomId" options="{'noOpen':true,'noCreate':true}" groups="uom.groupUom"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="code"/>
+                            <field name="type" widget="radio"/>
+                            <p colspan="2" class="oe-grey oe-edit-only" attrs="{'invisible': [['type','!=','phantom']]}">
+                            <ul>
+                                A BoM of type kit is used to split the product into its components.
+                                <li>
+                                    At the creation of a Manufacturing Order.
+                                </li>
+                                <li>
+                                    At the creation of a Stock Transfer.
+                                </li>
+                            </ul>
+                            </p>
+                            <field name="companyId" groups="base.groupMultiCompany" options="{'noCreate': true, 'noOpen': true}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Components" name="components">
+                            <field name="bomLineIds" widget="one2many" context="{'default_parentProductTemplateId': productTemplateId, 'default_productId': false, 'default_companyId': companyId, 'default_bomId': id}">
+                                <tree string="Components" editable="bottom">
+                                    <field name="companyId" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="productId" context="{'default_detailedType': 'product'}"/>
+                                    <field name="productTemplateId" invisible="1"/>
+                                    <button name="actionSeeAttachments" type="object" icon="fa-files-o" aria-label="Product Attachments" title="Product Attachments" class="float-right oe-read-only"/>
+                                    <field name="attachmentsCount" class="text-left oe-read-only"
+                                    string=" "/>
+                                    <field name="productQty"/>
+                                    <field name="productUomCategoryId" invisible="1"/>
+                                    <field name="parentProductTemplateId" invisible="1" />
+                                    <field name="productUomId" options="{'noOpen':true,'noCreate':true}" groups="uom.groupUom"/>
+                                    <field name="possibleBomProductTemplateAttributeValueIds" invisible="1"/>
+                                    <field name="bomProductTemplateAttributeValueIds" optional="hide" widget="many2manyTags" options="{'noCreate': true}" attrs="{'columnInvisible': [['parent.productId', '!=', false]]}" groups="product.groupProductVariant"/>
+                                    <field name="allowedOperationIds" invisible="1"/>
+                                    <field name="operationId" groups="mrp.groupMrpRoutings" optional="hidden" attrs="{'columnInvisible': [['parent.type','not in', ['normal', 'phantom']]]}" options="{'noQuickCreate':true,'noCreateEdit':true}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Operations"
+                            name="operations"
+                            attrs="{'invisible': [['type', 'not in',['normal','phantom']]]}"
+                            groups="mrp.groupMrpRoutings">
+                                <field name="operationIds"
+                                    attrs="{'invisible': [['type','not in',['normal','phantom']]]}"
+                                    groups="mrp.groupMrpRoutings"
+                                    context="{'bomIdInvisible': true, 'default_companyId': companyId, 'default_bomId': id, 'treeViewRef': 'mrp.mrpRoutingWorkcenterBomTreeView'}" widget="mrpOne2manyWithCopy"/>
+                        </page>
+                        <page string="By-products"
+                            name="byProducts"
+                            attrs="{'invisible': [['type','!=','normal']]}"
+                            groups="mrp.groupMrpByproducts">
+                            <field name="byproductIds"  context="{'formViewRef' : 'mrp.mrpBomByproductFormView', 'default_companyId': companyId, 'default_bomId': id}">
+                                <tree string="By-products"  editable="top">
+                                    <field name="companyId" invisible="1"/>
+                                    <field name="productUomCategoryId" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="productId" context="{'default_detailedType': 'product'}"/>
+                                    <field name="productQty"/>
+                                    <field name="productUomId" groups="uom.groupUom"/>
+                                    <field name="costShare" optional="hide"/>
+                                    <field name="allowedOperationIds" invisible="1"/>
+                                    <field name="operationId" groups="mrp.groupMrpRoutings" options="{'noQuickCreate':true,'noCreateEdit':true}"/>
+                                    <field name="possibleBomProductTemplateAttributeValueIds" invisible="1"/>
+                                    <field name="bomProductTemplateAttributeValueIds" optional="hide" widget="many2manyTags" options="{'noCreate': true}" attrs="{'columnInvisible': [['parent.productId', '!=', false]]}" groups="product.groupProductVariant"/>
+                                </tree>
+                           </field>
+                       </page>
+                        <page string="Miscellaneous" name="miscellaneous">
+                            <group>
+                                <group>
+                                    <field name="readyToProduce" attrs="{'invisible': [['type','=','phantom']]}" string="Manufacturing Readiness" widget="radio" groups="mrp.groupMrpRoutings"/>
+                                    <field name="consumption" attrs="{'invisible': [['type','=','phantom']]}" widget="radio"/>
+                                </group>
+                                <group>
+                                    <field name="pickingTypeId" attrs="{'invisible': [['type','=','phantom']]}" string="Operation" groups="stock.groupAdvLocation"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                    </sheet>
+                    <div class="oe-chatter">
+                         <field name="messageFollowerIds"/>
+                         <field name="messageIds" colspan="4" nolabel="1"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="mrpBomTreeView" model="ir.ui.view">
+            <field name="label">mrp.bom.tree</field>
+            <field name="model">mrp.bom</field>
+            <field name="arch" type="xml">
+                <tree string="Bill of Materials" sample="1">
+                    <field name="active" invisible="1"/>
+                    <field name="sequence" widget="handle"/>
+                    <field name="productTemplateId"/>
+                    <field name="code" optional="show"/>
+                    <field name="type"/>
+                    <field name="productId" groups="product.groupProductVariant" optional="hide"/>
+                    <field name="companyId" groups="base.groupMultiCompany" optional="show"/>
+                    <field name="productQty" optional="hide"/>
+                    <field name="productUomId" groups="uom.groupUom" optional="hide" string="Unit of Measure"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="mrpBomKanbanView" model="ir.ui.view">
+            <field name="label">mrp.bom.kanban</field>
+            <field name="model">mrp.bom</field>
+            <field name="arch" type="xml">
+                <kanban class="o-kanban-mobile" sample="1">
+                    <field name="productTemplateId"/>
+                    <field name="productQty"/>
+                    <field name="productUomId"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe-kanban-global-click">
+                                <div class="o-kanban-record-top">
+                                    <div class="o-kanban-record-headings mt4">
+                                        <strong class="o-kanban-record-title"><span clatt="mt4"><field name="productTemplateId"/></span></strong>
+                                    </div>
+                                    <span class="float-right badge badge-pill"><t t-esc="record.productQty.value"/> <small><t t-esc="record.productUomId.value"/></small></span>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="viewMrpBomFilter" model="ir.ui.view">
+            <field name="label">mrp.bom.select</field>
+            <field name="model">mrp.bom</field>
+            <field name="arch" type="xml">
+                <search string="Search Bill Of Material">
+                    <field name="code" string="Bill of Materials" filterDomain="['|', ['code', 'ilike', self], ['productTemplateId', 'ilike', self]]"/>
+                    <field name="productTemplateId" string="Product"/>
+                    <field name="bomLineIds" string="Component"/>
+                    <filter string="Manufacturing" name="normal" domain="[['type', '=', 'normal']]"/>
+                    <filter string="Kit" name="phantom" domain="[['type', '=', 'phantom']]"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[['active', '=', false]]"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Product" name="product" domain="[]" context="{'groupby': 'productTemplateId'}"/>
+                        <filter string='BoM Type' name="groupbyType" domain="[]" context="{'groupby' : 'type'}"/>
+                        <filter string='Unit of Measure' name="defaultUnitOfMeasure" domain="[]" context="{'groupby' : 'productUomId'}"/>
+                   </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="mrpBomFormAction" model="ir.actions.actwindow">
+            <field name="label">Bills of Materials</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">mrp.bom</field>
+            <field name="domain">[]</field> <!-- force empty -->
+            <field name="viewMode">tree,kanban,form</field>
+            <field name="searchViewId" ref="viewMrpBomFilter"/>
+            <field name="context">{'defaultCompanyId': allowedCompanyIds[0]}</field>
+            <field name="help" type="html">
+              <p class="o-view-nocontent-smiling-face">
+                No bill of materials found. Let's create one!
+              </p><p>
+                Bills of materials allow you to define the list of required raw
+                materials used to make a finished product; through a manufacturing
+                order or a pack of products.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menuMrpBomFormAction"
+            action="mrpBomFormAction"
+            parent="menuMrpBom"
+            sequence="13"/>
+
+        <!-- BOM Line -->
+        <record id="mrpBomLineViewForm" model="ir.ui.view">
+            <field name="label">mrp.bom.line.view.form</field>
+            <field name="model">mrp.bom.line</field>
+            <field name="arch" type="xml">
+                <form string="Bill of Material line" create="0" edit="0">
+                    <sheet>
+                        <group>
+                            <group string="Component">
+                                <field name="productId"/>
+                                <field name="parentProductTemplateId" invisible="1"/>
+                                <label for="productQty" string="Quantity"/>
+                                <div class="o-row">
+                                    <field name="productQty"/>
+                                    <field name="productUomCategoryId" invisible="1"/>
+                                    <field name="productUomId" options="{'noOpen':true,'noCreate':true}" groups="uom.groupUom"/>
+                                </div>
+                                <field name="possibleBomProductTemplateAttributeValueIds" invisible="1"/>
+                                <field name="bomProductTemplateAttributeValueIds" widget="many2manyTags" options="{'noCreate': true}" groups="product.groupProductVariant"/>
+                            </group>
+                            <group string="Operation">
+                                <field name="companyId" invisible="1"/>
+                                <field name="sequence" groups="base.groupNoOne"/>
+                                <field name="allowedOperationIds" invisible="1"/>
+                                <field name="operationId" groups="mrp.groupMrpRoutings"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="templateOpenBom" model="ir.actions.actwindow">
+            <field name="context">{'default_productTemplateId': activeId}</field>
+            <field name="label">Bill of Materials</field>
+            <field name="resModel">mrp.bom</field>
+            <field name="domain">['|', ['productTemplateId', '=', activeId], ['byproductIds.productId.productTemplateId', '=', activeId]]</field>
+        </record>
+
+        <record id="productOpenBom" model="ir.actions.actwindow">
+            <field name="context">{'default_productId': activeId}</field>
+            <field name="label">Bill of Materials</field>
+            <field name="resModel">mrp.bom</field>
+            <field name="domain">[]</field> <!-- Force empty -->
+        </record>
+    </data>
+</verp>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <template id="mrpReportProductProductReplenishment" inheritId="stock.reportProductProductReplenishment">
+        <xpath expr="//tr[@name='draftPickingIn']" position="after">
+            <tr t-if="docs['draftProductionQty']['in']" name="draftMoIn">
+                <td colspan="2">Production of Draft MO</td>
+                <td t-esc="docs['draftProductionQty']['in']" t-options="{'widget': 'float', 'precision': precision}" class="text-right"/>
+            </tr>
+        </xpath>
+        <xpath expr="//tr[@name='draftPickingOut']" position="after">
+            <tr t-if="docs['draftProductionQty']['out']" name="draftMoOut">
+                <td colspan="2">Component of Draft MO</td>
+                <td t-esc="-docs['draftProductionQty']['out']" t-options="{'widget': 'float', 'precision': precision}" class="text-right"/>
+            </tr>
+        </xpath>
+         <xpath expr="//button[@name='unreserveLink']" position="after">
+            <button t-if="bool(line['moveOut']) &amp;&amp; bool(await line['moveOut'].rawMaterialProductionId) &amp;&amp; await (await line['moveOut'].rawMaterialProductionId).unreserveVisible"
+                class="btn btn-sm btn-primary o-report-replenish-unreserve"
+                t-attf-model="mrp.production"
+                t-att-model-id="(await line['moveOut'].rawMaterialProductionId).id">
+                Unreserve
+            </button>
+        </xpath>
+        <xpath expr="//button[@name='reserveLink']" position="after">
+            <button t-if="bool(line['moveOut']) &amp;&amp; bool(await line['moveOut'].rawMaterialProductionId) &amp;&amp; await (await line['moveOut'].rawMaterialProductionId).reserveVisible"
+                class="btn btn-sm btn-primary o-report-replenish-reserve"
+                t-attf-model="mrp.production"
+                t-att-model-id="(await line['moveOut'].rawMaterialProductionId).id">
+                Reserve
+            </button>
+        </xpath>
+         <xpath expr="//button[@name='changePriorityLink']" position="after">
+            <button t-if="bool(line['moveOut']) &amp;&amp; bool(await line['moveOut'].rawMaterialProductionId)"
+                t-attf-class="o-priority o-priority-star o-report-replenish-change-priority fa fa-star#{await (await line['moveOut'].rawMaterialProductionId).priority == '1' ? ' one' : '-o zero'}"
+                t-attf-model="mrp.production"
+                t-att-model-id="(await line['moveOut'].rawMaterialProductionId).id"
+            />
+
+        </xpath>
+   </template>
+</verp>

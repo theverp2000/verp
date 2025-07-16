@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <record id="stockProductionTypeKanban" model="ir.ui.view">
+        <field name="label">stock.picking.type.kanban</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inheritId" ref="stock.stockPickingTypeKanban"/>
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="countMoTodo"/>
+                <field name="countMoWaiting"/>
+                <field name="countMoLate"/>
+            </field>
+
+            <xpath expr='//div[@name="stockPicking"]' position="after">
+                <div t-if="record.code.rawValue == 'mrpOperation'" t-attf-class="#{!selectionMode ? kanbanColor(record.color.rawValue) : ''}">
+                    <div>
+                        <div t-attf-class="o-kanban-card-header">
+                            <div class="o-kanban-card-header-title">
+                                <div class="o-primary" t-if="!selectionMode">
+                                    <a type="object" name="getMrpStockPickingActionPickingType">
+                                        <field name="label"/>
+                                    </a>
+                                </div>
+                                <span class="o-primary" t-if="selectionMode"><field name="label"/></span>
+                                <div class="o-secondary"><field class="oSecondary"  name="warehouseId" readonly="1" groups="stock.groupStockMultiWarehouses"/></div>
+                            </div>
+                            <div class="o-kanban-manage-button-section" t-if="!selectionMode">
+                                <a class="o-kanban-manage-toggle-button" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                            </div>
+                        </div>
+                        <div class="container o-kanban-card-content" t-if="!selectionMode">
+                            <div class="row">
+                                <div class="col-6 o-kanban-primary-left">
+                                    <button class="btn btn-primary" name="%(mrpProductionActionPickingDeshboard)d" type="action" context="{'searchDefault_todo': 1, 'default_pickingTypeId': activeId}">
+                                        <span t-if="record.code.rawValue =='mrpOperation'"><t t-esc="record.countMoTodo.value"/> To Process</span>
+                                    </button>
+                                </div>
+                                <div class="col-6 o-kanban-primary-right">
+                                    <div t-if="record.countMoWaiting.rawValue > 0" class="row">
+                                        <div class="col-9">
+                                            <a name="%(mrpProductionActionPickingDeshboard)d" type="action" context="{'searchDefault_waiting': 1}">
+                                                Waiting
+                                            </a>
+                                        </div>
+                                        <div class="col-3">
+                                            <field name="countMoWaiting"/>
+                                        </div>
+                                    </div>
+                                    <div t-if="record.countMoLate.rawValue > 0" class="row">
+                                        <div class="col-9">
+                                            <a class="oe-kanban-stock-picking-type-list" name="%(mrpProductionActionPickingDeshboard)d" type="action" context="{'searchDefault_planningIssues': 1, 'default_pickingTypeId': activeId}">
+                                                Late
+                                            </a>
+                                        </div>
+                                        <div class="col-3">
+                                            <field name="countMoLate"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><div class="container o-kanban-card-manage-pane dropdown-menu" role="menu">
+                            <div class="row">
+                                <div class="col-6 o-kanban-card-manage-section o-kanban-manage-view" name="pickingLeftManagePane">
+                                    <div role="menuitem" class="o-kanban-card-manage-title">
+                                        <span>Orders</span>
+                                    </div>
+                                    <div role="menuitem">
+                                        <a name="%(mrpProductionActionPickingDeshboard)d" type="action">All</a>
+                                    </div>
+                                    <div role="menuitem">
+                                        <a name="%(mrpProductionActionPickingDeshboard)d" type="action" context="{'searchDefault_inprogress': 1}">In Progress</a>
+                                    </div>
+                                    <div role="menuitem">
+                                        <a name="%(mrpProductionActionPickingDeshboard)d" type="action" context="{'searchDefault_planned': 1}">Planned</a>
+                                    </div>
+                                </div>
+                                <div class="col-6 o-kanban-card-manage-section o-kanban-manage-new">
+                                    <div role="menuitem" class="o-kanban-card-manage-title">
+                                        <span>New</span>
+                                    </div>
+                                    <div role="menuitem">
+                                        <a name="%(actionMrpProductionForm)d" context="{'default_pickingTypeId': activeId}" type="action">Manufacturing Order</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div t-if="widget.editable" class="o-kanban-card-manage-settings row">
+                                <div role="menuitem" aria-haspopup="true" class="col-8">
+                                    <ul role="menu" class="oe-kanban-colorpicker" data-field="color"/>
+                                </div>
+                                <div class="col-4">
+                                    <a class="dropdown-item" role="menuitem" type="edit">Configuration</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="viewPickingFormInheritMrp" model="ir.ui.view">
+        <field name="label">view.picking.form.inherit.mrp</field>
+        <field name="model">stock.picking</field>
+        <field name="inheritId" ref="stock.viewPickingForm"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='useCreateLots']" position="after">
+                <field name="hasKits" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='descriptionPicking']" position="after">
+                <field name="descriptionBomLine" optional="show" attrs="{'columnInvisible': [['parent.hasKits', '=', false]]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="viewStockMoveLineDetailedOperationTreeMrp" model="ir.ui.view">
+        <field name="label">stock.move.line.operations.tree.mrp</field>
+        <field name="model">stock.move.line</field>
+        <field name="inheritId" ref="stock.viewStockMoveLineDetailedOperationTree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='productId']" position="after">
+                <field name="descriptionBomLine" optional="show" attrs="{'columnInvisible': [['parent.hasKits', '=', false]]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="viewPickingTypeFormInheritMrp" model="ir.ui.view">
+        <field name="label">Operation Types</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inheritId" ref="stock.viewPickingTypeForm"/>
+        <field name="arch" type="xml">
+            <field name="showOperations" position="attributes">
+                <attribute name="attrs">{"invisible": [["code", "=", "mrpOperation"]]}</attribute>
+            </field>
+            <xpath expr="//group[@name='stockPickingTypeLot']" position="after">
+                <group attrs='{"invisible": [["code", "!=", "mrpOperation"]]}' string="Traceability" groups="stock.groupProductionLot">
+                    <field name="useCreateComponentsLots"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</verp>

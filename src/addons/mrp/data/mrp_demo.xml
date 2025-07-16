@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data noupdate="1">
+
+        <record id="base.userDemo" model="res.users">
+            <field eval="[[4, refId('groupMrpUser')]]" name="groupsId"/>
+        </record>
+
+        <!-- Resource: res.company -->
+        <record id="stock.resCompany_1" model="res.company">
+            <field eval="1.0" name="manufacturingLead"/>
+        </record>
+
+        <!-- Resource: mrp.workcenter -->
+
+        <record id="mrpWorkcenter_3" model="mrp.workcenter">
+            <field name="label">Assembly Line 1</field>
+            <field name="resourceCalendarId" ref="resource.resourceCalendarStd"/>
+        </record>
+
+        <record id="mrpWorkcenter_1" model="mrp.workcenter">
+            <field name="label">Drill Station 1</field>
+            <field name="resourceCalendarId" ref="resource.resourceCalendarStd"/>
+        </record>
+
+        <record id="mrpWorkcenter_2" model="mrp.workcenter">
+            <field name="label">Assembly Line 2</field>
+            <field name="resourceCalendarId" ref="resource.resourceCalendarStd"/>
+        </record>
+        
+        <!-- Resource: mrp.bom -->
+
+        <record id="product.productProduct3_productTemplate" model="product.template">
+            <field name="routeIds" eval="[[6, 0, [refId('stock.routeWarehouse0Mto'), refId('mrp.routeWarehouse0Manufacture')]]]"/>
+        </record>
+        <record id="mrpBomManufacture" model="mrp.bom">
+            <field name="productTemplateId" ref="product.productProduct3_productTemplate"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+        </record>
+        
+        <record id="mrpRoutingWorkcenter_0" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomManufacture"/>
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="label">Manual Assembly</field>
+            <field name="timeCycle">60</field>
+            <field name="sequence">5</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/assebly-worksheet.pdf"/>
+        </record>
+
+        <record id="mrpBomManufactureLine_1" model="mrp.bom.line">
+            <field name="productId" ref="product.productProduct12"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">5</field>
+            <field name="bomId" ref="mrpBomManufacture"/>
+        </record>
+
+        <record id="mrpBomManufactureLine_2" model="mrp.bom.line">
+            <field name="productId" ref="product.productProduct13"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">5</field>
+            <field name="bomId" ref="mrpBomManufacture"/>
+        </record>
+
+        <record id="mrpBomManufactureLine_3" model="mrp.bom.line">
+            <field name="productId" ref="product.productProduct16"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">5</field>
+            <field name="bomId" ref="mrpBomManufacture"/>
+        </record>
+
+        <record id="mrpProduction_1" model="mrp.production">
+            <field name="productId" ref="product.productProduct3"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="productQty">3</field>
+            <field name="bomId" ref="mrpBomManufacture"/>
+        </record>
+
+        <function model="stock.move" name="create">
+            <value model="stock.move" eval="
+                (await (await obj.env.ref('mrp.mrpProduction_1'))._getMovesRawValues()).concat(
+                await (await obj.env.ref('mrp.mrpProduction_1'))._getMovesFinishedValues())"/>
+        </function>
+
+        <!-- Table -->
+
+        <record id="productProductComputerDesk" model="product.product">
+            <field name="label">Table</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">290</field>
+            <field name="listPrice">520</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">Solid wood table.</field>
+            <field name="defaultCode">FURN_9666</field>
+            <field name="tracking">serial</field>
+            <field name="image1920" type="base64" file="mrp/static/img/table.png"/>
+        </record>
+        <record id="stockWarehouseOrderpointTable" model="stock.warehouse.orderpoint">
+            <field name="productMaxQty">0.0</field>
+            <field name="productMinQty">0.0</field>
+            <field name="productUom" ref="uom.productUomUnit"/>
+            <field name="companyId" ref="base.mainCompany"/>
+            <field name="warehouseId" ref="stock.warehouse0"/>
+            <field name="locationId" model="stock.location" eval="(await (await obj.env.ref('stock.warehouse0')).lotStockId).id"/>
+            <field name="productId" ref="productProductComputerDesk"/>
+        </record>
+
+        <record id="productProductComputerDeskHead" model="product.product">
+            <field name="label">Table Top</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">240</field>
+            <field name="listPrice">380</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">Solid wood is a durable natural material.</field>
+            <field name="defaultCode">FURN_8522</field>
+            <field name="tracking">serial</field>
+            <field name="image1920" type="base64" file="mrp/static/img/table_top.png"/>
+        </record>
+        <record id="productProductComputerDeskLeg" model="product.product">
+            <field name="label">Table Leg</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">10</field>
+            <field name="listPrice">50</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">18″ x 2½″ Square Leg</field>
+            <field name="defaultCode">FURN_2333</field>
+            <field name="tracking">lot</field>
+            <field name="image1920" type="base64" file="mrp/static/img/table_leg.png"/>
+        </record>
+        <record id="productProductComputerDeskBolt" model="product.product">
+            <field name="label">Bolt</field>
+            <field name="categId" ref="product.productCategoryConsumable"/>
+            <field name="standardPrice">0.5</field>
+            <field name="listPrice">0.5</field>
+            <field name="detailedType">consu</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">Stainless steel screw full (dia - 5mm, Length - 10mm)</field>
+            <field name="defaultCode">CONS_89957</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_computer_desk_bolt.png"/>
+        </record>
+        <record id="productProductComputerDeskScrew" model="product.product">
+            <field name="label">Screw</field>
+            <field name="categId" ref="product.productCategoryConsumable"/>
+            <field name="standardPrice">0.1</field>
+            <field name="listPrice">0.2</field>
+            <field name="detailedType">consu</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">Stainless steel screw</field>
+            <field name="defaultCode">CONS_25630</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_computer_desk_screw.png"/>
+        </record>
+
+        <record id="productProductWoodPly" model="product.product">
+            <field name="label">Ply Layer</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">10</field>
+            <field name="listPrice">10</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">Layers that are stick together to assemble wood panels.</field>
+            <field name="defaultCode">FURN_7111</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_wood_ply.png"/>
+        </record>
+        <record id="productProductWoodWear" model="product.product">
+            <field name="label">Wear Layer</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">10</field>
+            <field name="listPrice">10</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">Top layer of a wood panel.</field>
+            <field name="defaultCode">FURN_8111</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_wood_wear.png"/>
+        </record>
+        <record id="productProductPlyVeneer" model="product.product">
+            <field name="label">Ply Veneer</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">10</field>
+            <field name="listPrice">10</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="defaultCode">FURN_9111</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_ply_veneer.png"/>
+        </record>
+
+        <record id="productProductWoodPanel" model="product.product">
+            <field name="label">Wood Panel</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">80</field>
+            <field name="listPrice">100</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="defaultCode">FURN_7023</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_wood_panel.png"/>
+        </record>
+        <record id="productProductPlasticLaminate" model="product.product">
+            <field name="label">Plastic Laminate</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">3000</field>
+            <field name="listPrice">1000</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="defaultCode">FURN_8621</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_plastic_laminate.png"/>
+        </record>
+
+        <record id="productProductComputerDesk_productTemplate" model="product.template">
+            <field name="routeIds" eval="[[6, 0, [refId('stock.routeWarehouse0Mto'), refId('mrp.routeWarehouse0Manufacture')]]]"/>
+        </record>
+
+        <record id="mrpBomDesk" model="mrp.bom">
+            <field name="productTemplateId" ref="productProductComputerDesk_productTemplate"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">3</field>
+            <field name="consumption">flexible</field>
+        </record>
+        <record id="mrpRoutingWorkcenter_5" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomDesk"/>
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="timeCycle">120</field>
+            <field name="sequence">10</field>
+            <field name="label">Assembly</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/cutting-worksheet.pdf"/>
+        </record>
+
+        <record id="mrpBomDeskLine_1" model="mrp.bom.line">
+            <field name="productId" ref="productProductComputerDeskHead"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+            <field name="bomId" ref="mrpBomDesk"/>
+            <field name="operationId" ref="mrp.mrpRoutingWorkcenter_5"/>
+        </record>
+
+        <record id="mrpBomDeskLine_2" model="mrp.bom.line">
+            <field name="productId" ref="productProductComputerDeskLeg"/>
+            <field name="productQty">4</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">2</field>
+            <field name="bomId" ref="mrpBomDesk"/>
+            <field name="operationId" ref="mrp.mrpRoutingWorkcenter_5"/>
+        </record>
+
+        <record id="mrpBomDeskLine_3" model="mrp.bom.line">
+            <field name="productId" ref="productProductComputerDeskBolt"/>
+            <field name="productQty">4</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">3</field>
+            <field name="bomId" ref="mrpBomDesk"/>
+        </record>
+
+        <record id="mrpBomDeskLine_4" model="mrp.bom.line">
+            <field name="productId" ref="productProductComputerDeskScrew"/>
+            <field name="productQty">10</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">4</field>
+            <field name="bomId" ref="mrpBomDesk"/>
+        </record>
+
+        <!-- Table MO -->
+
+        <record id="mrpProduction_3" model="mrp.production">
+            <field name="productId" ref="productProductComputerDesk"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="productQty">1</field>
+            <field name="datePlannedStart" eval="toFormat(addDate(today(), {days: 1}), 'yyyy-MM-dd HH:mm')"/>
+            <field name="bomId" ref="mrpBomDesk"/>
+        </record>
+
+        <function model="stock.move" name="create">
+            <value model="stock.move" eval="
+                (await (await obj.env.ref('mrp.mrpProduction_3'))._getMovesRawValues()).concat(
+                await (await obj.env.ref('mrp.mrpProduction_3'))._getMovesFinishedValues())"/>
+        </function>
+
+        <record id="mrpBomTableTop" model="mrp.bom">
+            <field name="productTemplateId" ref="productProductComputerDeskHead_productTemplate"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="mrpRoutingWorkcenter_0" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomTableTop"/>
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="label">Manual Assembly</field>
+            <field name="timeCycle">60</field>
+            <field name="sequence">5</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/assebly-worksheet.pdf"/>
+        </record>
+
+        <record id="mrpBomLineWoodPanel" model="mrp.bom.line">
+            <field name="productId" ref="productProductWoodPanel"/>
+            <field name="productQty">2</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+            <field name="bomId" ref="mrpBomTableTop"/>
+        </record>
+        <record id="mrpBomLinePlasticLaminate" model="mrp.bom.line">
+            <field name="productId" ref="productProductPlasticLaminate"/>
+            <field name="productQty">4</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">2</field>
+            <field name="bomId" ref="mrpBomTableTop"/>
+        </record>
+
+        <record id="mrpBomPlasticLaminate" model="mrp.bom">
+            <field name="productTemplateId" ref="productProductPlasticLaminate_productTemplate"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="mrpRoutingWorkcenter_1" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomPlasticLaminate"/>
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="label">Long time assembly</field>
+            <field name="timeCycle">180</field>
+            <field name="sequence">15</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/cutting-worksheet.pdf"/>
+        </record>
+
+        <record id="mrpRoutingWorkcenter_3" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomPlasticLaminate"/>
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="label">Testing</field>
+            <field name="timeCycle">60</field>
+            <field name="sequence">10</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/assebly-worksheet.pdf"/>
+        </record>
+
+        <record id="mrpRoutingWorkcenter_4" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomPlasticLaminate"/>
+            <field name="workcenterId" ref="mrpWorkcenter_1"/>
+            <field name="label">Packing</field>
+            <field name="timeCycle">30</field>
+            <field name="sequence">5</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/cutting-worksheet.pdf"/>
+        </record>
+        <record id="mrpBomLinePlasticLaminate" model="mrp.bom.line">
+            <field name="productId" ref="productProductPlyVeneer"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+            <field name="bomId" ref="mrpBomPlasticLaminate"/>
+        </record>
+
+        <record id="mrpBomWoodPanel" model="mrp.bom">
+            <field name="productTemplateId" ref="productProductWoodPanel_productTemplate"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+        </record>
+        <record id="mrpBomLineWoodPanelPly" model="mrp.bom.line">
+            <field name="productId" ref="productProductWoodPly"/>
+            <field name="productQty">3</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+            <field name="bomId" ref="mrpBomWoodPanel"/>
+        </record>
+        <record id="mrpBomLineWoodPanelWear" model="mrp.bom.line">
+            <field name="productId" ref="productProductWoodWear"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+            <field name="bomId" ref="mrpBomWoodPanel"/>
+        </record>
+
+        <!-- Table Top MO -->
+        <record id="mrpProduction_4" model="mrp.production">
+            <field name="productId" ref="productProductComputerDeskHead"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="productQty">2</field>
+            <field name="locationSrcId" ref="stock.stockLocationStock"/>
+            <field name="locationDestId" ref="stock.stockLocationStock"/>
+            <field name="bomId" ref="mrpBomTableTop"/>
+        </record>
+
+        <!-- Generate Table & Table Top MO's moves -->
+        <function model="stock.move" name="create">
+            <value model="stock.move" eval="
+                (await (await obj.env.ref('mrp.mrpProduction_4'))._getMovesRawValues()).concat(
+                await (await obj.env.ref('mrp.mrpProduction_4'))._getMovesFinishedValues())"/>
+        </function>
+
+        <!-- Table Kit -->
+
+        <record id="productProductTableKit" model="product.product">
+            <field name="label">Table Kit</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="standardPrice">600.0</field>
+            <field name="listPrice">147.0</field>
+            <field name="detailedType">consu</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">Table kit</field>
+            <field name="defaultCode">FURN_78236</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_table_kit.png"/>
+        </record>
+
+        <record id="productProductTableKit_productTemplate" model="product.template">
+            <field name="routeIds" eval="[[6, 0, [refId('mrp.routeWarehouse0Manufacture')]]]"/>
+        </record>
+
+        <record id="mrpBomKit" model="mrp.bom">
+            <field name="productTemplateId" ref="productProductTableKit_productTemplate"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">2</field>
+            <field name="type">phantom</field>
+        </record>
+
+        <record id="mrpBomKitLine_1" model="mrp.bom.line">
+            <field name="productId" ref="productProductWoodPanel"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="bomId" ref="mrpBomKit"/>
+        </record>
+
+        <record id="mrpBomKitLine_2" model="mrp.bom.line">
+            <field name="productId" ref="productProductComputerDeskBolt"/>
+            <field name="productQty">4</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="bomId" ref="mrpBomKit"/>
+        </record>
+
+        <!-- Manufacturing Order Demo With Lots-->
+
+        <record id="productProductDrawerDrawer" model="product.product">
+            <field name="label">Drawer Black</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="tracking">lot</field>
+            <field name="standardPrice">20.0</field>
+            <field name="listPrice">24.0</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="description">Drawer on casters for great usability.</field>
+            <field name="defaultCode">FURN_2100</field>
+            <field name="barcode">601647855646</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_drawer_black.png"/>
+        </record>
+
+        <record id="productProductDrawerCase" model="product.product">
+            <field name="label">Drawer Case Black</field>
+            <field name="categId" ref="product.productCategory5"/>
+            <field name="tracking">lot</field>
+            <field name="standardPrice">10</field>
+            <field name="listPrice">20</field>
+            <field name="detailedType">product</field>
+            <field name="weight">0.01</field>
+            <field name="uomId" ref="uom.productUomUnit"/>
+            <field name="uomPoId" ref="uom.productUomUnit"/>
+            <field name="defaultCode">FURN_5623</field>
+            <field name="barcode">601647855647</field>
+            <field name="image1920" type="base64" file="mrp/static/img/product_product_drawer_case_black.png"/>
+        </record>
+
+        <record id="product.productProduct27" model="product.product">
+            <field name="tracking">lot</field>
+        </record>
+
+        <record id="lotProduct27_0" model="stock.production.lot">
+            <field name="label">0000000000030</field>
+            <field name="productId" ref="product.productProduct27"/>
+            <field name="companyId" ref="base.mainCompany"/>
+        </record>
+        <record id="lotProduct27_1" model="stock.production.lot">
+            <field name="label">0000000000031</field>
+            <field name="productId" ref="product.productProduct27"/>
+            <field name="companyId" ref="base.mainCompany"/>
+        </record>
+
+        <record id="lotProductProductDrawerDrawer_0" model="stock.production.lot">
+            <field name="label">0000000010001</field>
+            <field name="productId" ref="productProductDrawerDrawer"/>
+            <field name="companyId" ref="base.mainCompany"/>
+        </record>
+
+        <record id="lotProductProductDrawerCase_0" model="stock.production.lot">
+            <field name="label">0000000020045</field>
+            <field name="productId" ref="productProductDrawerCase"/>
+            <field name="companyId" ref="base.mainCompany"/>
+        </record>
+
+
+        <!-- Initital Inventory -->
+
+        <record id="stockInventoryDrawerLot0" model="stock.quant">
+            <field name="productId" ref="product.productProduct27"/>
+            <field name="inventoryQuantity">50.0</field>
+            <field name="locationId" model="stock.location" eval="(await (await obj.env.ref('stock.warehouse0')).lotStockId).id"/>
+            <field name="lotId" ref="lotProduct27_0"/>
+        </record>
+        <record id="stockInventoryDrawerLot1" model="stock.quant">
+            <field name="productId" ref="product.productProduct27"/>
+            <field name="inventoryQuantity">40.0</field>
+            <field name="locationId" model="stock.location" eval="(await (await obj.env.ref('stock.warehouse0')).lotStockId).id"/>
+            <field name="lotId" ref="lotProduct27_1"/>
+        </record>
+        <record id="stockInventoryProductDrawerDrawer" model="stock.quant">
+            <field name="productId" ref="productProductDrawerDrawer"/>
+            <field name="inventoryQuantity">50.0</field>
+            <field name="locationId" model="stock.location" eval="(await (await obj.env.ref('stock.warehouse0')).lotStockId).id"/>
+            <field name="lotId" ref="lotProductProductDrawerDrawer_0"/>
+        </record>
+        <record id="stockInventoryProductDrawerCase" model="stock.quant">
+            <field name="productId" ref="productProductDrawerCase"/>
+            <field name="inventoryQuantity">50.0</field>
+            <field name="locationId" model="stock.location" eval="(await (await obj.env.ref('stock.warehouse0')).lotStockId).id"/>
+            <field name="lotId" ref="lotProductProductDrawerCase_0"/>
+        </record>
+        <record id="stockInventoryProductWoodPanel" model="stock.quant">
+            <field name="productId" ref="productProductWoodPanel"/>
+            <field name="inventoryQuantity">50.0</field>
+            <field name="locationId" model="stock.location" eval="(await (await obj.env.ref('stock.warehouse0')).lotStockId).id"/>
+        </record>
+        <record id="stockInventoryProductPly" model="stock.quant">
+            <field name="productId" ref="productProductWoodPly"/>
+            <field name="inventoryQuantity">20.0</field>
+            <field name="locationId" model="stock.location" eval="(await (await obj.env.ref('stock.warehouse0')).lotStockId).id"/>
+        </record>
+        <record id="stockInventoryProductWear" model="stock.quant">
+            <field name="productId" ref="productProductWoodWear"/>
+            <field name="inventoryQuantity">30.0</field>
+            <field name="locationId" model="stock.location" eval="(await (await obj.env.ref('stock.warehouse0')).lotStockId).id"/>
+        </record>
+
+        <function model="stock.quant" name="actionApplyInventory">
+            <function eval="[[['id', 'in', [refId('stockInventoryDrawerLot0'),
+                                            refId('stockInventoryDrawerLot1'),
+                                            refId('stockInventoryProductDrawerDrawer'),
+                                            refId('stockInventoryProductDrawerCase'),
+                                            refId('stockInventoryProductWoodPanel'),
+                                            refId('stockInventoryProductPly'),
+                                            refId('stockInventoryProductWear'),
+                                            ]]]]" model="stock.quant" name="search"/>
+        </function>
+
+        <!-- BoM -->
+
+        <record id="mrpBomDrawer" model="mrp.bom">
+            <field name="productTemplateId" ref="product.productProduct27_productTemplate"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+            <field name="code">PRIM-ASSEM</field>
+        </record>
+        <record id="mrpBomDrawerLine_1" model="mrp.bom.line">
+            <field name="productId" ref="productProductDrawerDrawer"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+            <field name="bomId" ref="mrpBomDrawer"/>
+        </record>
+        <record id="mrpBomDrawerLine_2" model="mrp.bom.line">
+            <field name="productId" ref="productProductDrawerCase"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">2</field>
+            <field name="bomId" ref="mrpBomDrawer"/>
+        </record>
+
+        <record id="mrpBomDrawerRout" model="mrp.bom">
+            <field name="productTemplateId" ref="product.productProduct27_productTemplate"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">2</field>
+            <field name="code">SEC-ASSEM</field>
+        </record>
+        <record id="mrpRoutingWorkcenter_1" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomDrawerRout"/>
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="label">Long time assembly</field>
+            <field name="timeCycle">180</field>
+            <field name="sequence">15</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/cutting-worksheet.pdf"/>
+        </record>
+
+        <record id="mrpRoutingWorkcenter_3" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomDrawerRout"/>
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="label">Testing</field>
+            <field name="timeCycle">60</field>
+            <field name="sequence">10</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/assebly-worksheet.pdf"/>
+        </record>
+
+        <record id="mrpRoutingWorkcenter_4" model="mrp.routing.workcenter">
+            <field name="bomId" ref="mrpBomDrawerRout"/>
+            <field name="workcenterId" ref="mrpWorkcenter_1"/>
+            <field name="label">Packing</field>
+            <field name="timeCycle">30</field>
+            <field name="sequence">5</field>
+            <field name="worksheetType">pdf</field>
+            <field name="worksheet" type="base64" file="mrp/static/img/cutting-worksheet.pdf"/>
+        </record>
+        <record id="mrpBomDrawerRoutLine_1" model="mrp.bom.line">
+            <field name="productId" ref="productProductDrawerDrawer"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">1</field>
+            <field name="bomId" ref="mrpBomDrawerRout"/>
+        </record>
+        <record id="mrpBomDrawerRoutLine_2" model="mrp.bom.line">
+            <field name="productId" ref="productProductDrawerCase"/>
+            <field name="productQty">1</field>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="sequence">2</field>
+            <field name="bomId" ref="mrpBomDrawerRout"/>
+        </record>
+
+        <record id="product.productProduct27" model="product.product">
+            <field name="detailedType">product</field>
+        </record>
+        <record id="mrpProductionDrawer" model="mrp.production">
+            <field name="productId" ref="product.productProduct27"/>
+            <field name="productUomId" ref="uom.productUomUnit"/>
+            <field name="productQty">5</field>
+            <field name="locationSrcId" ref="stock.stockLocationStock"/>
+            <field name="locationDestId" ref="stock.stockLocationStock"/>
+            <field name="bomId" ref="mrpBomDrawer"/>
+        </record>
+
+        <function model="stock.move" name="create">
+            <value model="stock.move" eval="
+                (await (await obj.env.ref('mrp.mrpProductionDrawer'))._getMovesRawValues()).concat(
+                await (await obj.env.ref('mrp.mrpProductionDrawer'))._getMovesFinishedValues())"/>
+        </function>
+
+        <!-- Run Scheduler -->
+        <function model="procurement.group" name="runScheduler"/>
+
+
+        <!-- OEE -->
+
+        <record id="mrpWorkcenterEfficiency_0" model="mrp.workcenter.productivity">
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="lossId" ref="blockReason7"/>
+            <field name="dateStart" eval="toFormat(subDate(now(), {days: 5}), 'yyyy-MM-dd HH:mm:ss')"/>
+            <field name="dateEnd" eval="toFormat(subDate(now(),{days: 2}), 'yyyy-MM-dd HH:mm:ss')"/>
+        </record>
+
+        <record id="mrpWorkcenterEfficiency_1" model="mrp.workcenter.productivity">
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="lossId" ref="blockReason0"/>
+            <field name="dateStart" eval="toFormat(subDate(now(), {hours: 5}), 'yyyy-MM-dd HH:mm:ss')"/>
+            <field name="dateEnd" eval="toFormat(subDate(now(), {hours: 3}), 'yyyy-MM-dd HH:mm:ss')"/>
+        </record>
+
+        <record id="mrpWorkcenterEfficiency_2" model="mrp.workcenter.productivity">
+            <field name="workcenterId" ref="mrpWorkcenter_3"/>
+            <field name="lossId" ref="blockReason1"/>
+            <field name="dateStart" eval="toFormat(subDate(now(), {days: 5, hours: 4}), 'yyyy-MM-dd HH:mm:ss')"/>
+            <field name="dateEnd" eval="toFormat(subDate(now(), {days: 5, hours: 3}), 'yyyy-MM-dd HH:mm:ss')"/>
+        </record>
+
+        <record id="mrpWorkcenterEfficiency_3" model="mrp.workcenter.productivity">
+            <field name="workcenterId" ref="mrpWorkcenter_1"/>
+            <field name="lossId" ref="blockReason7"/>
+            <field name="dateStart" eval="toFormat(subDate(now(), {days: 5}), 'yyyy-MM-dd HH:mm:ss')"/>
+            <field name="dateEnd" eval="toFormat(subDate(now(), {days: 3}), 'yyyy-MM-dd HH:mm:ss')"/>
+        </record>
+
+        <record id="mrpWorkcenterEfficiency_4" model="mrp.workcenter.productivity">
+            <field name="workcenterId" ref="mrpWorkcenter_1"/>
+            <field name="lossId" ref="blockReason0"/>
+            <field name="dateStart" eval="toFormat(subDate(now(), {days: 5, hours: 5}), 'yyyy-MM-dd HH:mm:ss')"/>
+            <field name="dateEnd" eval="toFormat(subDate(now(), {days: 5, hours: 1}), 'yyyy-MM-dd HH:mm:ss')"/>
+        </record>
+
+        <record id="mrpWorkcenterEfficiency_5" model="mrp.workcenter.productivity">
+            <field name="workcenterId" ref="mrpWorkcenter_1"/>
+            <field name="lossId" ref="blockReason1"/>
+            <field name="dateStart" eval="toFormat(subDate(now(), {hours: 1}), 'yyyy-MM-dd HH:mm:ss')"/>
+        </record>
+
+        <function model="mrp.production" name="_createWorkorder">
+            <value eval="[refId('mrp.mrpProduction_3')]"/>
+        </function>
+
+        <function model="mrp.production" name="actionConfirm" eval="[[
+            refId('mrp.mrpProduction_3'),
+            refId('mrp.mrpProduction_4'),
+            refId('mrp.mrpProductionDrawer'),
+        ]]"/>
+
+        <function model="mrp.production" name="buttonPlan">
+            <value eval="[refId('mrp.mrpProduction_3')]"/>
+        </function>
+
+        <function model="mrp.production" name="write">
+            <value eval="[refId('mrp.mrpProductionDrawer')]"/>
+            <value eval="{'qtyProducing': 5, 'lotProducingId': refId('mrp.lotProduct27_0')}"/>
+        </function>
+
+        <function model="mrp.production" name="actionAssign">
+            <value eval="[refId('mrp.mrpProductionDrawer')]"/>
+        </function>
+
+        <function model="stock.move" name="write">
+            <value model="stock.move" eval="(await obj.env.items('stock.move').search([['rawMaterialProductionId', '=', (await obj.env.ref('mrp.mrpProductionDrawer')).id]])).ids"/>
+            <value eval="{'quantityDone': 5}"/>
+        </function>
+
+        <function model="mrp.production" name="_postInventory">
+            <value eval="[refId('mrp.mrpProductionDrawer')]"/>
+        </function>
+
+        <function model="mrp.production" name="buttonMarkDone">
+            <value eval="[refId('mrp.mrpProductionDrawer')]"/>
+        </function>
+
+        <!-- set 'create component' as true for the demo manufacturing picking type
+        while leaving the default value to False for the others -->
+        <function model="stock.warehouse" name="write">
+            <value model="stock.warehouse" eval="(await obj.env.items('stock.warehouse').search([])).ids"/>
+            <value eval="{'manufactureToResupply': true}"/>
+        </function>
+
+        <function model="stock.picking.type" name="write">
+            <value model="stock.picking.type" eval="(await obj.env.items('stock.picking.type').search([['code', '=', 'mrpOperation']])).ids"/>
+            <value eval="{'useCreateComponentsLots': true}"/>
+        </function>
+
+    </data>
+</verp>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+<data noupdate="0">
+
+    <record id="base.category_manufacturingManufacturing" model="ir.module.category">
+        <field name="description">Helps you manage your manufacturing processes and generate reports on those processes.</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="groupMrpUser" model="res.groups">
+        <field name="label">User</field>
+        <field name="impliedIds" eval="[[4, refId('stock.groupStockUser')]]"/>
+        <field name="categoryId" ref="base.category_manufacturingManufacturing"/>
+    </record>
+    <record id="groupMrpManager" model="res.groups">
+        <field name="label">Administrator</field>
+        <field name="categoryId" ref="base.category_manufacturingManufacturing"/>
+        <field name="impliedIds" eval="[[4, refId('groupMrpUser')]]"/>
+        <field name="users" eval="[[4, refId('base.userRoot')], [4, refId('base.userAdmin')]]"/>
+    </record>
+
+
+    <record id="groupMrpRoutings" model="res.groups">
+        <field name="label">Manage Work Order Operations</field>
+        <field name="categoryId" ref="base.category_hidden"/>
+    </record>
+
+    <record id="groupMrpByproducts" model="res.groups">
+        <field name="label">Produce residual products</field>
+        <field name="categoryId" ref="base.category_hidden"/>
+    </record>
+
+    <record id="groupUnlockedByDefault" model="res.groups">
+        <field name="label">Unlocked by default</field>
+        <field name="categoryId" ref="base.category_hidden"/>
+    </record>
+
+</data>
+<data noupdate="1">
+    <record id="base.defaultUser" model="res.users">
+        <field name="groupsId" eval="[[4,refId('mrp.groupMrpManager')]]"/>
+    </record>
+<!-- Multi -->
+    <record model="ir.rule" id="mrpProductionRule">
+        <field name="label">mrpProduction multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.production']]" model="ir.model"/>
+        <field name="domainForce">[['companyId', 'in', companyIds]]</field>
+    </record>
+
+    <record model="ir.rule" id="mrpUnbuildRule">
+        <field name="label">mrpUnbuild multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.unbuild']]" model="ir.model"/>
+        <field name="domainForce">[['companyId', 'in', companyIds]]</field>
+    </record>
+
+    <record model="ir.rule" id="mrpWorkcenterRule">
+        <field name="label">mrpWorkcenter multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.workcenter']]" model="ir.model"/>
+        <field name="domainForce">['|',['companyId', 'in', companyIds],['companyId','=',false]]</field>
+    </record>
+
+    <record model="ir.rule" id="mrpWorkorderRule">
+        <field name="label">mrpWorkorder multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.workorder']]" model="ir.model"/>
+        <field name="domainForce">[['companyId', 'in', companyIds]]</field>
+    </record>
+
+    <record model="ir.rule" id="mrpBomRule">
+        <field name="label">mrpBom multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.bom']]" model="ir.model"/>
+        <field name="domainForce">['|',['companyId', 'in', companyIds],['companyId','=',false]]</field>
+    </record>
+
+    <record model="ir.rule" id="mrpBomLineRule">
+        <field name="label">mrpBomLine multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.bom.line']]" model="ir.model"/>
+        <field name="domainForce">['|',['companyId', 'in', companyIds],['companyId','=',false]]</field>
+    </record>
+
+    <record model="ir.rule" id="mrpBomByproductRule">
+        <field name="label">mrpBomByproduct multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.bom.byproduct']]" model="ir.model"/>
+        <field name="domainForce">['|',['companyId', 'in', companyIds],['companyId','=',false]]</field>
+    </record>
+
+    <record model="ir.rule" id="mrpRoutingWorkcenterRule">
+        <field name="label">mrpRoutingWorkcenter multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.routing.workcenter']]" model="ir.model"/>
+        <field name="domainForce">['|',['companyId', 'in', companyIds],['companyId','=',false]]</field>
+    </record>
+
+    <record model="ir.rule" id="mrpWorkcenterProductivity">
+        <field name="label">mrpWorkcenterProductivity multi-company</field>
+        <field name="modelId" search="[['model','=','mrp.workcenter.productivity']]" model="ir.model"/>
+        <field name="domainForce">[['companyId', 'in', companyIds]]</field>
+    </record>
+
+</data>
+</verp>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        <record id="resConfigSettingsViewForm" model="ir.ui.view">
+            <field name="label">res.config.settings.view.form.inherit.mrp</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="35"/>
+            <field name="inheritId" ref="base.resConfigSettingsViewForm" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='settings']" position="inside">
+                    <div class="appSettingsBlock" data-string="Manufacturing" string="Manufacturing" data-key="mrp" groups="mrp.groupMrpManager">
+                        <h2>Operations</h2>
+                        <div class="row mt16 o-settings-container" name="processOperationsSettingContainer">
+                            <div class="col-lg-6 col-12 o-setting-box" id="workOrder" title="Work Order Operations allow you to create and manage the manufacturing operations that should be followed within your work centers in order to produce a product. They are attached to bills of materials that will define the required components.">
+                                <div class="o-setting-left-pane">
+                                    <field name="groupMrpRoutings"/>
+                                    <field name="moduleMrpWorkorder" invisible="1"/>
+                                </div>
+                                <div class="o-setting-right-pane" id="workorderSettings">
+                                    <label for="groupMrpRoutings" string="Work Orders"/>
+                                    <a href="https://www.theverp.com/documentation/15.0/applications/inventory_and_mrp/manufacturing/management/bill_configuration.html#adding-a-routing" title="Documentation" class="o-doc-link" target="_blank"></a>
+                                    <div class="text-muted">
+                                        Process operations at specific work centers
+                                    </div>
+                                    <div class="content-group" attrs="{'invisible': [['groupMrpRoutings','=',false]]}">
+                                        <div class="mt8">
+                                            <div>
+                                                <button name="%(mrp.mrpWorkcenterAction)d" icon="fa-arrow-right" type="action" string="Work Centers" class="btn-link"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 o-setting-box">
+                                <div class="o-setting-left-pane">
+                                    <field name="moduleMrpSubcontracting"/>
+                                </div>
+                                <div class="o-setting-right-pane">
+                                    <label for="moduleMrpSubcontracting"/>
+                                    <a href="https://www.theverp.com/documentation/15.0/applications/inventory_and_mrp/manufacturing/management/subcontracting.html" title="Documentation" class="o-doc-link" target="_blank"></a>
+                                    <div class="text-muted">
+                                        Subcontract the production of some products
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 o-setting-box" id="qualityControl">
+                                <div class="o-setting-left-pane">
+                                    <field name="moduleQualityControl" widget="upgradeBoolean"/>
+                                </div>
+                                <div class="o-setting-right-pane">
+                                    <label for="moduleQualityControl"/>
+                                    <div class="text-muted">
+                                        Add quality checks to your work orders
+                                    </div>
+                                    <div class="row mt-2" attrs="{'invisible': [['moduleQualityControl','=',false]]}">
+                                        <field name="moduleQualityControlWorksheet" widget="upgradeBoolean" class="col-lg-1 ml16 mr0"/>
+                                        <div class="col pl-0">
+                                            <label for="moduleQualityControlWorksheet"/>
+                                            <div class="text-muted">
+                                                Create customizable worksheets for your quality checks
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 o-setting-box" id="mrpLock" title="Makes confirmed manufacturing orders locked rather than unlocked by default. This only applies to new manufacturing orders, not previously created ones.">
+                                <div class="o-setting-left-pane">
+                                    <field name="groupUnlockedByDefault"/>
+                                </div>
+                                <div class="o-setting-right-pane">
+                                    <label for="groupUnlockedByDefault"/>
+                                    <div class="text-muted">
+                                        Allow manufacturing users to modify quantities to consume, without the need for prior approval
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 o-settings-container">
+                            <div class="col-lg-6 col-12 o-setting-box" id="mrpByproduct" title="Add by-products to bills of materials. This can be used to get several finished products as well. Without this option you only do: A + B = C. With the option: A + B = C + D.">
+                                <div class="o-setting-left-pane">
+                                    <field name="groupMrpByproducts"/>
+                                </div>
+                                <div class="o-setting-right-pane">
+                                    <label for="groupMrpByproducts"/>
+                                    <div class="text-muted">
+                                        Produce residual products (A + B -> C + D)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <h2>Planning</h2>
+                        <div class="row mt16 o-settings-container">
+                            <div class="col-lg-6 col-12 o-setting-box" id="mrpMps" title="Using a MPS report to schedule your reordering and manufacturing operations is useful if you have long lead time and if you produce based on sales forecasts.">
+                                <div class="o-setting-left-pane">
+                                    <field name="moduleMrpMps" widget="upgradeBoolean"/>
+                                </div>
+                                <div class="o-setting-right-pane">
+                                    <label for="moduleMrpMps"/>
+                                    <a href="https://www.theverp.com/documentation/15.0/applications/inventory_and_mrp/manufacturing/management/use_mps.html" title="Documentation" class="o-doc-link" target="_blank"></a>
+                                    <div class="text-muted">
+                                        Plan manufacturing or purchase orders based on forecasts
+                                    </div>
+                                    <div class="content-group" id="contentMrpMps"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 o-setting-box" id="securityLeadTime">
+                                <div class="o-setting-left-pane">
+                                    <field name="useManufacturingLead"/>
+                                </div>
+                                <div class="o-setting-right-pane">
+                                    <label string="Security Lead Time" for="useManufacturingLead"/>
+                                    <a href="https://www.theverp.com/documentation/15.0/applications/inventory_and_mrp/inventory/management/planning/scheduled_dates.html" title="Documentation" class="mr-2 o-doc-link" target="_blank"></a>
+                                    <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." role="img" aria-label="Values set here are company-specific." groups="base.groupMultiCompany"/>
+                                    <div class="text-muted">
+                                        Schedule manufacturing orders earlier to avoid delays
+                                     </div>
+                                     <div class="content-group" attrs="{'invisible': [['useManufacturingLead','=',false]]}">
+                                        <div class="mt16" >
+                                            <field name="manufacturingLead" class="oe-inline"/> days
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="actionMrpConfiguration" model="ir.actions.actwindow">
+            <field name="label">Settings</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">res.config.settings</field>
+            <field name="viewMode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module' : 'mrp', 'binSize': false}</field>
+        </record>
+
+        <menuitem id="menuMrpConfig" name="Settings" parent="menuMrpConfiguration"
+            sequence="0" action="actionMrpConfiguration" groups="base.groupSystem"/>
+    </data>
+</verp>

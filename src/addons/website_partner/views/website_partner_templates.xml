@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+<template id="partnerPage" name="Partner Page">
+    <t t-call="website.layout">
+        <div id="wrap">
+            <div class="oe-structure" id="oeStructureWebsitePartnerPartner1"/>
+            <div class="container">
+                <div class="row">
+                    <t t-call="website_partner.partnerDetail"></t>
+                </div>
+            </div>
+            <div class="oe-structure" id="oeStructureWebsitePartnerPartner2"/>
+        </div>
+    </t>
+</template>
+
+<template id="partnerDetail" name="Partner Details">
+    <h1 class="col-lg-12 text-center" id="partnerName" t-field="partner.displayName"/>
+    <div class="col-lg-4">
+        <div t-field="partner.avatar1920" t-options='{"widget": "image", "previewImage": "avatar512", "class": "d-block mx-auto mb16"}'/>
+        <address>
+             <div t-field="partner.self" t-options='{
+                 "widget": "contact",
+                 "fields": ["address", "website", "phone", "email"]
+             }'/>
+        </address>
+        <t t-out="leftColumn || ''"/>
+    </div>
+    <div class="col-lg-8 mt32">
+        <t t-if="partner">
+            <div t-field="partner.websiteDescription"/>
+            <t groups="website.groupWebsitePublisher">
+                <h2 class="css-non-editable-mode-hidden o-not-editable">Short Description for List View</h2>
+                <div class="css-non-editable-mode-hidden" t-field="partner.websiteShortDescription"/>
+            </t>
+        </t>
+        <t t-out="rightColumn || ''"/>
+    </div>
+</template>
+</verp>

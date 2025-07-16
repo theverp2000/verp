@@ -1,0 +1,309 @@
+// ======= VARIABLES =======
+$o-wblog-sidebar-width: 280px;
+$o-wblog-loader-size: 50px;
+
+// ======= ANIMATIONS =======
+// Generic fade-in
+@keyframes o-wblog-fade-In {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes o-wblog-loader {
+    0%, 100% {
+        animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+    }
+    0% {
+        transform: rotateY(0deg);
+    }
+    50% {
+        transform: rotateY(1800deg);
+        animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+    }
+    100% {
+        transform: rotateY(3600deg);
+    }
+}
+
+
+// ======== MIXINS =========
+// Create easing-linear-gradients. Compared to the standards liner-gradients
+// these are smoother and blends into their context increasing readability when
+// acts as background for text placed over images.
+// based on: https://css-tricks.com/easing-linear-gradients/
+@mixin o-wbblog-scrim-gradient($colorFrom, $colorTo) {
+    $scrimStops: 0% 0%, 26.2% 19%, 45.9% 34%, 61.8% 47%, 72.2% 56.5%, 80.6% 65%, 87.4% 73%, 92.5% 80.2%, 95.8% 86.1%, 97.9% 91%, 99.2% 95.2%, 99.8% 98.2%, 100% 100%;
+    $stops: ();
+    @each $scrimStop in $scrimStops {
+        $stops: append($stops, mix($colorTo, $colorFrom, nth($scrimStop, 1)) nth($scrimStop, 2), comma)
+    }
+
+    background-image: linear-gradient(#{$stops});
+}
+
+//------------------------------------------------------------------------------
+// Website Blog
+//------------------------------------------------------------------------------
+.website-blog {
+    .css-website-mail {
+        .o-has-error {
+            border-color: red;
+        }
+        .css-nav-month {
+            display: none;
+            &:first-of-type {
+                display: block;
+            }
+        }
+    }
+
+    .o-wblog-page-cards-bg {
+        // To be applied to the main container when 'card design' option is
+        // enabled. Provide a slight darker bg that will blend the background
+        // color chosen by the user, visually increasing the contrast in case of
+        // brights (or white) backgrounds.
+        // It shouldn't be noticeable on dark backgrounds.
+        background-color: rgba(black, 0.005);
+    }
+
+    .o-wblog-read-with-sidebar {
+        max-width: map-get($container-max-widths, md) + $o-wblog-sidebar-width;
+    }
+
+    // This option class is assigned to the post's content using the "Customize"
+    // menu. The aim is to be able to write simple articles on the fly,
+    // achieving a good design without being forced to use snippets.
+    .o-wblog-read-text {
+        font-size: 18px;
+        line-height: 28px;
+        font-weight: 300;
+
+        p, ul, ol {
+            margin-bottom: 1.55em;
+        }
+
+        li {
+            margin-bottom: 1em;
+        }
+
+        .lead {
+            font-size: 26px;
+            line-height: 34px;
+            margin-bottom: 40px;
+        }
+    }
+
+    .o-wblog-author-avatar {
+        width: 1.2em;
+        height: 1.2em;
+        max-width: none;
+        object-fit: cover;
+    }
+
+    .o-wblog-author-avatar-date {
+        // Resize in order to double the current font-size and accommodate
+        // two text lines, name and date.
+        width: 2em;
+        height: 2em;
+        max-width: none;
+        object-fit: cover;
+    }
+
+    .o-wblog-social-links > a {
+        @include size(3em);
+        > i {
+            font-size: 1.3em;
+        }
+    }
+
+    // Blog Post Page
+    // ==============================================
+    #oWblogPostContent {
+        min-height: 350px !important;
+
+        a.oe-mail-expand:after {
+            content: " →";
+        }
+        a.oe-mail-expand {
+            font-weight: bold;
+        }
+    }
+
+    #oWblogPostComments {
+        .o-portal-chatter > hr {
+            display: none;
+        }
+    }
+
+    // Blog Post Page Cover
+    // ==============================================
+    .o-wblog-post-page-cover {
+
+        // Cover sizes
+        // ==============================================
+        &.cover-auto {
+            padding: 3rem 0;
+            // The actual height will always be 'auto'. The following
+            // min-height rule is set to trigger the page transition only.
+            min-height: 1px;
+        }
+
+        // "Regular Cover" design sizes
+        // ==============================================
+        &.o-wblog-post-page-cover-regular {
+            &.o-full-screen-height {
+                min-height: 70vh !important;
+            }
+
+            &.o-half-screen-height {
+                min-height: 40vh !important;
+            }
+
+            &.cover-auto {
+                min-height: 150px;
+                padding: 0;
+            }
+        }
+
+        // If a cover image is defined, adapt inner typography
+        &.o-record-has-cover {
+            .o-record-cover-image:after {
+                content: "";
+                display: block;
+                @include o-position-absolute(0,0,50%,0);
+                @include o-wbblog-scrim-gradient(rgba(black, 0.5), transparent);
+            }
+
+            .o-wblog-post-title {
+                color: white;
+            }
+
+            &.o-wblog-post-page-cover-regular {
+                .o-record-cover-image:after {
+                    visibility: hidden;
+                }
+            }
+        }
+
+    }
+
+    // Blog Post Specific
+    // ==============================================
+    .o-wblog-post-title {
+        #oWblogPostName {
+            font-weight: $display4-weight;
+            line-height: $display-line-height;
+            // Default font-size.
+            @include font-size($display4-size);
+        }
+
+        #oWblogPostSubtitle {
+            font-weight: $lead-font-weight;
+            // Default font-size.
+            @include font-size($lead-font-size);
+        }
+    }
+
+    // Refine multi-lines titles when using 'regular' cover
+    .o-wblog-regular-cover-container #oWblogPostName {
+        line-height: 1;
+        padding-bottom: 0.5rem;
+    }
+
+    .o-wblog-post-page-cover-footer {
+        min-height: 33vh;
+        // Emulate native jQuery 'swing' easing to match js code
+        transition: all 0.3s cubic-bezier(.02, .01, .47, 1);
+    }
+
+    #oWblogNextContainer {
+        background-color: $body-bg;
+        cursor: pointer;
+
+        .o-wblog-next-loader {
+            transform: translateZ(1px);
+
+            div {
+                @include size($o-wblog-loader-size);
+                background: rgba(black, 0.15);
+                animation: o-wblog-loader 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+            }
+        }
+
+        .o-wblog-next-fake-btn {
+            height: $o-wblog-loader-size;
+        }
+    }
+
+    #oWblogPostMain.o-wblog-post-main-transition {
+        animation: o-wblog-fade-In 1s cubic-bezier(.02, .01, .47, 1);
+    }
+
+    // "Read next article" (with "Regular Cover")
+    #oWblogPostFooter a.w-25 {
+        flex: 0 0 auto;
+    }
+
+    // Blog Index Pages
+    // ==============================================
+    #oWblogPostsLoop {
+        .o-record-cover-container {
+            box-shadow: inset 0 0 0 1px rgba(white, 0.3);
+
+            padding-top: 33%;
+            height: auto!important;
+            // This is mandatory as we do not want the CoverProperties 
+            // sizing classes to be applied here
+            min-height: auto!important;
+
+            &:hover .o-record-cover-image {
+                opacity: 0.8;
+            }
+        }
+
+        .o-wblog-normalize-font {
+            // normalize fonts
+            font-size: 13px;
+            line-height: 1.45;
+        }
+
+        .o-wblog-post-list-author {
+            @include o-wbblog-scrim-gradient(transparent, rgba(black, 0.5));
+        }
+
+        &.o-wblog-list-view {
+            .o-record-cover-container {
+                padding-top: 20%;
+            }
+            .o-wblog-post-cover-nocard .o-record-cover-container {
+                padding-top: 33%;
+            }
+        }
+
+    }
+
+    //  Editor Helpers
+    // ==============================================
+    body.editor-enable & {
+        // Make empty covers visible in edit mode
+        .o-record-cover-container.o-wblog-post-page-cover:not(.o-record-has-cover) {
+            padding: 30px 0;
+        }
+
+        // Hide the big "DRAG BUILDING BLOCKS HERE" box when inside a sidebar.
+        // The purple lines are enough to help the user dropping snippets.
+        #oWblogSidebar .oe-structure:empty {
+            display: none;
+        }
+    }
+}
+
+#oWblogPostContentJump {
+    @extend .o-scroll-button;
+    @include size($o-wblog-loader-size);
+    background-color: rgba(black, 0.5);
+
+    &:hover {
+        background-color: rgba(black, 0.7);
+    }
+}

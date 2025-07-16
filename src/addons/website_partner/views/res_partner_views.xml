@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <record id="viewPartnersFormWebsite" model="ir.ui.view">
+        <field name="label">view.res.partner.form.website</field>
+        <field name="model">res.partner</field>
+        <field name="inheritId" ref="base.viewPartnerForm"/>
+        <field eval="17" name="priority"/>
+        <field name="arch" type="xml">
+            <data>
+                <div name="buttonBox" position="inside">
+                    <field name="isPublished" widget="websiteRedirectButton"/>
+                </div>
+            </data>
+        </field>
+    </record>
+</verp>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        <!-- Filters for Dynamic Filter -->
+        <record id="dynamicSnippetLatestBlogPostFilter" model="ir.filters">
+            <field name="label">Latest Blog Posts</field>
+            <field name="modelId">blog.post</field>
+            <field name="userId" eval="false" />
+            <field name="domain">[['postDate', '&lt;=', contextToday()]]</field>
+            <field name="sort">['postDate desc']</field>
+            <field name="actionId" ref="website.actionWebsite"/>
+        </record>
+        <record id="dynamicSnippetMostViewedBlogPostFilter" model="ir.filters">
+            <field name="label">Most Viewed Blog Posts</field>
+            <field name="modelId">blog.post</field>
+            <field name="userId" eval="false" />
+            <field name="domain">[['postDate', '&lt;=', contextToday()], ['visits', '!=', false]]</field>
+            <field name="sort">['visits desc']</field>
+            <field name="actionId" ref="website.actionWebsite"/>
+        </record>
+        <!-- Dynamic Filter -->
+        <record id="dynamicFilterLatestBlogPosts" model="website.snippet.filter">
+            <field name="label">Latest Blog Posts</field>
+            <field name="filterId" ref="website_blog.dynamicSnippetLatestBlogPostFilter"/>
+            <field name="fieldNames">label,teaser,subtitle</field>
+            <field name="limit" eval="16"/>
+        </record>
+        <record id="dynamicFilterMostViewedBlogPosts" model="website.snippet.filter">
+            <field name="label">Most Viewed Blog Posts</field>
+            <field name="filterId" ref="website_blog.dynamicSnippetMostViewedBlogPostFilter"/>
+            <field name="fieldNames">label,teaser,subtitle</field>
+            <field name="limit" eval="16"/>
+        </record>
+    </data>
+</verp>

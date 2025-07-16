@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <template id="exceptionOnMo">
+        <div class="alert alert-warning" role="alert">
+            Exception(s) occurred on the manufacturing order(s):
+            <a href="#" data-oe-model="mrp.production" t-att-data-oe-id="productionOrder.id"><t t-esc="await productionOrder.label"/></a>.
+            Manual actions may be needed.
+            <div class="mt16">
+                <p>Exception(s):</p>
+                <ul t-foreach="Object.entries(orderExceptions)" t-as="orderException">
+                    <li>
+                        <t t-set="moveRawId" t-value="orderException[0]"/>
+                        <t t-set="exception" t-value="orderException[1]"/>
+                        <t t-set="order" t-value="exception[0]"/>
+                        <t t-set="newQty" t-value="exception[1][0]"/>
+                        <t t-set="oldQty" t-value="exception[1][1]"/>
+                            <a href="#" data-oe-model="mrp.production" t-att-data-oe-id="productionOrder.id"><t t-esc="await productionOrder.label"/></a>:
+                            <t t-esc="newQty"/> <t t-esc="await (await moveRawId.productUom).label"/> of <t t-esc="await (await moveRawId.productId).label"/>
+                            <t t-if="cancel">
+                                cancelled
+                            </t>
+                            <t t-if="! cancel">
+                                ordered instead of <t t-esc="oldQty"/> <t t-esc="await (await moveRawId.productUom).label"/>
+                            </t>
+                      </li>
+                </ul>
+            </div>
+            <div class="mt16" t-if="! cancel &amp;&amp; bool(impactedPickings)">
+                <p>Impacted Transfer(s):</p>
+                <ul t-foreach="impactedPickings" t-as="picking">
+                    <li><a href="#" data-oe-model="stock.picking" t-att-data-oe-id="picking.id"><t t-esc="await picking.label"/></a></li>
+                </ul>
+            </div>
+        </div>
+    </template>
+
+    <template id="productionMessage">
+        <t t-if="bool(await (await move.moveId).rawMaterialProductionId)">
+            <t t-set="message">Consumed</t>
+        </t>
+        <t t-if="bool(await (await move.moveId).productionId)">
+            <t t-set="message">Produced</t>
+        </t>
+        <strong><t t-esc="message"/> quantity has been updated.</strong>
+    </template>
+
+    <template id="trackProductionMoveTemplate">
+        <div>
+            <t t-call="mrp.productionMessage"/>
+            <t t-call="stock.messageBody"/>
+        </div>
+    </template>
+</verp>

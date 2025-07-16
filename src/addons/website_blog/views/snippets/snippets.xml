@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+
+<template id="website_blog" inheritId="website.snippets" name="Snippet Blog">
+    <xpath expr="//t[@id='blogPostsHook']" position="replace">
+        <t t-snippet="website_blog.sBlogPosts" t-thumbnail="/website_blog/static/src/img/s_blog_posts.svg"/>
+    </xpath>
+</template>
+
+<template id="snippetOptions" inheritId="website.snippetOptions" name="Blog snippet options">
+    <xpath expr="." position="inside">
+        <div data-js="BlogPostTagSelection" data-selector=".o-wblog-post-page-cover" data-target="#oWblogPostName">
+            <we-many2many string="Tags"
+                data-no-preview="true"
+                data-model="blog.post"
+                data-m2o-field="tagIds"
+                data-set-tags=""
+                data-create-method="createTag"/>
+        </div>
+    </xpath>
+    <xpath expr="//*[@data-js='anchor']" position="attributes">
+        <attribute name="data-exclude" add=".o-wblog-post-content-field > :not(div, section)" separator=","/>
+    </xpath>
+
+    <!-- Hides ContainerWidth option for content in blog posts -->
+    <xpath expr="//div[@data-js='ContainerWidth']" position="attributes">
+        <attribute name="data-exclude" add="#oWblogPostContent *" separator=","/>
+    </xpath>
+</template>
+
+<template id="blogSearchbarInputSnippetOptions" inheritId="website.searchbarInputSnippetOptions" name="blog search bar snippet options">
+    <xpath expr="//div[@data-js='SearchBar']/we-select[@data-name='scopeOpt']" position="inside">
+        <we-button data-set-search-type="blogs" data-select-data-attribute="blogs" data-name="searchBlogsOpt" data-form-action="/blog">Blogs</we-button>
+    </xpath>
+    <xpath expr="//div[@data-js='SearchBar']/we-select[@data-name='orderOpt']" position="inside">
+        <we-button data-set-order-by="publishedDate asc" data-select-data-attribute="publishedDate asc" data-dependencies="searchBlogsOpt" data-name="orderPublishedDateAscOpt">Date (old to new)</we-button>
+        <we-button data-set-order-by="publishedDate desc" data-select-data-attribute="publishedDate desc" data-dependencies="searchBlogsOpt" data-name="orderPublishedDateDescOpt">Date (new to old)</we-button>
+    </xpath>
+    <xpath expr="//div[@data-js='SearchBar']/div[@data-dependencies='limitOpt']" position="inside">
+        <we-checkbox string="Description" data-dependencies="searchBlogsOpt" data-select-data-attribute="true" data-attribute-name="displayDescription"
+            data-apply-to=".search-query"/>
+        <we-checkbox string="Publication Date" data-dependencies="searchBlogsOpt" data-select-data-attribute="true" data-attribute-name="displayDetail"
+            data-apply-to=".search-query"/>
+    </xpath>
+</template>
+</verp>

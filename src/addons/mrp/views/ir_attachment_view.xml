@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+        <!-- Files -->
+    <record model="ir.ui.view" id="viewDocumentFileKanbanMrp">
+        <field name="label">mrp.document kanban.mrp</field>
+        <field name="model">mrp.document</field>
+        <field name="arch" type="xml">
+            <kanban jsClass="mrpDocumentsKanban" create="false">
+                <field name="irAttachmentId"/>
+                <field name="mimetype"/>
+                <field name="type"/>
+                <field name="label"/>
+                <field name="priority"/>
+                <field name="createdUid"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe-kanban-global-area o-kanban-attachment oe-kanban-global-click">
+                            <div class="o-kanban-image">
+                                <t t-set="binaryPreviewable"
+                                   t-value="new RegExp('(image|video|application/pdf|text)').test(record.mimetype.value) &amp;&amp; record.type.rawValue === 'binary'"/>
+                                <div t-attf-class="o-kanban-image-wrapper #{(webimage || binaryPreviewable) ? 'o-kanban-previewer' : ''}">
+                                    <t t-set="webimage" t-value="new RegExp('image.*(gif|jpeg|jpg|png)').test(record.mimetype.value)"/>
+                                    <div t-if="record.type.rawValue == 'url'" class="o-url-image fa fa-link fa-3x text-muted" aria-label="Image is a link"/>
+                                    <img t-elif="webimage" t-attf-src="/web/image/#{record.irAttachmentId.rawValue}" width="100" height="100" alt="Document" class="o-attachment-image"/>
+                                    <div t-else="" class="o-image o-image-thumbnail" t-att-data-mimetype="record.mimetype.value"/>
+                                </div>
+                            </div>
+                            <div class="o-kanban-details">
+                                <div class="o-kanban-details-wrapper">
+                                    <div class="o-kanban-record-title">
+                                        <field name="label" class="o-text-overflow"/>
+                                    </div>
+                                    <div class="o-kanban-record-body">
+                                      <field name="url" widget="url" attrs="{'invisible':[['type','=','binary']]}"/>
+                                    </div>
+                                    <div class="o-kanban-record-bottom">
+                                        <span class="oe-kanban-bottom-left">
+                                            <field name="priority" widget="priority"/>
+                                        </span>
+                                        <div class="oe-kanban-bottom-right">
+                                            <field name="createdUid" widget="many2oneAvatarUser"/>
+                                        </div>
+                                    </div>
+                                    <div class="o-dropdown-kanban dropdown" tabindex="-1">
+                                        <a class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" href="#" role="button" aria-label="Dropdown menu" title="Dropdown menu">
+                                            <span class="fa fa-ellipsis-v"/>
+                                        </a>
+                                        <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                            <a t-if="widget.editable" type="edit" class="dropdown-item">Edit</a>
+                                            <a t-if="widget.deletable" type="delete" class="dropdown-item">Delete</a>
+                                            <a class="dropdown-item o-mrp-download">Download</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="viewMrpDocumentForm" model="ir.ui.view">
+        <field name="label">mrp.document.form</field>
+        <field name="model">mrp.document</field>
+        <field name="arch" type="xml">
+            <form string="Attachments">
+                <sheet>
+                    <label for="label"/>
+                    <h1>
+                        <field name="label"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="type"/>
+                            <field name="datas" filename="name" attrs="{'invisible':[['type','=','url']]}"/>
+                            <field name="url" widget="url" attrs="{'invisible':[['type','=','binary']]}"/>
+                        </group>
+                        <group string="Attached To" groups="base.groupNoOne">
+                            <field name="resName"/>
+                            <field name="companyId" groups="base.groupMultiCompany" options="{'noCreate': true}"/>
+                        </group>
+                        <group string="History" groups="base.groupNoOne" attrs="{'invisible':[['createdAt','=',false]]}">
+                            <label for="createdUid" string="Creation"/>
+                            <div name="creationDiv">
+                                <field name="createdUid" readonly="1" class="oe-inline"/> on
+                                <field name="createdAt" readonly="1" class="oe-inline"/>
+                            </div>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</verp>

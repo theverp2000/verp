@@ -1,0 +1,9 @@
+id,label,modelId:id,groupId:id,permRead,permWrite,permCreate,permUnlink
+blog_blog_all,blog.blog,model_blogBlog,,1,0,0,0
+blog_blog,blog.blog,model_blogBlog,website.groupWebsiteDesigner,1,1,1,1
+blog_post_all,blog.post,model_blogPost,,1,0,0,0
+blog_post,blog.post,model_blogPost,website.groupWebsiteDesigner,1,1,1,1
+blog_tag,blog.tag,model_blogTag,,1,0,0,0
+blog_tag_edition,blog.tag,model_blogTag,website.groupWebsiteDesigner,1,1,1,1
+blog_tag_category_all,blog.tag.category,model_blogTagCategory,,1,0,0,0
+blog_tag_category,blog.tag.category,model_blogTagCategory,website.groupWebsiteDesigner,1,1,1,1

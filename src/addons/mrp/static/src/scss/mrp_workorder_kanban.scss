@@ -1,0 +1,10 @@
+.o-kanban-dashboard.o-kanban-view {
+    &.o-mrp-workorder-kanban,&.o-workcenter-kanban {
+        .o-kanban-group:not(.o-column-folded) {
+            width: 400px + $o-kanban-group-padding;
+        }
+        .o-kanban-record {
+            width: 400px;
+        }
+    }
+}

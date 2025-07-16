@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<verp>
+    <data noupdate="1">
+        <record id="blogBlog_1" model="blog.blog">
+            <field name="label">Our blog</field>
+            <field name="subtitle">We are a team of passionate people whose goal is to improve everyone's life.</field>
+            <field name="coverProperties">{"background-image": "url('/website_blog/static/src/img/cover_5.jpg')", "resizeClass": "o-record-has-cover o-half-screen-height", "opacity": "0.4"}</field>
+        </record>
+
+        <record id="menuBlog" model="website.menu">
+            <field name="label">Blog</field>
+            <field name="url">/blog</field>
+            <field name="parentId" ref="website.mainMenu"/>
+            <field name="sequence" type="int">40</field>
+        </record>
+
+        <!-- Blog-related subtypes for messaging / Chatter -->
+        <record id="mtBlogBlogPublished" model="mail.message.subtype">
+            <field name="label">Published Post</field>
+            <field name="resModel">blog.blog</field>
+            <field name="default" eval="true"/>
+            <field name="description">Published Post</field>
+        </record>
+
+    </data>
+
+    <data>
+
+        <!-- jump to blog at install -->
+        <record id="actionOpenWebsite" model="ir.actions.acturl">
+            <field name="label">Website Blogs</field>
+            <field name="target">self</field>
+            <field name="url" eval="'/blog/'"/>
+        </record>
+        <record id="base.openMenu" model="ir.actions.todo">
+            <field name="actionId" ref="actionOpenWebsite"/>
+            <field name="type">ir.actions.acturl</field>
+            <field name="state">open</field>
+        </record>
+
+    </data>
+</verp>

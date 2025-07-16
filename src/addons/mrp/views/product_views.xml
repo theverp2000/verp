@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        <!-- Product Template -->
+        <record id="viewMrpProductTemplateFormInherited" model="ir.ui.view">
+            <field name="label">product.form.mrp.inherited</field>
+            <field name="model">product.template</field>
+            <field name="inheritId" ref="stock.viewTemplatePropertyForm"/>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='saleDelay']" position="before">
+                    <label for="produceDelay" string="Manuf. Lead Time" attrs="{'invisible':[['type','=','service']]}"/>
+                    <div attrs="{'invisible':[['type','=','service']]}">
+                        <field name="produceDelay" class="oe-inline"/> days
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='productVariantCount']" position="after">
+                    <field name="isKits" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="mrpProductTemplateSearchView" model="ir.ui.view">
+            <field name="label">mrp.product.template.search</field>
+            <field name="model">product.template</field>
+            <field name="mode">primary</field>
+            <field name="inheritId" ref="product.productTemplateSearchView"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='consumable']" position="after">
+                    <separator/>
+                    <filter string="Manufactured Products" name="manufacturedProducts" domain="[['bomIds', '!=', false]]"/>
+                    <filter string="BoM Components" name="components" domain="[['bomLineIds', '!=', false]]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="mrpProductProductSearchView" model="ir.ui.view">
+            <field name="label">mrp.product.product.search</field>
+            <field name="model">product.product</field>
+            <field name="mode">primary</field>
+            <field name="inheritId" ref="product.productSearchFormView"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='consumable']" position="after">
+                    <separator/>
+                    <filter string="Manufactured Products" name="manufacturedProducts" domain="[['bomIds', '!=', false]]"/>
+                    <filter string="BoM Components" name="components" domain="[['bomLineIds', '!=', false]]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="productTemplateAction" model="ir.actions.actwindow">
+            <field name="label">Products</field>
+            <field name="resModel">product.template</field>
+            <field name="searchViewId" ref="mrpProductTemplateSearchView"/>
+            <field name="viewMode">kanban,tree,form</field>
+            <field name="context">{"searchDefault_consumable": 1, 'default_detailedType': 'product'}</field>
+            <field name="help" type="html">
+              <p class="o-view-nocontent-smiling-face">
+                No product found. Let's create one!
+              </p><p>
+                Define the components and finished products you wish to use in
+                bill of materials and manufacturing orders.
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menuMrpProductForm"
+            name="Products"
+            action="productTemplateAction"
+            parent="menuMrpBom" sequence="1"/>
+
+        <record id="mrpProductVariantAction" model="ir.actions.actwindow">
+            <field name="label">Product Variants</field>
+            <field name="resModel">product.product</field>
+            <field name="searchViewId" ref="mrpProductProductSearchView"/>
+            <field name="viewMode">kanban,tree,form</field>
+        </record>
+
+        <menuitem id="productVariantMrp" name="Product Variants"
+            action="mrpProductVariantAction"
+            parent="menuMrpBom" groups="product.groupProductVariant" sequence="2"/>
+
+
+        <record id="productTemplateFormViewBomButton" model="ir.ui.view">
+            <field name="label">product.template.procurement</field>
+            <field name="model">product.template</field>
+            <field name="inheritId" ref="stock.productTemplateFormViewProcurementButton"/>
+            <field name="groupsId" eval="[[4, refId('mrp.groupMrpUser')]]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='actionOpenProductLot']" position="after">
+                    <button class="oe-stat-button" name="%(templateOpenBom)d" type="action"
+                        attrs="{'invisible':[['type', 'not in', ['product', 'consu']]]}" icon="fa-flask">
+                        <field string="Bill of Materials" name="bomCount" widget="statinfo" />
+                    </button>
+                    <button class="oe-stat-button" name="actionUsedInBom" type="object"
+                        attrs="{'invisible':['|',['type', 'not in', ['product', 'consu']], ['usedInBomCount', '=', 0]]}" icon="fa-level-up">
+                        <field string="Used In" name="usedInBomCount" widget="statinfo" />
+                    </button>
+                    <button class="oe-stat-button" name="actionViewMos" type="object"
+                        attrs="{'invisible': ['|', '|', ['type', 'not in', ['product', 'consu']], ['bomCount', '=', 0], ['mrpProductQty', '=', 0]]}" icon="fa-list-alt" help="Manufactured in the last 365 days">
+                        <div class="o-field-widget o-stat-info">
+                            <span class="o-stat-value">
+                                <field name="mrpProductQty" widget="statinfo" nolabel="1" class="mr4"/>
+                                <field name="uomName"/>
+                            </span>
+                            <span class="o-stat-text">Manufactured</span>
+                        </div>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="productProductFormViewBomButton" model="ir.ui.view">
+            <field name="label">product.product.procurement</field>
+            <field name="model">product.product</field>
+            <field name="inheritId" ref="stock.productFormViewProcurementButton"/>
+            <field name="groupsId" eval="[[4, refId('mrp.groupMrpUser')]]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='actionOpenProductLot']" position="after">
+                    <button class="oe-stat-button" name="actionViewBom" type="object"
+                        attrs="{'invisible':[['type', 'not in', ['product', 'consu']]]}" icon="fa-flask">
+                        <field string="Bill of Materials" name="bomCount" widget="statinfo" />
+                    </button>
+                    <button class="oe-stat-button" name="actionUsedInBom" type="object"
+                        attrs="{'invisible':['|',['type', 'not in', ['product', 'consu']], ['usedInBomCount', '=', 0]]}" icon="fa-level-up">
+                        <field string="Used In" name="usedInBomCount" widget="statinfo" />
+                    </button>
+                    <button class="oe-stat-button" name="actionViewMos" type="object"
+                        attrs="{'invisible': ['|', '|', ['type', 'not in', ['product', 'consu']], ['bomCount', '=', 0], ['mrpProductQty', '=', 0]]}" icon="fa-list-alt" help="Manufactured in the last 365 days">
+                        <div class="o-field-widget o-stat-info">
+                            <span class="o-stat-value">
+                                <field name="mrpProductQty" widget="statinfo" nolabel="1" class="mr4"/>
+                                <field name="uomName"/>
+                            </span>
+                            <span class="o-stat-text">Manufactured</span>
+                        </div>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</verp>

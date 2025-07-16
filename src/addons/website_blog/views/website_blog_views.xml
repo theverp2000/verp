@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<verp>
+
+        <!-- Blog views -->
+        <record id="viewBlogBlogList" model="ir.ui.view">
+            <field name="label">blog.blog.list</field>
+            <field name="model">blog.blog</field>
+            <field name="arch" type="xml">
+                <tree string="Blogs">
+                    <field name="label"/>
+                    <field name="blogPostCount"/>
+                    <field name="websiteId" groups="website.groupMultiWebsite"/>
+                    <field name="active" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        <record id="viewBlogBlogForm" model="ir.ui.view">
+            <field name="label">blog.blog.form</field>
+            <field name="model">blog.blog</field>
+            <field name="arch" type="xml">
+                <form string="Blog">
+                    <sheet>
+                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="label"/>
+                            <field name="subtitle"/>
+                            <field name="websiteId" options="{'noCreate': true}" groups="website.groupMultiWebsite"/>
+                        </group>
+                    </sheet>
+                    <div class="oe-chatter">
+                        <field name="messageFollowerIds" groups="base.groupUser"/>
+                        <field name="messageIds"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- page list view  -->
+        <record id="viewBlogPostList" model="ir.ui.view">
+            <field name="label">blog.post.list</field>
+            <field name="model">blog.post</field>
+            <field name="arch" type="xml">
+                <tree string="Blog Posts" multiEdit="1" sample="1">
+                    <field name="label"/>
+                    <field name="active" invisible="1"/>
+                    <field name="authorId"/>
+                    <field name="blogId"/>
+                    <field name="websiteId" groups="website.groupMultiWebsite"/>
+                    <field name="isPublished" string="Is Published" optional="hide"/>
+                    <field name="visits" readonly="1"/>
+                    <field name="createdUid" invisible="1"/>
+                    <field name="updatedUid"/>
+                    <field name="updatedAt"/>
+                </tree>
+            </field>
+        </record>
+        <!-- page form view  -->
+        <record id="viewBlogPostForm" model="ir.ui.view">
+            <field name="label">blog.post.form</field>
+            <field name="model">blog.post</field>
+            <field name="arch" type="xml">
+                <form string="Blog Post">
+                    <sheet>
+                        <div class="oe-button-box" name="buttonBox" attrs="{'invisible': [['active', '=', false]]}">
+                            <field name="isPublished" widget="websiteRedirectButton"/>
+                        </div>
+                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <group name="blogDetails">
+                            <field name="blogId"/>
+                            <field name="active" invisible="1"/>
+                            <field name="label" placeholder="Blog Post Title"/>
+                            <field name="subtitle" placeholder="Blog Subtitle"/>
+                            <field name="tagIds" widget="many2manyTags"/>
+                            <field name="websiteId" groups="website.groupMultiWebsite"/>
+                        </group>
+                        <group name="publishingDetails" string="Publishing Options">
+                            <field name="authorId"/>
+                            <field name="createdAt" groups="base.groupNoOne"/>
+                            <field name="postDate"/>
+                            <field name="updatedUid"/>
+                            <field name="updatedAt"/>
+                        </group>
+                        <notebook>
+                            <page name="seo" string="SEO" groups="base.groupNoOne">
+                                <group name="defaultOpengraph">
+                                    <field name="websiteMetaTitle" string="Meta Title"/>
+                                    <field name="websiteMetaDescription" string="Meta Description"/>
+                                    <field name="websiteMetaKeywords" string="Meta Keywords" help="Separate every keyword with a comma"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe-chatter">
+                        <field name="messageFollowerIds" groups="base.groupUser"/>
+                        <field name="messageIds"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <!-- page search view  -->
+        <record id="viewBlogPostSearch" model="ir.ui.view">
+            <field name="label">blog.post.search</field>
+            <field name="model">blog.post</field>
+            <field name="arch" type="xml">
+                <search string="Blog Post">
+                    <filter string="Archived" name="inactive" domain="[['active','=',false]]"/>
+                    <field name="label" string="Content" filterDomain="['|', ['label','ilike',self], ['content','ilike',self]]"/>
+                    <field name="updatedUid"/>
+                    <field name="blogId"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Blog" name="groupbyBlog" domain="[]" context="{'groupby': 'blogId'}"/>
+                        <filter string="Author" name="groupbyAuthor" domain="[]" context="{'groupby': 'createdUid'}"/>
+                        <filter string="Last Contributor" name="lastContributor" domain="[]" context="{'groupby': 'updatedUid'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="blogPostViewKanban" model="ir.ui.view">
+            <field name="label">blog.post.kanban</field>
+            <field name="model">blog.post</field>
+            <field name="arch" type="xml">
+                <kanban class="o-kanban-mobile" sample="1">
+                    <field name="label"/>
+                    <field name="blogId"/>
+                    <field name="authorId"/>
+                    <field name="postDate"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe-kanban0-global-click">
+                                <div class="row mb4">
+                                    <strong class="col-8">
+                                        <span t-esc="record.label.value"/>
+                                    </strong>
+                                    <strong class="col-4 text-right">
+                                        <span t-esc="record.blogId.value"/>
+                                    </strong>
+                                    <div class="col-8">
+                                        <i class="fa fa-clock-o" role="img" aria-label="Post date" title="Post date"/><span t-esc="record.postDate.value"/>
+                                    </div>
+                                    <div class="col-4 text-right">
+                                        <img t-if="record.authorId.rawValue"
+                                             t-att-title="record.authorId.value"
+                                             t-att-alt="record.authorId.value"
+                                             class="oe-kanban-avatar o-image-24-cover"
+                                             t-att-src="kanbanImage('res.partner', 'avatar128', record.authorId.rawValue)"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- page action -->
+        <record id="actionBlogPost" model="ir.actions.actwindow">
+            <field name="label">Blog Posts</field>
+            <field name="resModel">blog.post</field>
+            <field name="viewMode">tree,form,kanban</field>
+            <field name="viewId" ref="viewBlogPostList"/>
+            <field name="searchViewId" ref="viewBlogPostSearch"/>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    Create a new blog post
+                </p>
+            </field>
+        </record>
+
+        <record id="blogBlogViewSearch" model="ir.ui.view">
+            <field name="label">blog.blog.search</field>
+            <field name="model">blog.blog</field>
+            <field name="arch" type="xml">
+                <search string="Blog">
+                    <field name="label"/>
+                    <filter string="Archived" name="inactive" domain="[['active','=',false]]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="actionBlogBlog" model="ir.actions.actwindow">
+            <field name="label">Blogs</field>
+            <field name="resModel">blog.blog</field>
+            <field name="viewMode">tree,form</field>
+        </record>
+
+        <record id="blogTagTree" model="ir.ui.view">
+            <field name="label">blogTagTree</field>
+            <field name="model">blog.tag</field>
+            <field name="arch" type="xml">
+                <tree string="Tag List">
+                    <field name="label"/>
+                    <field name="categoryId"/>
+                    <field name="postIds"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="blogTagForm" model="ir.ui.view">
+            <field name="label">blogTagForm</field>
+            <field name="model">blog.tag</field>
+            <field name="arch" type="xml">
+                <form string="Tag Form">
+                    <sheet>
+                        <group>
+                            <field name="label"/>
+                            <field name="categoryId"/>
+                        </group>
+                        <label for="postIds" string="Used in: "/>
+                        <field name="postIds"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="actionTags" model="ir.actions.actwindow">
+            <field name="label">Blog Tags</field>
+            <field name="resModel">blog.tag</field>
+            <field name="viewMode">tree,form</field>
+            <field name="viewId" ref="blogTagTree"/>
+        </record>
+
+        <record id="blogTagCategoryForm" model="ir.ui.view">
+            <field name="label">blogTagCategoryForm</field>
+            <field name="model">blog.tag.category</field>
+            <field name="arch" type="xml">
+                <form string="Tag Category Form">
+                    <sheet>
+                        <group>
+                            <field name="label"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="blogTagCategoryTree" model="ir.ui.view">
+            <field name="label">blogTagCategoryTree</field>
+            <field name="model">blog.tag.category</field>
+            <field name="arch" type="xml">
+                <tree string="Tag Categories">
+                    <field name="label"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="actionTagCategory" model="ir.actions.actwindow">
+            <field name="label">Tag Category</field>
+            <field name="resModel">blog.tag.category</field>
+            <field name="viewMode">tree,form</field>
+            <field name="viewId" ref="blogTagCategoryTree"/>
+        </record>
+
+        <menuitem name="Blogs"
+            id="menuWebsiteBlogRoot"
+            sequence="20"
+            parent="website.menuWebsiteConfiguration"
+            groups="website.groupWebsiteDesigner"
+            action="actionBlogPost"/>
+
+        <menuitem name="Blogs"
+            id="menuWebsiteBlogRootGlobal"
+            sequence="100"
+            parent="website.menuWebsiteGlobalConfiguration"
+            groups="website.groupWebsiteDesigner"/>
+
+        <menuitem id="menuWebsiteBlogTagCategoryGlobal" parent="menuWebsiteBlogRootGlobal"
+                  name="Tag Categories" action="actionTagCategory" sequence="50" />
+
+        <menuitem id="menuBlogTagGlobal" parent="menuWebsiteBlogRootGlobal" name="Tags" action="actionTags" sequence="40" />
+
+        <menuitem id="menuBlogGlobal" parent="menuWebsiteBlogRootGlobal" name="Blogs" action="actionBlogBlog" sequence="20"/>
+</verp>

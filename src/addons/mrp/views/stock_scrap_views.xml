@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <record id="stockScrapViewForm2MrpInheritMrp" model="ir.ui.view">
+        <field name="label">stock.scrap.view.form2.inherit.mrp</field>
+        <field name="model">stock.scrap</field>
+        <field name="inheritId" ref="stock.stockScrapFormView2"/>
+        <field name="arch" type="xml">
+            <field name="ownerId" position="after">
+                <field name="workorderId" invisible="1"/>
+                <field name="productionId" invisible="1"/>
+            </field>
+        </field>
+    </record>
+    <record id="stockScrapViewFormMrpInheritMrp" model="ir.ui.view">
+        <field name="label">stock.scrap.view.form.inherit.mrp</field>
+        <field name="model">stock.scrap</field>
+        <field name="inheritId" ref="stock.stockScrapFormView"/>
+        <field name="arch" type="xml">
+            <field name="ownerId" position="after">
+                <field name="workorderId" domain="[['productionId', '=', productId]]" attrs="{'invisible': [['workorderId', '=', false]]}"/>
+                <field name="productionId" domain="[['companyId', '=', companyId]]" attrs="{'invisible': [['productionId', '=', false]]}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="stockScrapSearchViewInheritMrp" model="ir.ui.view">
+        <field name="label">stock.scrap.search.inherit.mrp</field>
+        <field name="model">stock.scrap</field>
+        <field name="inheritId" ref="stock.stockScrapSearchView"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='transfer']" position="after">
+                <filter string="Manufacturing Order" name="productionId" domain="[]" context="{'groupby':'productionId'}"/>
+            </xpath>
+        </field>
+    </record>
+</verp>

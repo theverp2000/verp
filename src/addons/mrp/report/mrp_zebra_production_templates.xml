@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<verp>
+    <data>
+        <template id="labelProductionView">
+            <t t-set="uomCategUnit" t-value="await env.ref('uom.productUomCategUnit')"/>
+            <t t-foreach="docs" t-as="production">
+                <t t-foreach="await production.moveFinishedIds" t-as="move">
+                    <t t-foreach="await move.moveLineIds" t-as="moveLine">
+                        <t t-if="(await (await moveLine.productUomId).categoryId).eq(uomCategUnit)">
+                            <t t-set="qty" t-value="parseInt(await moveLine.qtyDone)"/>
+                        </t>
+                        <t t-else="">
+                            <t t-set="qty" t-value="1"/>
+                        </t>
+                        <t t-foreach="range(qty)" t-as="item">
+                            <t t-translation="off">
+^XA
+^FO100,50
+^A0N,44,33^FD<t t-esc="await (await moveLine.productId).displayName"/>^FS
+<t t-if="await (await moveLine.productId).tracking != 'none' &amp;&amp; bool(await moveLine.lotId)">
+^FO100,100
+^A0N,44,33^FDLN/SN: <t t-esc="await (await moveLine.lotId).label"/>^FS
+^FO100,150^BY3
+^BCN,100,Y,N,N
+^FD<t t-esc="await (await moveLine.lotId).label"/>^FS
+^XZ
+</t>
+<t t-if="await (await moveLine.productId).tracking == 'none' &amp;&amp; await (await moveLine.productId).barcode">
+^FO100,100^BY3
+^BCN,100,Y,N,N
+^FD<t t-esc="await (await moveLine.productId).barcode"/>^FS
+^XZ
+</t>
+                            </t>
+                        </t>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</verp>

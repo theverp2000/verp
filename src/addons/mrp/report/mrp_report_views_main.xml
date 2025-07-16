@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        <record id="actionReportProductionOrder" model="ir.actions.report">
+            <field name="label">Production Order</field>
+            <field name="model">mrp.production</field>
+            <field name="reportType">qweb-pdf</field>
+            <field name="reportName">mrp.reportMrporder</field>
+            <field name="reportFile">mrp.report.mrpProductionTemplates</field>
+            <field name="printReportName">format('Production Order - %s', await object.label)</field>
+            <field name="bindingModelId" ref="model_mrpProduction"/>
+            <field name="bindingType">report</field>
+        </record>
+        <record id="actionReportBomStructure" model="ir.actions.report">
+            <field name="label">BoM Structure</field>
+            <field name="model">mrp.bom</field>
+            <field name="reportType">qweb-pdf</field>
+            <field name="reportName">mrp.reportBomStructure</field>
+            <field name="reportFile">mrp.reportBomStructure</field>
+            <field name="printReportName">format('Bom Structure - %s', await object.displayName)</field>
+            <field name="bindingModelId" ref="model_mrpBom"/>
+            <field name="bindingType">report</field>
+        </record>
+        <record id="labelManufactureTemplate" model="ir.actions.report">
+            <field name="label">Finished Product Label (ZPL)</field>
+            <field name="model">mrp.production</field>
+            <field name="reportType">qweb-text</field>
+            <field name="reportName">mrp.labelProductionView</field>
+            <field name="reportFile">mrp.labelProductionView</field>
+            <field name="bindingModelId" ref="model_mrpProduction"/>
+            <field name="bindingType">report</field>
+        </record>
+        <record id="actionReportFinishedProduct" model="ir.actions.report">
+            <field name="label">Finished Product Label (PDF)</field>
+            <field name="model">mrp.production</field>
+            <field name="reportType">qweb-pdf</field>
+            <field name="reportName">mrp.labelProductionViewPdf</field>
+            <field name="reportFile">mrp.labelProductionViewPdf</field>
+            <field name="printReportName">format('Finished products - %s', await object.label)</field>
+            <field name="bindingModelId" ref="model_mrpProduction"/>
+            <field name="bindingType">report</field>
+        </record>
+        <!-- TODO: Delete this report -->
+        <record id="labelProductionOrder" model="ir.actions.report">
+            <field name="label">Order Label</field>
+            <field name="model">mrp.production</field>
+            <field name="reportType">qweb-pdf</field>
+            <field name="reportName">mrp.reportReceptionReportLabelMrp</field>
+            <field name="reportFile">mrp.reportReceptionReportLabelMrp</field>
+            <field name="paperformatId" ref="product.paperformatLabelSheetDymo"/>
+            <field name="bindingModelId" ref="model_mrpProduction"/>
+            <field name="bindingType">report</field>
+        </record>
+    </data>
+</verp>

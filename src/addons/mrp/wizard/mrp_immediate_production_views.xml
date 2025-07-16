@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<verp>
+    <record id="viewImmediateProduction" model="ir.ui.view">
+        <field name="label">mrp.immediate.production.view.form</field>
+        <field name="model">mrp.immediate.production</field>
+        <field name="arch" type="xml">
+            <form string="Immediate production?">
+                <group>
+                    <p>You have not recorded <i>produced</i> quantities yet, by clicking on <i>apply</i> Verp will produce all the finished products and consume all components.</p>
+                </group>
+
+                <field name="showProductions" invisible="1"/>
+                <field name="immediateProductionLineIds" nolabel="1" attrs="{'invisible': [['showProductions', '=', false]]}">
+                    <tree create="0" delete="0" editable="top">
+                        <field name="productionId"/>
+                        <field name="toImmediate" widget="booleanToggle"/>
+                    </tree>
+                </field>
+
+                <footer>
+                    <button name="process" string="Apply" type="object" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</verp>

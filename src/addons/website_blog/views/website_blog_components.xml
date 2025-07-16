@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+
+
+<!-- ======   Template: Blogs Navbar   =========================================
+============================================================================ -->
+<template id="blogsNav" name="Blogs Bar Template">
+    <nav t-attf-class="navbar navbar-expand-sm navbar-light #{additionnalClasses}" t-if="len(blogs) > 1">
+        <div class="container">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <span class="nav-link disabled pl-0">Blogs:</span>
+                </li>
+                <li class="nav-item">
+                    <a href="/blog" t-attf-class="nav-link font-weight-bold #{(!bool(blog)) &amp;&amp; 'active'}">All</a>
+                </li>
+                <li class="nav-item" t-foreach="blogs" t-as="navBlog">
+                    <a t-attf-href="/blog/#{await navBlog.slug()}"
+                       t-attf-class="nav-link #{(bool(blog) &amp;&amp; navBlog.id == blog.id) &amp;&amp; 'active' || ''}">
+                        <b t-field="navBlog.label"/>
+                    </a>
+                </li>
+            </ul>
+            <!-- 'Search Box' -->
+            <t t-call="website.websiteSearchBoxInput">
+                <t t-set="_classes" t-valuef="w-100 w-md-auto pt-2 pt-md-0 d-md-flex"/>
+                <t t-set="searchType" t-valuef="blogs"/>
+                <t t-set="action" t-value="await blogUrl({'tag': tag, 'search': search})"/>
+                <t t-set="displayDescription" t-valuef="true"/>
+                <t t-set="displayDetail" t-valuef="false"/>
+                <input type="hidden" name="tag" t-att-value="tag"/>
+                <input type="hidden" name="dateBegin" t-att-value="dateBegin"/>
+                <input type="hidden" name="dateEnd" t-att-value="dateEnd"/>
+            </t>
+        </div>
+    </nav>
+</template>
+
+<!-- ======   Template: List Tags in inline list    ============================
+============================================================================ -->
+<template id="tagsList" name="Tags List">
+    <t t-if="tags">
+        <div t-if="! hideTitle &amp;&amp; categTitle" class="text-muted mb-1 h6" t-esc="categTitle"/>
+        <t t-foreach="tags" t-as="tag">
+            <t t-if="bool(await tag.postIds)">
+                <span t-if="dismissibleBtn &amp;&amp; activeTagIds.includes(tag.id)" class="align-items-baseline border d-inline-flex pl-2 rounded mb-2">
+                    <i class="fa fa-tag mr-2 text-muted"/>
+                    <t t-esc="await tag.label"/>
+                    <a t-attf-href="#{await blogUrl({'tag': await tagsList(activeTagIds, tag.id)})}" class="btn border-0 py-1 post-link" t-att-rel="len(activeTagIds) &amp;&amp; 'nofollow'">&#215;</a>
+                </span>
+                <a t-elif="showInactive" t-attf-href="#{await blogUrl({'tag': await tagsList(activeTagIds, tag.id)})}" t-attf-class="badge mb-2 mw-100 text-truncate #{activeTagIds.includes(tag.id) &amp;&amp; 'badge-primary' || 'border'} post-link" t-att-rel="len(activeTagIds) &amp;&amp; 'nofollow'" t-esc="await tag.label"/>
+            </t>
+        </t>
+    </t>
+</template>
+
+<!-- ======   Template: Date Selector   ========================================
+============================================================================ -->
+<template id="dateSelector">
+    <select name="archive" oninput="location = self.value;" class="custom-select">
+        <option t-att-value="bool(blog) ? await blogUrl({'dateBegin': false, 'dateEnd': false}) : '/blog'"
+                t-att="[!dateBegin ? 'selected' : 'unselected', 'true' ]">
+                -- All dates
+        </option>
+
+        <optgroup t-foreach="navList" t-as="year" t-attf-label="#{year}">
+            <option t-foreach="navList[year]" t-as="months"
+                    t-att="[dateBegin &amp;&amp; (months['dateBegin'] == dateBegin) ? 'selected' : 'unselected', 'true' ]"
+                    t-attf-value="#{await blogUrl({'dateBegin': months['dateBegin'], dateEnd: months['dateEnd'], tag: tag})}">
+                <t t-esc="months['month']"/>
+                <t t-esc="year"/>
+            </option>
+        </optgroup>
+    </select>
+</template>
+
+<!-- ======   Template: Post Author   ==========================================
+============================================================================ -->
+<template id="postAuthor">
+    <div t-attf-class="o-not-editable align-items-center position-relative #{additionnalClasses || ''}">
+        <div t-if="await blogPost.authorAvatar"
+             t-field="blogPost.authorAvatar"
+             style="line-height:1"
+             t-options='{"widget": "image", "class": "rounded-circle " + hideDate ? "o-wblog-author-avatar mr-1" :  "o-wblog-author-avatar-date mr-2"}' />
+        <div t-att-class="!hideDate &amp;&amp; 'small font-weight-bold'" style="line-height:1">
+            <span t-if="editable" t-field="blogPost.authorId" t-options='{ "widget": "contact", "fields": ["label"]}'/>
+            <span t-else="" t-esc="blogPost.authorName"/>
+            <small t-if="!hideDate" t-field="blogPost.postDate" t-options='{"format": "d MMMM, yyyy"}'/>
+        </div>
+    </div>
+</template>
+
+<!-- ======   Template: Post Breadcrumbs   =====================================
+============================================================================ -->
+<template id="postBreadcrumbs">
+    <nav aria-label="breadcrumb" t-attf-class="breadcrumb flex-nowrap py-0 px-0 css-editable-mode-hidden #{additionnalClasses || ''}">
+        <li t-if="len(blogs) &gt; 1" class="breadcrumb-item"><a href="/blog">All Blogs</a></li>
+        <li class="breadcrumb-item">
+            <a t-attf-href="#{await blogUrl({'tag': null, 'dateBegin': null, 'dateEnd': null})}" t-esc="await blog.label"/>
+        </li>
+        <li class="breadcrumb-item text-truncate active"><span t-esc="await blogPost.label"/></li>
+    </nav>
+</template>
+
+<!-- ======   Template: Sidebar Blog  ==========================================
+Display sidebar in 'All blogs'/single blog pages.
+
+Options:
+# optSidebarBlogIndexFollowUs : Display follow-us links
+# optSidebarBlogIndexArchives : Display a <select> input with post by month
+# optSidebarBlogIndexTags: Display tags cloud
+============================================================================ -->
+<template id="sidebarBlogIndex" name="Sidebar - Blog page">
+    <div id="oWblogSidebar" class="w-100">
+        <div class="oe-structure" id="oeStructureBlogSidebarIndex_1"/>
+        <div class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-2 mb-4 border-bottom font-weight-bold">About us</h6>
+            <div>
+                <p>Write a small text here to describe your blog or company.</p>
+            </div>
+        </div>
+        <div class="oe-structure" id="oeStructureBlogSidebarIndex_2"/>
+    </div>
+</template>
+
+<!-- (Option) Sidebar Blog: Follow Us -->
+<template id="optSidebarBlogIndexFollowUs" name="Follow Us" priority="1" inheritId="website_blog.sidebarBlogIndex" active="true" customizeShow="true">
+    <xpath expr="//div[@id='oWblogSidebar']" position="inside">
+        <div class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-2 mb-4 border-bottom font-weight-bold">Follow Us</h6>
+            <div class="o-wblog-social-links d-flex flex-wrap mx-n1 o-not-editable">
+                <t t-set="classes" t-translation="off">bg-100 border mx-1 mb-2 rounded-circle d-flex align-items-center justify-content-center text-decoration-none</t>
+                <a t-if="await website.socialFacebook" t-att-href="await website.socialFacebook" aria-label="Facebook" title="Facebook" t-att-class="classes"><i class="fa fa-facebook-square text-facebook"/></a>
+                <a t-if="await website.socialTwitter" t-att-href="await website.socialTwitter" t-att-class="classes"><i class="fa fa-twitter text-twitter" aria-label="Twitter" title="Twitter"/></a>
+                <a t-if="await website.socialLinkedin" t-att-href="await website.socialLinkedin" t-att-class="classes"><i class="fa fa-linkedin text-linkedin" aria-label="LinkedIn" title="LinkedIn"/></a>
+                <a t-if="await website.socialYoutube" t-att-href="await website.socialYoutube" t-att-class="classes"><i class="fa fa-youtube-play text-youtube" aria-label="Youtube" title="Youtube"/></a>
+                <a t-if="await website.socialGithub" t-att-href="await website.socialGithub" t-att-class="classes"><i class="fa fa-github text-github" aria-label="Github" title="Github"/></a>
+                <a t-if="await website.socialInstagram" t-att-href="await website.socialInstagram" t-att-class="classes"><i class="fa fa-instagram text-instagram" aria-label="Instagram" title="Instagram"/></a>
+                <a t-if="bool(blog)" t-att-href="format('/blog/%s/feed', blog.id)" t-att-class="classes"><i class="fa fa-rss-square" aria-label="RSS" title="RSS"/></a>
+            </div>
+            <t t-call="website_mail.follow" t-if="bool(blog)">
+                <t t-set="email" t-value="await userId.email"/>
+                <t t-set="object" t-value="blog"/>
+                <t t-set="divClass" t-value="'pt-2'"/>
+            </t>
+        </div>
+        <div class="oe-structure" id="oeStructureBlogSidebarIndex_3"/>
+    </xpath>
+</template>
+
+<!-- (Option) Sidebar Blog: Archives -->
+<template id="optSidebarBlogIndexArchives" name="Archives" priority="2" inheritId="website_blog.sidebarBlogIndex" active="true" customizeShow="true">
+    <xpath expr="//div[@id='oWblogSidebar']" position="inside">
+        <div class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-2 mb-4 border-bottom font-weight-bold">Archives</h6>
+
+            <t t-call="website_blog.dateSelector"/>
+        </div>
+        <div class="oe-structure" id="oeStructureBlogSidebarIndex_4"/>
+    </xpath>
+</template>
+
+<!-- (Option) Sidebar Blog: Show tags -->
+<template id="optSidebarBlogIndexTags" name="Tags List" priority="3" inheritId="website_blog.sidebarBlogIndex" active="true" customizeShow="true">
+    <xpath expr="//div[@id='oWblogSidebar']" position="inside">
+
+        <div t-if="bool(otherTags) || bool(tagCategory)" class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-2 mb-4 border-bottom font-weight-bold">Tags</h6>
+            <div class="h5">
+                <t t-foreach="tagCategory" t-as="navTagCategory">
+                    <t t-call="website_blog.tagsList">
+                        <t t-set='categTitle' t-value="await navTagCategory.label"/>
+                        <t t-set='tags' t-value='await navTagCategory.tagIds' />
+                        <t t-set="showInactive" t-value="true"/>
+                    </t>
+                </t>
+                <t t-call="website_blog.tagsList">
+                    <t t-set='hideTitle' t-value='!len(tagCategory)' />
+                    <t t-set='categTitle'>Others</t>
+                    <t t-set='tags' t-value='otherTags'/>
+                    <t t-set="showInactive" t-value="true"/>
+                </t>
+            </div>
+        </div>
+
+        <div t-else="" groups="website.groupWebsiteDesigner" class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-2 mb-4 border-bottom font-weight-bold">Tags</h6>
+            <em t-ignore="true" class="text-muted">No tags defined yet.</em>
+        </div>
+        <div class="oe-structure" id="oeStructureBlogSidebarIndex_5"/>
+    </xpath>
+</template>
+
+
+<!-- ====== Blog Post Sidebar ==================================================
+Display a sidebar beside the post content.
+============================================================================ -->
+<template id="blogPostSidebar" name="Sidebar - Blog Post">
+    <div id="oWblogPostSidebar">
+        <div class="oe-structure" id="oeStructureBlogPostSidebar_1"/>
+    </div>
+</template>
+
+
+<!-- (Option) Post Sidebar: Author avatar -->
+<template id="optBlogPostAuthorAvatarDisplay" name="Author" inheritId="website_blog.blogPostSidebar" active="true" customizeShow="true" priority="1">
+    <xpath expr="//div[@id='oWblogPostSidebar']" position="inside">
+        <div class="o-wblog-sidebar-block pb-5">
+            <t t-call="website_blog.postAuthor">
+                <t t-set="additionnalClasses" t-value="'h5 d-flex align-items-center'"/>
+            </t>
+        </div>
+        <div class="oe-structure" id="oeStructureBlogPostSidebar_2"/>
+    </xpath>
+</template>
+
+<!-- (Option) Post Sidebar: Share Links Display -->
+<template id="optBlogPostShareLinksDisplay" name="Share Links" inheritId="website_blog.blogPostSidebar" active="true" customizeShow="true" priority="2">
+    <xpath expr="//div[@id='oWblogPostSidebar']" position="inside">
+        <div class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-3 mb-4 border-bottom font-weight-bold">Share this post</h6>
+
+            <div class="o-wblog-social-links d-flex flex-wrap mx-n1 o-not-editable">
+                <t t-set="classes" t-translation="off">bg-100 border mx-1 mb-2 rounded-circle d-flex align-items-center justify-content-center text-decoration-none</t>
+                <a href="#" aria-label="Facebook" title="Share on Facebook" t-attf-class="o-facebook #{classes}"><i class="fa fa-facebook-square text-facebook"/></a>
+                <a href="#" aria-label="Twitter" title="Share on Twitter" t-attf-class="o-twitter #{classes}"><i class="fa fa-twitter text-twitter" aria-label="Twitter" title="Twitter"/></a>
+                <a href="#" aria-label="LinkedIn" title="Share on LinkedIn" t-attf-class="o-linkedin #{classes}"><i class="fa fa-linkedin text-linkedin" aria-label="LinkedIn" title="LinkedIn"/></a>
+            </div>
+        </div>
+
+        <div class="oe-structure" id="oeStructureBlogPostSidebar_3"/>
+    </xpath>
+</template>
+
+<!-- (Option) Post Sidebar: display tags -->
+<template id="optBlogPostTagsDisplay" name="Tags" inheritId="website_blog.blogPostSidebar" active="true" customizeShow="true" priority="3">
+    <xpath expr="//div[@id='oWblogPostSidebar']" position="inside">
+        <div class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-3 mb-4 border-bottom font-weight-bold">Tags</h6>
+            <t t-if="bool(await blogPost.tagIds)">
+                <div class="h5">
+                    <t t-foreach="await blogPost.tagIds" t-as="oneTag">
+                        <a class="badge border post-link" t-attf-href="#{await blogUrl({'tag': oneTag.id})}" t-esc="await oneTag.label"/>
+                    </t>
+                </div>
+            </t>
+            <t t-else="">
+                <div class="mb-4 bg-100 py-2 px-3 border" groups="website.groupWebsiteDesigner">
+                    <h6 class="text-muted"><em>No tags defined</em></h6>
+                    <a role="menuitem" t-attf-href="/web#viewType=form&amp;model=#{mainObject._name}&amp;id=#{mainObject.id}&amp;action=#{action}&amp;menuId=#{menu || mainObject.env.ref('website.menuWebsiteConfiguration').id}"
+                        title='Edit in backend' id="edit-in-backend">Add some</a>
+                </div>
+            </t>
+        </div>
+        <div class="oe-structure" id="oeStructureBlogPostSidebar_4"/>
+    </xpath>
+</template>
+
+<!-- (Option) Post Sidebar: display Blogs list -->
+<template id="optBlogPostBlogsDisplay" name="Blogs List" inheritId="website_blog.blogPostSidebar" active="true" customizeShow="true" priority="4">
+    <xpath expr="//div[@id='oWblogPostSidebar']" position="inside">
+        <div t-if="len(blogs) > 1" class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-3 mb-4 border-bottom font-weight-bold">Our blogs</h6>
+            <ul class="list-unstyled">
+                <li t-foreach="blogs" t-as="navBlog" class="mb-2">
+                    <a t-attf-href="#{await blogUrl({'blog': navBlog, 'tag': false, 'dateBegin': false, 'dateEnd': false})}"><b t-field="navBlog.label"/></a>
+                </li>
+            </ul>
+        </div>
+        <div class="oe-structure" id="oeStructureBlogPostSidebar_5"/>
+    </xpath>
+</template>
+
+<!-- (Option) Post Sidebar: display Archive -->
+<template id="optBlogPostArchiveDisplay" name="Archive" inheritId="website_blog.blogPostSidebar" active="true" customizeShow="true" priority="5">
+    <xpath expr="//div[@id='oWblogPostSidebar']" position="inside">
+        <div class="o-wblog-sidebar-block pb-5">
+            <h6 class="text-uppercase pb-3 mb-4 border-bottom font-weight-bold">Archive</h6>
+
+            <t t-call="website_blog.dateSelector"/>
+        </div>
+        <div class="oe-structure" id="oeStructureBlogPostSidebar_6"/>
+    </xpath>
+</template>
+
+</verp>

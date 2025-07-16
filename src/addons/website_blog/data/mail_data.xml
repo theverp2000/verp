@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<verp><data noupdate="1">
+
+    <!-- Blog-related subtypes for messaging / Chatter -->
+    <record id="mtBlogBlogPublished" model="mail.message.subtype">
+        <field name="label">Published Post</field>
+        <field name="resModel">blog.blog</field>
+        <field name="default" eval="true"/>
+        <field name="description">Published Post</field>
+    </record>
+
+</data></verp>

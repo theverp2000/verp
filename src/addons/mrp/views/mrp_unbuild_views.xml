@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <!--  Unbuild and scrap menu -->
+
+   <record id="actionMrpUnbuildMoves" model="ir.actions.actwindow">
+        <field name="label">Stock Moves</field>
+        <field name="type">ir.actions.actwindow</field>
+        <field name="resModel">stock.move.line</field>
+        <field name="viewMode">tree,form</field>
+        <field name="domain">['|', ['moveId.unbuildId', '=', activeId], ['moveId.consumeUnbuildId', '=', activeId]]</field>
+        <field name="help" type="html">
+            <p class="o-view-nocontent-empty-folder">
+                There's no product move yet
+            </p><p>
+                This menu gives you the full traceability of inventory operations on a specific product.
+                You can filter on the product to see all the past movements for the product.
+            </p>
+        </field>
+    </record>
+
+        <record id="mrpUnbuildSearchView" model="ir.ui.view">
+            <field name="label">mrp.unbuild.search</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="productId"/>
+                    <field name="moId"/>
+                    <group expand="0" string="Filters">
+                        <filter name="draft" string="Draft" domain="[['state', '=', 'draft']]"/>
+                        <filter name="done" string="Done" domain="[['state', '=', 'done']]"/>
+                        <filter invisible="1" string="Late Activities" name="activitiesOverdue"
+                            domain="[['myActivityDateDeadline', '&lt;', contextToday().toFormat('yyyy-MM-dd')]]"
+                            help="Show all records which has next action date is before today"/>
+                        <filter invisible="1" string="Today Activities" name="activitiesToday"
+                            domain="[['myActivityDateDeadline', '=', contextToday().toFormat('yyyy-MM-dd')]]"/>
+                        <filter invisible="1" string="Future Activities" name="activitiesUpcomingAll"
+                            domain="[['myActivityDateDeadline', '&gt;', contextToday().toFormat('yyyy-MM-dd')]]"/>
+                    </group>
+                    <group expand='0' string='Group by...'>
+                        <filter string='Product' name="productgroup" context="{'groupby': 'productId'}"/>
+                        <filter string="Manufacturing Order" name="mogroup" context="{'groupby': 'moId'}"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="mrpUnbuildKanbanView" model="ir.ui.view">
+            <field name="label">mrp.unbuild.kanban</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="arch" type="xml">
+                <kanban class="o-kanban-mobile" sample="1">
+                    <field name="label"/>
+                    <field name="productId"/>
+                    <field name="productQty"/>
+                    <field name="productUomId"/>
+                    <field name="state"/>
+                    <field name="locationId"/>
+                    <field name="activityState"/>
+                    <progressbar field="activityState" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe-kanban-global-click">
+                                <div class="o-kanban-record-top">
+                                    <div class="o-kanban-record-headings mt4">
+                                        <strong class="o-kanban-record-title"><span><field name="label"/></span></strong>
+                                    </div>
+                                    <strong><t t-esc="record.productQty.value"/> <small><t t-esc="record.productUomId.value"/></small></strong>
+                                </div>
+                                <div class="row">
+                                    <div class="col-8 text-muted">
+                                        <span><t t-esc="record.productId.value"/></span>
+                                    </div>
+                                    <div class="col-4">
+                                        <span class="float-right text-right">
+                                            <field name="state" widget="labelSelection" options="{'classes': {'draft': 'default', 'done': 'success'}}" readonly="1"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="mrpUnbuildFormView" model="ir.ui.view">
+            <field name="label">mrp.unbuild.form</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="arch" type="xml">
+                <form string="Unbuild Orders">
+                    <header>
+                        <button name="actionValidate" string="Unbuild" type="object" states="draft" class="oe-highlight" data-hotkey="v"/>
+                        <field name="state" widget="statusbar" statusbarVisible="draft,done"/>
+                    </header>
+                    <sheet>
+                        <div class="oe-button-box" name="buttonBox">
+                            <button class="oe-stat-button" name="%(actionMrpUnbuildMoves)d"
+                                    string="Product Moves" type="action" icon="fa-exchange" states="done"/>
+                        </div>
+                        <div class="oe-title">
+                            <h1><field name="label" placeholder="Unbuild Order" nolabel="1"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="productId" attrs="{'readonly':['|', ['moId','!=',false], ['state', '=', 'done']]}" forceSave="1"/>
+                                <field name="moBomId" invisible="1"/>
+                                <field name="bomId" attrs="{'required': [['moId', '=', false]], 'readonly':['|', ['moId','!=',false], ['state', '=', 'done']], 'invisible': [['moId', '!=', false], ['moBomId', '=', false]]}" forceSave="1"/>
+                                <label for="productQty"/>
+                                <div class="o-row">
+                                    <field name="productQty" attrs="{'readonly': ['|', ['hasTracking', '=', 'serial'], ['state', '=', 'done']]}"/>
+                                    <field name="productUomId" options="{'noOpen': true, 'noCreate': true}" groups="uom.groupUom" attrs="{'readonly': ['|', ['moId', '!=', false], ['state', '=', 'done']]}" forceSave="1"/>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="moId"/>
+                                <field name="locationId" options="{'noCreate': true}" groups="stock.groupStockMultiLocations"/>
+                                <field name="locationDestId" options="{'noCreate': true}" groups="stock.groupStockMultiLocations"/>
+                                <field name="hasTracking" invisible="1"/>
+                                <field name="lotId" attrs="{'invisible': [['hasTracking', '=', 'none']], 'required': [['hasTracking', '!=', 'none']]}" groups="stock.groupProductionLot"/>
+                                <field name="companyId" groups="base.groupMultiCompany"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe-chatter">
+                        <field name="messageFollowerIds"/>
+                        <field name="activityIds"/>
+                        <field name="messageIds"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- simplified version of unbuild form for unbuild button via manufacturing order,
+             expects required fields to be filled in via 'default_' values -->
+        <record id="mrpUnbuildFormViewSimplified" model="ir.ui.view">
+            <field name="label">mrp.unbuild.form.simplified</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="arch" type="xml">
+                <form string="Unbuild Order">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="state" invisible="1"/>
+                                <field name="productId" invisible="1"/>
+                                <field name="bomId" invisible="1"/>
+                                <label for="productQty"/>
+                                <div class="o-row">
+                                    <field name="productQty" attrs="{'readonly': [['hasTracking', '=', 'serial']]}"/>
+                                    <field name="productUomId" options="{'noOpen': true, 'noCreate': true}" groups="uom.groupUom" attrs="{'readonly': [['moId', '!=', false]]}" forceSave="1"/>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="moId" invisible="1"/>
+                                <field name="locationId" options="{'noCreate': true}" groups="stock.groupStockMultiLocations"/>
+                                <field name="locationDestId" options="{'noCreate': true}" groups="stock.groupStockMultiLocations"/>
+                                <field name="hasTracking" invisible="1"/>
+                                <field name="lotId" attrs="{'invisible': [['hasTracking', '=', 'none']], 'required': [['hasTracking', '!=', 'none']]}" groups="stock.groupProductionLot"/>
+                                <field name="companyId" groups="base.groupMultiCompany" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer class="oe-edit-only">
+                        <button name="actionValidate" string="Unbuild" type="object" states="draft" class="oe-highlight" data-hotkey="q"/>
+                        <button string="Discard" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="mrpUnbuildTreeView" model="ir.ui.view">
+            <field name="label">mrp.unbuild.tree</field>
+            <field name="model">mrp.unbuild</field>
+            <field name="arch" type="xml">
+                <tree sample="1">
+                    <field name="label" decoration-bf="1"/>
+                    <field name="productId"/>
+                    <field name="bomId"/>
+                    <field name="moId"/>
+                    <field name="lotId" groups="stock.groupProductionLot"/>
+                    <field name="productQty"/>
+                    <field name="productUomId" groups="uom.groupUom"/>
+                    <field name="locationId" options="{'noCreate': true}" groups="stock.groupStockMultiLocations"/>
+                    <field name="activityExceptionDecoration" widget="activityException"/>
+                    <field name="companyId" groups="base.groupMultiCompany"/>
+                    <field name="state" widget='badge' decoration-success="state == 'done'" decoration-info="state == 'draft'"/>
+                </tree>
+            </field>
+        </record>
+
+    <record model="ir.actions.actwindow" id="mrpUnbuild">
+        <field name="label">Unbuild Orders</field>
+        <field name="type">ir.actions.actwindow</field>
+        <field name="resModel">mrp.unbuild</field>
+        <field name="viewMode">tree,kanban,form</field>
+        <field name="help" type="html">
+          <p class="o-view-nocontent-smiling-face">
+            No unbuild order found
+          </p><p>
+            An unbuild order is used to break down a finished product into its components.
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="menuMrpUnbuild"
+          name="Unbuild Orders"
+          parent="menuMrpManufacturing"
+          action="mrpUnbuild"
+          sequence="20"/>
+
+</verp>

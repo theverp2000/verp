@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        
+        <!--  Change Product Quantity -->
+        <record id="viewChangeProductionQtyWizard" model="ir.ui.view">
+            <field name="label">Change Quantity To Produce</field>
+            <field name="model">change.production.qty</field>
+            <field name="arch" type="xml">
+                <form string="Change Product Qty">
+                    <group>
+                        <field name="productQty"/>
+                        <field name="moId" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button name="changeProdQty" string="Approve" data-hotkey="q"
+                            colspan="1" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="actionChangeProductionQty" model="ir.actions.actwindow">
+            <field name="label">Change Quantity To Produce</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">change.production.qty</field>
+            <field name="viewMode">form</field>
+            <field name="target">new</field>
+        </record>
+       
+    </data>
+</verp>    

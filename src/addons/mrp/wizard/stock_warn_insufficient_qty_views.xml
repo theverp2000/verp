@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <record id="stockWarnInsufficientQtyUnbuildFormView" model="ir.ui.view">
+        <field name="label">stock.warn.insufficient.qty.unbuild</field>
+        <field name="model">stock.warn.insufficient.qty.unbuild</field>
+        <field name="inheritId" ref="stock.stockWarnInsufficientQtyFormView"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='description']" position="inside">
+                Do you confirm you want to unbuild <strong><field name="quantity" readonly="true"/></strong><field name="productUomName" readonly="true" class="mx-1"/>from location <strong><field name="locationId" readonly="true"/></strong>? This may lead to inconsistencies in your inventory.
+            </xpath>
+        </field>
+    </record>
+</verp>

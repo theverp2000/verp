@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+
+<!-- ======   Template: Posts Loop    ==========================================
+Loop through post and call sub-templates (tags, cover..) in different position
+according to the enabled options.
+============================================================================ -->
+<template id="postsLoop" name="Posts List">
+    <div id="oWblogPostsLoop" t-att-class="optBlogListView ? 'o-wblog-list-view' : ''">
+
+        <!-- Allow to filter post by published state. Visible only in edit-mode
+             and if both published/unpublished number is > 0 -->
+        <t t-if="stateInfo" t-set="state" t-value="stateInfo['state']"/>
+
+        <!-- Check for active options -->
+        <t t-set="optPostsLoopShowCover" t-value="await isViewActive('website_blog.optPostsLoopShowCover')"/>
+
+        <div groups="website.groupWebsiteDesigner" t-if="stateInfo &amp;&amp; (stateInfo['published'] > 0 &amp;&amp; stateInfo['unpublished'] > 0)">
+            <div class="bg-200 py-2 mb-4 alert alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">&#215;</button>
+                <span class="mr-1">Show:</span>
+                <div class="btn-group btn-group-sm">
+                    <a t-attf-class="btn #{state == 'published' &amp;&amp; 'btn-success' || 'btn-default bg-white border'}"
+                       t-attf-href="#{state == 'published' &amp;&amp; await blogUrl({'state': ''}) || await blogUrl({'state': 'published'})}">
+                        <i t-attf-class="fa mr-1 #{state == 'published' &amp;&amp; 'fa-check-square-o' || 'fa-square-o'}"/>
+                        Published (<t t-esc="stateInfo['published']" />)
+                    </a>
+                    <a t-attf-class="btn #{state == 'unpublished' &amp;&amp; 'btn-success' || 'btn-default bg-white border'}"
+                       t-attf-href="#{state == 'unpublished' &amp;&amp; await blogUrl({'state': ''}) || await blogUrl({'state': 'unpublished'})}">
+                        <i t-attf-class="fa mr-1 #{state == 'unpublished' &amp;&amp; 'fa-check-square-o' || 'fa-square-o'}"/>
+                        Unpublished (<t t-esc="stateInfo['unpublished']" />)
+                    </a>
+                </div>
+                <div class="pt-1 font-italic small">This box will not be visible to your visitors</div>
+            </div>
+        </div>
+
+        <div t-attf-class="row #{bool(posts) &amp;&amp; !optBlogReadable &amp;&amp; 'mx-n2'}">
+            <!-- Filters -->
+            <div t-if="tag || dateBegin || search" class="col-12 mb-3">
+                <div t-if="bool(posts)" class="h4 mb-3">
+                    <t t-esc="len(posts)"/>
+                    <t t-if="len(posts) &lt; 2">Article</t>
+                    <t t-else="">Articles</t>
+                </div>
+                <span t-if="search" class="align-items-baseline border d-inline-flex pl-2 rounded mb-2">
+                    <i class="fa fa-search mr-2 text-muted"/>
+                    <t t-esc="search"/>
+                    <a t-att-href="await blogUrl({'search': false, 'tag': tag})" class="btn border-0 py-1 post-link">&#215;</a>
+                </span>
+                <t t-if="tag">
+                    <!-- Show active tags with a category set -->
+                    <t t-foreach="tagCategory" t-as="navTagCategory">
+                        <t t-call="website_blog.tagsList">
+                            <t t-set='tags' t-value='await navTagCategory.tagIds' />
+                            <t t-set='dismissibleBtn' t-value="true"/>
+                        </t>
+                    </t>
+
+                    <!-- Show active tags without a category set -->
+                    <t t-call="website_blog.tagsList">
+                        <t t-set='tags' t-value='otherTags'/>
+                        <t t-set='dismissibleBtn' t-value="true"/>
+                    </t>
+                </t>
+                <span t-if="dateBegin" class="align-items-baseline border d-inline-flex pl-2 rounded mb-2">
+                    <i class="fa fa-calendar-o mr-2 text-muted"/>
+                    <t t-esc="dateBegin" t-options="{'widget': 'date', 'format': 'MMM yyyy'}"></t>
+                    <a t-attf-href="#{await blogUrl({'dateBegin': false, 'dateEnd': false, 'tag': tag})}" class="btn border-0 py-1">&#215;</a>
+                </span>
+                <hr class="mt-2"/>
+            </div>
+
+            <!-- No blog post yet -->
+            <div t-if="! bool(posts)" class="col">
+                <t t-set="noResultsStr">No results for "%s".</t>
+                <h2 t-if="search" t-esc="format(noResultsStr, search)" class="font-weight-bold"/>
+                <h2 t-else="">No blog post yet.</h2>
+                <div class="alert alert-info" groups="website.groupWebsiteDesigner">
+                    Click on "<b>New</b>" in the top-right corner to write your first blog post.
+                </div>
+            </div>
+
+            <!-- Posts -->
+
+            <!-- Define 'colWidth' qWeb variable, to be assigned later.
+            Adjust accordingly if sidebar and/or readability modes are active. -->
+            <t t-if="!optBlogListView">
+                <t t-if="optBlogReadable">
+                    <t t-if="optBlogSidebarShow" t-set="colWidth" t-value="'col-md-6'"/>
+                    <t t-else="" t-set="colWidth" t-value="'col-md-6 col-xl-4'"/>
+                </t>
+                <t t-else="">
+                    <t t-if="optBlogSidebarShow" t-set="colWidth" t-value="'px-2 col-md-6 col-xl-4'"/>
+                    <t t-else="" t-set="colWidth" t-value="'px-2 col-sm-6 col-lg-4 col-xl-3'"/>
+                </t>
+            </t>
+            <!-- Loop through posts: exclude the first one if already displayed as top banner -->
+            <t t-foreach="posts" t-as="blogPost">
+                <!-- Assign 'colWidth': 'col-12' is default for List-View and mobile -->
+                <div t-attf-class="pb-4 col-12 #{colWidth}">
+                    <article t-attf-class="o-wblog-post position-relative #{optBlogCardsDesign ? 'card h-100' : ''}" name="blogPost">
+                        <!-- List-View Design -->
+                        <t t-if="optBlogListView">
+                            <div t-att-class="optBlogCardsDesign &amp;&amp; 'card-body py-3'">
+                                <t t-call="website_blog.postHeading"/>
+                            </div>
+                            <div t-if="!optBlogCardsDesign" class="py-2">
+                                <t t-call="website_blog.postInfo"></t>
+                            </div>
+                            <div t-if="optPostsLoopShowCover">
+                                <t t-call="website_blog.postCoverImage"/>
+                            </div>
+                            <div t-if="await isViewActive('website_blog.optPostsLoopShowTeaser')" t-att-class="opt-blog-cards-design and 'card-body pt-0'">
+                                <t t-call="website_blog.postTeaser"/>
+                            </div>
+                            <div t-if="optBlogCardsDesign" t-attf-class="opt-blog-cards-design and 'card-body pt-0 pb-2'}">
+                                <t t-call="website_blog.postInfo"></t>
+                            </div>
+                            <div t-else="" class="mt-3">
+                                <a t-attf-href="/blog/#{await (await blogPost.blogId).slug()}/#{await blogPost.slug()}" class="btn btn-primary">
+                                    Read more <i class="fa fa-chevron-right ml-2"/>
+                                </a>
+                            </div>
+                        </t>
+                        <!-- Grid-View Design -->
+                        <t t-if="!optBlogListView">
+                            <t t-if="optPostsLoopShowCover" t-call="website_blog.postCoverImage"/>
+                            <div t-att-class="opt-blog-cards-design and 'card-body px-2 py-0 mb-2'">
+                                <t t-call="website_blog.postHeading"/>
+                                <div t-if="await isViewActive('website_blog.optPostsLoopShowTeaser')">
+                                    <t t-call="website_blog.postTeaser"/>
+                                </div>
+                            </div>
+                            <div t-attf-class="o-wblog-normalize-font #{optBlogCardsDesign ? 'card-footer px-2 pb-2' : 'pr-2 pb-2'}">
+                                <t t-call="website_blog.postInfo"></t>
+                            </div>
+                        </t>
+                        <!-- Add 'unpublished' badge -->
+                        <span t-if="!await blogPost.websitePublished" class="bg-danger small py-1 px-2 position-absolute o-not-editable" style="top:0; right:0">unpublished</span>
+                    </article>
+                </div>
+                <!-- List-View Design, add <hr> after post -->
+                <div t-if="optBlogListView &amp;&amp; !bool(blogPostLast)" class="col-12 mt-2 mb-5 px-2"><hr/></div>
+            </t>
+        </div>
+    </div>
+</template>
+
+
+<!-- ======   Sub-Template: Posts list : Posts Heading  =================== -->
+<template id="postHeading">
+    <a t-attf-href="/blog/#{await (await blogPost.blogId).slug()}/#{await blogPost.slug()}"
+       t-field="blogPost.label"
+       t-attf-class="d-block text-reset text-decoration-none o-blog-post-title my-0 #{optBlogListView ? 'h3' : (optBlogReadable ? 'h5' : 'h6')}">
+       Untitled Post
+   </a>
+
+    <div t-if="! optPostsLoopShowCover &amp;&amp; await isViewActive('website_blog.optPostsLoopShowAuthor')" class="text-muted small mt-2">
+        by <span t-field="blogPost.authorId"/>
+    </div>
+</template>
+
+<!-- ======   Sub-Template: Posts list : Posts Info  ======================= -->
+<template id="postInfo">
+    <div class="d-flex small flex-wrap mb-1 w-100">
+        <div t-attf-class="d-flex flex-wrap align-items-center justify-content-between mx-n2 #{optBlogListView &amp;&amp; 'flex-grow-0 w-auto mw-100' || 'flex-grow-1' }">
+            <time t-field="blogPost.postDate" class="text-nowrap font-weight-bold px-2" t-options='{"format": "MMM d, yyyy"}'/>
+            <div t-if="await isViewActive('website_blog.optPostsLoopShowStats')" class="px-2">
+                <b class="text-nowrap" title="Comments"><i class="fa fa-comment text-muted mr-1"/><t t-esc="len(await blogPost.messageIds)"/></b>
+                <b class="text-nowrap pl-2" title="Views"><i class="fa fa-binoculars text-muted mr-1"/><t t-esc="await blogPost.visits"/></b>
+            </div>
+            <b t-if="postsListShowParentBlog" class="text-nowrap text-truncate px-2">
+                <i class="fa fa-folder-open text-muted"/>
+                <a t-attf-href="/blog/#{await (await blogPost.blogId).slug()}" t-field="blogPost.blogId"/>
+            </b>
+        </div>
+    </div>
+</template>
+
+<!-- ======   Sub-Template: Posts list : Posts Cover  ====================== -->
+<template id="postCoverImage">
+    <t t-if="optBlogCardsDesign &amp;&amp; !optBlogListView" t-set="classes" t-value="'card-img-top mb-2'"/>
+    <t t-if="!optBlogCardsDesign &amp;&amp; optBlogListView" t-set="classes" t-value="'o-wblog-post-cover-nocard'"/>
+
+    <a t-attf-href="/blog/#{await (await blogPost.blogId).slug()}/#{await blogPost.slug()}"
+       t-attf-class="text-decoration-none d-block #{classes or 'mb-2'}"
+       t-att-style="!await blogPost.websitePublished &amp;&amp; 'opacity:0.6;'">
+
+        <t t-call="website.recordCover">
+            <t t-set="_record" t-value="blogPost"/>
+            <t t-set="additionnalClasses" t-value="'o-list-cover o-not-editable ' + (!optBlogCardsDesign &amp;&amp; ' rounded overflow-hidden shadow mb-3' || '')"/>
+
+            <t t-if="await isViewActive('website_blog.optPostsLoopShowAuthor')" t-call="website_blog.postAuthor">
+                <t t-set="additionnalClasses" t-value="'o-wblog-post-list-author o-list-cover d-flex text-white w-100 o-not-editable ' + (optBlogListView ? 'p-3 h5 m-0' : 'px-2 pb-2 pt-3') "/>
+                <t t-set="hideDate" t-value="true"/>
+            </t>
+        </t>
+    </a>
+</template>
+
+<!-- ======   Sub-Template: Posts list : Posts Teaser + Tags  ============= -->
+<template id="postTeaser">
+    <a t-attf-href="/blog/#{await (await blogPost.blogId).slug()}/#{await blogPost.slug()}" class="text-reset text-decoration-none">
+        <div t-if="optBlogListView" t-field="blogPost.teaser" class="mt-2 o-wblog-read-text"/>
+        <div t-else="" t-field="blogPost.teaser" t-attf-class="mt-2 #{optBlogReadable &amp;&amp; 'o-wblog-normalize-font'}"/>
+    </a>
+
+    <!-- Tags -->
+    <div t-if="len(await blogPost.tagIds)" class="o-wblog-post-short-tag-section d-flex align-items-center flex-wrap pt-2">
+        <t t-foreach="await blogPost.tagIds" t-as="oneTag">
+            <a t-attf-href="#{await blogUrl({'tag': await tagsList(activeTagIds, oneTag.id)})}"
+               t-attf-class="badge mb-2 mr-1 text-truncate #{activeTagIds.includes(oneTag.id) &amp;&amp; 'badge-primary' || 'border'} post-link"
+               t-att-rel="len(activeTagIds) &amp;&amp; 'nofollow'"
+               t-esc="await oneTag.label"/>
+        </t>
+    </div>
+</template>
+
+
+<!--   ======================      OPTIONS      ===========================  -->
+<!--   ====================================================================  -->
+<!-- (Option) Posts List: Show Covers -->
+<template id="optPostsLoopShowCover" name="Cover" inheritId="website_blog.postsLoop" active="true" customizeShow="true"/>
+
+<!-- (Option) Posts List: Show Author -->
+<template id="optPostsLoopShowAuthor" name="Author" inheritId="website_blog.postsLoop" active="true" customize_show="true"/>
+
+<!-- (Option) Posts List: Show Post Stats -->
+<template id="optPostsLoopShowStats" name="Comments/Views Stats" inheritId="website_blog.postsLoop" active="false" customizeShow="true"/>
+
+<!-- (Option) Posts List: Show Post Teaser -->
+<template id="optPostsLoopShowTeaser" name="Teaser &amp; Tags" inheritId="website_blog.postsLoop" active="true" customizeShow="true"/>
+
+</verp>

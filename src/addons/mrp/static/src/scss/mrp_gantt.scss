@@ -1,0 +1,19 @@
+@mixin gantt-decoration-color($color) {
+    background-image: linear-gradient($color, $color);
+    background-color: lighten($color, 10%);
+    &:before {
+        content: none;
+    }
+}
+
+.o-mrp-workorder-gantt .o-gantt-view .o-gantt-row-container .o-gantt-row .o-gantt-cell .o-gantt-pill-wrapper {
+    div.o-gantt-pill.decoration-success {
+        @include gantt-decoration-color($success);
+    }
+    div.o-gantt-pill.decoration-warning {
+        @include gantt-decoration-color(gray('500'));
+    }
+    div.o-gantt-pill.decoration-danger {
+        @include gantt-decoration-color($danger);
+    }
+}

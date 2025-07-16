@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+        <record model="ir.actions.actwindow" id="actionMrpProductionMoves">
+            <field name="label">Inventory Moves</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">stock.move.line</field>
+            <field name="viewMode">tree,form</field>
+            <field name="domain">['|', ['moveId.rawMaterialProductionId', '=', activeId], ['moveId.productionId', '=', activeId]]</field>
+        </record>
+
+        <record id="viewStockMoveOperationsRaw" model="ir.ui.view">
+            <field name="label">stock.move.operations.raw.form</field>
+            <field name="model">stock.move</field>
+            <field name="priority">1</field>
+            <field name="mode">primary</field>
+            <field name="inheritId" ref="stock.viewStockMoveOperations" />
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='productUomQty']" position="attributes">
+		    <attribute name="string">Total To Consume</attribute>
+                </xpath>
+                <xpath expr="//label[@for='quantityDone']" position="attributes">
+		    <attribute name="string">Consumed</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="viewStockMoveOperationsFinished" model="ir.ui.view">
+            <field name="label">stock.move.operations.finished.form</field>
+            <field name="model">stock.move</field>
+            <field name="priority">1</field>
+            <field name="mode">primary</field>
+            <field name="inheritId" ref="stock.viewStockMoveOperations" />
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='productUomQty']" position="attributes">
+		    <attribute name="string">To Produce</attribute>
+                </xpath>
+                <xpath expr="//label[@for='quantityDone']" position="attributes">
+		    <attribute name="string">Produced</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="viewStockMoveLineOperationTreeFinished" model="ir.ui.view">
+            <field name="label">stock.move.line.operation.tree.finished</field>
+            <field name="model">stock.move.line</field>
+            <field name="inheritId" ref="stock.viewStockMoveLineOperationTree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lotId']" position="attributes">
+		            <attribute name="context">{
+                        'activeMoId': context['activeMoId'],
+                        'activePickingId': pickingId,
+                        'default_companyId': parent.companyId,
+                        'default_productId': parent.productId,
+                        }
+                    </attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="stockMoveLineViewSearch" model="ir.ui.view">
+            <field name="label">stock.move.line.search</field>
+            <field name="model">stock.move.line</field>
+            <field name="inheritId" ref="stock.stockMoveLineViewSearch" />
+            <field name="arch" type="xml">
+                <filter name="manufacturing" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                    <attribute name="domain">[['moveId.productionId', '!=', false]]</attribute>
+                </filter>
+            </field>
+        </record>
+
+    <menuitem id="menuMrpTraceability"
+          name="Lots/Serial Numbers"
+          parent="menuMrpBom"
+          action="stock.actionProductionLotForm"
+          groups="stock.groupProductionLot"
+          sequence="15"/>
+
+    <menuitem id="menuMrpScrap"
+            name="Scrap"
+            parent="menuMrpManufacturing"
+            action="stock.actionStockScrap"
+            sequence="25"/>
+
+    <menuitem id="menuProcurementComputeMrp"
+        action="stock.actionProcurementCompute"
+        parent="mrpPlanningMenuRoot"
+        sequence="135"/>
+
+</verp>

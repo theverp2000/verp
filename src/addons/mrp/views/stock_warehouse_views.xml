@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <!-- Warehouse -->
+        <record id="viewWarehouseInheritMrp" model="ir.ui.view">
+            <field name="label">Stock Warehouse Inherit MRP</field>
+            <field name="model">stock.warehouse</field>
+            <field name="inheritId" ref="stock.viewWarehouse"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='resupplyWhIds']" position="before">
+                    <field name="manufactureToResupply"/>
+                    <field name="manufactureSteps" attrs="{'invisible': [['manufactureToResupply', '=', false]]}" widget="radio" groups="stock.groupAdvLocation"/>
+                </xpath>
+                <xpath expr="//field[@name='outTypeId']" position="after">
+                    <field name="manuTypeId" readonly="true"/>
+                </xpath>
+                <xpath expr="//group[@name='groupResupply']" position="attributes">
+                    <attribute name="groups">stock.groupAdvLocation,stock.groupStockMultiWarehouses</attribute>
+                </xpath>
+                <xpath expr="//field[@name='whOutputStockLocId']" position="after">
+                    <field name="samLocId"/>
+                    <field name="pbmLocId"/>
+                </xpath>
+                <xpath expr="//field[@name='outTypeId']" position="after">
+                    <field name="samTypeId"/>
+                    <field name="pbmTypeId"/>
+                </xpath>
+            </field>
+        </record>
+</verp>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+
+    <!-- TODO: Delete this file -->
+    <!-- Reception Report Labels -->
+    <template id="reportReceptionReportLabelMrp">
+        <t t-if="quantity" t-set="qtys" t-value="quantity.split(',').map(q => parseInt(q))"/>
+        <t t-else="" t-set="qtys" t-value="Array.from(range(len(docs))).map(q => 1)"/>
+        <t t-call="web.basicLayout">
+            <div class="page">
+                <t t-foreach="range(len(docs))" t-as="index">
+                    <t t-set="mo" t-value="docs[index]"/>
+                    <t t-set="qty" t-value="qtys[index]"/>
+                    <t t-foreach="range(qty)" t-as="j">
+                        <div class="o-label-page o-label-dymo">
+                            <div t-esc="await mo.label"/>
+                            <div class="font-weight-bold" t-esc="await (await mo.productId).displayName"/>
+                        </div>
+                    </t>
+                </t>
+            </div>
+        </t>
+    </template>
+</verp>

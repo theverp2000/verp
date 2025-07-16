@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        <!-- Manufacturing Order -->
+        <record id="mrpProductionTreeView" model="ir.ui.view">
+            <field name="label">mrp.production.tree</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <tree string="Manufacturing Orders" jsClass="lazyColumnList" defaultOrder="priority desc, datePlannedStart desc" multiEdit="1" sample="1" decoration-info="state == 'draft'">
+                    <header>
+                        <button name="buttonPlan" type="object" string="Plan"/>
+                        <button name="doUnreserve" type="object" string="Unreserve"/>
+                    </header>
+                    <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                    <field name="messageNeedaction" invisible="1"/>
+                    <field name="label" decoration-bf="1"/>
+                    <field name="datePlannedStart" readonly="1" optional="show" widget="remainingDays"/>
+                    <field name="dateDeadline" widget="remainingDays" attrs="{'invisible': [['state', 'in', ['done', 'cancel']]]}" optional="hide"/>
+                    <field name="productId" readonly="1" optional="show"/>
+                    <field name="lotProducingId" optional="hide"/>
+                    <field name="bomId" readonly="1" optional="hide"/>
+                    <field name="activityIds" string="Next Activity" widget="listActivity" optional="show"/>
+                    <field name="origin" optional="show"/>
+                    <field name="userId" optional="hide" widget="many2oneAvatarUser"/>
+                    <field name="componentsAvailabilityState" invisible="1" options='{"lazy": true}'/>
+                    <field name="componentsAvailability" options='{"lazy": true}'
+                        attrs="{'invisible': [['state', 'not in', ['confirmed', 'progress']]]}"
+                        optional="show"
+                        decoration-success="reservationState == 'assigned' || componentsAvailabilityState == 'available'"
+                        decoration-warning="reservationState != 'assigned' &amp;&amp; ['expected', 'available'].includes(componentsAvailabilityState)"
+                        decoration-danger="reservationState != 'assigned' &amp;&amp; componentsAvailabilityState == 'late'"/>
+                    <field name="reservationState" optional="hide" decoration-danger="reservationState == 'confirmed'" decoration-success="reservationState == 'assigned'"/>
+                    <field name="productQty" sum="Total Qty" string="Quantity" readonly="1" optional="show"/>
+                    <field name="productUomId" string="UoM" options="{'noOpen':true,'noCreate':true}" groups="uom.groupUom" optional="show"/>
+                    <field name="productionDurationExpected" attrs="{'invisible': [['productionDurationExpected', '=', 0]]}" groups="mrp.groupMrpRoutings" widget="floatTime" sum="Total expected duration" optional="show"/>
+                    <field name="productionRealDuration" attrs="{'invisible': [['productionRealDuration', '=', 0]]}" groups="mrp.groupMrpRoutings" widget="floatTime" sum="Total real duration" optional="show"/>
+                    <field name="companyId" readonly="1" groups="base.groupMultiCompany" optional="show"/>
+                    <field name="state" 
+                           decoration-success="['done', 'toClose'].includes(state)"
+                           decoration-warning="state == 'progress'"
+                           decoration-info="['confirmed', 'draft'].includes(state)"
+                           optional="show" widget="badge"/>
+                    <field name="activityExceptionDecoration" widget="activityException"/>
+                    <field name="delayAlertDate" invisible="1"/>
+                    <field nolabel="1" name="jsonPopover" widget="stockReschedulingPopover" attrs="{'invisible': [['jsonPopover', '=', false]]}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="productionOrderServerAction" model="ir.actions.server">
+            <field name="label">Mrp: Plan Production Orders</field>
+            <field name="modelId" ref="mrp.model_mrpProduction"/>
+            <field name="bindingModelId" ref="mrp.model_mrpProduction"/>
+            <field name="bindingViewTypes">list</field>
+            <field name="groupsId" eval="[[4, refId('mrp.groupMrpRoutings')]]"/>
+            <field name="state">code</field>
+            <field name="code">await records.buttonPlan()</field>
+        </record>
+
+        <record id="actionProductionOrderMarkDone" model="ir.actions.server">
+            <field name="label">Mark as Done</field>
+            <field name="modelId" ref="mrp.model_mrpProduction"/>
+            <field name="bindingModelId" ref="mrp.model_mrpProduction"/>
+            <field name="bindingViewTypes">list</field>
+            <field name="state">code</field>
+            <field name="code">
+            if (bool(records)) {
+                const res = await (await records.filtered(async (mo) => ['confirmed', 'toClose', 'progress'].includes(await mo.state))).buttonMarkDone();
+                if (res != true) {
+                    action = res;
+                    return res;
+                }
+            }
+            </field>
+        </record>
+
+        <record id="mrpProductionFormView" model="ir.ui.view">
+            <field name="label">mrp.production.form</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <form string="Manufacturing Orders">
+                <header>
+                    <field name="confirmCancel" invisible="1"/>
+                    <field name="showLock" invisible="1"/>
+                    <button name="buttonMarkDone" attrs="{'invisible': ['|', '|', ['state', 'in', ['draft', 'cancel', 'done', 'toClose']], ['qtyProducing', '=', 0], ['moveRawIds', '!=', []]]}" string="Validate" type="object" class="oe-highlight"
+                            confirm="There are no components to consume. Are you still sure you want to continue?" data-hotkey="g"/>
+                    <button name="buttonMarkDone" attrs="{'invisible': ['|', '|', ['state', 'in', ['draft', 'cancel', 'done', 'toClose']], ['qtyProducing', '=', 0], ['moveRawIds', '=', []]]}" string="Validate" type="object" class="oe-highlight" data-hotkey="g"/>
+                    <button name="buttonMarkDone" attrs="{'invisible': [
+                        '|',
+                        ['moveRawIds', '=', []],
+                        '&amp;',
+                        '|',
+                        ['state', 'not in', ['confirmed', 'progress']],
+                        ['qtyProducing', '!=', 0],
+                        ['state', '!=', 'toClose']]}" string="Mark as Done" type="object" class="oe-highlight" data-hotkey="g"/>
+                    <button name="buttonMarkDone" attrs="{'invisible': [
+                        '|',
+                        ['moveRawIds', '!=', []],
+                        '&amp;',
+                        '|',
+                        ['state', 'not in', ['confirmed', 'progress']],
+                        ['qtyProducing', '!=', 0],
+                        ['state', '!=', 'toClose']]}" string="Mark as Done" type="object" class="oe-highlight" data-hotkey="g"
+                            confirm="There are no components to consume. Are you still sure you want to continue?"/>
+                    <button name="actionConfirm" attrs="{'invisible': [['state', '!=', 'draft']]}" string="Confirm" type="object" class="oe-highlight" data-hotkey="v"/>
+                    <button name="buttonPlan" attrs="{'invisible': ['|', '|', ['state', 'not in', ['confirmed', 'progress', 'toClose']], ['workorderIds', '=', []], ['isPlanned', '=', true]]}" type="object" string="Plan" class="oe-highlight" data-hotkey="x"/>
+                    <button name="buttonUnplan" type="object" string="Unplan" attrs="{'invisible': ['|', ['isPlanned', '=', false], ['state', '=', 'cancel']]}" data-hotkey="x"/>
+                    <button name="actionAssign" attrs="{'invisible': ['|', ['state', 'in', ['draft', 'done', 'cancel']], ['reserveVisible', '=', false]]}" string="Check availability" type="object" data-hotkey="q"/>
+                    <button name="doUnreserve" type="object" string="Unreserve" attrs="{'invisible': [['unreserveVisible', '=', false]]}" data-hotkey="w"/>
+                    <button name="buttonScrap" type="object" string="Scrap" attrs="{'invisible': [['state', 'in', ['cancel', 'draft']]]}" data-hotkey="y"/>
+                    <field name="state" widget="statusbar" statusbarVisible="draft,confirmed,progress,done"/>
+                    <button name="actionToggleIsLocked" attrs="{'invisible': ['|', ['showLock', '=', false], ['isLocked', '=', false]]}" string="Unlock" groups="mrp.groupMrpManager" type="object" help="Unlock the manufacturing order to adjust what has been consumed or produced." data-hotkey="l"/>
+                    <button name="actionToggleIsLocked" attrs="{'invisible': ['|', ['showLock', '=', false], ['isLocked', '=', true]]}" string="Lock" groups="mrp.groupMrpManager" type="object" help="Lock the manufacturing order to prevent changes to what has been consumed or produced." data-hotkey="l"/>
+                    <field name="showSerialMassProduce" invisible="1"/>
+                    <button name="actionSerialMassProduceWizard" attrs="{'invisible': [['showSerialMassProduce', '=', false]]}" string="Mass Produce" type="object"/>
+                    <button name="actionCancel" type="object" string="Cancel" data-hotkey="z"
+                            attrs="{'invisible': ['|', '|', ['id', '=', false], ['state', 'in', ['done', 'cancel']], ['confirmCancel', '=', true]]}"/>
+                    <button name="actionCancel" type="object" string="Cancel" data-hotkey="z"
+                            attrs="{'invisible': ['|', '|', ['id', '=', false], ['state', 'in', ['done', 'cancel']], ['confirmCancel', '=', false]]}"
+                            confirm="Some product moves have already been confirmed, this manufacturing order can't be completely cancelled. Are you still sure you want to process ?"/>
+                    <button name="buttonUnbuild" type="object" string="Unbuild" attrs="{'invisible': [['state', '!=', 'done']]}" data-hotkey="shift+v"/>
+                </header>
+                <sheet>
+                    <field name="reservationState" invisible="1"/>
+                    <field name="datePlannedFinished" invisible="1"/>
+                    <field name="isLocked" invisible="1"/>
+                    <field name="qtyProduced" invisible="1"/>
+                    <field name="unreserveVisible" invisible="1"/>
+                    <field name="reserveVisible" invisible="1"/>
+                    <field name="consumption" invisible="1"/>
+                    <field name="isPlanned" invisible="1"/>
+                    <div class="oe-button-box" name="buttonBox">
+                        <button class="oe-stat-button" name="actionViewMrpProductionChilds" type="object" icon="fa-wrench" attrs="{'invisible': [['mrpProductionChildCount', '=', 0]]}">
+                            <div class="o-field-widget o-stat-info">
+                                <span class="o-stat-value"><field name="mrpProductionChildCount"/></span>
+                                <span class="o-stat-text">Child MO</span>
+                            </div>
+                        </button>
+                        <button class="oe-stat-button" name="actionViewMrpProductionSources" type="object" icon="fa-wrench" attrs="{'invisible': [['mrpProductionSourceCount', '=', 0]]}">
+                            <div class="o-field-widget o-stat-info">
+                                <span class="o-stat-value"><field name="mrpProductionSourceCount"/></span>
+                                <span class="o-stat-text">Source MO</span>
+                            </div>
+                        </button>
+                        <button class="oe-stat-button" name="actionViewMrpProductionBackorders" type="object" icon="fa-wrench" attrs="{'invisible': [['mrpProductionBackorderCount', '&lt;', 2]]}">
+                            <div class="o-field-widget o-stat-info">
+                                <span class="o-stat-value"><field name="mrpProductionBackorderCount"/></span>
+                                <span class="o-stat-text">Backorders</span>
+                            </div>
+                        </button>
+                        <button class="oe-stat-button" name="actionSeeMoveScrap" type="object" icon="fa-arrows-v" attrs="{'invisible': [['scrapCount', '=', 0]]}">
+                            <div class="o-field-widget o-stat-info">
+                                <span class="o-stat-value"><field name="scrapCount"/></span>
+                                <span class="o-stat-text">Scraps</span>
+                            </div>
+                        </button>
+                        <button type="object" name="actionViewMoDelivery" class="oe-stat-button" icon="fa-truck"  groups="base.groupUser" attrs="{'invisible': [['deliveryCount', '=', 0]]}">
+                            <field name="deliveryCount" widget="statinfo" string="Transfers"/>
+                        </button>
+                        <button name="%(stock.actionStockReport)d" icon="fa-arrow-up" class="oe-stat-button" string="Traceability" type="action" states="done" groups="stock.groupProductionLot"/>
+                        <button name="%(actionMrpProductionMoves)d" type="action" string="Product Moves" class="oe-stat-button" icon="fa-exchange" attrs="{'invisible': [['state', 'not in', ['progress', 'done']]]}"/>
+                    </div>
+                    <div class="oe-title">
+                        <h1>
+                            <field name="priority" widget="priority" class="mr-3"/>
+                            <field name="label" placeholder="Manufacturing Reference" nolabel="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="id" invisible="1"/>
+                            <field name="useCreateComponentsLots" invisible="1"/>
+                            <field name="showLotIds" invisible="1"/>
+                            <field name="productTracking" invisible="1"/>
+                            <field name="productId" context="{'default_detailedType': 'product'}" attrs="{'readonly': [['state', '!=', 'draft']]}" defaultFocus="1"/>
+                            <field name="productTemplateId" invisible="1"/>
+                            <field name="forecastedIssue" invisible="1"/>
+                            <field name="productDescriptionVariants" attrs="{'invisible': [['productDescriptionVariants', 'in', [false, '']]], 'readonly': [['state', '!=', 'draft']]}"/>
+                            <label for="productQty" string="Quantity"/>
+                            <div class="o-row no-gutters d-flex">
+                                <div attrs="{'invisible': [['state', '=', 'draft']]}" class="o-row">
+                                    <field name="qtyProducing" class="text-left" attrs="{'readonly': ['|', ['state', '=', 'cancel'], '&amp;', ['state', '=', 'done'], ['isLocked', '=', true]]}"/>
+                                    /
+                                </div>
+                                <field name="productQty" class="oe-inline text-left" attrs="{'readonly': [['state', '!=', 'draft']], 'invisible': [['state', 'not in', ['draft', 'done']]]}"/>
+                                <button type="action" name="%(mrp.actionChangeProductionQty)d"
+                                    context="{'default_moId': id}" class="oe-link oe-inline" style="margin: 0px; padding: 0px;" attrs="{'invisible': ['|', ['state', 'in', ['draft', 'done','cancel']], ['id', '=', false]]}">
+                                    <field name="productQty" class="oe-inline" attrs="{'readonly': [['state', '!=', 'draft']]}"/>
+                                </button>
+                                <label for="productUomId" string="" class="oe-inline"/>
+                                <field name="productUomCategoryId" invisible="1"/>
+                                <field name="productUomId" options="{'noOpen': true, 'noCreate': true}" forceSave="1" groups="uom.groupUom" attrs="{'readonly': [['state', '!=', 'draft']]}"/>
+                                <span class='font-weight-bold'>To Produce</span>
+                                <button type="object" name="actionProductForecastReport" icon="fa-area-chart" attrs="{'invisible': [['forecastedIssue', '=', true]]}"/>
+                                <button type="object" name="actionProductForecastReport" icon="fa-area-chart" attrs="{'invisible': [['forecastedIssue', '=', false]]}" class="text-danger"/>
+                            </div>
+                            <label for="lotProducingId" attrs="{'invisible': ['|', ['state', '=', 'draft'], ['productTracking', 'in', ['none', false]]]}"/>
+                            <div class="o-row" attrs="{'invisible': ['|', ['state', '=', 'draft'], ['productTracking', 'in', ['none', false]]]}">
+                                <field name="lotProducingId"
+                                    context="{'default_productId': productId, 'default_companyId': companyId}" attrs="{'invisible': [['productTracking', 'in', ['none', false]]]}"/>
+                                <button name="actionGenerateSerial" type="object" class="btn btn-primary fa fa-plus-square-o" aria-label="Creates a new serial/lot number" title="Creates a new serial/lot number" role="img" attrs="{'invisible': ['|', ['productTracking', 'in', ['none', false]], ['lotProducingId', '!=', false]]}"/>
+                            </div>
+                            <field name="bomId"
+                                context="{'default_productTemplateId': productTemplateId}" attrs="{'readonly': [['state', '!=', 'draft']]}"/>
+                        </group>
+                        <group name="groupExtraInfo">
+                            <label for="datePlannedStart"/>
+                            <div class="o-row">
+                                <field name="datePlannedStart"
+                                    attrs="{'readonly': [['state', 'in', ['done', 'cancel']]]}"
+                                    decoration-warning="!['done', 'cancel'].includes(state) &amp;&amp; datePlannedStart &lt; now"
+                                    decoration-danger="!['done', 'cancel'].includes(state) &amp;&amp; datePlannedStart &lt; currentDate"
+                                    decoration-bf="!['done', 'cancel'].includes(state) &amp;&amp; (datePlannedStart &lt; currentDate || datePlannedStart &lt; now)"/>
+                                <field name="delayAlertDate" invisible="1"/>
+                                <field nolabel="1" name="jsonPopover" widget="stockReschedulingPopover" attrs="{'invisible': [['jsonPopover', '=', false]]}"/>
+                            </div>
+                            <field name="componentsAvailabilityState" invisible="1"/>
+                            <field name="componentsAvailability" attrs="{'invisible': [['state', 'not in', ['confirmed', 'progress']]]}"
+                                decoration-success="reservationState == 'assigned' || componentsAvailabilityState == 'available'"
+                                decoration-warning="reservationState != 'assigned' &amp;&amp; ['expected', 'available'].includes(componentsAvailabilityState)"
+                                decoration-danger="reservationState != 'assigned' &amp;&amp; componentsAvailabilityState == 'late'"/>
+                            <field name="userId" domain="[['share', '=', false]]"/>
+                            <field name="companyId" groups="base.groupMultiCompany" options="{'noCreate': true}" attrs="{'readonly': [['state', '!=', 'draft']]}" forceSave="1"/>
+                            <field name="showFinalLots" invisible="1"/>
+                            <field name="productionLocationId" invisible="1" readonly="1"/>
+                            <field name="moveFinishedIds" invisible="1" attrs="{'readonly': ['|', ['state', '=', 'cancel'], '&amp;', ['state', '=', 'done'], ['isLocked', '=', true]]}">
+                                <tree editable="bottom">
+                                    <field name="productId"/>
+                                    <field name="productUomQty"/>
+                                    <field name="productUom"/>
+                                    <field name="operationId"/>
+                                    <field name="byproductId"/>
+                                    <field name="label"/>
+                                    <field name="dateDeadline"/>
+                                    <field name="pickingTypeId"/>
+                                    <field name="locationId"/>
+                                    <field name="locationDestId"/>
+                                    <field name="companyId"/>
+                                    <field name="warehouseId"/>
+                                    <field name="origin"/>
+                                    <field name="groupId"/>
+                                    <field name="propagateCancel"/>
+                                    <field name="moveDestIds"/>
+                                    <field name="state"/>
+                                    <!-- Useless as the editable in tree declaration -> For Form Test-->
+                                    <field name="productUomCategoryId"/>
+                                    <field name="allowedOperationIds"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Components" name="components">
+                            <field name="moveRawIds"
+                                context="{'default_date': datePlannedStart, 'default_dateDeadline': dateDeadline, 'default_locationId': locationSrcId, 'default_locationDestId': productionLocationId, 'default_state': 'draft', 'default_rawMaterialProductionId': id, 'default_pickingTypeId': pickingTypeId, 'default_companyId': companyId}"
+                                attrs="{'readonly': ['|', ['state', '=', 'cancel'], '&amp;', ['state', '=', 'done'], ['isLocked', '=', true]]}" options="{'delete': [['state', '=', 'draft']]}">
+                                <tree defaultOrder="isDone,sequence" editable="bottom">
+                                    <field name="productId" forceSave="1" required="1" context="{'default_detailedType': 'product'}" attrs="{'readonly': ['|', '|', ['moveLinesCount', '&gt;', 0], ['state', '=', 'cancel'], '&amp;', ['state', '!=', 'draft'], ['additional', '=', false]]}"/>
+                                    <field name="locationId" string="From" readonly="1" groups="stock.groupStockMultiLocations" optional="show"/>
+                                    <field name="moveLineIds" invisible="1">
+                                        <tree>
+                                            <field name="lotId" invisible="1"/>
+                                            <field name="ownerId" invisible="1"/>
+                                            <field name="packageId" invisible="1"/>
+                                            <field name="resultPackageId" invisible="1"/>
+                                            <field name="locationId" invisible="1"/>
+                                            <field name="locationDestId" invisible="1"/>
+                                            <field name="qtyDone" invisible="1"/>
+                                            <field name="productId" invisible="1"/>
+                                            <field name="productUomId" invisible="1"/>
+                                            <field name="productUomQty" invisible="1"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="moveId" invisible="1"/>
+                                            <field name="id" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                    
+                                    <field name="propagateCancel" invisible="1"/>
+                                    <field name="priceUnit" invisible="1"/>
+                                    <field name="companyId" invisible="1"/>
+                                    <field name="productUomCategoryId" invisible="1"/>
+                                    <field name="label" invisible="1"/>
+                                    <field name="allowedOperationIds" invisible="1"/>
+                                    <field name="unitFactor" invisible="1"/>
+                                    <field name="dateDeadline" invisible="1" forceSave="1"/>
+                                    <field name="date" invisible="1"/>
+                                    <field name="additional" invisible="1"/>
+                                    <field name="pickingTypeId" invisible="1"/>
+                                    <field name="hasTracking" invisible="1"/>
+                                    <field name="operationId" invisible="1"/>
+                                    <field name="isDone" invisible="1"/>
+                                    <field name="bomLineId" invisible="1"/>
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="locationId" invisible="1"/>
+                                    <field name="warehouseId" invisible="1"/>
+                                    <field name="isLocked" invisible="1"/>
+                                    <field name="moveLinesCount" invisible="1"/>
+                                    <field name="locationDestId" domain="[['id', 'childOf', parent.locationDestId]]" invisible="1"/>
+                                    <field name="state" invisible="1" forceSave="1"/>
+                                    <field name="shouldConsumeQty" invisible="1"/>
+                                    <field name="productUomQty" widget="mrpShouldConsume" forceSave="1" string="To Consume" attrs="{'readonly': ['&amp;', ['parent.state', '!=', 'draft'], '|', '&amp;', ['parent.state', 'not in', ['confirmed', 'progress', 'toClose']], ['parent.isPlanned', '!=', true], '&amp;', ['state', '!=', 'draft'], ['parent.isLocked', '=', true]]}" width="1"/>
+                                    <field name="productUom" attrs="{'readonly': [['state', '!=', 'draft'], ['id', '!=', false]]}" options="{'noOpen': true, 'noCreate': true}" groups="uom.groupUom"/>
+                                    <field name="productType" invisible="1"/>
+                                    <field name="productQty" invisible="1" readonly="1"/>
+                                    <field name="reservedAvailability" invisible="1"/>
+                                    <field name="forecastExpectedDate" invisible="1"/>
+                                    <!-- Button are used in state draft to doesn't have the name of the column "Reserved"-->
+                                    <button type="object" name="actionProductForecastReport" icon="fa-area-chart" attrs="{'columnInvisible': [['parent.state', '!=', 'draft']], 'invisible': [['forecastAvailability', '&lt;', 0]]}"/>
+                                    <button type="object" name="actionProductForecastReport" icon="fa-area-chart text-danger" attrs="{'columnInvisible': [['parent.state', '!=', 'draft']], 'invisible': [['forecastAvailability', '&gt;=', 0]]}"/>
+                                    <field name="forecastAvailability" string="Reserved" attrs="{'columnInvisible': [['parent.state', 'in', ['draft', 'done']]]}" widget="forecastWidget"/>
+                                    <field name="isQuantityDoneEditable" invisible="1"/>
+                                    <field name="quantityDone" string="Consumed"
+                                        decoration-success="! isDone &amp;&amp; (quantityDone - shouldConsumeQty == 0)"
+                                        decoration-warning="! isDone &amp;&amp; (quantityDone - shouldConsumeQty &gt; 0.0001)"
+                                        attrs="{'columnInvisible': [['parent.state', '=', 'draft']], 'readonly': [['hasTracking', '!=','none']]}"/>
+                                    <field name="showDetailsVisible" invisible="1"/>
+                                    <field name="lotIds" widget="many2manyTags"
+                                        groups="stock.groupProductionLot" optional="hide"
+                                        attrs="{'invisible': ['|', '|', ['showDetailsVisible', '=', false], ['hasTracking', '!=', 'serial'], ['parent.state', '=', 'draft']],
+                                                'readonly': ['|', '|', ['showDetailsVisible', '=', false], ['hasTracking', '!=', 'serial'], ['parent.state', '=', 'draft']],
+                                                'columnInvisible': [['parent.showLotIds', '=', false]]}"
+                                        options="{'create': [['parent.useCreateComponentsLots', '!=', false]]}"
+                                        context="{'default_companyId': companyId, 'default_productId': productId}"
+                                        domain="[['productId','=',productId]]"
+                                    />
+                                    <field name="groupId" invisible="1"/>
+                                    <button name="actionShowDetails" type="object" icon="fa-list" context="{'default_productUomQty': 0}" attrs="{'invisible': ['|', ['showDetailsVisible', '=', false], ['hasTracking', '=','none']]}" options="{&quot;warn&quot;: true}"/>
+                                    <button class="o-optional-button" name="actionShowDetails" type="object" icon="fa-list" context="{'default_productUomQty': 0}" attrs="{'invisible': ['|', ['hasTracking', '!=','none'], ['showDetailsVisible', '=', false]]}" options="{&quot;warn&quot;: true}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Work Orders" name="operations" groups="mrp.groupMrpRoutings">
+                            <field name="workorderIds" attrs="{'readonly': [['state', 'in', ['cancel', 'done']]]}" context="{'treeViewRef': 'mrp.mrpProductionWorkorderTreeEditableView', 'default_productUomId': productUomId, 'fromManufacturingOrder': true}"/>
+                        </page>
+                        <page string="By-Products" name="finishedProducts" groups="mrp.groupMrpByproducts">
+                            <field name="moveByproductIds" context="{'default_date': datePlannedFinished, 'default_dateDeadline': dateDeadline, 'default_locationId': productionLocationId, 'default_locationDestId': locationDestId, 'default_state': 'draft', 'default_productionId': id, 'default_pickingTypeId': pickingTypeId, 'default_companyId': companyId}" attrs="{'readonly': ['|', ['state', '=', 'cancel'], '&amp;', ['state', '=', 'done'], ['isLocked', '=', true]]}" options="{'delete': [['state', '=', 'draft']]}">
+                                <tree defaultOrder="isDone,sequence" decoration-muted="isDone" editable="bottom">
+                                    <field name="byproductId" invisible="1"/>
+                                    <field name="productId" context="{'default_detailedType': 'product'}" domain="[['id', '!=', await parent.productId]]" required="1"/>
+                                    <field name="locationDestId" string="To" readonly="1" groups="stock.groupStockMultiLocations"/>
+
+                                    <field name="moveLineIds" invisible="1">
+                                        <tree>
+                                            <field name="lotId" invisible="1"/>
+                                            <field name="ownerId" invisible="1"/>
+                                            <field name="packageId" invisible="1"/>
+                                            <field name="resultPackageId" invisible="1"/>
+                                            <field name="locationId" invisible="1"/>
+                                            <field name="locationDestId" invisible="1"/>
+                                            <field name="qtyDone" invisible="1"/>
+                                            <field name="productId" invisible="1"/>
+                                            <field name="productUomId" invisible="1"/>
+                                            <field name="productUomQty" invisible="1"/>
+                                            <field name="state" invisible="1"/>
+                                            <field name="moveId" invisible="1"/>
+                                            <field name="id" invisible="1"/>
+                                        </tree>
+                                    </field>
+
+                                    <field name="companyId" invisible="1"/>
+                                    <field name="productUomCategoryId" invisible="1"/>
+                                    <field name="label" invisible="1"/>
+                                    <field name="allowedOperationIds" invisible="1"/>
+                                    <field name="unitFactor" invisible="1"/>
+                                    <field name="date" invisible="1"/>
+                                    <field name="additional" invisible="1"/>
+                                    <field name="pickingTypeId" invisible="1"/>
+                                    <field name="hasTracking" invisible="1"/>
+                                    <field name="operationId" invisible="1"/>
+                                    <field name="isDone" invisible="1"/>
+                                    <field name="bomLineId" invisible="1"/>
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="locationId" invisible="1"/>
+                                    <field name="warehouseId" invisible="1"/>
+                                    <field name="isLocked" invisible="1"/>
+                                    <field name="moveLinesCount" invisible="1"/>
+                                    <field name="locationDestId" domain="[['id', 'childOf', await parent.locationDestId]]" invisible="1"/>
+                                    <field name="state" invisible="1" forceSave="1"/>
+                                    <field name="productUomQty" string="To Produce" forceSave="1" attrs="{'readonly': ['&amp;', ['parent.state', '!=', 'draft'], '|', '&amp;', ['parent.state', 'not in', ['confirmed', 'progress', 'toClose']], ['parent.isPlanned', '!=', true], ['parent.isLocked', '=', true]]}"/>
+                                    <field name="isQuantityDoneEditable" invisible="1"/>
+                                    <field name="quantityDone" string="Produced" attrs="{'columnInvisible': [['parent.state', '=', 'draft']], 'readonly': [['isQuantityDoneEditable', '=', false]]}"/>
+                                    <field name="productUom" groups="uom.groupUom"/>
+                                    <field name="costShare" optional="hide"/>
+                                    <field name="showDetailsVisible" invisible="1"/>
+                                    <field name="lotIds" widget="many2manyTags"
+                                        groups="stock.groupProductionLot"
+                                        attrs="{'invisible': ['|', '|', ['showDetailsVisible', '=', false], ['hasTracking', '!=', 'serial'], ['parent.state', '=', 'draft']]}"
+                                        options="{'create': [['parent.useCreateComponentsLots', '!=', false]]}"
+                                        context="{'default_companyId': companyId, 'default_productId': productId}"
+                                        domain="[['productId','=',productId]]"
+                                    />
+                                    <button name="actionShowDetails" type="object" icon="fa-list" attrs="{'invisible': ['|', ['hasTracking', '=','none'], ['showDetailsVisible', '=', false]]}" options="{&quot;warn&quot;: true}"/>
+                                    <button class="o-optional-button" name="actionShowDetails" type="object" icon="fa-list" attrs="{'invisible': ['|', ['hasTracking', '!=','none'], ['showDetailsVisible', '=', false]]}" options="{&quot;warn&quot;: true}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Miscellaneous" name="miscellaneous">
+                            <group>
+                                <group>
+                                    <field name="pickingTypeId" attrs="{'readonly': [['state', '!=', 'draft']]}"/>
+                                    <field name="locationSrcId" groups="stock.groupStockMultiLocations" options="{'noCreate': true}" attrs="{'readonly': [['state', '!=', 'draft']]}"/>
+                                    <field name="locationDestId" groups="stock.groupStockMultiLocations" options="{'noCreate': true}" attrs="{'readonly': [['state', '!=', 'draft']]}"/>
+                                </group>
+                                <group>
+                                    <field name="origin"/>
+                                    <field name="dateDeadline"
+                                        attrs="{'invisible': ['|', ['state', 'in', ['done', 'cancel']], ['dateDeadline', '=', false]]}"
+                                        decoration-danger="dateDeadline &amp;&amp; dateDeadline &lt; currentDate"
+                                        decoration-bf="dateDeadline &amp;&amp; dateDeadline &lt; currentDate"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe-chatter">
+                    <field name="messageFollowerIds"/>
+                    <field name="activityIds"/>
+                    <field name="messageIds"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="mrpProductionKanbanView" model="ir.ui.view">
+            <field name="label">mrp.production.kanban</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <kanban class="o-kanban-mobile" sample="1">
+                    <field name="label"/>
+                    <field name="productId"/>
+                    <field name="productQty"/>
+                    <field name="productUomId" options="{'noOpen':true,'noCreate':true}"/>
+                    <field name="datePlannedStart"/>
+                    <field name="state"/>
+                    <field name="activityState"/>
+                    <progressbar field="activityState" colors='{"planned": "success", "today": "warning", "overdue": "danger"}'/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe-kanban-card oe-kanban-global-click">
+                                <div class="o-kanban-record-top">
+                                    <field name="priority" widget="priority"/>
+                                    <div class="o-kanban-record-headings mt4 ml-1">
+                                        <strong class="o-kanban-record-title"><span><t t-esc="record.productId.value"/></span></strong>
+                                    </div>
+                                    <span class="float-right text-right"><t t-esc="record.productQty.value"/> <small><t t-esc="record.productUomId.value"/></small></span>
+                                </div>
+                                <div class="o-kanban-record-bottom">
+                                    <div class="oe-kanban-bottom-left text-muted">
+                                        <span><t t-esc="record.label.value"/> <t t-esc="record.datePlannedStart.value &amp;&amp; record.datePlannedStart.value.split(' ')[0] || false"/></span>
+                                        <field name="activityIds" widget="kanbanActivity"/>
+                                        <field name="delayAlertDate" invisible="1"/>
+                                        <field nolabel="1" name="jsonPopover" widget="stockReschedulingPopover" attrs="{'invisible': [['jsonPopover', '=', false]]}"/>
+                                    </div>
+                                    <div class="oe-kanban-bottom-right">
+                                        <span t-attf-class="badge #{['draft', 'cancel'].indexOf(record.state.rawValue) > -1 ? 'badge-secondary' : ['none'].indexOf(record.state.rawValue) > -1 ? 'badge-danger' : ['confirmed'].indexOf(record.state.rawValue) > -1 ? 'badge-warning' : ['done'].indexOf(record.state.rawValue) > -1 ? 'badge-success' : 'badge-primary'}"><t t-esc="record.state.value"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="viewProductionCalendar" model="ir.ui.view">
+            <field name="label">mrp.production.calendar</field>
+            <field name="model">mrp.production</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar dateStart="datePlannedStart" dateStop="datePlannedFinished"
+                          string="Manufacturing Orders" eventLimit="5" quickAdd="false">
+                    <field name="userId" avatarField="avatar128"/>
+                    <field name="productId"/>
+                    <field name="productQty"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record id="viewProductionPivot" model="ir.ui.view">
+            <field name="label">mrp.production.pivot</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <pivot string="Manufacturing Orders" sample="1">
+                    <field name="datePlannedStart" type="row"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="viewProductionGraph" model="ir.ui.view">
+            <field name="label">mrp.production.graph</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <graph string="Manufacturing Orders" stacked="0" sample="1">
+                    <field name="datePlannedFinished"/>
+                    <field name="productUomQty" type="measure"/>
+                    <field name="backorderSequence" invisible="1"/>
+                    <field name="qtyProducing" string="Quantity Produced"/>
+                    <field name="productUomQty" string= "Product Quantity"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="viewMrpProductionFilter" model="ir.ui.view">
+            <field name="label">mrp.production.select</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <search string="Search Production">
+                    <field name="label" string="Manufacturing Order" filterDomain="['|', ['label', 'ilike', self], ['origin', 'ilike', self]]"/>
+                    <field name="productId"/>
+                    <field name="moveRawIds" string="Component" filterDomain="[['moveRawIds.productId', 'ilike', self]]"/>
+                    <field name="label" string="Work Center" filterDomain="[['bomId.operationIds.workcenterId', 'ilike', self]]"/>
+                    <field name="origin"/>
+                    <filter string="To Do" name="todo" domain="[['state', 'in', ['draft', 'confirmed', 'progress', 'toClose']]]"
+                        help="Manufacturing Orders which are in confirmed state."/>
+                    <filter string="Starred" name="starred" domain="[['priority', '=', '1']]"/>
+                    <separator/>
+                    <filter string="Draft" name="filterDraft" domain="[['state', '=', 'draft']]"/>
+                    <filter string="Confirmed" name="filterConfirmed" domain="[['state', '=', 'confirmed']]"/>
+                    <filter string="Planned" name="filterPlanned" domain="[['isPlanned', '=', true]]" groups="mrp.groupMrpRoutings"/>
+                    <filter string="In Progress" name="filterInProgress" domain="[['state', '=', 'progress']]"/>
+                    <filter string="To Close" name="filterToClose" domain="[['state', '=', 'toClose']]"/>
+                    <filter string="Done" name="filterDone" domain="[['state', '=', 'done']]"/>
+                    <filter string="Cancelled" name="filterCancel" domain="[['state', '=', 'cancel']]"/>
+                    <separator/>
+                    <filter string="Waiting" name="waiting" domain="[['reservationState', 'in', ['waiting', 'confirmed']]]"/>
+                    <filter string="Ready" name="filterReady" domain="[['reservationState', '=', 'assigned']]"/>
+                    <separator/>
+                    <filter string="Planning Issues" name="planningIssues" help="Late MO or Late delivery of components"
+                        domain="['|', ['delayAlertDate', '!=', false], '&amp;', ['dateDeadline', '&lt;', currentDate], ['state', '=', 'confirmed']]"/>
+                    <separator/>
+                    <filter invisible="1" string="Late Activities" name="activitiesOverdue"
+                        domain="[['myActivityDateDeadline', '&lt;', contextToday().toFormat('yyyy-MM-dd')]]"
+                        help="Show all records which has next action date is before today"/>
+                    <filter invisible="1" string="Today Activities" name="activitiesToday"
+                        domain="[['myActivityDateDeadline', '=', contextToday().toFormat('yyyy-MM-dd')]]"/>
+                    <filter invisible="1" string="Future Activities" name="activitiesUpcomingAll"
+                        domain="[['myActivityDateDeadline', '&gt;', contextToday().toFormat('yyyy-MM-dd')]]"/>
+                    <filter name="filterDatePlannedStart" string="Scheduled Date" date="datePlannedStart"/>
+                    <filter name="filterPlanDate" invisible="1" string="Scheduled Date: Last 365 Days" domain="[['datePlannedStart', '>', toFormat(addDate(now(), {days: -365}), 'yyyy-MM-dd HH:mm:ss')]]"/>
+                    <separator/>
+                    <filter string="Warnings" name="activitiesException"
+                        domain="[['activityExceptionDecoration', '!=', false]]"/>
+                    <group expand="0" string="Group By...">
+                        <filter string="Product" name="product" domain="[]" context="{'groupby': 'productId'}"/>
+                        <filter string="Status" name="status" domain="[]" context="{'groupby': 'state'}"/>
+                        <filter string="Material Availability" name="groupbyReservationState" domain="[]" context="{'groupby': 'reservationState'}"/>
+                        <filter string="Scheduled Date" name="scheduledDate" domain="[]" context="{'groupby': 'datePlannedStart'}" help="Scheduled Date by Month"/>
+                    </group>
+               </search>
+            </field>
+        </record>
+
+        <record id="mrpProductionAction" model="ir.actions.actwindow">
+            <field name="label">Manufacturing Orders</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">mrp.production</field>
+            <field name="viewMode">tree,kanban,form,calendar,pivot,graph</field>
+            <field name="viewId" eval="false"/>
+            <field name="searchViewId" ref="viewMrpProductionFilter"/>
+            <field name="context">{'searchDefault_todo': true, 'default_companyId': allowedCompanyIds[0]}</field>
+            <field name="domain">[['pickingTypeId.active', '=', true]]</field>
+            <field name="help" type="html">
+              <p class="o-view-nocontent-smiling-face">
+                No manufacturing order found. Let's create one.
+              </p><p>
+                Consume <a name="%(product.productTemplateAction)d" type='action' tabindex="-1">components</a> &amp;&amp; build finished products using <a name="%(mrpBomFormAction)d" type='action' tabindex="-1">bills of materials</a>
+              </p>
+            </field>
+        </record>
+
+        <record id="mrpProductionActionPickingDeshboard" model="ir.actions.actwindow">
+            <field name="label">Manufacturing Orders</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">mrp.production</field>
+            <field name="viewMode">tree,kanban,form</field>
+            <field name="viewId" eval="false"/>
+            <field name="searchViewId" ref="viewMrpProductionFilter"/>
+            <field name="domain">[['pickingTypeId', '=', activeId]]</field>
+            <field name="context">{'default_pickingTypeId': activeId}</field>
+        </record>
+
+        <record id="mrpProductionActionUnreserveTree" model="ir.actions.server">
+            <field name="label">Unreserve</field>
+            <field name="modelId" ref="mrp.model_mrpProduction"/>
+            <field name="bindingModelId" ref="mrp.model_mrpProduction"/>
+            <field name="bindingViewTypes">list</field>
+            <field name="state">code</field>
+            <field name="code">
+            if (bool(records)) {
+                await records.doUnreserve();
+            }
+            </field>
+        </record>
+
+        <menuitem action="mrpProductionAction"
+            id="menuMrpProductionAction"
+            parent="menuMrpManufacturing"
+            sequence="1"/>
+
+        <record id="mrpProductionReport" model="ir.actions.actwindow">
+            <field name="label">Manufacturing Orders</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">mrp.production</field>
+            <field name="viewMode">graph,pivot,form</field>
+            <field name="target">current</field>
+            <field name="context">{
+                'searchDefault_product': 1,
+                'searchDefault_scheduledDate': 2,
+                'searchDefault_filterConfirmed': true,
+                'searchDefault_filterPlanned': true,
+                'default_companyId': allowedCompanyIds[0],
+                'allowedCompanyIds': allowedCompanyIds
+            }</field>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    No data yet!
+                </p><p>
+                    Create a new manufacturing order
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menuMrpWorkorderTodo"
+                name="Work Orders"
+                action="mrpWorkorderTodo"
+                parent="menuMrpManufacturing"
+                groups="groupMrpRoutings"/>
+
+        <menuitem id="menuMrpProductionReport"
+            name="Manufacturing Orders"
+            parent="menuMrpReporting"
+            action="mrpProductionReport"
+            sequence="11"/>
+
+        <menuitem id="menuMrpWorkOrderReport"
+            name="Work Orders"
+            parent="menuMrpReporting"
+            action="mrpWorkorderReport"
+            groups="groupMrpRoutings"
+            sequence="10"/>
+
+        <record id="actionMrpProductionForm" model="ir.actions.actwindow">
+            <field name="label">Manufacturing Orders</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">mrp.production</field>
+            <field name="viewMode">form</field>
+        </record>
+    </data>
+</verp>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <record id="viewWarehouseOrderpointTreeEditableInheritedPurchase" model="ir.ui.view">
+        <field name="label">stock.warehouse.orderpoint.tree.editable.inherit.purchase</field>
+        <field name="model">stock.warehouse.orderpoint</field>
+        <field name="inheritId" ref="stock.viewWarehouseOrderpointTreeEditable"/>
+        <field name="arch" type="xml">
+            <field name="routeId" position="after">
+                <field name="showBom" invisible="1"/>
+                <field name="bomId" optional="hide" attrs="{'invisible': [['showBom', '=', false]]}" context="{'default_productTemplateId': productTemplateId}"/>
+            </field>
+        </field>
+    </record>
+</verp>

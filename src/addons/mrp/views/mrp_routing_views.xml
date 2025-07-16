@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        <!-- Routings Workcenter -->
+        <record id="mrpRoutingWorkcenterTreeView" model="ir.ui.view">
+            <field name="label">mrp.routing.workcenter.tree</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="arch" type="xml">
+                <tree string="Routing Work Centers" multiEdit="1">
+                    <field name="label"/>
+                    <field name="bomId"/>
+                    <field name="workcenterId"/>
+                    <field name="timeMode" optional="show"/>
+                    <field name="timeComputedOn" optional="hide"/>
+                    <field name="timeCycle" widget="floatTime" string="Duration (minutes)" width="1.5"/>
+                    <field name="companyId" optional="show" groups="base.groupMultiCompany"/>
+                    <field name="possibleBomProductTemplateAttributeValueIds" invisible="1"/>
+                    <field name="bomProductTemplateAttributeValueIds" optional="hide" widget="many2manyTags" options="{'noCreate': true}" groups="product.groupProductVariant"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="mrpRoutingWorkcenterBomTreeView" model="ir.ui.view">
+            <field name="label">mrp.routing.workcenter.bom.tree</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="inheritId" ref="mrpRoutingWorkcenterTreeView"/>
+            <field name="priority">1000</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="delete">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='label']" position="before">
+                    <field name="sequence" widget="handle"/>
+                </xpath>
+                <xpath expr="//field[@name='bomId']" position="replace"/>
+                <xpath expr="//field[@name='timeCycle']" position="attributes">
+                    <attribute name="sum">Total Duration</attribute>
+                </xpath>
+                <xpath expr="//field[@name='bomProductTemplateAttributeValueIds']" position="attributes">
+                    <attribute name="attrs">{'columnInvisible': [['parent.productId', '!=', false]]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='bomProductTemplateAttributeValueIds']" position="after">
+                    <button name="actionArchive" class="btn-link" type="object" icon="fa-times"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="mrpRoutingWorkcenterCopyToBomTreeView" model="ir.ui.view">
+            <field name="label">mrp.routing.workcenter.copyToBom.tree</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="inheritId" ref="mrpRoutingWorkcenterTreeView"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="create">0</attribute>
+                    <attribute name="delete">0</attribute>
+                    <attribute name="exportXlsx">0</attribute>
+                    <attribute name="multiEdit">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='label']" position="before">
+                    <header>
+                        <button name="copyToBom" type="object" string="Copy selected operations"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="mrpRoutingWorkcenterFormView" model="ir.ui.view">
+            <field name="label">mrp.routing.workcenter.form</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="arch" type="xml">
+                <form string="Routing Work Centers">
+                    <sheet>
+                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <group>
+                            <group name="description">
+                                <field name="active" invisible="1"/>
+                                <field name="label"/>
+                                <field name="sequence" invisible="1"/>
+                                <field name="bomId" invisible="context['bomIdInvisible'] ?? false" domain="[]"/>
+                                <field name="workcenterId" context="{'default_companyId': companyId}"/>
+                                <field name="possibleBomProductTemplateAttributeValueIds" invisible="1"/>
+                                <field name="bomProductTemplateAttributeValueIds" widget="many2manyTags" options="{'noCreate': true}" groups="product.groupProductVariant"/>
+                            </group><group name="workorder">
+                                <field name="workorderCount" invisible="1"/>
+                                <field name="timeMode" widget="radio"/>
+                                <label for="timeModeBatch" attrs="{'invisible': [['timeMode', '=', 'manual']]}"/>
+                                <div attrs="{'invisible': [['timeMode', '=', 'manual']]}">
+                                    last
+                                    <field name="timeModeBatch" class="oe-inline"/>
+                                    work orders
+                                </div>
+                                <label for="timeCycleManual" attrs="{'invisible': [['timeMode', '=', 'auto'], ['workorderCount', '!=' , 0]]}" string="Default Duration"/>
+                                <div attrs="{'invisible':  [['timeMode', '=', 'auto'], ['workorderCount', '!=' , 0]]}">
+                                    <field name="timeCycleManual" widget="floatTime" class="oe-inline"/> minutes
+                                </div>
+                                <field name="timeCycle" invisible="1"/>
+                                <field name="companyId" groups="base.groupMultiCompany" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Work Sheet" name="worksheet">
+                                <group>
+                                    <field name="worksheetType" widget="radio"/>
+                                    <field name="worksheet" help="Upload your PDF file." widget="pdfViewer" attrs="{'invisible': [['worksheetType', '!=', 'pdf']], 'required':  [['worksheetType', '=', 'pdf']]}"/>
+                                    <field name="worksheetGoogleSlide" placeholder="Google Slide Link" widget="embedViewer" attrs="{'invisible': [['worksheetType', '!=', 'googleSlide']], 'required': [['worksheetType', '=', 'googleSlide']]}"/>
+                                    <field name="note" attrs="{'invisible': [['worksheetType', '!=', 'text']]}"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="mrpRoutingAction" model="ir.actions.actwindow">
+            <field name="label">Operations</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">mrp.routing.workcenter</field>
+            <field name="viewMode">tree,form</field>
+            <field name="viewId" ref="mrpRoutingWorkcenterTreeView"/>
+            <field name="help" type="html">
+              <p class="o-view-nocontent-smiling-face">
+                Create a new operation
+              </p><p>
+                Operation define that need to be done to realize a Work Order.
+                Each operation is done at a specific Work Center and has a specific duration.
+              </p>
+            </field>
+            <field name="domain">['|', ['bomId', '=', false], ['bomId.active', '=', true]]</field>
+        </record>
+
+        <record id="mrpRoutingWorkcenterFilter" model="ir.ui.view">
+            <field name="label">mrp.routing.workcenter.filter</field>
+            <field name="model">mrp.routing.workcenter</field>
+            <field name="arch" type="xml">
+                <search string="Operations Search Filters">
+                    <field name="label"/>
+                    <field name="bomId"/>
+                    <field name="workcenterId"/>
+                    <filter string="Archived" name="inactive" domain="[['active', '=', false]]"/>
+                    <group>
+                        <filter string="Bill of Material" name="bom" context="{'groupby': 'bomId'}"/>
+                        <filter string="Workcenter" name="workcenter" context="{'groupby': 'workcenterId'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <menuitem id="menuMrpRoutingAction"
+          action="mrpRoutingAction"
+          parent="menuMrpConfiguration"
+          groups="groupMrpRoutings"
+          sequence="100"/>
+
+    </data>
+</verp>

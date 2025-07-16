@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<verp>
+    <template id="mrpReportStockRule" inheritId="stock.reportStockRule">
+        <xpath expr="//div[contains(@class,'o-report-stock-rule')]/t" position="before">
+            <t t-if="rule[0].action == 'manufacture'">
+                <t t-if="rule[1] == 'origin'">
+                    <t t-call="stock.reportStockRuleLeftArrow"/>
+                </t>
+            </t>
+        </xpath>
+        <xpath expr="//div[contains(@class,'o-report-stock-rule')]/t[last()]" position="after">
+            <t t-if="rule[0].action == 'manufacture'">
+                <t t-if="rule[1] == 'destination'">
+                    <t t-call="stock.reportStockRuleRightArrow"/>
+                </t>
+            </t>
+        </xpath>
+        <xpath expr="//div[contains(@class,'o-report-stock-rule-rule-name')]/span" position="before">
+            <t t-if="rule[0].action == 'manufacture'">
+                <i class="fa fa-wrench fa-fw" t-attf-style="color: #{color};"/>
+            </t>
+        </xpath>
+        <xpath expr="//div[contains(@class,'o-report-stock-rule-legend')]" position="inside">
+            <div class="o-report-stock-rule-legend-line">
+                <div class="o-report-stock-rule-legend-label">Manufacture</div>
+                <div class="o-report-stock-rule-legend-symbol">
+                    <div class="fa fa-wrench fa-fw" t-attf-style="color: #{color};"/>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</verp>

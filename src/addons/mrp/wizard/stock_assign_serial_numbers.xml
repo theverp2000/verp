@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<verp>
+    <record id="viewAssignSerialNumbersProduction" model="ir.ui.view">
+        <field name="label">mrpAssignSerialNumbers</field>
+        <field name="model">stock.assign.serial</field>
+        <field name="arch" type="xml">
+            <form string="Serial Mass Produce">
+                <group>
+                    <field name="productionId" readonly="true"/>
+                </group>
+                <group>
+                    <group>
+                        <field name="nextSerialNumber"/>
+                    </group>
+                    <group>
+                        <label for="nextSerialCount"/>
+                        <div class="o-row">
+                            <span><field name="nextSerialCount"/></span>
+                            <button name="generateSerialNumbersProduction" type="object" class="btn btn-secondary" title="Generate Serial Numbers">
+                                <span>Generate</span>
+                            </button>
+                        </div>
+                    </group>
+                </group>
+                <group>
+                    <field name="serialNumbers" placeholder="copy paste a list and/or use Generate"/>
+                </group>
+                <field name="showApply" invisible="1" />
+                <field name="showBackorders" invisible="1" />
+                <group>
+                    <group>
+                        <field name="producedQty" readonly="true" forceSave="true"/>
+                    </group>
+                    <group>
+                        <field name="expectedQty" readonly="true"/>
+                    </group>
+                    <p class="o-form-label oe-inline" attrs="{'invisible': [['showBackorders', '=', false]]}">
+                        You have entered less serial numbers than the quantity to produce.<br/>
+                        Create a backorder if you expect to process the remaining quantities later.<br/>
+                        Do not create a backorder if you will not process the remaining products.
+                    </p>
+                </group>
+                <footer>
+                    <button name="apply" string="Apply" type="object" class="btn-primary" attrs="{'invisible': [['showApply', '=', false]]}"/>
+                    <button name="createBackorder" string="Create Backorder" type="object" class="btn-primary" attrs="{'invisible': [['showBackorders', '=', false]]}"/>
+                    <button name="noBackorder" string="No Backorder" type="object" class="btn-primary" attrs="{'invisible': [['showBackorders', '=', false]]}"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="actAssignSerialNumbersProduction" model="ir.actions.actwindow">
+        <field name="label">Assign Serial Numbers</field>
+        <field name="type">ir.actions.actwindow</field>
+        <field name="resModel">stock.assign.serial</field>
+        <field name="viewId" ref="viewAssignSerialNumbersProduction"/>
+        <field name="viewMode">form</field>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+
+</verp>

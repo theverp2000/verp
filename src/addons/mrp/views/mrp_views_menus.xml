@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <menuitem id="menuMrpRoot"
+        name="Manufacturing"
+        groups="groupMrpUser,groupMrpManager"
+        webIcon="mrp,static/description/icon.png"
+        sequence="145">
+
+        <menuitem id="menuMrpManufacturing"
+            name="Operations"
+            sequence="10"/>
+
+        <menuitem id="mrpPlanningMenuRoot"
+            name="Planning"
+            sequence="15"/>
+
+        <menuitem id="menuMrpBom"
+            name="Products"
+            sequence="20"/>
+
+        <menuitem id="menuMrpReporting"
+              name="Reporting"
+              sequence="25"/>
+
+        <menuitem id="menuMrpConfiguration"
+            name="Configuration"
+            groups="groupMrpManager"
+            sequence="100"/>
+
+    </menuitem>
+</verp>

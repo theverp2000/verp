@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <record id="base.mainPartner" model="res.partner">
+        <field name="isPublished">true</field>
+    </record>
+</verp>
