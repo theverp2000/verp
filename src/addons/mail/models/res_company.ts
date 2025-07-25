@@ -37,13 +37,12 @@ class Company extends Model {
   @api.depends('partnerId.emailFormatted', 'catchallFormatted')
   async _computeEmailFormatted() {
     for (const company of this) {
-      const [partnerId, catchallFormatted] = await company('partnerId', 'catchallFormatted');
-      const emailFormatted = await partnerId.emailFormatted;
+      const emailFormatted = await (await company.partnerId).emailFormatted;
       if (emailFormatted) {
         await company.set('emailFormatted', emailFormatted);
       }
-      else if (catchallFormatted) {
-        await company.set('emailFormatted', catchallFormatted);
+      else if (await company.catchallFormatted) {
+        await company.set('emailFormatted', await company.catchallFormatted);
       }
       else {
         await company.set('emailFormatted', '');

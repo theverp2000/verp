@@ -342,7 +342,7 @@ class AccountChartTemplate extends Model {
                     await move.actionPost();
                 } catch (e) {
                     if (isInstance(e, UserError, ValidationError)) {
-                        console.error('Error while posting demo data');
+                        console.error('Error while posting demo data.', e.message);
                     } else {
                         throw e;
                     }

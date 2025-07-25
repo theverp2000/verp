@@ -189,7 +189,7 @@ var BaseSettingRenderer = FormRenderer.extend({
             module.settingView.addClass('o-hidden');
             module.settingView.find('.o-setting-box').removeClass('o-hidden');
             module.settingView.find('h2').removeClass('o-hidden');
-            module.settingView.find('.settingSearchHeader').addClass('o-hidden');
+            module.settingView.find('.setting-search-header').addClass('o-hidden');
             module.settingView.find('.o-settings-container').addClass('mt16').removeClass('mb-0');
         });
         this.activeTab.removeClass('o-hidden').addClass('selected');
@@ -233,7 +233,7 @@ var BaseSettingRenderer = FormRenderer.extend({
             self.inVisibleCount = 0;
             module.settingView.find('.o-setting-box').addClass('o-hidden');
             module.settingView.find('h2').addClass('o-hidden');
-            module.settingView.find('.settingSearchHeader').addClass('o-hidden');
+            module.settingView.find('.setting-search-header').addClass('o-hidden');
             module.settingView.find('.o-settings-container').removeClass('mt16').addClass('mb-0');
 
             const upperCasedSearchText = self.searchText.toUpperCase();
@@ -250,7 +250,7 @@ var BaseSettingRenderer = FormRenderer.extend({
                     }
                 }
                 if (self.inVisibleCount !== matches.length) {
-                    module.settingView.find('.settingSearchHeader').removeClass('o-hidden');
+                    module.settingView.find('.setting-search-header').removeClass('o-hidden');
                     module.settingView.removeClass('o-hidden');
                 }
             } else {

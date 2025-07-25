@@ -32,6 +32,10 @@ class ChannelPartner extends Model {
   static rtcSessionIds = Fields.One2many('mail.channel.rtc.session', 'channelPartnerId', { string: "RTC Sessions"})
   static rtcInvitingSessionId = Fields.Many2one('mail.channel.rtc.session', {string: 'Ringing session'})
 
+  static _sqlConstraints = [
+    ["partner_or_guest_exists", 'CHECK(("partnerId" IS NOT NULL AND "guestId" IS NULL) OR ("partnerId" IS NULL AND "guestId" IS NOT NULL))', "A channel member must be a partner or a guest."],
+  ];
+
   async nameGet() {
     const res = [];
     for (const record of this) {
@@ -57,10 +61,6 @@ class ChannelPartner extends Model {
     await this.env.cr.execute(f('CREATE UNIQUE INDEX IF NOT EXISTS "mailChannelPartner_partner_unique" ON "%s" ("channelId", "partnerId") WHERE "partnerId" IS NOT NULL', this.cls._table));
     await this.env.cr.execute(f('CREATE UNIQUE INDEX IF NOT EXISTS "mailChannelPartner_guest_unique" ON "%s" ("channelId", "guestId") WHERE "guestId" IS NOT NULL', this.cls._table));
   }
-
-  static _sqlConstraints = [
-    ["partner_or_guest_exists", 'CHECK(("partnerId" IS NOT NULL AND "guestId" IS NULL) OR ("partnerId" IS NULL AND "guestId" IS NOT NULL))', "A channel member must be a partner or a guest."],
-  ]
 
   /**
    * Similar access rule as the access rule of the mail channel.

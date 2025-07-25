@@ -132,7 +132,7 @@ var WebsiteNavbar = publicWidget.RootWidget.extend({
                 args: [],
             });
             const result = await this._loadAppMenusProm;
-            const menus = core.qweb.render('website.oe-applications-menu', {
+            const menus = core.qweb.render('website.oeApplicationsMenu', {
                 'menuData': result,
             });
             this.$('#oeApplications .dropdown-menu').html(menus);

@@ -12,7 +12,7 @@
                         class="breadcrumb-item"
                         t-att-class="{ 'o-back-button': bc_index === props.breadcrumbs.length - 1 }"
                         t-att-accesskey="bc_last &amp;&amp; 'b'"
-                        t-on-click.prevent="trigger('breadcrumb-clicked', { controllerID: bc.controllerID })"
+                        t-on-click.prevent="trigger('breadcrumbClicked', { controllerID: bc.controllerID })"
                         title="Previous menu"
                         >
                         <a t-if="bc.title" href="#" t-esc="bc.title"/>
@@ -1555,7 +1555,7 @@
 </t>
 
 <t t-name="BaseSetting.SearchHeader">
-    <div class="settingSearchHeader o-hidden h4" role="search">
+    <div class="setting-search-header o-hidden h4" role="search">
         <img class="icon" t-att-src="imgurl" alt="Search"></img>
         <span class="appName"><t t-esc="string"/></span>
     </div>

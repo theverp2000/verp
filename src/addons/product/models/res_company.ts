@@ -1,6 +1,6 @@
 import { api } from "../../../core";
 import { MetaModel, Model, _super } from "../../../core/models";
-import { bool } from "../../../core/tools";
+import { _f, bool } from "../../../core/tools";
 
 @MetaModel.define()
 class ResCompany extends Model {
@@ -20,7 +20,7 @@ class ResCompany extends Model {
       if (! bool(pricelist)) {
         const params = {'currency': await currency.label}
         pricelist = await ProductPricelist.create({
-          'label': await this._t("Default {currency} pricelist", params),
+          'label': _f(await this._t("Default {currency} pricelist"), params),
           'currencyId': currency.id,
         })
       }
@@ -63,7 +63,7 @@ class ResCompany extends Model {
         else {
           const params = {'currency': await this.env.items('res.currency').browse(currencyId).label}
           const pricelist = await ProductPricelist.create({
-            'label': await this._t("Default {currency} pricelist", params),
+            'label': _f(await this._t("Default {currency} pricelist"), params),
             'currencyId': currencyId,
           })
           await this.env.items('ir.property')._setDefault(

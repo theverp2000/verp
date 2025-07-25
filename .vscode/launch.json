@@ -11,7 +11,7 @@
       ],
       "args": [
         "${workspaceFolder}/src/index",
-        // "-i", "mail",
+        // "-i", "stock",
       ]
     },
     {

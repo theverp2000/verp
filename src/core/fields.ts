@@ -14,7 +14,7 @@ import * as sql from './tools/sql';
 
 import { Cache, CopyMode, Environment, Meta } from './api/api';
 import { attrgetter, getattr, hasattr, setattr, setdefault } from "./api/func";
-import { AccessError, CacheMiss, DefaultDict, Dict, MissingError, NotImplementedError, ValueError } from "./helper";
+import { AccessError, CacheMiss, DefaultDict, Dict, MapKey, MissingError, NotImplementedError, ValueError } from "./helper";
 import { BaseModel, ModelRecords, NewId, PREFETCH_MAX, checkObjectName, expandIds, isDefinitionClass, isRegistryClass, newId } from './models';
 
 import { DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT, IterableGenerator, UpCamelCase, _convert$, _f, _t as _translate, b64decode, bool, chain, enumerate, extend, floatCompare, floatIsZero, floatRepr, floatRound, fromFormat, htmlSanitize, htmlTranslate, humanSize, imageProcess, isCallable, isInstance, isList, islice, len, markup, mergeSequences, pop, repeat, setOptions, sorted, toDate, toDatetime, toText, today, unique } from './tools';
@@ -598,19 +598,15 @@ export class Field {
           const recs = record._inCacheWithout(this);
           try {
             await recs._fetchField(this);
-          } catch (e) {
-            if (isInstance(e, AccessError)) {
-              await record._fetchField(this);
-            }
-            else {
-              throw e;
-            }
+          } catch (e) { // AccessError
+            console.debug(`${e.message}. recs._fetchField() error, try record._fetchField().`);
+            await record._fetchField(this);
           }
           if (!env.cache.contains(record, this)) {
-            throw new MissingError(
-              await this._t(env, "Record does not exist or has been deleted when get value of '%s'.", this.name) + "\n" +
-              await this._t(env, "(Record: %s, User: %s)", record, '#' + env.uid),
-            );
+            throw new MissingError([
+              await this._t("Record does not exist or has been deleted."),
+              await this._t("(Record: %s, User: %s)", record, env.uid),
+            ].join('\n'));
           }
           value = env.cache.get(record, this);
         }
@@ -629,14 +625,14 @@ export class Field {
             try {
               await this.computeValue(recs);
             } catch (e) { // AccessError, MissingError
-              console.debug(e);
+              console.debug(`${e.message}. compute error in 'recs', try compute with 'record'.`);
               await this.computeValue(record);
             }
             try {
               value = env.cache.get(record, this);
             } catch (e) { // CacheMiss
               if (this.readonly && !this.store) {
-                throw new ValueError("Failed get value %s.%s. Cause: %s", record, this.name, e);
+                throw new ValueError("Failed get value %s.%s. %s", record, this.name, e.message);
               }
               value = await this.convertToCache(false, record, false);
               env.cache.set(record, this, value);
@@ -1147,14 +1143,16 @@ export class Field {
     }
     cache.update(records, this, _.fill(Array(records._length), cacheValue));
     if (this.store) {
-      records.env.all.towrite[this.modelName] = records.env.all.towrite[this.modelName] ?? new Dict<any>();
+      records.env.all.towrite[this.modelName] = records.env.all.towrite[this.modelName] ?? new Map<any, any>();
       const towrite = records.env.all.towrite[this.modelName];
       const record = records[0];
       const writeValue = await this.convertToWrite(cacheValue, record);
       const columnValue = await this.convertToColumn(writeValue, record);
       for (const record of await records.filtered('id')) {
-        towrite[record.id] = towrite[record.id] ?? new Dict<any>();
-        towrite[record.id][this.name] = columnValue;
+        if (!towrite.has(record.id)) {
+          towrite.set(record.id, new Dict<any>());
+        }
+        towrite.get(record.id)[this.name] = columnValue;
       }
     }
     return records;
@@ -1234,7 +1232,7 @@ export class Field {
   }
 
   protected async _inverseRelated(records) {
-    const recordValue = new Map();
+    const recordValue = new MapKey();
     for (const record of records) {
       recordValue.set(record, await record[this.name]);
 
@@ -1642,7 +1640,7 @@ class _Monetary extends _Number {
       // currencies, which is functional nonsense and should not happen
       // BEWARE: do not prefetch other fields, because 'value' may be in
       // cache, and would be overridden by the value read from database!
-      currency = await (await record([0, 1]).withContext({ prefetchFields: false }))[currencyFieldName];
+      currency = await (await record.slice(0, 1).withContext({ prefetchFields: false }))[currencyFieldName];
     }
     value = func.parseFloat(value || 0.0);
     if (bool(currency)) {
@@ -1801,11 +1799,13 @@ class _String extends Field {
       }
     }
     if (updateColumn) {
-      records.env.all.towrite[this.modelName] = records.env.all.towrite[this.modelName] ?? new Dict<any>();
+      records.env.all.towrite[this.modelName] = records.env.all.towrite[this.modelName] ?? new Map<any, any>();
       const towrite = records.env.all.towrite[this.modelName];
       for (const rid of realRecs._ids) {
-        towrite[rid] = towrite[rid] ?? new Dict<any>();
-        towrite[rid][this.name] = cacheValue;
+        if (!towrite.has(rid)) {
+          towrite.set(rid, new Dict<any>());
+        }
+        towrite.get(rid)[this.name] = cacheValue;
       }
       if (this.translate === true && bool(cacheValue)) {
         const tname = `${records._name},${this.name}`;
@@ -2166,6 +2166,11 @@ export class _Datetime extends Field {
 
   convertDataType(type: string) {
     return dbFactory.convertDataTypeDatetime(type);
+  }
+
+  async convertToDisplayName(value, record): Promise<string> {
+    assert(record, 'Record expected');
+    return _Datetime.toString(await _Datetime.contextTimestamp(record, _Datetime.toDatetime(value) as Date)) as string;
   }
 
   static now(...args: any[]) {
@@ -3016,7 +3021,8 @@ export class _Many2one extends _Relational {
       // access rights, and not the value's access rights.
       try {
         // performance: value.sudo() prefetches the same records as value
-        return [value.id, await (await value.sudo()).displayName];
+        const result = [value.id, await (await value.sudo()).displayName];
+        return result;
       } catch (e) { // MissingError
         // Should not happen, unless the foreign key is missing.
         // console.error(e.message);
@@ -3083,12 +3089,14 @@ export class _Many2one extends _Relational {
 
     // update towrite
     if (this.store) {
-      records.env.all.towrite[this.modelName] = records.env.all.towrite[this.modelName] ?? new Dict<any>();
+      records.env.all.towrite[this.modelName] = records.env.all.towrite[this.modelName] ?? new Map<any, any>();
       const towrite = records.env.all.towrite[this.modelName];
       for (const record of await records.filtered('id')) {
         // cacheValue is already in database format
-        towrite[record.id] = towrite[record.id] ?? new Dict<any>();
-        towrite[record.id][this.name] = cacheValue;
+        if (!towrite.has(record.id)) { 
+          towrite.set(record.id, new Dict<any>());
+        }
+        towrite.get(record.id)[this.name] = cacheValue;
       }
     }
 
@@ -3379,7 +3387,12 @@ class _RelationalMulti extends _Relational {
 
   async convertToWrite(value: any, record: ModelRecords) {
     if (Array.isArray(value)) {
-      value = record.env.items(this.comodelName).browse(value);
+      if (value.some(id => typeof id !== 'number')) {
+        return value;
+      }
+      else {
+        value = record.env.items(this.comodelName).browse(value);
+      }
     }
 
     if (isInstance(value, BaseModel) && value._name === this.comodelName) {
@@ -3419,6 +3432,7 @@ class _RelationalMulti extends _Relational {
       }
       return result;
     }
+
     if (value === false || value == null) {
       return [Command.clear()];
     }
@@ -3677,7 +3691,6 @@ export class _One2many extends _RelationalMulti {
             const domain = (await this.getDomainList(model)).concat([[inverse, 'in', recs.ids], ['id', 'not in', lines.ids]]);
             await unlink(await comodel.search(domain));
             await lines.set(inverse, recs([-1]));
-            // const a = [];
           }
         }
       }

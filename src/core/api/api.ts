@@ -2,7 +2,7 @@ require('./../globals');
 import _ from 'lodash';
 import 'reflect-metadata';
 import { Field } from '../fields';
-import { Map2, Dict, StackMap } from '../helper';
+import { Dict, Map2, StackMap } from '../helper';
 import { WebRequest } from '../http';
 import { Registry } from '../modules/registry';
 import { Cursor } from '../sql_db';
@@ -373,16 +373,15 @@ export class Environment {
         for (const field of fields) {
           let ids = _protected.get(field, []);
           ids = _.union(ids, records._ids);
-          _protected.set(field, ids);
+          _protected.set(field, ids); // FrozenSet()
         }
       }
       if (isCallable(func)) {
         await func();
       }
     } catch (e) {
-      if (!isInstance(e, MissingError)) {
-        console.debug('Protecting alert', e.stack ?? e.message); // todo hide
-      }
+      console.debug('>> Protecting alert', e.stack ?? e.message); // todo hide
+      throw e;
     } finally {
       _protected.pop();
     }
@@ -638,7 +637,7 @@ export class Cache {
     try {
       const fieldCache = this._getFieldCache(record, field);
       if (!fieldCache.has(record._ids[0])) {
-        throw new KeyError('field "%s" of %s(%s) not found in env.cache', field.name, record._name, record._ids[0]);
+        throw new KeyError('field "%s" of %s not found in env.cache', field.name, record);
       }
       return fieldCache.get(record._ids[0]);
     } catch (e) {

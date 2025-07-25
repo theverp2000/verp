@@ -18,9 +18,7 @@ import { markup } from '../../../tools/xml';
 import { QWeb, QWebCodeFound, QWebException, dedent } from './qweb';
 
 function _debug(msg, ...args) {
-  if (msg.startsWith('async function* template405')) {
-    console.log(msg, ...args);
-  }
+  console.log(msg, ...args);
 }
 
 /**
@@ -83,23 +81,42 @@ const _FORMAT_REGEX = /(?:#\{(.+?)\})|(?:\{\{(.+?)\}\})/g;
 
 const _VARNAME_REGEX = /\W/g;
 
-const _allowedGlobals = Object.getOwnPropertyNames(global);
+const _VOID_ELEMENTS = new FrozenSet([
+  'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen',
+  'link', 'meta', 'param', 'source', 'track', 'wbr', 'menuitem',]);
+
+const _NAME_GEN = count();
+
+const _ALLOWED_GLOBALS = Object.getOwnPropertyNames(global);
+
+const _ALLOWED_KEYWORDS = ['await', 'async', 'as', 'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'else', 'enum', 'export', 'extends', 'false', 'finally', 'for', 'function', 'if', 'implements', 'import', 'in', 'instanceof', 'interface', 'let', 'new', 'null', 'of', 'package', 'private', 'protected', 'public', 'require', 'return', 'super', 'switch', 'static', 'then', 'this', 'throw', 'try', 'true', 'typeof', 'undefined', 'var', 'void', 'while', 'with', 'yield', 'includes'].concat(_ALLOWED_GLOBALS);
 
 @MetaModel.define()
 export class IrQWebFactory extends QWeb {
   static _module = module;
   static _name = 'ir.qweb';
   // A void element is an element whose content model never allows it to have contents under any circumstances. Void elements can have attributes.
-  _voidElements = new FrozenSet([
-    'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen',
-    'link', 'meta', 'param', 'source', 'track', 'wbr', 'menuitem',]);
-  _nameGen = count();
+
+  get _voidElements() {
+    return _VOID_ELEMENTS;
+  }
+
+  get _nameGen() {
+    return _NAME_GEN;
+  }
+
+  get _allowedKeywords() {
+    return _ALLOWED_KEYWORDS;
+  }
+
   // _availableObjects builtins is not security safe (it's dangerous), is overridden by irQweb to only expose the safeEval builtins.
-  _availableObjects: {} = {
-    // Dict,
-    // MapKey
+  static _availableObjects: {} = {
+    Dict,
+    MapKey
   };
-  _allowedKeywords = ['await', 'async', 'as', 'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default', 'delete', 'do', 'else', 'enum', 'export', 'extends', 'false', 'finally', 'for', 'function', 'if', 'implements', 'import', 'in', 'instanceof', 'interface', 'let', 'new', 'null', 'of', 'package', 'private', 'protected', 'public', 'require', 'return', 'super', 'switch', 'static', 'then', 'this', 'throw', 'try', 'true', 'typeof', 'undefined', 'var', 'void', 'while', 'with', 'yield', 'includes'].concat(_allowedGlobals);
+  get _availableObjects() {
+    return this.constructor['_availableObjects'];
+  }
 
   // values for running time
   _prepareValues(values, options: {} = {}) {
@@ -237,11 +254,12 @@ export class IrQWebFactory extends QWeb {
   //compile
   _compileFormat(expr: string) {
     let text = '';
-    const values = [];
     let baseIdx = 0;
+    let literal;
+    const values = [];
     const matches = expr.matchAll(_FORMAT_REGEX);
     for (const m of matches) {
-      const literal = expr.slice(baseIdx, m.index);
+      literal = expr.slice(baseIdx, m.index);
       if (literal) {
         text += literal.replace('{', '{{').replace("}", "}}");
       }
@@ -250,7 +268,7 @@ export class IrQWebFactory extends QWeb {
       baseIdx = m.index + m[0].length;
     }
     // str past last regex match
-    const literal = expr.slice(baseIdx);
+    literal = expr.slice(baseIdx);
     if (literal) {
       text += literal.replace('{', '{{').replace("}", "}}");
     }
@@ -765,19 +783,19 @@ export class IrQWebFactory extends QWeb {
     const varname = options['tOptionsVarname'] ?? 'tOptions';
     const code = [];
     const dictArg = [];
-    for (const key of Object.keys(el.attributes)) {
-      if (key.startsWith('t-options-')) {
-        const value = xml.popAttribute(el, key);
-        const optionName = key.slice(10);
+    for (const {name} of xml.getAttributes(el)) {
+      if (name.startsWith('t-options-')) {
+        const value = xml.popAttribute(el, name);
+        const optionName = name.slice(10);
         dictArg.push(`${repr(optionName)}: ${this._compileExpr(value)}`);
       }
     }
     const tOptions = xml.popAttribute(el, 't-options');
     if (len(tOptions) && len(dictArg)) {
-      code.push(this._indent(`${varname} = ${[...(new Set([this._compileExpr(tOptions), dictArg.join(', ')]))]}`), indent);
+      code.push(this._indent(`${varname} = {...${this._compileExpr(tOptions)}, ${dictArg.join(', ')}}`), indent);
     }
     else if (len(dictArg)) {
-      code.push(this._indent(`${varname} = ${dictArg.join(', ')}`, indent));
+      code.push(this._indent(`${varname} = {${dictArg.join(', ')}}`, indent));
     }
     else if (len(tOptions)) {
       code.push(this._indent(`${varname} = ${this._compileExpr(tOptions)}`, indent));
@@ -1263,7 +1281,7 @@ export class IrQWebFactory extends QWeb {
 
     code.push(this._indent(dedent(`
       tCallOptions = Object.assign({}, compileOptions);
-      Object.assign(tCallOptions, {'callerTemplate': ${repr(String(options['template']))}, 'lastPathNode': ${repr(String(xml.getpath(el, options['root'])))} })
+      Object.assign(tCallOptions, { 'callerTemplate': ${repr(String(options['template']))}, 'lastPathNode': ${repr(String(xml.getpath(el, options['root'])))} });
     `).trim(), indent));
     if (len(nsmap)) {
       const nsmap = []
@@ -1367,7 +1385,7 @@ export class IrQWebFactory extends QWeb {
     const wrapFuncClose = [
       `    } catch(e) {`,
       `        _debug('Error in %s at %s: %s', '${defName}', log["lastPathNode"], e);`,
-      `        _debug(String(${defName})); // detail code`,
+      `        // console.debug(String(${defName})); // detail code`,
       `        throw e;`,
       `    }`,
       `}`

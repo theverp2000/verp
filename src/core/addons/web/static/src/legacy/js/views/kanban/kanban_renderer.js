@@ -64,7 +64,7 @@ function transformQwebTemplate(node, fields) {
                     node.attrs.type = 'button';
                 }
 
-                var actionClasses = " oe-kanban-action oe-kanban-action_" + node.tag;
+                var actionClasses = " oe-kanban-action oe-kanban-action-" + node.tag;
                 if (node.attrs['t-attf-class']) {
                     node.attrs['t-attf-class'] += actionClasses;
                 } else if (node.attrs['t-att-class']) {

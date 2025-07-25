@@ -132,7 +132,7 @@ export function divmod(a, b) {
   return [Math.trunc(a / b), a % b];
 }
 
-function round(f: number): any {
+export function round(f: number): any {
   const roundf = Math.round(f);
   if (Math.round(f + 1) - roundf != 1) {
     return f + copysign(0.5, f);

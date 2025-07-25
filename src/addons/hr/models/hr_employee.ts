@@ -22,7 +22,8 @@ class HrEmployeePrivate extends Model {
     static _description = "Employee";
     static _order = 'label';
     static _parents = ['hr.employee.base', 'mail.thread', 'mail.activity.mixin', 'resource.mixin', 'avatar.mixin'];
-    static _mailPostAccess = 'read';
+
+    get _mailPostAccess() { return 'read' };
 
     // resource and user
     // required on the resource, make sure required="true" set in the view

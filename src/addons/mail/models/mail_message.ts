@@ -364,7 +364,7 @@ class Message extends Model {
     }
     else {
       // re-construct a list based on ids, because set did not keep the original order
-      const idList = ids.filter(id => finalIds.includes(id))
+      const idList = ids.filter(id => finalIds.includes(id));
       return idList;
     }
   }
@@ -994,11 +994,13 @@ class Message extends Model {
     await this.checkAccessRule('read');
     const valsList = await this._readFormat(fnames);
 
-    const threadIdsByModelName = new Dict<any>() //(set)
+    const threadIdsByModelName = {};
     for (const message of this) {
       const [model, resId] = await message('model', 'resId');
       if (model && resId) {
-        threadIdsByModelName[model] = threadIdsByModelName[model] ?? new Set();
+        if (!(model in threadIdsByModelName)) {
+          threadIdsByModelName[model] = new Set();
+        }
         threadIdsByModelName[model].add(resId);
       }
     }
@@ -1089,16 +1091,12 @@ class Message extends Model {
 
   /**
    * Get a limited amount of formatted messages with provided domain.
-      :param domain: the domain to filter messages;
-      :param min_id: messages must be more recent than this id
-      :param max_id: message must be less recent than this id
-      :param limit: the maximum amount of messages to get;
-      :returns list(dict).
-   * @param domain 
-   * @param maxId 
-   * @param minId 
-   * @param limit 
-   * @returns 
+
+   * @param domain the domain to filter messages
+   * @param maxId messages must be less recent than this id
+   * @param minId messages must be more recent than this id
+   * @param limit the maximum amount of messages to get
+   * @returns list of objects {}[]
    */
   @api.model()
   async _messageFetch(domain, maxId?: any, minId?: any, limit: number = 30) {
@@ -1114,7 +1112,9 @@ class Message extends Model {
   /**
    * Get the message values in the format for web client. Since message values can be broadcasted,
     computed fields MUST NOT BE READ and broadcasted.
-    :returns list(dict).
+
+   * @param formatReply 
+   * @returns list(dict).
       Example :
         {
           'body': HTML content of the message
@@ -1151,8 +1151,6 @@ class Message extends Model {
           'isNotification': false # only if the message is a note but is a notification aka not linked to a document like assignation
           'parentMessage': {...}, # formatted message that this message is a reply to. Only present if format_reply is true
         }
-   * @param formatReply 
-   * @returns 
    */
   async messageFormat(formatReply: boolean = true) {
     const valsList = await this._messageFormat(this._getMessageFormatFields(), formatReply);
@@ -1290,7 +1288,7 @@ class Message extends Model {
   }
 
   /**
-   * Return the related document name, using name_get. It is done using SUPERUSER_ID, to be sure to have the record name correctly stored.
+   * Return the related document name, using nameGet. It is done using SUPERUSER_ID, to be sure to have the record name correctly stored.
    * @param values 
    * @returns 
    */
@@ -1315,7 +1313,7 @@ class Message extends Model {
     const resId = values['resId'] || this._context['default_resId'] || false;
     const emailFrom = values['emailFrom'];
     const messageType = values['messageType'];
-    let records;// = None
+    let records;
     if (await (this as any).isThreadMessage({ 'model': model, 'resId': resId, 'messageType': messageType })) {
       records = this.env.items(model).browse([resId]);
     }

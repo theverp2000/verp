@@ -260,9 +260,9 @@ class MailActivity extends Model {
     }
     for (const [docModel, docIds] of activityToDocuments.items()) {
       let docOperation;
-      const model = this.env.items(docModel);
-      if (hasattr(model.cls, '_mailPostAccess')) {
-        docOperation = model.cls._mailPostAccess;
+      let model = this.env.items(docModel);
+      if (model._mailPostAccess) {
+        docOperation = model._mailPostAccess;
       }
       else if (operation === 'read') {
         docOperation = 'read';
@@ -272,8 +272,9 @@ class MailActivity extends Model {
       }
       const right = await model.checkAccessRights(docOperation, false);
       if (right) {
-        const validDocIds = await model.browse(docIds)[filterAccessRulesMethod](docOperation);
-        valid = valid.add(await remaining.filtered(async (activity) => await activity.resModel === docModel && validDocIds.ids.includes(activity.resId)))
+        model = await model.browse(docIds);
+        const validDocIds = await model[filterAccessRulesMethod].call(model, docOperation);
+        valid = valid.add(await remaining.filtered(async (activity) => await activity.resModel === docModel && validDocIds.ids.includes(await activity.resId)));
       }
     }
     return valid;
@@ -468,8 +469,8 @@ class MailActivity extends Model {
       // if available; otherwise fall back on read
       let docOperation;
       const model = this.env.items(docModel);
-      if (hasattr(model.cls, '_mailPostAccess')) {
-        docOperation = model.cls._mailPostAccess;
+      if (model._mailPostAccess) {
+        docOperation = model._mailPostAccess;
       }
       else {
         docOperation = 'read';

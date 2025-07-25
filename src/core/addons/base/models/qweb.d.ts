@@ -57,13 +57,14 @@ declare const _allowedGlobals: RegExp;
 
 declare class QWeb extends AbstractModel {
      // A void element is an element whose content model never allows it to have contents under any circumstances. Void elements can have attributes.
-     _voidElements: FrozenSet<any>;
+     get _voidElements(): FrozenSet<any>;
+
      // _availableObjects builtins is not security safe (it's dangerous), is overridden by irQweb to only expose the safeEval builtins.
-     _nameGen: any;
+     get _nameGen(): Generator<number, void, unknown>;
 
-     _availableObjects: {};
+     get _availableObjects(): {};
 
-     _allowedKeywords: any[];
+     get _allowedKeywords(): any[];
 
      // values for running time
      _prepareValues(values, options?: {}): {};

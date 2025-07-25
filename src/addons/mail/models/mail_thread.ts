@@ -73,8 +73,12 @@ class MailThread extends AbstractModel {
   static _module = module;
   static _name = 'mail.thread';
   static _description = 'Email Thread';
-  static _mailFlatThread = true;    // flatten the discussino history
-  static _mailPostAccess = 'write'; // access required on the document to post on it
+
+  // flatten the discussino history
+  get _mailFlatThread() { return true };
+  
+  // access required on the document to post on it
+  get _mailPostAccess() { return 'write' };
 
   static messageIsFollower = Fields.Boolean('Is Follower', { compute: '_computeMessageIsFollower', search: '_searchMessageIsFollower' });
   static messageFollowerIds = Fields.One2many('mail.followers', 'resId', { string: 'Followers', groups: 'base.groupUser' });
@@ -493,9 +497,8 @@ class MailThread extends AbstractModel {
    */
   @api.model()
   async _getMailMessageAccess(resIds, operation, modelName?: any) {
-    const DocModel = modelName ? this.env.models[modelName] : this.cls;
-    // const createAllow = getattr(DocModel, '_mailPostAccess', 'write');
-    const createAllow = DocModel['_mailPostAccess'] ?? 'write';
+    const DocModel = modelName ? this.env.items(modelName) : this;
+    const createAllow = DocModel._mailPostAccess || 'write';
 
     let checkOperation;
     if (['write', 'unlink'].includes(operation)) {
@@ -2016,7 +2019,7 @@ class MailThread extends AbstractModel {
   async _mailFindPartnerFromEmails(emails, options: { records?: any, forcecreate?: boolean, extraDomain?: any } = {}): Promise<any[]> {
     let followers;
     const records = options.records;
-    if (records && isSubclass(records, this.pool.models['mail.thread'])) {
+    if (bool(records) && isSubclass(records, this.pool.models['mail.thread'])) {
       followers = await records.mapped('messagePartnerIds');
     }
     else {
@@ -2713,7 +2716,7 @@ class MailThread extends AbstractModel {
     // If parent get up one level to try to flatten threads without completely
     // removing hierarchy.
     const MailMessageSudo = await this.env.items('mail.message').sudo();
-    if (this.cls._mailFlatThread && !parentId) {
+    if (this._mailFlatThread && !parentId) {
       const parentMessage = await MailMessageSudo.search([['resId', '=', this.id], ['model', '=', this._name], ['messageType', '!=', 'userNotification']], { order: "id ASC", limit: 1 });
       // parent_message searched in sudo for performance, only used for id.
       // Note that with sudo we will match message with internal subtypes.
@@ -2722,7 +2725,7 @@ class MailThread extends AbstractModel {
     else if (parentId) {
       let currentAncestor = await MailMessageSudo.search([['id', '=', parentId], ['parentId', '!=', false]]);
       let currentAncestorParentId = await currentAncestor.parentId;
-      if (this.cls._mailFlatThread) {
+      if (this._mailFlatThread) {
         if (currentAncestor.ok) {
           // avoid loops when finding ancestors
           const processedList = [];

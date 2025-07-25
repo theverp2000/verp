@@ -1,9 +1,9 @@
 import * as util from "node:util";
 
 export function parseStack(e) {
-  if (e instanceof Error && e.stack) {
-    return e.stack.slice(e.stack.indexOf(e.name)).trim().split('\n');
-  }
+  // if (e instanceof Error && e.stack) {
+  //   return e.stack.slice(e.stack.indexOf(e.name)).trim().split('\n');
+  // }
   return [String(e)];
 }
 

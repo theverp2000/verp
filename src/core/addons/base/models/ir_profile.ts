@@ -19,22 +19,17 @@ class IrProfile extends Model {
   static _order = 'session desc, id desc';
 
   static createdAt = Fields.Datetime('Creation Date');
-
   static session = Fields.Char('Session', { index: true });
   static label = Fields.Char('Description');
   static duration = Fields.Float('Duration');
-
   static initStackTrace = Fields.Text('Initial stack trace', { prefetch: false });
-
   static sql = Fields.Text('Sql', { prefetch: false });
   static tracesAsync = Fields.Text('Traces Async', { prefetch: false });
   static tracesSync = Fields.Text('Traces Sync', { prefetch: false });
   static qweb = Fields.Text('Qweb', { prefetch: false });
   static entryCount = Fields.Integer('Entry count');
-
   static speedscope = Fields.Binary('Speedscope', { compute: '_computeSpeedscope' });
   static speedscopeUrl = Fields.Text('Open', { compute: '_computeSpeedscopeUrl' });
-
 
   @api.autovacuum()
   async _gcProfile() {

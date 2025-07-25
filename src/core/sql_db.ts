@@ -73,10 +73,14 @@ class BaseCursor {
       }
     }
     catch (e) {
-      console.log(e.message + (errObj ? `\nPrevious: ${errObj.message}` : ''));
+      const msg = e.message + (errObj ? `\nPrevious: ${errObj.message}` : '');
+      throw new Error(msg);
     }
     finally {
       await this.close();
+    }
+    if (errObj) {
+      throw errObj;
     }
   }
 
@@ -386,13 +390,13 @@ export class Cursor extends BaseCursor {
       }
       params = options?.params;
     }
-    if (params && params.length != (sql.match(/%s/g) || '').length) {
-      console.debug(`params.length[${params.length}] != "%%s".count[${(sql.match(/%s/g) || '').length}] >>`);
-      console.debug(sql, '\nparams:', String(params).slice(0, 200).trim());
+    if (params && params.length != (sql.match(/%s/g) || '').length) { // For debug
+      throw new Error([`params.length[${params.length}] != "%%s".count[${(sql.match(/%s/g) || '').length}] >>\n`,
+        sql, '\nparams:', String(params).slice(0, 200).trim()].join(''));
     }
     if (options?.bind && options.bind.length != (sql.match(/\$\d/g) || '').length) {
-      console.debug(`bind.length[${options.bind.length}] != "$$".count[${(sql.match(/\$\d/g) || '').length}] >>`);
-      console.debug(sql, '\nbinds:', String(options.bind).slice(0, 200).trim());
+      throw new Error([`bind.length[${options.bind.length}] != "$$".count[${(sql.match(/\$\d/g) || '').length}] >>\n`,
+        sql, '\nbinds:', String(options.bind).slice(0, 200).trim()].join(''));
     }
     // If (params or bind).length != match.length, params is cut in this.format, bind is cut in _obj.query (sequelize)
     sql = this.format(sql, params);

@@ -31,17 +31,17 @@ class Base extends BaseModel {
 @MetaModel.define()
 class Unknown extends BaseModel {
   static _module = module;
-  protected static __doc__ = 'Abstract model used as a substitute for relational fields with an unknown comodel.'
-  protected static _name = 'unknown'
-  protected static _description = 'Unknown'
+  static __doc__ = 'Abstract model used as a substitute for relational fields with an unknown comodel.';
+  static _name = 'unknown';
+  static _description = 'Unknown';
 }
 
 @MetaModel.define()
 class IrModel extends Model {
   static _module = module;
-  protected static _name = 'ir.model';
-  protected static _description = 'Models';
-  protected static _order = 'model';
+  static _name = 'ir.model';
+  static _description = 'Models';
+  static _order = 'model';
 
   protected _defaultFieldId() {
     if (this.env.context['installMode']) {

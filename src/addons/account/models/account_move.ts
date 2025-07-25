@@ -52,13 +52,11 @@ class AccountMove extends Model {
   static _parents = ['portal.mixin', 'mail.thread', 'mail.activity.mixin', 'sequence.mixin'];
   static _description = "Journal Entry";
   static _order = 'date desc, label desc, id desc';
-  static _mailPostAccess = 'read';
   static _checkCompanyAuto = true;
 
-  static _sequenceIndex = "journalId";
-  get _sequenceIndex() {
-    return AccountMove._sequenceIndex;
-  };
+  get _mailPostAccess() { return 'read' };
+
+  get _sequenceIndex() { return 'journalId' };
 
   // ==== Business fields ====
   static label = Fields.Char({ string: 'Number', copy: false, compute: '_computeName', readonly: false, store: true, index: true, tracking: true });
@@ -3784,8 +3782,7 @@ class AccountMove extends Model {
         throw new UserError(await this._t('The entry %s (id %s) is already posted.', await move.label, move.id));
       }
       if (!bool(await (await move.lineIds).filtered(async (line) => !await line.displayType))) {
-        console.log('You need to add a line before posting. modeId=%s lines=[%s]', move.id, String((await move.lineIds)._ids));
-        throw new UserError(await this._t('You need to add a line before posting.'));
+        throw new UserError(await this._t('You need to add a line before posting: modeId=%s linesIds=[%s]', move.id, String((await move.lineIds)._ids)));
       }
       const [date, journalId] = await move('date', 'journalId');
       if (await move.autoPost && date > await _Date.contextToday(this)) {

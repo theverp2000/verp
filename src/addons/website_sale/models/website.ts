@@ -118,7 +118,7 @@ class Website extends Model {
         if (!countryCode || !pricelists.ok) {
             pricelists = pricelists.or(await allPl.filtered(pl => _checkShowVisible(pl)));
         }
-        // if logged in, add partner pl (which is `property_product_pricelist`, might not be website compliant)
+        // if logged in, add partner pl (which is `propertyProductPricelist`, might not be website compliant)
         const isPublic = (await this['userId']).id == (await this.env.user()).id;
         if (! isPublic) {
             // keep partnerPl only if website compliant
@@ -146,7 +146,7 @@ class Website extends Model {
      */
     async _getPricelistAvailable(req, showVisible=false) {
         let website = getRequestWebsite(req);
-        if (! website) {
+        if (!bool(website)) {
             if (this.env.context['websiteId']) {
                 website = this.browse(this.env.context['websiteId']);
             }
@@ -181,8 +181,8 @@ class Website extends Model {
      * @param plId 
      * @returns 
      */
-    async isPricelistAvailable(plId) {
-        return (await this.getPricelistAvailable({showVisible: false})).ids.includes(plId);
+    async isPricelistAvailable(req, plId) {
+        return (await this.getPricelistAvailable(req, false)).ids.includes(plId);
     }
 
     /**

@@ -3,21 +3,21 @@ import assert from "node:assert";
 import { Command, Field, _Many2one, _Number, _One2many, api, tools } from "../../..";
 import { Environment } from "../../../api";
 import { attrgetter, setdefault } from "../../../api/func";
-import { Map2, Dict, OrderedDict, OrderedSet2 } from "../../../helper/collections";
+import { Dict, Map2, OrderedDict, OrderedSet2 } from "../../../helper/collections";
 import { AccessError, MissingError, UserError, ValueError } from "../../../helper/errors";
 import { LRU } from "../../../helper/lru";
 import { AbstractModel, BaseModel, LOG_ACCESS_COLUMNS, MAGIC_COLUMNS, MetaModel, NewId, VALID_AGGREGATE_FUNCTIONS, checkObjectName } from "../../../models";
 import { expression } from "../../../osv";
 import { Query } from "../../../osv/query";
+import { Cursor } from "../../../sql_db";
 import { bool } from "../../../tools/bool";
 import { equal, isCallable, isInstance, partial } from "../../../tools/func";
-import { CountingStream, chain, enumerate, extend, isList, islice, itemgetter, len, map, next, sorted, takewhile } from "../../../tools/iterable";
+import { CountingStream, chain, enumerate, extend, islice, itemgetter, len, map, next, sorted, takewhile } from "../../../tools/iterable";
 import { stringify } from "../../../tools/json";
 import { cleanContext, groupby, partition, pop, repr, unique, update } from "../../../tools/misc";
 import { UpCamelCase, _f, f } from "../../../tools/utils";
 import { E, getrootXml, parseXml, serializeXml } from "../../../tools/xml";
 import { MODULE_UNINSTALL_FLAG } from "./ir_model";
-import { Cursor } from "../../../sql_db";
 
 function raiseOnInvalidObjectName(name) {
   if (!checkObjectName(name)) {
@@ -238,7 +238,7 @@ class IrFactory extends AbstractModel {
   }
 
   @api.model()
-  async new(values = {}, options: { origin?: any, ref?: any }={}) {
+  async new(values = {}, options: { origin?: any, ref?: any } = {}) {
     values = values ?? {};
     let origin = options.origin;
     if (origin != null) {
@@ -338,7 +338,7 @@ class IrFactory extends AbstractModel {
       }
     }
     for (const [key, [field, value, recordIds]] of inversesUpdate) {
-      await field._updateInverses(this.browse(recordIds), value)
+      await field._updateInverses(this.browse(recordIds), value);
     }
 
     await records._parentStoreCreate();
@@ -462,7 +462,7 @@ class IrFactory extends AbstractModel {
       for (const [key, val] of vals.items()) {
         const field = self._fields[key];
         if (!field) {
-          console.error('[%s: "%s"] in vals: %s', key, val, stringify(vals));
+          console.error('[%s:"%s"] in vals: %s', key, val, stringify(vals));
           throw new ValueError("Invalid field %s on model %s", key, self._name);
         }
         if (field.companyDependent) {
@@ -762,7 +762,7 @@ class IrFactory extends AbstractModel {
       if (this.cls._parentStore && (this.cls._parentName in vals)) {
         await this.flush([this.cls._parentName]);
       }
-      const inverseFields = []
+      const inverseFields = [];
       for (const fs of determineInverses.values()) {
         for (const f of fs) {
           inverseFields.push(f.name);
@@ -1137,7 +1137,7 @@ class IrFactory extends AbstractModel {
    */
   @api.model()
   async _nameSearch(name: string = '', args?: any, operator: string = 'ilike', opts: { limit?: number, nameGetUid?: any } = {}): Promise<number | any[] | Query> {
-    let {limit=100, nameGetUid=false} = opts;
+    let { limit = 100, nameGetUid = false } = opts;
     args = args || [];
     // optimize out the default criterion of ``ilike ''`` that matches everything
     if (!this.cls._recName) {
@@ -1485,7 +1485,7 @@ class IrFactory extends AbstractModel {
             }
           }
         }
-        if (field.type === 'date' || field.type === 'datetime' || field instanceof _Number) { 
+        if (field.type === 'date' || field.type === 'datetime' || field instanceof _Number) {
           // need convert date/datetime/_Number because returned as string from db/sequelize without Z, ex: 2024-10-22 05:06:25.989
           // ==> add 'Z' at the end
           values = await Promise.all(values.map(async val => field.convertFromColumn(val, this)));
@@ -2676,15 +2676,13 @@ class IrFactory extends AbstractModel {
   async flush(fnames?: string[], records?: any): Promise<void> {
     async function _process(model, idVals) {
       const updates = new Map();
-      for (const [rid, vals] of idVals.items()) {
-        let key = updates.get(vals);
-        if (!key) {
-          key = [];
-          updates.set(vals, key);
+      for (const [rid, vals] of idVals.entries()) {
+        if (!updates.has(vals)) {
+          updates.set(vals, []);
         }
-        key.push(parseInt(rid));
+        updates.get(vals).push(rid);
       }
-      for (const [vals, ids] of updates) {
+      for (const [vals, ids] of updates.entries()) {
         const recs = model.browse(ids);
         try {
           await recs._write(vals);
@@ -2717,7 +2715,7 @@ class IrFactory extends AbstractModel {
         }
         let all = true;
         for (const record of records) {
-          if (intersection(fnames, Object.keys(towrite[record.id] ?? {})).length) {
+          if (intersection(fnames, Object.keys(towrite.get(record.id) ?? {})).length) {
             all = false;
             break;
           }
@@ -2740,7 +2738,7 @@ class IrFactory extends AbstractModel {
       const towrite = this.env.all.towrite;
       for (const [modelName, fields] of modelFields.items()) {
         let found;
-        for (const vals of Object.values<any>(towrite[modelName] ?? {})) {
+        for (const vals of (towrite[modelName] ?? new Dict()).values()) {
           found = fields.some(field => field.name in vals);
           if (found) {
             break;

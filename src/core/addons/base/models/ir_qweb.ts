@@ -24,16 +24,12 @@ class IrQWeb extends IrQWebFactory {
   static _parents = 'ir.qweb';
   static _description = 'Qweb';
 
-  // OVERRIDE
-  _availableObjects = Object.assign({}, _BUILTINS);
   _emptyLines = /\n\s*\n/g;
 
-  // get _availableObjects() {
-  //   return IrQWeb._availableObjects;
-  
-  // get _emptyLines() {
-  //   return IrQWeb._emptyLines;
-  // }
+  // OVERRIDE
+  get _availableObjects() {
+    return Object.assign({}, _BUILTINS);
+  }
   
   /**
    * OVERRIDE

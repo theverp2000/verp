@@ -199,14 +199,17 @@ class Users extends Model {
       'today': `'${_Date.toString(await _Date.contextToday(self))}'`,
       'userId': self.env.uid,
     }))
-    const recordsByStateByModel = new DefaultDict(() => { return { "today": [], "overdue": [], "planned": [], "all": [] } });
+    const recordsByStateByModel = {};
     for (const data of activityData) {
+      if (!(data["id"] in recordsByStateByModel)) {
+        recordsByStateByModel[data["id"]] = { today: [], overdue: [], planned: [], all: [] }
+      }
       recordsByStateByModel[data["id"]][data["states"]] = Array.from(data["resIds"]);
       recordsByStateByModel[data["id"]]["all"] = _.union(recordsByStateByModel[data["id"]]["all"], data["resIds"]);
     }
     const userActivities = {};
-    for (const [modelId, modelDic] of recordsByStateByModel) {
-      const model = await (await this.env.items("ir.model").sudo()).browse(modelId).withPrefetch(recordsByStateByModel.keys());
+    for (const [modelId, modelDic] of Object.entries(recordsByStateByModel)) {
+      const model = await (await this.env.items("ir.model").sudo()).browse(modelId).withPrefetch(Object.keys(recordsByStateByModel).map(id => Number(id)));
       const modelName = await model.model;
       const allowedRecords = await this.env.items(modelName).search([["id", "in", Array.from(modelDic["all"])]]);
       if (!bool(allowedRecords)) {

@@ -536,36 +536,36 @@ class DiscussController extends http.Controller {
 
   @http.route('/mail/readFollowers', { methods: ['POST'], type: 'json', auth: 'user' })
   async readFollowers(req, res, opts: { resModel?: any, resId?: any } = {}) {
+    const { resModel, resId } = opts;
     const env = await req.getEnv();
     await env.items('mail.followers').checkAccessRights("read");
-    await env.items(opts.resModel).checkAccessRights("read");
-    await env.items(opts.resModel).browse(opts.resId).checkAccessRule("read");
+    await env.items(resModel).checkAccessRights("read");
+    await env.items(resModel).browse(resId).checkAccessRule("read");
 
-    const followerRecs = await env.items('mail.followers').search([['resModel', '=', opts.resModel], ['resId', '=', opts.resId]]);
+    const followerRecs = await env.items('mail.followers').search([['resModel', '=', resModel], ['resId', '=', resId]]);
 
     const followers = [];
-    let followerId;// = None
+    let followerId;
     for (const follower of followerRecs) {
-      const [label, displayName, email, partnerId, isActive] = await follower('label', 'displayName', 'email', 'partnerId', 'isActive');
-      if (partnerId.eq(await (await env.user()).partnerId)) {
+      if ((await follower.partnerId).eq(await (await env.user()).partnerId)) {
         followerId = follower.id;
       }
       followers.push({
         'id': follower.id,
-        'partnerId': partnerId.id,
-        'label': label,
-        'displayName': displayName,
-        'email': email,
-        'isActive': isActive,
+        'partnerId': (await follower.partnerId).id,
+        'label': await follower.label,
+        'displayName': await follower.displayName,
+        'email': await follower.email,
+        'isActive': await follower.isActive,
         // When editing the followers, the "pencil" icon that leads to the edition of subtypes
         // should be always be displayed and not only when "debug" mode is activated.
         'isEditable': true,
-        'partner': (await partnerId.mailPartnerFormat()).get(partnerId),
+        'partner': (await (await follower.partnerId).mailPartnerFormat()).get(await follower.partnerId),
       });
     }
     return {
       'followers': followers,
-      'subtypes': followerId ? await this.readSubscriptionData(req, res, { followerId: followerId }) : null
+      'subtypes': followerId ? await this.readSubscriptionData(req, res, { followerId }) : null
     }
   }
 

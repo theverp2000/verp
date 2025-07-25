@@ -1020,13 +1020,13 @@ export class XmlImport {
           throw e;
         }
         else if (tools.isInstance(e, ValidationError)) {
-          const msg = tools._f("while parsing {file}.\n\t{err}\n\t{viewline}\n\tView context: {context}", {
+          const msg = tools._f("while parsing {file}.\n\t{err}\n\t{viewline}", {
             file: this.xmlFilename,
             err: e.message,
-            viewline: tools.ellipsis(rec.toString(), 200),
-            context: stringify(getattr(e, 'context', null) || '-no context-'),
+            viewline: rec.tagName === 'template' ? tools.ellipsis(rec.toString(), 200) : rec.toString()
           });
-          console.debug(msg);
+          const ctx = getattr(e, 'context', null);
+          console.debug(msg + (ctx ? `\n\t[context]: ${stringify(ctx)}` : ''));
           throw new ParseError(e);
         }
         else {

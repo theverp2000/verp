@@ -1,5 +1,6 @@
 import { api, tools } from "../../../core";
 import { Fields } from "../../../core/fields";
+import { Dict } from "../../../core/helper";
 import { ValueError } from "../../../core/helper/errors";
 import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
@@ -18,23 +19,24 @@ class Partner extends Model {
   static _module = module;
   static _name = "res.partner";
   static _parents = ['res.partner', 'mail.activity.mixin', 'mail.thread.blacklist'];
-  static _mailFlatThread = false;
+
+  get _mailFlatThread() { return false };
 
   // override to add and order tracking
-  static email = Fields.Char({tracking: 1});
-  static phone = Fields.Char({tracking: 2});
-  static parentId = Fields.Many2one({tracking: 3});
-  static userId = Fields.Many2one({tracking: 4});
-  static vat = Fields.Char({tracking: 5});
+  static email = Fields.Char({ tracking: 1 });
+  static phone = Fields.Char({ tracking: 2 });
+  static parentId = Fields.Many2one({ tracking: 3 });
+  static userId = Fields.Many2one({ tracking: 4 });
+  static vat = Fields.Char({ tracking: 5 });
   // channels
-  static channelIds = Fields.Many2many('mail.channel', {relation: 'mailChannelPartner', column1: 'partnerId', column2: 'channelId', string: 'Channels', copy: false});
+  static channelIds = Fields.Many2many('mail.channel', { relation: 'mailChannelPartner', column1: 'partnerId', column2: 'channelId', string: 'Channels', copy: false });
 
   async _computeImStatus() {
     await _super(Partner, this)._computeImStatus();
     const verpbotId = await this.env.items('ir.model.data')._xmlidToResId('base.partnerRoot');
     const verpbot = this.env.items('res.partner').browse(verpbotId);
     if (this.includes(verpbot)) {
-      verpbot.imStatus = 'bot';
+      await verpbot.set('imStatus', 'bot');
     }
   }
 
@@ -72,7 +74,7 @@ class Partner extends Model {
   async _messageGetSuggestedRecipients() {
     const recipients = await _super(Partner, this)._messageGetSuggestedRecipients();
     for (const partner of this) {
-      await partner._messageAddSuggestedRecipient(recipients, {partner: partner, reason: await this._t('Partner Profile')});
+      await partner._messageAddSuggestedRecipient(recipients, { partner: partner, reason: await this._t('Partner Profile') });
     }
     return recipients;
   }
@@ -101,18 +103,18 @@ class Partner extends Model {
    */
   @api.model()
   @api.returns('self', (value) => value.id)
-  async findOrCreate(email, assertValidEmail: boolean=false) {
-    if (! email) {
+  async findOrCreate(email, assertValidEmail: boolean = false) {
+    if (!email) {
       throw new ValueError(await this._t('An email is required for findOrCreate to work'));
     }
     const [parsedName, parsedEmail] = await (this as any)._parsePartnerName(email);
-    if (! parsedEmail && assertValidEmail) {
+    if (!parsedEmail && assertValidEmail) {
       throw new ValueError(await this._t('%(email)s is not recognized as a valid email. This is required to create a new customer.'))
     }
     if (parsedEmail) {
       const emailNormalized = emailNormalize(parsedEmail);
       if (emailNormalized) {
-        const partners = await this.search([['emailNormalized', '=', emailNormalized]], {limit: 1});
+        const partners = await this.search([['emailNormalized', '=', emailNormalized]], { limit: 1 });
         if (partners.ok) {
           return partners;
         }
@@ -120,7 +122,7 @@ class Partner extends Model {
     }
 
     // We don't want to call `super()` to avoid searching twice on the email  Especially when the search `email =ilike` cannot be as efficient as a search on email_normalized with a btree index. If you want to override `find_or_create()` your module should depend on `mail`
-    const createValues = {[this.cls._recName]: parsedName ?? parsedEmail}
+    const createValues = { [this.cls._recName]: parsedName ?? parsedEmail }
     if (parsedEmail) {  // otherwise keep default_email in context
       createValues['email'] = parsedEmail;
     }
@@ -131,28 +133,25 @@ class Partner extends Model {
   // DISCUSS
   // ------------------------------------------------------------
 
-  async mailPartnerFormat(): Promise<Map<any, any>> {
-    const self: any = this;
-    const partnersFormat = new Map<any, any>();
-    for (const partner of self) {
-      const userIds = await partner.userIds;
-      const internalUsers = userIds.sub(await userIds.filtered('share'));
-      const mainUser = len(internalUsers) > 0 
-        ? internalUsers(0) 
-        : userIds._length > 0 ? userIds(0) : self.env.items('res.users');
-      const [id, displayName, label, email, active, imStatus, partnerShare] = await partner('id', 'displayName', 'label', 'email', 'active', 'imStatus', 'partnerShare');
-      partnersFormat.set(id, {
-        "id": id,
-        "displayName": displayName,
-        "label": label,
-        "email": email,
-        "active": active,
-        "imStatus": imStatus,
-        "userId": mainUser.id,
-        "isInternalUser": !partnerShare,
-      });
+  async mailPartnerFormat(): Promise<{}> {
+    const partnersFormat = new Dict();
+    for (const partner of this) {
+      const internalUsers = (await partner.userIds).sub(await (await partner.userIds).filtered('share'));
+      const mainUser = len(internalUsers) > 0
+        ? internalUsers[0]
+        : len(await partner.userIds) > 0 ? (await partner.userIds)[0] : this.env.items('res.users');
+      partnersFormat[partner.id] = {
+        id: partner.id,
+        displayName: await partner.displayName,
+        label: await partner.label,
+        email: await partner.email,
+        active: await partner.active,
+        imStatus: await partner.imStatus,
+        userId: mainUser.id,
+        isInternalUser: !await partner.partnerShare,
+      }
       if (!await (await this.env.user())._isInternal()) {
-        pop(partnersFormat.get(id), 'email');
+        pop(partnersFormat[partner.id], 'email');
       }
     }
     return partnersFormat;
@@ -170,7 +169,7 @@ class Partner extends Model {
       ['resId', '!=', 0],
       ['model', '!=', false],
       ['messageType', '!=', 'userNotification']
-    ], {limit: 100});
+    ], { limit: 100 });
     return messages._messageNotificationFormat();
   }
 
@@ -206,7 +205,7 @@ class Partner extends Model {
    * @returns 
    */
   @api.model()
-  async searchForChannelInvite(searchTerm, channelId?: any, limit: any=30) {
+  async searchForChannelInvite(searchTerm, channelId?: any, limit: any = 30) {
     let domain = expression.AND([
       expression.OR([
         [['label', 'ilike', searchTerm]],
@@ -225,7 +224,7 @@ class Partner extends Model {
         domain = expression.AND([domain, [['userIds.groupsId', 'in', (await channel.groupPublicId).id]]]);
       }
     }
-    const query = await this.env.items('res.partner')._search(domain, {order: 'label, id', isQuery: true});
+    const query = await this.env.items('res.partner')._search(domain, { order: 'label, id', isQuery: true });
     query.order = 'LOWER("resPartner"."label"), "resPartner"."id"'  // bypass lack of support for case insensitive order in search()
     query.limit = tools.parseInt(limit);
     return {
@@ -245,7 +244,7 @@ class Partner extends Model {
    * @returns 
    */
   @api.model()
-  async getMentionSuggestions(search, limit: number=8, channelId?: any) {
+  async getMentionSuggestions(search, limit: number = 8, channelId?: any) {
     let searchDom = expression.OR([[['label', 'ilike', search]], [['email', 'ilike', search]]]);
     searchDom = expression.AND([[['active', '=', true], ['type', '!=', 'private']], searchDom]);
     if (channelId) {
@@ -263,7 +262,7 @@ class Partner extends Model {
       if (remainingLimit <= 0) {
         break;
       }
-      partners = partners.or(await this.search(expression.AND([[['id', 'not in', partners.ids]], domain]), {limit: remainingLimit}));
+      partners = partners.or(await this.search(expression.AND([[['id', 'not in', partners.ids]], domain]), { limit: remainingLimit }));
     }
     return Array.from((await partners.mailPartnerFormat()).values());
   }
@@ -278,7 +277,7 @@ class Partner extends Model {
    * @returns 
    */
   @api.model()
-  async imSearch(name, limit: number=20) {
+  async imSearch(name, limit: number = 20) {
     // This method is supposed to be used only in the context of channel creation or extension via an invite. As both of these actions require the 'create' access right, we check this specific ACL.
     if (await this.env.items('mail.channel').checkAccessRights('create', false)) {
       name = '%' + name + '%'
@@ -313,7 +312,7 @@ class Partner extends Model {
 
   _validFieldParameter(field, name) {
     // allow specifying rendering options directly from field when using the render mixin
-    return (name === 'tracking' && this.cls._abstract 
+    return (name === 'tracking' && this.cls._abstract
       || _super(Partner, this)._validFieldParameter(field, name)
     );
   }

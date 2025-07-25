@@ -23,8 +23,8 @@ chart1288,Other held to maturity investments,1288,account.dataAccountTypeCurrent
 chart131,Trade receivables,131,account.dataAccountTypeReceivable,vnTemplate,TRUE
 chart132,Trade receivables(pos),132,account.dataAccountTypeReceivable,vnTemplate,TRUE
 chart133,Deductible VAT,133,account.dataAccountTypeReceivable,vnTemplate,TRUE
-chart1331,VAT on purchase of goods and services,1331,account.dataAccountTypeReceivable,vnTemplate,FALSE
-chart1332,VAT on purchase of fixed assets,1332,account.dataAccountTypeReceivable,vnTemplate,FALSE
+chart1331,VAT on purchase of goods and services,1331,account.dataAccountTypeReceivable,vnTemplate,TRUE
+chart1332,VAT on purchase of fixed assets,1332,account.dataAccountTypeReceivable,vnTemplate,TRUE
 chart136,Intra-company receivables,136,account.dataAccountTypeReceivable,vnTemplate,TRUE
 chart1361,Working capital provided to sub-units,1361,account.dataAccountTypeReceivable,vnTemplate,TRUE
 chart1362,Intra-company receivables on foreign exchange,1362,account.dataAccountTypeReceivable,vnTemplate,TRUE

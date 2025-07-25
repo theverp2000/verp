@@ -19,19 +19,11 @@ class SequenceMixin extends AbstractModel {
   static _name = 'sequence.mixin';
   static _description = "Automatic sequence";
 
-  static _sequenceField = "label";
-  static _sequenceDateField = "date";
-  static _sequenceIndex = false;
+  get _sequenceField() { return 'label' };
 
-  get _sequenceField() { 
-    return SequenceMixin._sequenceField;
-  };
-  get _sequenceDateField() { 
-    return SequenceMixin._sequenceDateField; 
-  };
-  get _sequenceIndex() { 
-    return SequenceMixin._sequenceIndex; 
-  };
+  get _sequenceDateField() { return 'date' };
+  
+  get _sequenceIndex() { return false };
 
   async _sequenceMonthlyRegex() { return /^(?<prefix1>.*?)(?<year>((?<=\D)|(?<=^))((19|20|21)\d{2}|(\d{2}(?=\D))))(?<prefix2>\D*?)(?<month>(0[1-9]|1[0-2]))(?<prefix3>\D+?)(?<seq>\d*)(?<suffix>\D*?)$/g; }
   async _sequenceYearlyRegex() { return /^(?<prefix1>.*?)(?<year>((?<=\D)|(?<=^))((19|20|21)?\d{2}))(?<prefix2>\D+?)(?<seq>\d*)(?<suffix>\D*?)$/g; }

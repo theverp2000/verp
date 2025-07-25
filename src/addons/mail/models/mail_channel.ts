@@ -30,9 +30,11 @@ class Channel extends Model {
   static _module = module;
   static _name = 'mail.channel';
   static _description = 'Discussion Channel';
-  static _mailFlatThread = false;
-  static _mailPostAccess = 'read';
   static _parents = ['mail.thread', 'mail.alias.mixin'];
+
+  get _mailFlatThread() { return false };
+
+  get _mailPostAccess() { return 'read' };
 
   MAX_BOUNCE_LIMIT = 10;
 

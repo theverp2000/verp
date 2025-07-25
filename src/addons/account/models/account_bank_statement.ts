@@ -148,10 +148,7 @@ class AccountBankStatement extends Model {
   static _parents = ['mail.thread', 'sequence.mixin'];
   static _checkCompanyAuto = true;
   
-  static _sequenceIndex = "journalId";
-  get _sequenceIndex() { 
-    return AccountBankStatement._sequenceIndex;
-  };
+  get _sequenceIndex() { return 'journalId' };
 
   static label = Fields.Char({ string: 'Reference', states: { 'open': [['readonly', false]] }, copy: false, readonly: true });
   static reference = Fields.Char({ string: 'External Reference', states: { 'open': [['readonly', false]] }, copy: false, readonly: true, help: "Used to hold the reference of the external mean that created this statement (name of imported file, reference of online synchronization...)" });

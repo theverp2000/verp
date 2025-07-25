@@ -110,7 +110,7 @@ declare class MetaModel extends Meta {
   static setPrototype(target: any, source: any): void;
 }
 
-declare function newId(id: Number): NewId;
+declare function newId(id: number): NewId;
 
 declare class NewId extends Number {
   private _uuid: string;
@@ -123,6 +123,10 @@ declare class NewId extends Number {
 
   _bool(): boolean;
 
+  _hash(): string;
+
+  eq(other: number): boolean;
+  
   toString(): string;
 }
 
@@ -158,8 +162,8 @@ declare type ModelRecords = BaseModel & {
   env: Environment,
   pool: Registry,
   _fields: Dict<Fields>,
-  _ids: Number[],
-  _prefetchIds: Number[],
+  _ids: number[],
+  _prefetchIds: number[],
 
   id: number,
   updatedAt: any,
@@ -208,23 +212,23 @@ declare class BaseModel extends Function {
   static _transientMaxCount: string;
   static _transientMaxHours: string;
 
+  /**
+   * Method Resolution Order
+   */
+  static get _mro(): Function[];
+
   env: Environment;
   pool: Registry;
   _ids: number[];
   _prefetchIds: number[];
   _name: string;
 
-  static toString(): string;
-
   /**
    * Method Resolution Order filtered by type
    */
   static mro(type: string): any[];
-
-  /**
-   * Method Resolution Order
-   */
-  static _mro(): Function[];
+  
+  static toString(): string;
 
   static buildModel(baseClass: any, pool: Registry, cr: Cursor): any;
 

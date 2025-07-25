@@ -389,12 +389,12 @@ class PosConfig extends Model {
                 throw new ValidationError(await this._t("The default pricelist must be included in the available pricelists."));
             }
         }
-        if (some(await (await this['availablePricelistIds']).mapped(async (pricelist) => !(await pricelist.currencyId).eq(await this['currencyId'])))) {
+        const currency = await this['currencyId'];
+        if (some(await (await this['availablePricelistIds']).mapped(async (pricelist) => !(await pricelist.currencyId).eq(currency)))) {
             throw new ValidationError(await this._t("All available pricelists must be in the same currency as the company or"+
                                     " as the Sales Journal set on this point of sale if you use"+
                                     " the Accounting application."));
         }
-        const [currency, company] = await this('currencyId', 'companyId');
         const invoiceJournalCurrency = await (await this['invoiceJournalId']).currencyId;
         if (bool(invoiceJournalCurrency) && !invoiceJournalCurrency.eq(currency)) {
             throw new ValidationError(await this._t("The invoice journal must be in the same currency as the Sales Journal or the company currency if that is not set."));
@@ -402,7 +402,7 @@ class PosConfig extends Model {
         if (some(
             await (await (await this['paymentMethodIds'])
                 .filtered(pm => pm.isCashCount))
-                .mapped(async (pm) => !(await company.currencyId).or(await (await pm.journalId).currencyId).eq(currency))
+                .mapped(async (pm) => !(await (await this['companyId']).currencyId).or(await (await pm.journalId).currencyId).eq(currency))
         )) {
             throw new ValidationError(await this._t("All payment methods must be in the same currency as the Sales Journal or the company currency if that is not set."));
         }

@@ -574,7 +574,7 @@ class AccountChartTemplate extends Model {
       });
     } catch (e) {
       // Do not rollback installation of CoA if demo data failed
-      console.error('Error while loading accounting demo data', e);
+      console.error('Error while loading accounting demo data', e.message);
     }
   }
 

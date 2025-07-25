@@ -269,7 +269,7 @@ export async function applyInheritanceSpecs(source: Element, specsTree: Element 
               toRemove.add(s);
             }
             const values = [];
-            for (let s of (child.getAttribute(attribute) || '').split(separator)) {
+            for (let s of (node.getAttribute(attribute) || '').split(separator)) {
               s = s.trim();
               values.push(s);
             }

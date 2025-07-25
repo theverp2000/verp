@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <t t-name="website.oe-applications-menu">
+    <t t-name="website.oeApplicationsMenu">
         <t t-as="menu" t-foreach="menuData.children">
             <a role="menuitem" class="dropdown-item"
                t-att-data-action-id="menu.action ? menu.action.split(',')[1] : undefined"

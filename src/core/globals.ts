@@ -16,6 +16,7 @@ global.ormcache = true;
 global.ormcacheContext = true;
 global._geoipResolver = null;
 global._phonenumbersLibWarning = false;
+global.processing = false;
 
 console.log(`rootPath=${global.ROOT_PATH}`);
 

@@ -663,7 +663,6 @@ class StockQuant extends Model {
     }
 
     return (await this.search(domain, { order: removalStrategyOrder })).sorted(async (q) => !bool(await q.lotId));
-
   }
 
   /**

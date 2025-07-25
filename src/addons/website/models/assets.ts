@@ -13,18 +13,12 @@ class Assets extends AbstractModel {
    * Makes a scss customization of the given file. That file must
       contain a scss map including a line comment containing the word 'hook',
       to indicate the location where to write the new key,value pairs.
-
-      Params:
-          url (str):
-              the URL of the scss file to customize (supposed to be a variable
+              
+   * @param url (string) the URL of the scss file to customize (supposed to be a variable
               file which will appear in the assets_common bundle)
-
-          values (dict):
-              key,value mapping to integrate in the file's map (containing the
+   * @param values (dict) key,value mapping to integrate in the file's map (containing the
               word hook). If a key is already in the file's map, its value is
-              overridden.
-   * @param url 
-   * @param values 
+              overridden. 
    * @returns 
    */
   async makeScssCustomization(url, values) {

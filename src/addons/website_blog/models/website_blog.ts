@@ -179,7 +179,8 @@ class BlogPost extends Model {
     static _parents = ['mail.thread', 'website.seo.metadata', 'website.published.multi.mixin',
         'website.cover.properties.mixin', 'website.searchable.mixin'];
     static _order = 'id DESC';
-    static _mailPostAccess = 'read';
+
+    get _mailPostAccess() { return 'read' };
 
     async _computeWebsiteUrl() {
         await _super(BlogPost, this)._computeWebsiteUrl();

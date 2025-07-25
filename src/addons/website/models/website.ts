@@ -179,7 +179,7 @@ class Website extends Model {
                 // don't add child menu if parent is forbidden
                 const parent = await menu.parentId;
                 if (parent.ok && menus.includes(parent)) {
-                    const childId = parent._cache.get('childId', false) ?? [];
+                    const childId = parent._cache.get('childId', false) || [];
                     parent._cache.set('childId', childId.concat([menu.id]));
                 }
             }

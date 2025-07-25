@@ -20,10 +20,8 @@ class AvatarMixin extends AbstractModel {
   static avatar256 = Fields.Image("Avatar 256", { maxWidth: 256, maxHeight: 256, compute: "_computeAvatar256" });
   static avatar128 = Fields.Image("Avatar 128", { maxWidth: 128, maxHeight: 128, compute: "_computeAvatar128" });
 
-  static _avatarNameField = "label";
-
   get _avatarNameField() {
-    return AvatarMixin._avatarNameField;
+    return "label";
   }
 
   async _computeAvatar(avatarField, imageField) {

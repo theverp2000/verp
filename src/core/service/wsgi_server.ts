@@ -3,11 +3,10 @@ import { root } from "../http";
 import { NotFound, ProxyFix } from "./middleware";
 
 async function applicationUnproxied(req: any, res: any) {
-  const result = root(req, res);
-  if (result != null) {
-    return result;
+  if (global.processing) {
+    return (new NotFound(res, 'Debug is in proccess.\n'))(req, res);
   }
-  return (new NotFound(res, 'No handler found.\n'))(req, res);
+  return root(req, res);
 }
 
 export function application(req, res) {
@@ -15,6 +14,6 @@ export function application(req, res) {
     return (new ProxyFix(applicationUnproxied))(req, res);
   }
   else {
-    return applicationUnproxied(req, res)
+    return applicationUnproxied(req, res);
   }
 }

@@ -548,9 +548,9 @@ class WebsiteSale extends http.Controller {
     @http.route(['/shop/changePricelist/<model("product.pricelist"):plId>'], {type: 'http', auth: "public", website: true, sitemap: false})
     async pricelistChange(req, res, post: {plId?: any}={}) {
         let redirectUrl = req.httpRequest.referrer;
-        const env = await res.getEnv();
+        const env = await req.getEnv();
         if ((post.plId.selectable || post.plId == await (await (await env.user()).partnerId).propertyProductPricelist) 
-                && await req.website.isPricelistAvailable(post.plId.id)) {
+                && await req.website.isPricelistAvailable(req, post.plId.id)) {
             if (redirectUrl && await req.website.isViewActive('website_sale.filterProductsPrice')) {
                 const decodedUrl = urlParse(redirectUrl),
                 args = decodedUrl.searchQuery;
@@ -594,7 +594,7 @@ class WebsiteSale extends http.Controller {
         // empty promo code is used to reset/remove pricelist (see `sale_get_order()`)
         if (post.promo) {
             const pricelist = await (await (await req.getEnv()).items('product.pricelist').sudo()).search([['code', '=', post.promo]], {limit: 1});
-            if (!bool(pricelist) || (bool(pricelist) && ! await req.website.isPricelistAvailable(pricelist.id))) {
+            if (!bool(pricelist) || (bool(pricelist) && ! await req.website.isPricelistAvailable(req, pricelist.id))) {
                 return req.redirect(f("%s?codeNotAvailable=1", redirect));
             }
         }

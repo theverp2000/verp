@@ -46,7 +46,7 @@ class AccountAccount extends Model {
   @api.constrains('internalType', 'reconcile')
   async _checkReconcile() {
     for (const account of this) {
-      if (['receivable', 'payable'].includes(account.internalType) && await account.reconcile === false) {
+      if (['receivable', 'payable'].includes(await account.internalType) && await account.reconcile === false) {
         throw new ValidationError(await this._t('You cannot have a receivable/payable account that is not reconcilable. (account code: %s)', await account.code));
       }
     }

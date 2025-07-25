@@ -11,7 +11,7 @@ import { expression } from "../../../core/osv";
 import { f, parseInt, timezone, update } from "../../../core/tools";
 import { bool } from "../../../core/tools/bool";
 import { addDate, combine, dateMax, dateMin, dateSetTz, dateWithoutTz, diffDate, floatToTime, subDate } from "../../../core/tools/date_utils";
-import { floatRound } from "../../../core/tools/float_utils";
+import { floatRound, round } from "../../../core/tools/float_utils";
 import { chain, enumerate, len, range, rangeList, sorted, zip } from "../../../core/tools/iterable";
 
 // Default hour per day value. The one should
@@ -746,7 +746,7 @@ class ResourceCalendar extends Model {
             dayHours[startDate] = dayHours[startDate] + diffDate(stop, start, 'seconds').seconds / 3600;
         }
         // compute number of days as quarters
-        const days = dayHours.keys().reduce((prev, day) => prev + dayTotal[day] ? floatRound(ROUNDING_FACTOR * dayHours[day] / dayTotal[day]) / ROUNDING_FACTOR : 0, 0);
+        const days = dayHours.keys().reduce((prev, day) => prev + (dayTotal[day] ? (round(ROUNDING_FACTOR * dayHours[day] / dayTotal[day]) / ROUNDING_FACTOR) : 0), 0);
         return {
             'days': days,
             'hours': dayHours.values().reduce((pre, cur) => pre + cur, 0),
@@ -754,7 +754,7 @@ class ResourceCalendar extends Model {
     }
 
     /**
-     * @return dict with hours of attendance in each day between `from_datetime` and `to_datetime`
+     * @return dict with hours of attendance in each day between `fromDatetime` and `toDatetime`
      * @param fromDatetime 
      * @param toDatetime 
      * @param resources 

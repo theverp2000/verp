@@ -13,7 +13,7 @@ Bug fixes, specifications and detailed instructions will be updated in the near 
 
 1) Get the Verp 1.0
 
-  > git clone https://github.com/tonyluong2025/verp.git
+  > git clone https://github.com/theverp2000/verp.git
 
 2) Install nodejs 20.15.1
 

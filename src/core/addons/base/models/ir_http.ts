@@ -91,11 +91,11 @@ class IrHttp extends AbstractModel {
   }
 
   get _rewriteLen() {
-    return getattr(this.cls, '__rewriteLen', null);
+    return getattr(this.constructor, '__rewriteLen', null);
   }
 
   set _rewriteLen(value) {
-    setattr(this.cls, '__rewriteLen', value);
+    setattr(this.constructor, '__rewriteLen', value);
   }
 
   _getConverters() {
@@ -269,8 +269,8 @@ class IrHttp extends AbstractModel {
       if (serve)
         return serve
     }
-
-    if (tools.config.options['devMode']?.includes('theveb')
+    const config = tools.config;
+    if (config.options['devMode']?.includes('theveb')
       && !isInstance(exception, NotFound)
       && req._requestType !== 'json')
       throw exception;

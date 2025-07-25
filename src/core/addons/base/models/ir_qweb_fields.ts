@@ -823,7 +823,7 @@ class ContactConverter extends AbstractModel {
 
   @api.model()
   async valueToHtml(value, options) {
-    if (!value) {
+    if (!bool(value)) {
       return '';
     }
 

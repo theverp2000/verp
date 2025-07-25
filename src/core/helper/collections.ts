@@ -295,14 +295,7 @@ export class Dict<T = any> {
   }
 }
 
-export class List<T=any> extends Array<T> { 
-  has(item: T) {
-    return this.includes(item);
-  }
-  get size() {
-    return this.length;
-  } 
-}
+export const List = Array;
 
 class BadRequestKeyError extends KeyError { }
 
@@ -408,7 +401,7 @@ export class MultiDict<T = any> extends Function {
   static fill<T>(dict: MultiDict, obj: any): any {
     if (obj instanceof MultiDict) {
       for (const [k, l] of obj.entries()) {
-        dict[k] = l.slice ? l.slice() : l;
+        dict[k] = Array.isArray(l) ? l.slice() : l;
       }
     }
     else if (obj instanceof Dict) {
@@ -626,7 +619,7 @@ export class MultiDict<T = any> extends Function {
     return result;
   }
 
-  items  = this.entries;
+  items = this.entries;
 
   /**
    * Return a iterator of `'[key, values]'` pairs, where values is the list of all values associated with the key.
@@ -681,7 +674,6 @@ export class MultiDict<T = any> extends Function {
     return Dict.from(this.lists());
   }
 
-
   /**
    * update() extends rather than replaces existing key lists:
  
@@ -701,7 +693,7 @@ export class MultiDict<T = any> extends Function {
     MultiDict([])
    * @param dict 
    */
-  updateFrom(dict={}) {
+  updateFrom(dict = {}) {
     for (const [key, value] of iterMultiItems(dict)) {
       this.add(key, value);
     }
@@ -851,7 +843,7 @@ export class FrozenDict<T> extends Dict<T> {
   }
 }
 
-export class MapKey<K=any, V=any> extends Map<K, V> {
+export class MapKey<K = any, V = any> extends Map<K, V> {
   constructor(fKey: Function = (item) => MapKey._hash(item)) {
     super();
     if (fKey) {
@@ -1042,7 +1034,7 @@ class _Map2<K, V> extends Map<K, V> {
   }
 }
 
-export class Map2<K, V> extends MapKey<K, V> {}
+export class Map2<K, V> extends MapKey<K, V> { }
 
 export class DefaultDict extends Function {
   private _data = new MapKey<any, any>();
@@ -1113,7 +1105,7 @@ export class DefaultDict extends Function {
   }
 
   items = this.entries;
-  
+
   values() {
     return this._data.values();
   }

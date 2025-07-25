@@ -14,7 +14,7 @@ import { AccessError, OrderedDict, UserError, ValueError } from '../../../helper
 import { MetaModel, Model, _super } from "../../../models";
 import { FALSE_DOMAIN, NEGATIVE_TERM_OPERATORS } from "../../../osv/expression";
 import { UpCamelCase, _f, b64decode, base64ToImage, bool, camelCaseToDot, config, enumerate, equal, extend, f, isHtmlEmpty, isInstance, isIterable, len, parseInt, pop, range, toFormat, update } from "../../../tools";
-import { safeAsync } from '../../../tools/save_eval';
+import { unsafeAsync } from '../../../tools/save_eval';
 import { E, childNodes, getAttributes, getrootXml, markup, parseXml, serializeHtml } from '../../../tools/xml';
 
 const chromiumState = 'ok';
@@ -165,7 +165,7 @@ class IrActionsReport extends Model {
      */
     async retrieveAttachment(record) {
         const attachment = await this['attachment'];
-        const attachmentName = attachment ? await safeAsync(attachment, { 'object': record, 'time': DateTime }) : '';
+        const attachmentName = attachment ? await unsafeAsync(attachment, { 'object': record, 'time': DateTime }) : '';
         if (!attachmentName) {
             return null;
         }
@@ -187,7 +187,7 @@ class IrActionsReport extends Model {
      */
     async _postprocessPdfReport(record, buffer: Uint8Array): Promise<Uint8Array | null> {
         const attachment = await this['attachment'];
-        const attachmentName = await safeAsync(attachment, { 'object': record, 'time': Date });
+        const attachmentName = await unsafeAsync(attachment, { 'object': record, 'time': Date });
         if (!attachmentName) {
             return null;
         }
@@ -1003,7 +1003,7 @@ class IrActionsReport extends Model {
 
         const [bodies, htmlIds, header, footer, specificPaperformatArgs] = await (await selfSudo.withContext(context))._prepareHtml(html);
 
-        if (bool(await selfSudo.attachment) && !equal(resIds ?? [], htmlIds ?? [])) {
+        if (bool(await selfSudo.attachment) && !_.intersection(resIds ?? [], htmlIds ?? []).length) {
             throw new UserError(await this._t(["The report's template '%s' is wrong, please contact your administrator.",
                 "Can not separate file to save as attachment because the report's template does not contains the attributes 'data-oe-model' and 'data-oe-id' on the div with 'article' classname."].join('\n'), await this['label']));
         }

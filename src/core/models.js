@@ -195,12 +195,10 @@ export function isSubclass(obj, base) {
   return mro.includes(base.__bases[0]);
 }
 
-const BASIC_KEYS = [
-  // javascript system, rarely used
-  // 'length', 'name', 'arguments', 'caller', 'prototype',
-  // BaseModel properties
-  'env', 'cls', 'pool', '_fields', '_name', '_ids', '_prefetchIds', 'then', 'mro'
-];
+const POPULAR_KEYS = new Set([
+  // BaseModel popular properties
+  '_name', '_fields',  '_ids', '_prefetchIds', 'env', 'cls', 'pool', 'then', 'mro'
+]);
 
 export class MetaModel extends Meta {
   static moduleToModels = new Map2();
@@ -331,17 +329,21 @@ export function newId(id) {
 export class NewId extends Number {
   constructor(origin, ref) {
     super();
-    this._uuid = uuidv1().slice(0, 8);
-    this.origin = origin;
-    this.ref = ref;
+    setattr(this, '_uuid', uuidv1().slice(0, 8), {enumerable: false, configurable: false});
+    setattr(this, 'origin', origin, {enumerable: false, configurable: false});
+    setattr(this, 'ref', ref, {enumerable: false, configurable: false});
   }
 
   valueOf() {
-    return this.origin || this.ref;
+    return this.origin || this.ref || this._uuid;
   }
 
   _bool() {
     return false;
+  }
+
+  _hash() {
+    return this.valueOf();
   }
 
   eq(other) {
@@ -476,12 +478,12 @@ export class BaseModel extends Function {
   static _transientMaxCount = config.get('osvMemoryCountLimit');
   static _transientMaxHours = config.get('transientAgeLimit');
 
-  static toString() {
-    return this.name;
+  static get _mro() {
+    return this.pool._mro[this._name];
   }
 
   static mro(type = 'origin') {
-    let res = this._mro();
+    let res = this._mro;
     if (res && type === 'origin') {
       res = res.filter(c => getattr(c, 'isVirtual', false) === false);
     }
@@ -491,8 +493,8 @@ export class BaseModel extends Function {
     return res;
   }
 
-  static _mro() {
-    return this.pool._mro[this._name];
+  static toString() {
+    return this.name;
   }
 
   static buildModel(baseClass, pool, cr) {
@@ -737,7 +739,7 @@ export class BaseModel extends Function {
   _getProxy() {
     return new Proxy(this, {
       get(target, prop, receiver) {
-        if (BASIC_KEYS.includes(prop)) {
+        if (POPULAR_KEYS.has(prop)) { // Fast check
           return Reflect.get(target, prop, receiver);
         }
         const cls = Object.getPrototypeOf(target).constructor;
@@ -746,15 +748,14 @@ export class BaseModel extends Function {
         }
         if (prop in target) {
           return Reflect.get(target, prop, receiver);
-        } else {
-          const key = parseInt(String(prop));
-          if (!isNaN(key)) { // is number
-            return target.__call__([key]); // inst[3]
-          }
-          const func = _super(Object.getPrototypeOf(cls), receiver, false)[prop];
-          setattr(target, prop, func);
-          return func;
         }
+        const key = parseInt(String(prop));
+        if (!isNaN(key)) {               // the prop is number
+          return target.__call__([key]); // inst[3]
+        }
+        const func = _super(Object.getPrototypeOf(cls), receiver, false)[prop];
+        setattr(target, prop, func);
+        return func;
       },
       set(target, prop, value, receiver) {
         const cls = Object.getPrototypeOf(target).constructor;
@@ -839,7 +840,7 @@ export class BaseModel extends Function {
     cls._fields.clear();
 
     const definitions = new Map2();
-    const mro = cls._mro();
+    const mro = cls._mro;
 
     for (let i = mro.length - 1; i >= 0; i--) {
       const klass = mro[i];
@@ -1803,21 +1804,21 @@ export class BaseModel extends Function {
   }
 
   _browse(env, ids, prefetchIds) {
-    if (ids?.constructor?.name !== 'List') {
-      const _ids = ids;
-      ids = new List();
-      for (let id of _ids) {
-        if (typeof id === 'string') id = parseInt(id);
-        if (!_ids.includes(id)) ids.push(id);
+    if (Array.isArray(ids)) { // normalize ids to list of numbers, bypass if ids is a Generator
+      for (let i=0; i < ids.length; i++) {
+        if (typeof ids[i] === 'string') {
+          ids[i] = Number(ids[i]);
+        }
       }
     }
+
     const cls = this.constructor;
     const records = new cls();
     records._name = cls._name;
     records._ids = ids;
     records._prefetchIds = prefetchIds;
-    records.env = env;
     records.cls = cls;
+    records.env = env;
     records.pool = cls.pool;
     return records;
   }
@@ -1834,9 +1835,6 @@ export class BaseModel extends Function {
     } else { // Iterables: List / Array / Set / Generator...
       ids = List.from(ids);
     }
-
-    ids = ids.map(id => typeof id === 'string' ? Number(id) : id);
-
     return this._browse(this.env, ids, ids);
   }
 
@@ -1924,7 +1922,7 @@ export class BaseModel extends Function {
     let ids = expandIds(this.id, this._prefetchIds);
     ids = this.env.cache.getMissingIds(this.browse(ids), field);
     if (limit) {
-      ids = islice(ids, limit);
+      ids = islice(ids, limit); // Tony todo check
     }
     // Those records are aimed at being either fetched, or computed.  But the
     // method '_fetchField' is not correct with new records: it considers
@@ -2718,7 +2716,7 @@ export class BaseModel extends Function {
 
   toString() {
     return `${this._name}${this._ids.length == 0 ? '()' :
-      this._ids.length == 1 ? '(' + this._ids.length + ')' : '(len:' + this._ids.length + ')'}`;
+      this._ids.length == 1 ? '(' + this._ids[0] + ')' : '(' + this._ids.length < 6 ? String(this._ids) : (this._ids.slice(0, 6) + ',..') + ')'}`;
   }
 
   repr() {
@@ -2933,7 +2931,7 @@ export class BaseModel extends Function {
     }
     const values = [];
     for (const key of fieldNames) {
-      values.push(cls._fields[key] ? await cls._fields[key].__get__(this, cls) : undefined); // Tony test cls._fields[key] == undefined
+      values.push(cls._fields[key] ? await cls._fields[key].__get__(this, cls) : undefined);
     }
     return values;
   }
@@ -2955,8 +2953,7 @@ export class BaseModel extends Function {
   }
 
   async withUser(user) {
-    // const self: any = this;
-    if (!user) {
+    if (!bool(user)) {
       return this;
     }
     return this.withEnv(await this.env.change({ user: user, su: false }))
@@ -3162,9 +3159,9 @@ export class BaseModel extends Function {
   async map(func) {
     const vals = [];
     for (const rec of this) {
-      vals.push(func(rec));
+      vals.push(await func(rec));
     }
-    return Promise.all(vals);
+    return vals;
   }
 
   async filter(func) {
@@ -3210,7 +3207,7 @@ export class BaseModel extends Function {
   async filtered(func) {
     if (typeof func === 'string') {
       const name = func;
-      func = async (rec) => (await rec.mapped(name)).some(e => bool(e));
+      func = async (rec) => (await rec.mapped(name)).some(e => e);
       // populate cache
       await this.mapped(name);
     }

@@ -343,9 +343,7 @@ export function route(route?: string | string[] | {}, kw: RouteOptions = {}) {
         result = (result as HTTPException).getResponse(res);
       }
       if (isInstance(result, BaseResponse)) {
-        result = BaseResponse.forceType(WebResponse, result);
-        WebResponse.prototype.setDefault.apply(result);
-        return result;
+        return new WebResponse(req, res);
       }
 
       console.warn(`function %s.%s returns an invalid response type (%s) for request url = '%s'`, meta.module, originalFunc.name, result?.constructor?.name, req.url);
@@ -754,7 +752,6 @@ export class WebResponse extends BaseResponse {
     const uid = pop(options, 'uid', null);
 
     super(req, res, content, options);
-    this.httpRequest = req;
 
     this.setDefault(template, qcontext, uid);
 
@@ -836,15 +833,6 @@ export class WebResponse extends BaseResponse {
     if (httpErrorMsg) {
       throw new HTTPException(null, httpErrorMsg);
     }
-  }
-}
-
-function* _iterEncoded(iterable, charset) {
-  for (const item of iterable) {
-    if (typeof (item) === 'string')
-      yield Buffer.from(item).toString(charset);
-    else
-      yield item;
   }
 }
 
@@ -1060,11 +1048,15 @@ export class WebRequest {
         }
       }
       catch(e) {
-        console.warn(e.message + (errObj ? `\nPrevious: ${errObj.message}` : ''));
+        const msg = e.message + (errObj ? `\nPrevious: ${errObj.message}` : '');
+        throw new Error(msg);
       }
       finally {
         await cr.close();
       }
+    }
+    if (errObj) {
+      throw errObj;
     }
     // just to be sure no one tries to re-use the request
     this._db = null;
@@ -1450,7 +1442,7 @@ export class JsonRequest extends WebRequest {
     this._requestId = req.params.get('id');
 
     // regular jsonrpc2
-    this.params = Dict.from<any>(this.body["params"]);
+    this.params = MultiDict.from<any>(this.body["params"]);
     this.context = this.params.pop('context', Dict.from(this.session.context));
   }
 
@@ -1503,7 +1495,7 @@ export class JsonRequest extends WebRequest {
           console.warn(e);
         }
         else {
-          console.info('ERR %s\n   ', this.httpRequest.url, e.stack);
+          console.info('ERR %s (%s)\n   ', this.httpRequest.url, this.httpRequest.params.toDict(), e.stack);
         }
       }
       const error = {
@@ -1644,12 +1636,16 @@ class Root {
       }
       return result;
     }
+    if (req.url == '/__debug') {
+      console.log('Debug in process, just only one request!');
+      global.processing = true;
+    }
+    let result, response;
     try {
       let requestManager = req;
       if (req.session.profileSession) {
         requestManager = this.getProfileContextManager(req);
       }
-      let result, response;
       await doWith(requestManager, async () => {
         const db = req.session.db;
         if (db) {
@@ -1687,14 +1683,18 @@ class Root {
         }
         response = await this.getResponse(req, res, result, explicitSession);
       });
-      return response(req, response, next);
-    } catch (e) {
-      if (isInstance(e, HTTPException)) {
-        return e(request, res, next);
+    } catch (error) {
+      if (isInstance(error, HTTPException)) {
+        response = error;
+      } else {
+        response = await this.getResponse(req, res, error.message, explicitSession);
       }
-      const response = await this.getResponse(req, res, e.message, explicitSession);
-      return response(req, response, next);
     }
+    if (req.url == '/__debug') {
+      console.log('Debug out process!');
+      global.processing = false;
+    }
+    return response(req, res, next);
   }
 
   setupSession(req: BaseRequest) {

@@ -896,7 +896,7 @@ class PosOrder extends Model {
             'subject': await this._t('Receipt %s', label),
             'bodyHtml': message,
             'authorId': (await user.partnerId).id,
-            'email_from': await (await this.env.company()).email || await user.emailFormatted,
+            'emailFrom': await (await this.env.company()).email || await user.emailFormatted,
             'emailTo': client['email'],
             'attachmentIds': await this._addMailAttachment(label, ticket),
         }

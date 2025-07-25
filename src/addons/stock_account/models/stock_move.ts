@@ -411,7 +411,7 @@ class StockMove extends Model {
         const tmplDict = new DefaultDict(() => 0.0);
         // adapt standard price on incomming moves if the product cost_method is 'average'
         const stdPriceUpdate = {}
-        for (const move of await this.filtered(async (move) => await move._isIn() && await (await move.withCompany(await move.companyId).productId).costMethod === 'average')) {
+        for (const move of await this.filtered(async (move) => await move._isIn() && await (await (await move.withCompany(await move.companyId)).productId).costMethod === 'average')) {
             const [product, company] = await move('productId', 'companyId');
             const keyId = String([product.id, company.id]);
             const productTotQtyAvailable = await (await (await product.sudo()).withCompany(company)).quantitySvl + tmplDict[product.id];

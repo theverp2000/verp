@@ -26,6 +26,7 @@ import { childNodes, E, getAttribute, getAttributes, getpath, getrootXml, isElem
 import { DateTime } from 'luxon';
 import { stringify } from '../../../tools/json';
 import { Query } from '../../../osv';
+import { templateEnvGlobals } from '../../../tools/rendering_tools';
 
 const MOVABLE_BRANDING = ['data-oe-model', 'data-oe-id', 'data-oe-field', 'data-oe-xpath', 'data-oe-source-id'];
 const TRANSLATED_ATTRS_RE = new RegExp(`@(${TRANSLATED_ATTRS.keys().join('|')})\\b`);
@@ -1116,8 +1117,9 @@ class View extends Model {
    * @returns 
    */
   @api.model()
-  async getViewId(template) {
-    if (typeof (template) === 'number') {
+  async getViewId(template: any) {
+    // console.log('>>> Rendering template', template);
+    if (typeof template === 'number') {
       return template;
     }
     if (!template.includes('.')) {
@@ -1383,6 +1385,7 @@ class View extends Model {
   async _postprocessTag_field(node: Element, nameManager: NameManager, nodeInfo) {
     const name = node.getAttribute('name');
     if (name) {
+      const id = node.getAttribute('id');
       const attrs = Dict.from<any>({ 'id': node.getAttribute('id'), 'select': node.getAttribute('select') });
       const field = nameManager.model._fields.get(name);
       if (field) {
@@ -1687,7 +1690,8 @@ class View extends Model {
       )
       await this._raiseViewError(msg, node);
     }
-    nameManager.addField(name, { 'id': node.getAttribute('id'), 'select': node.getAttribute('select') })
+    const id = node.getAttribute('id');
+    nameManager.addField(name, { 'id': node.getAttribute('id'), 'select': node.getAttribute('select') });
 
     if (validate) {
       for (const attribute of ['invisible', 'readonly', 'required']) {
@@ -2108,7 +2112,7 @@ class View extends Model {
   async _validateClasses(node: Element, expr: string) {
     const classes = expr.trim().split(' ');
     // Be careful: not always true if it is an expression
-    // example: <div t-attf-class="{{!selectionMode ? 'oe-kanban-color-' + kanbanGetcolor(record.color.rawValue) : ''}} oe-kanban-card oe-kanban-global-click oe_applicant_kanban oe_semantic_html_override">
+    // example: <div t-attf-class="{{!selectionMode ? 'oe-kanban-color-' + kanbanGetcolor(record.color.rawValue) : ''}} oe-kanban-card oe-kanban-global-click oe-applicant-kanban oe-semantic-html-override">
     if (classes.includes('modal') && node.getAttribute('role') !== 'dialog') {
       const msg = '"modal" class should only be used with "dialog" role';
       await this._logViewWarning(msg, node);

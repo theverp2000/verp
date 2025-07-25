@@ -7,6 +7,7 @@ import { bool, enumerate, f, htmlTranslate, len, map, setOptions, slug, unslug, 
 @MetaModel.define()
 class ProductTemplate extends Model {
     static _module = module;
+    static _name = 'product.template';
     static _parents = [
         "product.template",
         "website.seo.metadata",
@@ -14,9 +15,9 @@ class ProductTemplate extends Model {
         'website.searchable.mixin',
         'rating.mixin',
     ];
-    static _name = 'product.template';
-    static _mailPostAccess = 'read';
     static _checkCompanyAuto = true;
+
+    get _mailPostAccess() { return 'read' };
 
     static websiteDescription = Fields.Html('Description for the website', {sanitizeAttributes: false, translate: htmlTranslate, sanitizeForm: false});
     static alternativeProductIds = Fields.Many2many(
