@@ -5,8 +5,7 @@ Verp (Very-easy Enterprise Resource Planning) is an ERP platform written in Type
 3) easy to use (private server/cloud, web client/smart device),
 4) easy to extend (install/uninstall modules on runtime).
 
-Verp is inspired by Odoo/OpenErp. This is the first version, will be updated continuously.
-Bug fixes, specifications and detailed instructions will be updated in the near future.
+Verp is inspired by Odoo/OpenErp.
 
 ** Installation instructions:
 
