@@ -11,7 +11,7 @@
       ],
       "args": [
         "${workspaceFolder}/src/index",
-        // "-i", "stock",
+        // "-i", "website",
       ]
     },
     {
@@ -71,7 +71,7 @@
         "ts-node/register"
       ],
       "args": [
-        "${workspaceFolder}/src/test/test_rrule",
+        "${workspaceFolder}/src/test/test_sharp/test_ico",
       ]
     },
     {

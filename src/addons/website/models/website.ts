@@ -4,6 +4,7 @@ import assert from "assert";
 import fs from "fs/promises";
 import _ from "lodash";
 import xpath from "xpath";
+import ico from 'sharp-ico';
 import * as iap_tools from "../../../addons/iap/tools/iap_tools";
 import { Fields, _Datetime, api, registry, release, tools } from "../../../core";
 import { getattr, hasattr, setdefault } from "../../../core/api";
@@ -16,13 +17,14 @@ import { FALSE_DOMAIN } from "../../../core/osv/expression";
 import { NotFound } from "../../../core/service";
 import { Rule } from "../../../core/service/middleware/rule";
 import { urlEncode, urlJoin, urlParse, urlQuotePlus } from "../../../core/service/middleware/utils";
-import { _f, b64encode, bool, columnExists, enumerate, equal, escapePsql, f, floatRound, getArgumentNames, imageProcess, isDigit, isInstance, isList, len, parseInt, pop, quote, quoteList, rstrip, setOptions, sha512, slugify, sorted, tableExists, toText, update, urlFor } from "../../../core/tools";
+import { _f, b64decode, b64encode, bool, columnExists, enumerate, equal, escapePsql, f, floatRound, getArgumentNames, imageProcess, isDigit, isInstance, isList, len, parseInt, pop, quote, quoteList, rstrip, setOptions, sha512, slugify, sorted, tableExists, toText, update, urlFor } from "../../../core/tools";
 import { stringify } from "../../../core/tools/json";
 import { parseXml, serializeXml } from "../../../core/tools/xml";
 import { _guessMimetype } from "../../http_routing";
 import { pager } from "../../portal";
 import { getUnaccentSqlWrapper, similarityScore, textFromHtml } from "../tools";
 import { sitemapQs2dom } from "./ir_http";
+import sharp from "sharp";
 
 const DEFAULT_CDN_FILTERS = [
     "^/[^/]+/static/",
@@ -285,7 +287,19 @@ class Website extends Model {
     @api.model()
     async _handleFavicon(vals) {
         if ('favicon' in vals) {
-            vals['favicon'] = await imageProcess(vals['favicon'], { size: [256, 256], crop: 'center', outputFormat: 'ICO' });
+            // const data = b64decode(vals['favicon']) as any;
+            // const icon = ico.decode(data)[0];
+            // let image = icon.type === "png"
+            //     ? sharp(icon.data)
+            //     : sharp(icon.data, {
+            //     raw: {
+            //         width: icon.width,
+            //         height: icon.height,
+            //         channels: 4,
+            //     },
+            //     });
+            // const buffer = await image.toBuffer();
+            // vals['favicon'] = data;// await imageProcess(icon.data, { size: [256, 256], crop: 'center', outputFormat: 'ICO' });
         }
     }
 

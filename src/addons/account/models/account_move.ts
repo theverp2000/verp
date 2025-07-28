@@ -3782,7 +3782,7 @@ class AccountMove extends Model {
         throw new UserError(await this._t('The entry %s (id %s) is already posted.', await move.label, move.id));
       }
       if (!bool(await (await move.lineIds).filtered(async (line) => !await line.displayType))) {
-        throw new UserError(await this._t('You need to add a line before posting: modeId=%s linesIds=[%s]', move.id, String((await move.lineIds)._ids)));
+        throw new UserError(await this._t('You need to add a line before posting of modeId=%s', move.id));
       }
       const [date, journalId] = await move('date', 'journalId');
       if (await move.autoPost && date > await _Date.contextToday(this)) {

@@ -15,11 +15,8 @@ import { WebRequest } from "../../core/http";
     reference.
     All values must be convertible to a string.
 
-    :param list values: The values to use for the generation of the token
-    :return: The generated access token
-    :rtype: str
- * @param values 
- * @returns 
+ * @param values The values to use for the generation of the token
+ * @returns (string) The generated access token
  */
 export async function generateAccessToken(env, ...values) {
     const tokenStr = values.map(val => String(val)).join('|');

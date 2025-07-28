@@ -256,7 +256,7 @@ class ResUsers extends Model {
       // with self.env.cr.savepoint():
       {
         const forceSend = !(this.env.context['importFile'] ?? false);
-        await template.sendMail(user.id, { forceSend: forceSend, raiseException: true, emailValues: emailValues });
+        await template.sendMail(user.id, { forceSend, raiseException: true, emailValues });
       }
       console.info("Password reset email sent for user <%s> to <%s>", await user.login, userEmail);
     }

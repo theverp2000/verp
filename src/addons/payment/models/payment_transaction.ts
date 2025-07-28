@@ -1,9 +1,8 @@
 import { Fields, _Datetime, api } from "../../../core";
-import { Dict, ValidationError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models"
+import { ValidationError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { cleanString } from "../../../core/service/middleware/utils";
 import { _f, bool, consteq, escapeRegExp, formatAmount, hmac, len, parseInt, pop, subDate, update, ustr } from "../../../core/tools";
-import { encode } from "../../../core/tools/iri";
 import { stringify } from "../../../core/tools/json";
 import * as paymentUtils from "../utils";
 
@@ -21,36 +20,47 @@ class PaymentTransaction extends Model {
     }
 
     static acquirerId = Fields.Many2one({
-        string: "Acquirer", comodelName: 'payment.acquirer', readonly: true, required: true});
-    static provider = Fields.Selection({related: 'acquirerId.provider'});
+        string: "Acquirer", comodelName: 'payment.acquirer', readonly: true, required: true
+    });
+    static provider = Fields.Selection({ related: 'acquirerId.provider' });
     static companyId = Fields.Many2one({  // Indexed to speed-up ORM searches (from irRule or others)
-        related: 'acquirerId.companyId', store: true, index: true});
+        related: 'acquirerId.companyId', store: true, index: true
+    });
     static reference = Fields.Char({
         string: "Reference", help: "The internal reference of the transaction", readonly: true,
-        required: true});  // Already has an index from the UNIQUE SQL constraint
+        required: true
+    });  // Already has an index from the UNIQUE SQL constraint
     static acquirerReference = Fields.Char({
         string: "Acquirer Reference", help: "The acquirer reference of the transaction",
-        readonly: true});  // This is not the same thing as the acquirer reference of the token
+        readonly: true
+    });  // This is not the same thing as the acquirer reference of the token
     static amount = Fields.Monetary({
-        string: "Amount", currencyField: 'currencyId', readonly: true, required: true});
+        string: "Amount", currencyField: 'currencyId', readonly: true, required: true
+    });
     static currencyId = Fields.Many2one({
-        string: "Currency", comodelName: 'res.currency', readonly: true, required: true});
+        string: "Currency", comodelName: 'res.currency', readonly: true, required: true
+    });
     static fees = Fields.Monetary({
         string: "Fees", currencyField: 'currencyId',
-        help: "The fees amount; set by the system as it depends on the acquirer", readonly: true});
+        help: "The fees amount; set by the system as it depends on the acquirer", readonly: true
+    });
     static tokenId = Fields.Many2one({
         string: "Payment Token", comodelName: 'payment.token', readonly: true,
-        domain: '[["acquirerId", "=", "acquirerId"]]', ondelete: 'RESTRICT'});
+        domain: '[["acquirerId", "=", "acquirerId"]]', ondelete: 'RESTRICT'
+    });
     static state = Fields.Selection({
         string: "Status",
         selection: [['draft', "Draft"], ['pending', "Pending"], ['authorized', "Authorized"],
-                   ['done', "Confirmed"], ['cancel', "Canceled"], ['error', "Error"]],
-        default: 'draft', readonly: true, required: true, copy: false, index: true});
+        ['done', "Confirmed"], ['cancel', "Canceled"], ['error', "Error"]],
+        default: 'draft', readonly: true, required: true, copy: false, index: true
+    });
     static stateMessage = Fields.Text({
         string: "Message", help: "The complementary information message about the state",
-        readonly: true});
+        readonly: true
+    });
     static lastStateChange = Fields.Datetime({
-        string: "Last State Change Date", readonly: true, default: () => _Datetime.now()});
+        string: "Last State Change Date", readonly: true, default: () => _Datetime.now()
+    });
 
     // Fields used for traceability
     static operation = Fields.Selection({  // This should not be trusted if the state is 'draft' or 'pending'
@@ -66,52 +76,59 @@ class PaymentTransaction extends Model {
         readonly: true,
         index: true,
     });
-    static paymentId = Fields.Many2one({string: "Payment", comodelName: 'account.payment', readonly: true});
+    static paymentId = Fields.Many2one({ string: "Payment", comodelName: 'account.payment', readonly: true });
     static sourceTransactionId = Fields.Many2one({
         string: "Source Transaction",
         comodelName: 'payment.transaction',
         help: "The source transaction of related refund transactions",
         readonly: true
     });
-    static refundsCount = Fields.Integer({string: "Refunds Count", compute: '_computeRefundsCount'});
+    static refundsCount = Fields.Integer({ string: "Refunds Count", compute: '_computeRefundsCount' });
     static invoiceIds = Fields.Many2many({
         string: "Invoices", comodelName: 'account.move', relation: 'accountInvoiceTransactionRel',
         column1: 'transactionId', column2: 'invoiceId', readonly: true, copy: false,
-        domain: [['moveType', 'in', ['outInvoice', 'outRefund', 'inInvoice', 'inRefund']]]});
-    static invoicesCount = Fields.Integer({string: "Invoices Count", compute: '_computeInvoicesCount'});
+        domain: [['moveType', 'in', ['outInvoice', 'outRefund', 'inInvoice', 'inRefund']]]
+    });
+    static invoicesCount = Fields.Integer({ string: "Invoices Count", compute: '_computeInvoicesCount' });
 
     // Fields used for user redirection & payment post-processing
     static isPostProcessed = Fields.Boolean({
-        string: "Is Post-processed", help: "Has the payment been post-processed"});
+        string: "Is Post-processed", help: "Has the payment been post-processed"
+    });
     static tokenize = Fields.Boolean({
         string: "Create Token",
-        help: "Whether a payment token should be created when post-processing the transaction"});
+        help: "Whether a payment token should be created when post-processing the transaction"
+    });
     static landingRoute = Fields.Char({
         string: "Landing Route",
-        help: "The route the user is redirected to after the transaction"});
+        help: "The route the user is redirected to after the transaction"
+    });
     static callbackModelId = Fields.Many2one({
-        string: "Callback Document Model", comodelName: 'ir.model', groups: 'base.groupSystem'});
-    static callbackResId = Fields.Integer({string: "Callback Record ID", groups: 'base.groupSystem'});
-    static callbackMethod = Fields.Char({string: "Callback Method", groups: 'base.groupSystem'});
+        string: "Callback Document Model", comodelName: 'ir.model', groups: 'base.groupSystem'
+    });
+    static callbackResId = Fields.Integer({ string: "Callback Record ID", groups: 'base.groupSystem' });
+    static callbackMethod = Fields.Char({ string: "Callback Method", groups: 'base.groupSystem' });
     // Hash for additional security on top of the callback fields' group in case a bug exposes a sudo
-    static callbackHash = Fields.Char({string: "Callback Hash", groups: 'base.groupSystem'});
+    static callbackHash = Fields.Char({ string: "Callback Hash", groups: 'base.groupSystem' });
     static callbackIsDone = Fields.Boolean({
         string: "Callback Done", help: "Whether the callback has already been executed",
-        groups: "base.groupSystem", readonly: true});
+        groups: "base.groupSystem", readonly: true
+    });
 
     // Duplicated partner values allowing to keep a record of them, should they be later updated
     static partnerId = Fields.Many2one({
         string: "Customer", comodelName: 'res.partner', readonly: true, required: true,
-        ondelete: 'RESTRICT'});
-    static partnerName = Fields.Char({string: "Partner Name"});
-    static partnerLang = Fields.Selection({string: "Language", selection: self => self._langGet()});
-    static partnerEmail = Fields.Char({string: "Email"});
-    static partnerAddress = Fields.Char({string: "Address"});
-    static partnerZip = Fields.Char({string: "Zip"});
-    static partnerCity = Fields.Char({string: "City"});
-    static partnerStateId = Fields.Many2one({string: "State", comodelName: 'res.country.state'});
-    static partnerCountryId = Fields.Many2one({string: "Country", comodelName: 'res.country'});
-    static partnerPhone = Fields.Char({string: "Phone"});
+        ondelete: 'RESTRICT'
+    });
+    static partnerName = Fields.Char({ string: "Partner Name" });
+    static partnerLang = Fields.Selection({ string: "Language", selection: self => self._langGet() });
+    static partnerEmail = Fields.Char({ string: "Email" });
+    static partnerAddress = Fields.Char({ string: "Address" });
+    static partnerZip = Fields.Char({ string: "Zip" });
+    static partnerCity = Fields.Char({ string: "City" });
+    static partnerStateId = Fields.Many2one({ string: "State", comodelName: 'res.country.state' });
+    static partnerCountryId = Fields.Many2one({ string: "Country", comodelName: 'res.country' });
+    static partnerPhone = Fields.Char({ string: "Phone" });
 
     static _sqlConstraints = [
         ['reference_uniq', 'unique(reference)', "Reference must be unique!"],
@@ -173,7 +190,7 @@ class PaymentTransaction extends Model {
         for (const values of valuesList) {
             const acquirer = await this.env.items('payment.acquirer').browse(values['acquirerId']);
 
-            if (! values['reference']) {
+            if (!values['reference']) {
                 values['reference'] = await this._computeReference(await acquirer.provider, values);
             }
             // Duplicate partner values
@@ -396,7 +413,7 @@ class PaymentTransaction extends Model {
      * @returns The unique reference for the transaction
      */
     @api.model()
-    async _computeReference(provider, opts: {prefix?: string, separator?: string}={}) {
+    async _computeReference(provider, opts: { prefix?: string, separator?: string } = {}) {
         let prefix = pop(opts, 'prefix');
         let separator = pop(opts, 'separator', '-');
         // Compute the prefix
@@ -423,7 +440,7 @@ class PaymentTransaction extends Model {
             // open-door to SQL injections.
             const samePrefixReferences = await (await (await sudo.search(
                 [['reference', 'like', `${prefix}${separator}%`]]
-            )).withContext({prefetchFields: false})).mapped('reference');
+            )).withContext({ prefetchFields: false })).mapped('reference');
 
             // A final regex search is necessary to figure out the next sequence number. The previous
             // search could not rely on alphabetically sorting the reference to infer the largest
@@ -466,7 +483,7 @@ class PaymentTransaction extends Model {
      * @returns The computed reference prefix if invoice ids are found, an empty string otherwise
      */
     @api.model()
-    async _computeReferencePrefix(provider, separator, values:{}={}) {
+    async _computeReferencePrefix(provider, separator, values: {} = {}) {
         const commandList = values['invoiceIds'];
         if (bool(commandList)) {
             // Extract invoice id(s) from the X2M commands
@@ -494,7 +511,7 @@ class PaymentTransaction extends Model {
         if (bool(callbackModelId) && bool(callbackResId) && bool(callbackMethod)) {
             const modelName = await (await this.env.items('ir.model').sudo()).browse(callbackModelId).model;
             const token = `${modelName}|${callbackResId}|${callbackMethod}`;
-            const callbackHash = await hmac(this.env.change({su: true}), 'generateCallbackHash', token);
+            const callbackHash = await hmac(this.env.change({ su: true }), 'generateCallbackHash', token);
             return callbackHash;
         }
         return null;
@@ -548,7 +565,7 @@ class PaymentTransaction extends Model {
                     this.id, stringify(renderingValues)
                 )
                 const redirectFormHtml = await redirectFormView._render(renderingValues, 'ir.qweb');
-                update(processingValues, {redirectFormHtml});
+                update(processingValues, { redirectFormHtml });
             }
         }
         return processingValues;
@@ -610,7 +627,7 @@ class PaymentTransaction extends Model {
      * @param createRefundTransaction (boolean) Whether a refund transaction should be created
      * @returns recordset of `payment.transaction` - The refund transaction if any
      */
-    async _sendRefundRequest(amountToRefund?: any, createRefundTransaction=true) {
+    async _sendRefundRequest(amountToRefund?: any, createRefundTransaction = true) {
         this.ensureOne();
 
         if (createRefundTransaction) {
@@ -659,12 +676,12 @@ class PaymentTransaction extends Model {
      * @param customCreateValues 
      * @returns recordset of `payment.transaction` - The refund transaction
      */
-    async _createRefundTransaction(amountToRefund?: any, customCreateValues:{}={}) {
+    async _createRefundTransaction(amountToRefund?: any, customCreateValues: {} = {}) {
         this.ensureOne();
 
         return this.create({
             'acquirerId': (await this['acquirerId']).id,
-            'reference': await this._computeReference(await this['provider'], {prefix: `R-${await this['reference']}`}),
+            'reference': await this._computeReference(await this['provider'], { prefix: `R-${await this['reference']}` }),
             'amount': -(amountToRefund || await this['amount']),
             'currencyId': (await this['currencyId']).id,
             'tokenId': (await this['tokenId']).id,
@@ -836,9 +853,9 @@ class PaymentTransaction extends Model {
                 'allowedStates': allowedStates,
             }
             console.warn(
-                _f("tried to write tx state with illegal value (ref: %(reference)s, previous state "+
-                "{txState}, target state: {targetState}, expected previous state to be in: "+
-                "{allowedStates})", loggingValues)
+                _f("tried to write tx state with illegal value (ref: %(reference)s, previous state " +
+                    "{txState}, target state: {targetState}, expected previous state to be in: " +
+                    "{allowedStates})", loggingValues)
             );
         }
         await txsToProcess.write({
@@ -869,12 +886,12 @@ class PaymentTransaction extends Model {
             const resId = await txSudo.callbackResId;
             const method = await txSudo.callbackMethod;
             const callbackHash = await txSudo.callbackHash;
-            if (! (bool(modelSudo) && bool(resId) && method)) {
+            if (!(bool(modelSudo) && bool(resId) && method)) {
                 continue;  // Skip transactions with unset (or not properly defined) callbacks
             }
 
             const validCallbackHash = await this._generateCallbackHash(modelSudo.id, resId, method);
-            if (! consteq(ustr(validCallbackHash), callbackHash)) {
+            if (!consteq(ustr(validCallbackHash), callbackHash)) {
                 console.warn("invalid callback signature for transaction with id %s", tx.id);
                 continue;  // Ignore tampered callbacks
             }
@@ -887,8 +904,8 @@ class PaymentTransaction extends Model {
                     'txId': tx.id,
                 }
                 console.warn(
-                    _f("invalid callback record {model}.{recordId} for transaction with id "+
-                    "{txId}", loggingValues)
+                    _f("invalid callback record {model}.{recordId} for transaction with id " +
+                        "{txId}", loggingValues)
                 );
                 continue  // Ignore invalidated callbacks
             }
@@ -958,19 +975,19 @@ class PaymentTransaction extends Model {
      */
     async _cronFinalizePostProcessing() {
         let txsToPostProcess = this;
-        if (! txsToPostProcess.ok) {
+        if (!txsToPostProcess.ok) {
             // Let the client post-process transactions so that they remain available in the portal
             const now = new Date()
-            const clientHandlingLimitDate = subDate(now, {minutes: 10});
+            const clientHandlingLimitDate = subDate(now, { minutes: 10 });
             // Don't try forever to post-process a transaction that doesn't go through. Set the limit
             // to 4 days because some providers (PayPal) need that much for the payment verification.
-            const retryLimitDate = subDate(now, {days: 4});
+            const retryLimitDate = subDate(now, { days: 4 });
             // Retrieve all transactions matching the criteria for post-processing
             const txsToPostProcess = await this.search([
                 ['state', '=', 'done'],
                 ['isPostProcessed', '=', false],
                 '|', ['lastStateChange', '<=', clientHandlingLimitDate],
-                     ['operation', '=', 'refund'],
+                ['operation', '=', 'refund'],
                 ['lastStateChange', '>=', retryLimitDate],
             ]);
         }
@@ -978,7 +995,7 @@ class PaymentTransaction extends Model {
             try {
                 await tx._finalizePostProcessing();
                 await this.env.cr.commit();
-            } catch(e) {
+            } catch (e) {
                 console.error(
                     "encountered an error while post-processing transaction with id %s:\n%s",
                     tx.id, e
@@ -1048,7 +1065,7 @@ class PaymentTransaction extends Model {
 
             await (await (await payment.lineIds).add(await invoiceIds.lineIds).filtered(
                 async (line) => (await line.accountId).eq(await payment.destinationAccountId)
-                && !bool(await line.reconciled)
+                    && !bool(await line.reconciled)
             )).reconcile();
         }
         return payment;
@@ -1099,13 +1116,13 @@ class PaymentTransaction extends Model {
         const sourceTransaction = await this['sourceTransactionId'];
         const payment = await sourceTransaction.paymentId;
         if (bool(payment)) {
-            await payment.messagePost({body: message});
+            await payment.messagePost({ body: message });
             for (const invoice of await sourceTransaction.invoiceIds) {
-                await invoice.messagePost({body: message});
+                await invoice.messagePost({ body: message });
             }
         }
         for (const invoice of await this['invoiceIds']) {
-            await invoice.messagePost({body: message});
+            await invoice.messagePost({ body: message });
         }
     }
 
@@ -1126,22 +1143,22 @@ class PaymentTransaction extends Model {
         if (['onlineRedirect', 'onlineDirect'].includes(await this['operation'])) {
             message = _f(await this._t(
                 "A transaction with reference {ref} has been initiated ({acqName})."),
-                {ref: await this['reference'], acqName: await (await this['acquirerId']).label}
+                { ref: await this['reference'], acqName: await (await this['acquirerId']).label }
             );
         }
         else if (await this['operation'] === 'refund') {
             const formattedAmount = await formatAmount(this.env, -await this['amount'], await this['currencyId']);
             message = _f(await this._t(
-                "A refund request of {amount} has been sent. The payment will be created soon. "+
+                "A refund request of {amount} has been sent. The payment will be created soon. " +
                 "Refund transaction reference: {ref} ({acqName})."),
-                {amount: formattedAmount, ref: await this['reference'], acqName: await (await this['acquirerId']).label}
+                { amount: formattedAmount, ref: await this['reference'], acqName: await (await this['acquirerId']).label }
             );
         }
         else {  // 'onlineToken'
             message = _f(await this._t(
-                "A transaction with reference {ref} has been initiated using the payment method "+
+                "A transaction with reference {ref} has been initiated using the payment method " +
                 "{tokenName} ({acqName})."),
-                {ref: await this['reference'], tokenName: await (await this['tokenId']).label, acqName: (await this['acquirerId']).label}
+                { ref: await this['reference'], tokenName: await (await this['tokenId']).label, acqName: (await this['acquirerId']).label }
             );
         }
         return message;
@@ -1163,21 +1180,25 @@ class PaymentTransaction extends Model {
         if (state === 'pending') {
             message = _f(await this._t(
                 "The transaction with reference {ref} for {amount} is pending ({acqName})."),
-                {ref: await this['reference'], amount: formattedAmount, acqName: label}
+                { ref: await this['reference'], amount: formattedAmount, acqName: label }
             );
         }
         else if (state === 'authorized') {
             message = _f(await this._t(
-                "The transaction with reference {ref} for {amount} has been authorized "+
-                "({acqName})."), {ref: reference, amount: formattedAmount,
-                acqName: label}
+                "The transaction with reference {ref} for {amount} has been authorized " +
+                "({acqName})."), {
+                    ref: reference, amount: formattedAmount,
+                acqName: label
+            }
             );
         }
         else if (state === 'done') {
             message = _f(await this._t(
-                "The transaction with reference {ref} for {amount} has been confirmed "+
-                "({acqName})."), {ref: reference, amount: formattedAmount,
-                acqName: label}
+                "The transaction with reference {ref} for {amount} has been confirmed " +
+                "({acqName})."), {
+                    ref: reference, amount: formattedAmount,
+                acqName: label
+            }
             );
             const payment = await this['paymentId'];
             if (bool(await this['paymentId'])) {
@@ -1189,9 +1210,9 @@ class PaymentTransaction extends Model {
         }
         else if (state === 'error') {
             message = _f(await this._t(
-                "The transaction with reference {ref} for {amount} encountered an error"+
+                "The transaction with reference {ref} for {amount} encountered an error" +
                 " ({acqName})."),
-                {ref: reference, amount: formattedAmount, acqName: label}
+                { ref: reference, amount: formattedAmount, acqName: label }
             )
             const stateMessage = await this['stateMessage'];
             if (stateMessage) {
@@ -1201,7 +1222,7 @@ class PaymentTransaction extends Model {
         else {
             message = _f(await this._t(
                 "The transaction with reference {ref} for {amount} is canceled ({acqName})."),
-                {ref: reference, amount: formattedAmount, acqName: label}
+                { ref: reference, amount: formattedAmount, acqName: label }
             );
             const stateMessage = await this['stateMessage'];
             if (stateMessage) {

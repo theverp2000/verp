@@ -323,6 +323,9 @@ class MailTemplate extends Model {
    * @param options 
    */
   async sendMail(resId, options: {forceSend?: boolean, raiseException?: boolean, emailValues?: any, notifLayout?: string}={}) {
+    if (typeof options === 'boolean') {
+      options = {forceSend: options};
+    }
     // Grant access to sendMail only if access to related document
     this.ensureOne();
     await this._sendCheckAccess([resId]);

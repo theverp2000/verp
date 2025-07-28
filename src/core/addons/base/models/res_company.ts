@@ -38,35 +38,13 @@ class Company extends Model {
     return currencyId;
   }
 
-  async _getDefaultFavicon(original?: boolean): Promise<any> {
+  async _getDefaultFavicon(): Promise<any> {
     const imgPath = getResourcePath('web', 'static/img/favicon.ico');
     if (!isFile(imgPath)) {
       return;
     }
-    const buffer = await fs.readFile(filePath(imgPath));
-    if (original) {
-      return b64encode(buffer);
-    }
-    const icons = ico.decode(buffer);
-    const icon = icons[0];
-    let image = icon.type === "png"
-      ? sharp(icon.data)
-      : sharp(icon.data, {
-        raw: {
-          width: icon.width,
-          height: icon.height,
-          channels: 4,
-        },
-      });
-    image = image
-      // If the image has alpha transparency channel
-      .flatten({ background: "#ffffff" })
-      // If the image has no alpha transparency channel
-      .ensureAlpha()
-      .raw();
-
-    const res = await image.toBuffer({ resolveWithObject: true });
-    return b64encode(res.data);
+    let buffer = await fs.readFile(filePath(imgPath));
+    return b64encode(buffer);
   }
 
   static label = Fields.Char({ related: 'partnerId.label', string: 'Company Name', required: true, store: true, readonly: false })

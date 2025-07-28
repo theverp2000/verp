@@ -137,7 +137,7 @@ class ServerActions extends Model {
     const cleanedCtx = Dict.from(this.env.context);
     cleanedCtx.pop('default_type', null);
     cleanedCtx.pop('default_parentId', null);
-    await (await templateId.withContext(cleanedCtx)).sendMail(this._context['activeId'], false, false);
+    await (await templateId.withContext(cleanedCtx)).sendMail(this._context['activeId'], {forceSend: false, raiseException: false});
     return false;
   }
 
