@@ -1106,7 +1106,7 @@ class IrTranslation extends Model {
     });
     for (const [mod, msgGroup] of groupby(messages, itemgetter(['module']))) {
       setdefault(translationsPerModule, mod, { 'messages': [] });
-      extend(translationsPerModule[mod]['messages'], msgGroup.map(m => { return { 'id': m['src'], 'string': m['value'] } }));
+      extend(translationsPerModule[mod]['messages'], msgGroup.map(m => ({ id: m['src'], string: m['value'] }) ));
     }
     return [translationsPerModule, langParams];
   }

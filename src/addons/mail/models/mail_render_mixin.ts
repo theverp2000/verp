@@ -711,31 +711,26 @@ class MailRenderMixin extends AbstractModel {
 
   /**
    * Given some record ids, render a template located on field on all
-    records. ``field`` should be a field of self (i.e. ``body_html`` on
+    records. ``field`` should be a field of self (i.e. ``bodyHtml`` on
     ``mail.template``). resIds are record IDs linked to ``model`` field
     on self.
-
-    :param field: a field name existing on self;
-    :param list resIds: list of ids of records (all belonging to same model
-      defined by ``self.render_model``)
-    :param string engine: inline_template, qweb, or qweb_view;
-
-    :param boolean compute_lang: compute language to render on translated
+   * @param field a field name existing on self;
+   * @param resIds list of ids of records (all belonging to same model
+      defined by ``self.renderModel``)
+   * @param engine inlineTemplate, qweb, or qwebView;
+   * @param options {
+   *    computeLang (boolean): compute language to render on translated
       version of the template instead of default (probably english) one.
       Language will be computed based on ``self.lang``;
-    :param string set_lang: force language for rendering. It should be a
+        setLang (string): force language for rendering. It should be a
       valid lang code matching an activate res.lang. Checked only if
-      ``compute_lang`` is false;
-    :param dict add_context: additional context to give to renderer;
-    :param dict options: options for rendering;
-    :param boolean post_process: perform a post processing on rendered result
-      (notably html links management). See``_render_template_postprocess``);
-
-    :return dict: {resId: string of rendered template based on record}
-   * @param field 
-   * @param resIds 
-   * @param engine 
-   * @param options 
+      ``computeLang`` is false;
+        addContext (dict): additional context to give to renderer;
+        options (dict): for rendering;
+        postProcess (boolean): perform a post processing on rendered result
+      (notably html links management). See``_renderTemplatePostprocess``);
+   * }
+   * @returns dict {resId: string of rendered template based on record}
    */
   async _renderField(field, resIds, kwargs: {
     engine?: string,

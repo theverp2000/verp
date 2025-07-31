@@ -1,0 +1,228 @@
+<verp>
+    <record id="challengeListView" model="ir.ui.view">
+        <field name="label">Challenges List</field>
+        <field name="model">gamification.challenge</field>
+        <field name="arch" type="xml">
+            <tree string="Goal definitions" decoration-info="state == 'draft'" decoration-muted="state == 'done'">
+                <field name="label"/>
+                <field name="period"/>
+                <field name="managerId"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="goalsFromChallengeAct" model="ir.actions.actwindow">
+        <field name="resModel">gamification.goal</field>
+        <field name="label">Related Goals</field>
+        <field name="viewMode">kanban,tree,form</field>
+        <field name="context">{'searchDefault_groupbyDefinition': true, 'searchDefault_inprogress': true, 'searchDefault_challengeId': activeId, 'default_challengeId': activeId}</field>
+        <field name="help" type="html">
+          <p class="o-view-nocontent-empty-folder">
+                No goal found
+          </p><p>
+            There is no goal associated to this challenge matching your search.
+            Make sure that your challenge is active and assigned to at least one user.
+          </p>
+        </field>
+    </record>
+
+    <record id="challengeFormView" model="ir.ui.view">
+        <field name="label">Challenge Form</field>
+        <field name="model">gamification.challenge</field>
+        <field name="arch" type="xml">
+            <form string="Goal definitions">
+                <header>
+                    <button string="Start Challenge" type="object" name="actionStart" states="draft" class="oe-highlight"/>
+                    <button string="Refresh Challenge" type="object" name="actionCheck" states="inprogress"/>
+                    <button string="Send Report" type="object" name="actionReportProgress" states="inprogress,done" groups="base.groupNoOne"/>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <!-- action buttons -->
+                    <div class="oe-button-box" name="buttonBox">
+                        <button type="action"
+                            name="%(goalsFromChallengeAct)d"
+                            class="oe-stat-button"
+                            icon="fa-gift"
+                            attrs="{'invisible': [['state','=','draft']]}">
+                            <div class="o-field-widget o-stat-info">
+                                <span class="o-stat-text">Related</span>
+                                <span class="o-stat-text">Goals</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe-title">
+                        <label for="label"/>
+                        <h1>
+                            <field name="label" placeholder="e.g. Monthly Sales Objectives"/>
+                        </h1>
+                        <label for="userDomain" string="Assign Challenge to"/>
+                        <div>
+                            <field name="userDomain" widget="domain" options="{'model': 'res.users'}" />
+                            <field name="userIds" widget="many2manyTags" />
+                        </div>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="period" attrs="{'readonly':[['state','!=','draft']]}"/>
+                            <field name="visibilityMode" widget="radio" colspan="1" />
+                        </group>
+                        <group>
+                            <field name="managerId"/>
+                            <field name="startDate" attrs="{'readonly':[['state','!=','draft']]}"/>
+                            <field name="endDate" attrs="{'readonly':[['state','!=','draft']]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Goals" name="goals">
+                            <field name="lineIds" nolabel="1" colspan="4">
+                                <tree string="Line List" editable="bottom" >
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="definitionId" />
+                                    <field name="condition"/>
+                                    <field name="targetGoal" string="Target"/>
+                                    <field name="definitionFullSuffix"/>
+                                </tree>
+                            </field>
+                            <field name="description" placeholder="Describe the challenge: what is does, who it targets, why it matters..."/>
+                        </page>
+                        <page string="Reward" name="reward">
+                            <group>
+                                <field name="rewardId" attrs="{'required': [['rewardRealtime','=', true]]}" />
+                                <field name="rewardFirstId" />
+                                <field name="rewardSecondId" attrs="{'invisible': [['rewardFirstId','=', false]]}" />
+                                <field name="rewardThirdId" attrs="{'invisible': ['|',['rewardFirstId','=', false],['rewardSecondId','=', false]]}" />
+                                <field name="rewardFailure" attrs="{'invisible': [['rewardFirstId','=', false]]}" />
+                                <field name="rewardRealtime" />
+                            </group>
+                            <div class="oe-grey">
+                                <p>Badges are granted when a challenge is finished. This is either at the end of a running period (eg: end of the month for a monthly challenge), at the end date of a challenge (if no periodicity is set) or when the challenge is manually closed.</p>
+                            </div>
+                        </page>
+                        <page string="Advanced Options" name="advancedOptions">
+                            <group string="Subscriptions">
+                                <field name="invitedUserIds" widget="many2manyTags" />
+                            </group>
+                            <group string="Notification Messages">
+                                <div class="oe-grey" colspan="4">
+                                    <p>Depending on the Display mode, reports will be individual or shared.</p>
+                                </div>
+                                <group colspan="4">
+                                    <field name="reportMessageFrequency"/>
+                                    <field name="reportTemplateId" attrs="{'invisible': [['reportMessageFrequency','=','never']]}" />
+                                    <field name="reportMessageGroupId" attrs="{'invisible': [['reportMessageFrequency','=','never']]}" />
+                                </group>
+                            </group>
+                            <group string="Reminders for Manual Goals">
+                                <label for="remindUpdateDelay" />
+                                <div>
+                                    <field name="remindUpdateDelay" class="oe-inline"/> days
+                                </div>
+                            </group>
+                            <group string="Category" groups="base.groupNoOne">
+                                <field name="challengeCategory" widget="radio" />
+                            </group>
+                        </page>
+                    </notebook>
+
+                </sheet>
+                <div class="oe-chatter">
+                    <field name="messageFollowerIds"/>
+                    <field name="messageIds"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="viewChallengeKanban">
+        <field name="label">Challenge Kanban</field>
+        <field name="model">gamification.challenge</field>
+        <field name="arch" type="xml">
+            <kanban string="Challenges" class="oe-background-grey">
+                <field name="lineIds"/>
+                <field name="userIds"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe-kanban-card o-kanban-gamification oe-kanban-lobal-click">
+                            <div class="o-kanban-content">
+                               <strong>
+                                   <h4 class="o-kanban-record-title"><field name="label"/></h4>
+                                   <div class="o-kanban-record-subtitle">
+                                       <a type="action" name="%(goalsFromChallengeAct)d" style="margin-right: 10px" tabindex="-1">
+                                           <span t-if="record.lineIds.rawValue.length gt 1"><t t-esc="record.lineIds.rawValue.length"/> Goals</span>
+                                           <span t-if="record.lineIds.rawValue.length lt 2"><t t-esc="record.lineIds.rawValue.length"/> Goal</span>
+                                       </a>
+                                   </div>
+                               </strong>
+                                <t t-foreach="record.userIds.rawValue.slice(0,11)" t-as="member">
+                                    <img class="o-kanban-badge-avatars" t-att-src="kanbanImage('res.users', 'avatar128', member)" t-att-data-member-id="member" alt="Member"/>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="challengeListAction" model="ir.actions.actwindow">
+        <field name="label">Challenges</field>
+        <field name="resModel">gamification.challenge</field>
+        <field name="viewMode">kanban,tree</field>
+        <field name="context">{'searchDefault_inprogress':true, 'default_inprogress':true}</field>
+        <field name="help" type="html">
+            <p class="o-view-nocontent-smiling-face">
+                Create a new challenge
+            </p><p>
+                Assign a list of goals to chosen users to evaluate them.
+                The challenge can use a period (weekly, monthly...) for automatic creation of goals.
+                The goals are created for the specified users or member of the group.
+            </p>
+        </field>
+    </record>
+    <!-- Specify form view ID to avoid selecting viewChallengeWizard -->
+    <record id="challengeListActionView1" model="ir.actions.actwindow.view">
+        <field eval="1" name="sequence"/>
+        <field name="viewMode">kanban</field>
+        <field name="actwindowId" ref="challengeListAction"/>
+        <field name="viewId" ref="viewChallengeKanban"/>
+    </record>
+    <record id="challengeListActionView2" model="ir.actions.actwindow.view">
+        <field eval="10" name="sequence"/>
+        <field name="viewMode">form</field>
+        <field name="actwindowId" ref="challengeListAction"/>
+        <field name="viewId" ref="challengeFormView"/>
+    </record>
+
+    <!-- Line -->
+    <record id="challengeLineListView" model="ir.ui.view">
+        <field name="label">Challenge line list</field>
+        <field name="model">gamification.challenge.line</field>
+        <field name="arch" type="xml">
+            <tree string="Challenge Lines" >
+                <field name="definitionId"/>
+                <field name="targetGoal" string="Target"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="challengeSearchView" model="ir.ui.view">
+        <field name="label">Challenge Search</field>
+        <field name="model">gamification.challenge</field>
+        <field name="arch" type="xml">
+            <search string="Search Challenges">
+                <filter name="inprogress" string="Running Challenges"
+                    domain="[['state', '=', 'inprogress']]"/>
+                <filter name="hrChallenges" string="HR Challenges"
+                    domain="[['challengeCategory', '=', 'hr']]"/>
+                <field name="label"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" name="state" domain="[]" context="{'groupby':'state'}"/>
+                    <filter string="Period" name="period" domain="[]" context="{'groupby':'period'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</verp>

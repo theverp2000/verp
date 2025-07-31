@@ -1880,11 +1880,11 @@ class View extends Model {
     // replace return not arch.xpath('//label[not(@for) and not(descendant::input)]')
     const for_ = node.getAttribute('for');
     if (!for_) {
-      const msg = await this._t(`Label tag must contain a "for". To match label style  without corresponding field or button, use \'class="o-form-label"\'.`);
+      const msg = await this._t(`Label tag must contain a "for". To match label style without corresponding field or button, use \'class="o-form-label"\'.`);
       await this._raiseViewError(msg, node);
     }
     else {
-      nameManager.mustHaveName(for_, '<label for="...">');
+      nameManager.mustHaveName(for_, `<label for="${for_}">`);
     }
   }
 

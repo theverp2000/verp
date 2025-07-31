@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp><data>
+    <!-- Sub nav -->
+    <template id="userProfileSubNav" name="User profile subnav">
+        <div class="o-wprofile-all-users-nav">
+            <div class="container">
+                <div class="row align-items-center justify-content-between">
+                    <!-- Desktop Mode -->
+                    <nav aria-label="breadcrumb" class="col d-none d-md-flex">
+                        <ol class="breadcrumb bg-transparent mb-0 pl-0 py-0">
+                            <li t-attf-class="breadcrumb-item #{!viewUser ? 'active' : ''}">
+                                <a href="/profile/users">Users</a>
+                            </li>
+                            <li t-if="viewUser" class="breadcrumb-item active">
+                                <a><t t-esc="viewUser"/></a>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    <div class="col d-none d-md-flex flex-row align-items-center justify-content-end">
+                        <!-- search -->
+                        <form t-attf-action="/profile/users" role="search" method="get">
+                            <div class="input-group o-wprofile-course-nav-search ml-1 position-relative">
+                                <span class="input-group-prepend">
+                                    <button class="btn btn-link text-white rounded-0 pr-1" type="submit" aria-label="Search" title="Search">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                                <input type="text" class="form-control border-0 rounded-0 bg-transparent text-white" name="search" placeholder="Search users"/>
+                                <input type="hidden" name="groupby" t-att-value="groupby"/>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Mobile Mode -->
+                    <div class="col d-md-none py-1 o-wprofile-user-profile-sub-nav-mobile-col">
+                        <div class="btn-group w-100 position-relative" role="group" aria-label="Mobile sub-nav">
+                            <div class="btn-group w-100 ml-2">
+                                <a class="btn bg-black-25 text-white dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Nav</a>
+
+                                <ul class="dropdown-menu">
+                                    <a class="dropdown-item" t-att-href="homeUrl || '/'">Home</a>
+                                    <a class="dropdown-item" href="/profile/users">&#9492; Users</a>
+                                    <a t-if="viewUser" class="dropdown-item">&#9492; <t t-esc="viewUser"/></a>
+                                </ul>
+                            </div>
+
+                            <div class="btn-group ml-1 position-static mr-2">
+                                <a class="btn bg-black-25 text-white dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right w-100" style="right: 10px;">
+                                    <form class="px-3" t-attf-action="/profile/users" role="search" method="get">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search" placeholder="Search users"/>
+                                            <span class="input-group-append">
+                                                <button class="btn btn-primary" type="submit" aria-label="Search" title="Search">
+                                                    <i class="fa fa-search"/>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!--
+    Single User Profile Page
+    -->
+
+    <!-- Edit Profile Page -->
+    <template id="userProfileEditMain" name="Edit Profile">
+        <t t-set="bodyClassname" t-value="'o-wprofile-body'"/>
+        <t t-call="website.layout">
+            <div id="wrap" class="o-wprofile-wrap">
+                <div class="container pt-4 pb-5">
+                    <t t-call="website_profile.userProfileEditContent"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="userProfileEditContent" name="Edit Profile">
+        <h1 class="o-page-header">Edit Profile</h1>
+        <div>
+            <form t-attf-action="/profile/user/save" method="post" role="form" class="o-wprofile-editor-form js-website-submit-form row" enctype="multipart/form-data">
+                <input type="hidden" name="csrfToken" t-att-value="await request.csrfToken()"/>
+                <input type="file" class="d-none o-forum-file-upload" name="ufile" accept="image/*"/>
+                <input type="hidden" name="urlParam" t-att-value="request.params.get('urlParam')"/>
+                <div class="col-3">
+                    <div class="card o-card-people">
+                        <div class="card-body">
+                            <img class="o-forum-avatar-img w-100 mb-3" t-att-src="await website.imageUrl(user, 'avatar128')"/>
+                            <div class="text-center">
+                                <a href="#" class="o-forum-profile-pic-edit btn btn-primary" aria-label="Edit">
+                                    <i class="fa fa-pencil fa-1g float-sm-none float-md-left" title="Edit"></i>
+                                </a>
+                                <a href="#" title="Clear" aria-label="Clear" class="btn border-primary o-forum-profile-pic-clear">
+                                    <i class="fa fa-trash-o float-sm-none float-md-right"></i>
+                                </a>
+                            </div>
+                            <div class="form-group mt-3 mb-0 pt-2 border-top">
+                                <label class="text-primary" for="userWebsitePublished" t-if="user.id == uid"><span class="font-weight-bold">Public profile</span></label>
+                                <div class=" mb-0 float-right" t-if="user.id == uid">
+                                    <input type="checkbox" class="mt8" name="websitePublished" id="userWebsitePublished" value="true" t-if="! await user.websitePublished"/>
+                                    <input type="checkbox" class="mt8" name="websitePublished" id="userWebsitePublished" value="true" checked="checked" t-if="await user.websitePublished"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-9 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <input name="userId" t-att-value="user.id" type="hidden"/>
+                                <div class="form-group col-12">
+                                    <label class="text-primary mb-1 d-block" for="userName"><span class="font-weight-bold">Name</span></label>
+                                    <div>
+                                        <input type="text" class="form-control" name="label" id="userName" required="true" t-attf-value="#{await user.label}"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-6">
+                                    <label class="mb-1 text-primary" for="userWebsite"><span class="font-weight-bold">Website</span></label>
+                                    <div>
+                                        <input type="text" class="form-control" name="website" id="userWebsite" t-attf-value="#{await (await user.partnerId).website || ''}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-6">
+                                    <div t-if="emailRequired" class="alert alert-danger alert-dismissable oe-email-required" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert">x</button>
+                                        <p>Please enter a valid email address in order to receive notifications from answers or comments.</p>
+                                    </div>
+                                    <label class="mb-1 text-primary" for="userEmail"><span class="font-weight-bold">Email</span></label>
+                                    <div>
+                                        <input type="text" class="form-control" name="email" id="userEmail" required="true" t-attf-value="#{await (await user.partnerId).email}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-6">
+                                    <label class="mb-1 text-primary" for="userCity"><span class="font-weight-bold">City</span></label>
+                                    <div>
+                                        <input type="text" class="form-control" name="city" id="userCity" t-attf-value="#{await (await user.partnerId).city || ''}"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-6">
+                                    <label class="mb-1 text-primary"><span class="font-weight-bold">Country</span></label>
+                                    <div>
+                                        <select class="form-control" name="country">
+                                            <option value="">Country...</option>
+                                            <t t-foreach="countries ?? []" t-as="country">
+                                                <option t-att-value="country.id" t-att-selected="country.id == (await (await user.partnerId).countryId).id"><t t-esc="await country.label"/></option>
+                                            </t>
+                                         </select>
+                                    </div>
+                                </div>
+                                <div class="form-group col-12">
+                                    <label class="mb-1 text-primary" for="description"><span class="font-weight-bold">Biography</span></label>
+                                    <textarea name="description" id="description" style="min-height: 120px"
+                                        class="form-control o-wysiwyg-loader"><t t-esc="await (await user.partnerId).websiteDescription"/></textarea>
+                                </div>
+                                <div class="col">
+                                    <button type="submit" class="btn btn-primary o-wprofile-submit-btn">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </template>
+
+    <!-- Profile Page -->
+    <template id="userProfileMain" name="Profile Page">
+        <t t-set="bodyClassname" t-value="'o-wprofile-body'"/>
+        <t t-call="website.layout">
+            <div id="wrap" class="o-wprofile-wrap mt-0">
+                <t t-call="website_profile.userProfileHeader"/>
+                <t t-call="website_profile.userProfileContent"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="userProfileHeader" name="Profile Page Header">
+        <div class="o-wprofile-header o-wprofile-gradient position-relative text-white">
+            <t t-call="website_profile.userProfileSubNav">
+                <t t-set="viewUser"><t t-esc="await user.label"/></t>
+            </t>
+            <t t-set="reqUser" t-value="await (await request.getEnv()).user()" />
+            <div class="container pb-3 pb-md-0 pt-2 pt-md-5">
+                <div class="row">
+                    <!-- ==== Header Left ==== -->
+                    <div class="col-12 col-md-4 col-lg-3">
+                        <div t-attf-class="d-flex align-items-start h-100 #{reqUser.eq(user) ? 'justify-content-between' : 'justify-content-around' }">
+                            <div class="o-wprofile-pict d-inline-block mb-3 mb-md-0" t-attf-style="background-image: url(#{await website.imageUrl(user, 'avatar1024')});"/>
+                            <a class="btn btn-primary d-inline-block d-md-none"
+                                t-if="reqUser.eq(user) &amp;&amp; await user.karma != 0"
+                                t-attf-href="/profile/edit?urlParam=#{editButtonUrlParam}&amp;userId=#{user.id}">
+                                <i class="fa fa-pencil mr-1"/>EDIT
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ==== Header Right ==== -->
+                    <div class="col-12 col-md-8 col-lg-9 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h1 class="o-card-people-name">
+                                <span t-field="await user.label"/><small t-if="await user.karma == 0"> (not verified)</small>
+                            </h1>
+                            <a class="btn btn-primary d-none d-md-inline-block" t-if="reqUser.eq(user) &amp;&amp; await user.karma != 0 || await reqUser._isAdmin()" t-attf-href="/profile/edit?urlParam=#{editButtonUrlParam}&amp;userId=#{user.id}">
+                                <i class="fa fa-pencil mr-2"/>EDIT PROFILE
+                            </a>
+                        </div>
+
+                        <div class="d-flex flex-column justify-content-center flex-grow-1 mb-0 mb-md-5">
+                            <div t-if="await (await user.partnerId).companyName" class="lead mb-2">
+                                <i class="fa fa-building-o fa-fw mr-1"/><span t-field="user.partnerId.companyName"/>
+                            </div>
+                            <div t-if="await user.city || bool(await user.countryId)" class="lead mb-2">
+                                <i class="fa fa-map-marker fa-fw mr-1"/>
+                                <span t-field="await user.city"/><span class="text-nowrap ml-1" t-if="bool(await user.countryId)">(<span t-field="user.countryId"/>)</span>
+                            </div>
+                            <div t-if="await user.website" class="lead mb-2">
+                                <i class="fa fa-globe fa-fw mr-1"/><span t-field="user.website"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="userProfileContent" name="Profile Page Content">
+        <div class="container">
+            <div class="row">
+
+                <!-- ========== SIDEBAR ========== -->
+                <div class="col-12 col-md-4 col-lg-3 mt-3 mt-md-0">
+                    <div class="o-wprofile-sidebar bg-white px-3 py-2 py-md-3 mb-3 mb-md-5">
+                        <div class="o-wprofile-sidebar-top d-flex justify-content-between">
+                            <div t-if="bool(await user.rankId)" class="d-flex align-items-center">
+                                <small class="font-weight-bold mr-2">Current rank:</small>
+                                <img t-att-src="await website.imageUrl(await user.rankId, 'image128')" width="16" height="16" alt="" class="o-object-fit-cover mr-1"/>
+                                <a t-attf-href="/profile/ranksBadges?urlOrigin=#{request.httpRequest.pathname}&amp;nameOrigin=#{await user.label}" t-field="user.rankId"/>
+                            </div>
+                            <button class="btn btn-sm d-md-none bg-white border" type="button" data-toggle="collapse" data-target="#oWprofileSidebarCollapse" aria-expanded="false" aria-controls="oWprofileSidebarCollapse">More info</button>
+                        </div>
+                        <div class="collapse d-md-block" id="oWprofileSidebarCollapse">
+                            <t t-set="nextRankId" t-value="await user._getNextRank()"/>
+                            <small t-if="bool(nextRankId)" class="font-weight-bold mt-1">Next rank:</small>
+                            <t t-if="bool(nextRankId) || bool(await user.rankId)" t-call="website_profile.profileNextRankCard">
+                                <t t-set="imgMaxWidth" t-valuef="40%"/>
+                            </t>
+
+                            <table class="table table-sm w-100" id="o-wprofile-sidebar-table">
+                                <tbody>
+                                    <tr>
+                                        <th><small class="font-weight-bold">Joined</small></th>
+                                        <td><span t-field="await user.createdAt" t-options='{"format": "d MMM Y"}'/></td>
+                                    </tr>
+                                    <tr>
+                                        <th><small class="font-weight-bold">Badges</small></th>
+                                        <td t-if="bool(await user.badgeIds)" t-esc="len(await (await user.badgeIds).filtered(async (b) => (await b.badgeId).websitePublished))"/>
+                                        <td t-else="">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========== PROFILE CONTENT ========== -->
+                <div class="col-12 col-md-8 col-lg-9">
+                    <ul class="nav nav-tabs o-wprofile-nav-tabs flex-nowrap" role="tablist" id="profileExtraInfoTablist">
+                        <li class="nav-item">
+                            <a role="tab" aria-controls="about" href="#profileTabContentAbout" class="nav-link active" data-toggle="tab">About</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content py-4 o-wprofile-tabs-content mb-4" id="profileExtraInfoTabcontent">
+                        <div role="tabpanel" class="tab-pane active" id="profileTabContentAbout">
+                            <div class="o-wprofile-email-validation-container mb16 mt16">
+                                <t t-call="website_profile.emailValidationBanner">
+                                    <t t-set="redirectUrl" t-value="format('/profile/user/%s', user.id)"/>
+                                    <t t-set="sendValidationEmailMessage">Click here to send a verification email.</t>
+                                </t>
+                            </div>
+                            <div id="profileAboutBadge" class="mb32">
+                                <h5 class="border-bottom pb-1">Badges</h5>
+                                <t t-call="website_profile.userBadges"></t>
+                            </div>
+                            <div t-if="await (await user.partnerId).websiteDescription" class="mb32">
+                                <h5 class="border-bottom pb-1">Biography</h5>
+                                <span t-field="user.partnerId.websiteDescription"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="profileNextRankCard" name="Profile Next Rank Card">
+        <div class="o-wprofile-progress-circle">
+            <svg viewBox="0 0 36 36" class="o-pc-circular-chart">
+                <t t-set="nextRankId" t-value="bool(nextRankId) ? nextRankId : await user._getNextRank()"/>
+                <t t-if="bool(nextRankId) &amp;&amp; bool(await user.rankId)">
+                    <t t-if="(await nextRankId.karmaMin - await (await user.rankId).karmaMin) > 0">
+                        <t t-set="userPoints" t-value="parseInt(100*(await user.karma - await (await user.rankId).karmaMin)/(await nextRankId.karmaMin - await (await user.rankId).karmaMin))"/>
+                    </t>
+                    <t t-else="">
+                        <t t-set="userPoints" t-value="0"/>
+                    </t>
+                </t>
+                <t t-elif="bool(await user.rankId)">
+                    <t t-set="userPoints" t-value="100"/>
+                </t>
+                <t t-else="">
+                    <t t-set="userPoints" t-value="0"/>
+                </t>
+                <path class="o-pc-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                <path class="o-pc-circle" t-attf-stroke-dasharray="#{userPoints}, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" stroke="url(#gradient)" mask="url(#mask)"/>
+                <mask id="mask">
+                    <polygon points="0,0 17.2,0 17.2,10 18,10 18,0 36,0 36,36 0,36" fill="white"/>
+                </mask>
+                <linearGradient id="gradient">
+                    <stop offset="0%" stop-color="var(--o-pc-color-stop-1)"/>
+                    <stop offset="100%" stop-color="var(--o-pc-color-stop-2)"/>
+                </linearGradient>
+            </svg>
+            <div class="o-pc-overlay d-flex flex-column align-items-center justify-content-center">
+                <img class="img-fluid"
+                    t-att-src="await website.imageUrl(bool(nextRankId) ? nextRankId : await user.rankId, 'image128')"
+                    t-att-alt="(bool(nextRankId) ? await nextRankId.label : await (await user.rankId).label) + ' badge'"
+                    t-att-style="'max-width: ' + (imgMaxWidth ? imgMaxWidth : '50%;')"/>
+                <h4 class=" mb-0">
+                    <span t-if="bool(nextRankId)" t-field="nextRankId.label"/>
+                    <span t-else="" t-field="user.rankId.label"/>
+                </h4>
+                <small>
+                    <span class="font-weight-bold text-primary" t-field="user.karma"/> /
+                    <span t-if="nextRankId" class="font-weight-bold" t-field="nextRankId.karmaMin"/>
+                    <span t-else="" class="font-weight-bold" t-field="user.rankId.karmaMin"/>
+                     xp
+                </small>
+            </div>
+        </div>
+    </template>
+
+    <template id="userBadges" name="User Bagdes">
+        <div t-if="bool(await user.badgeIds)" class="row mx-n1">
+            <t t-foreach="await user.badgeIds" t-as="badge">
+                <t t-if="await (await badge.badgeId).websitePublished">
+                    <div class="col px-1 mb-2 col-xl-4">
+                        <div class="card">
+                            <div class="card-body p-2 pr-3">
+                                <div class="media align-items-center">
+                                    <img t-if="!await (await badge.badgeId).image1920 &amp;&amp; await (await badge.badgeId).level"
+                                        width="38" height="38"
+                                        t-attf-src="/website_profile/static/src/img/badge_#{await (await badge.badgeId).level}.svg"
+                                        class="o-object-fit-cover mr-0"
+                                        t-att-alt="await (await badge.badgeId).label"/>
+                                    <img t-else=""
+                                        width="38" height="38"
+                                        t-att-src="await website.imageUrl(await badge.badgeId, 'image128')"
+                                        class="o-object-fit-cover mr-0"
+                                        t-att-alt="await (await badge.badgeId).label"/>
+                                    <div class="media-body col-md-10 p-0">
+                                        <h6 class="my-0 pl-1 text-truncate" t-field="badge.badgeId.label"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </div>
+        <div class="mb-3 d-inline-block" t-if="!bool(await user.badgeIds)">
+            <p class="text-muted">No badges yet!</p>
+        </div>
+        <div class="text-right d-inline-block pull-right">
+            <a t-if="!bool(await user.badgeIds) &amp;&amp; badgeCategory" t-attf-href="/profile/ranksBadges?badgeCategory=#{badgeCategory}&amp;urlOrigin=#{request.httpRequest.pathname}&amp;nameOrigin=#{await user.label}"
+            class="btn btn-link btn-sm"><i class="fa fa-arrow-right"/> All Badges</a>
+            <a t-else="" t-attf-href="/profile/ranksBadges?urlOrigin=#{request.httpRequest.pathname}&amp;nameOrigin=#{await user.label}"
+            class="btn btn-link btn-sm"><i class="fa fa-arrow-right mr-1"/>All Badges</a>
+        </div>
+    </template>
+
+    <!-- About Ranks and badges Page -->
+    <template id="rankBadgeMain" name="Ranks Page">
+        <t t-call="website.layout">
+            <div class="container mb32 mt48">
+                <nav t-if="request.params.get('urlOrigin') &amp;&amp; request.params.get('nameOrigin')" aria-label="breadcrumb">
+                    <ol class="breadcrumb p-0 bg-white">
+                        <li class="breadcrumb-item">
+                            <a t-att-href="await request.website._getHttpDomain() + '/' + lstrip(request.params.get('urlOrigin'), '/')" t-esc="request.params.get('nameOrigin')"/>
+                        </li>
+                        <li class="breadcrumb-item">Badges</li>
+                    </ol>
+                </nav>
+                <div class="row justify-content-between" t-if="ranks">
+                    <div class="col-12 col-md-6 col-lg-5">
+                        <h1>Ranks</h1>
+                        <p class="lead mb-4">Keep learning with <t t-esc="await (await website.companyId).label"/>. Collect points on the forum or on the eLearning platform. Those points will make you reach new ranks.</p>
+                        <h5>How do I earn badges?</h5>
+                        <p>When you finish a course or reach milestones, you're awarded badges.</p>
+                        <h5>How do I score more points?</h5>
+                        <p>You can score more points by answering quizzes at the end of each course content. Points can also be earned on the forum. Follow this link to the guidelines of the forum.</p>
+                    </div>
+                    <div class="col-12 col-md-5 col-lg-4">
+                        <div class="card">
+                            <div class="card-header border-bottom-0">Ranks</div>
+                            <ul class="list-group list-group-flush">
+                                <t t-foreach="ranks" t-as="rank">
+                                    <li t-attf-class="list-group-item">
+                                        <div class="media align-items-center">
+                                            <img t-att-src="await website.imageUrl(rank, 'image128')" class="mr-2 o-image-40-cover" alt="Rank badge"/>
+                                            <div class="media-body">
+                                                <h5 class="mt-0 mb-0" t-field="rank.label"/>
+                                                <span class="badge badge-success"><span t-field="rank.karmaMin"/></span> point<span t-if="await rank.karmaMin">s</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </t>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <t t-call="website_profile.badgeContent"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="badgeContent" name="Badges Page content">
+        <div id="websiteProfileBadges">
+            <div class="row">
+                <div class="col-12">
+                    <h1 class="mt-4 mt-lg-2">Badges</h1>
+                    <p class="lead">
+                        Besides gaining reputation with your questions and answers,
+                        you receive badges for being especially helpful.<br class="d-none d-lg-inline-block"/>Badges
+                        appear on your profile page, and your posts.
+                    </p>
+                </div>
+            </div>
+            <div class="row col-12 align-items-center p-0" t-foreach="badges" t-as="badge">
+                <div class="col-3 d-flex align-items-center">
+                    <t t-call="website_profile.badgeHeader"/>
+                </div>
+                <div class="col-6">
+                    <span t-field="badge.description"/>
+                </div>
+                <div class="col-3 text-right">
+                    <b t-esc="await badge.grantedUsersCount"/>
+                    <i class="text-muted"> awarded users</i>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="badgeHeader">
+        <img t-if="! await badge.image1920 &amp;&amp; await badge.level" t-attf-src="/website_profile/static/src/img/badge_#{await badge.level}.svg"
+                class="my-1 mr-1 wprofile-badge-img" t-att-alt="await badge.label"/>
+        <img t-else="" t-att-src="await website.imageUrl(badge, 'image1024')" class="my-1 mr-1 wprofile-badge-img" t-att-alt="await badge.label"/>
+        <a t-if="badgeUrl" t-att-href="badgeUrl">
+            <h6 t-field="badge.label" class="d-inline my-0"/>
+        </a>
+        <h6 t-else="" t-field="badge.label" class="d-inline my-0"/>
+    </template>
+
+    <!--Private profile-->
+    <template id="privateProfile" name="Private Profile Page">
+        <t t-call="website.layout">
+            <div class="container mb32 mt48">
+                <h1 class="mt32">This profile is private!</h1>
+                <div id="privateProfileReturnLinkContainer">
+                    <p><a t-attf-href="/">Return to the website.</a></p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!--
+    All Users Page
+    -->
+    <template id="usersPageMain" name="Users Page">
+        <t t-set="bodyClassname" t-value="'o-wprofile-body'"/>
+         <t t-call="website.layout">
+            <div id="wrap" class="o-wprofile-wrap mt-0 pb-5">
+                <t t-call="website_profile.usersPageHeader"/>
+                <t t-call="website_profile.usersPageContent"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="usersPageHeader" name="Users Page Header">
+        <div class="o-wprofile-all-users-header o-wprofile-gradient mb-n5 pb-5">
+            <t t-call="website_profile.userProfileSubNav"/>
+            <div class="container">
+                <h1 class="py-4 text-white d-inline-block">All Users</h1>
+                <div class="form-inline py-4 float-right">
+                    <strong class="form-group text-white mr-2">Rank by :</strong>
+                    <div class="form-group btn-group">
+                        <a t-attf-class="btn btn-secondary #{ groupby == 'week' ? 'active' : ''}"
+                            t-att-href="'/profile/users?' + keepQuery('search', groupby='week')">This week</a>
+                        <a t-attf-class="btn btn-secondary #{ groupby == 'month' ? 'active' : ''}"
+                            t-att-href="'/profile/users?' + keepQuery('search', groupby='month')">This month</a>
+                        <a t-attf-class="btn btn-secondary #{ groupby == 'all' ? 'active' : ''}"
+                            t-att-href="'/profile/users?' + keepQuery('search')">All time</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="usersPageContent">
+        <div class="container mb32">
+            <div class="row mb-3">
+                <div class="col-md-4 d-flex flex-grow-1" t-foreach="top3Users" t-as="user" t-attf-onclick="location.href='/profile/user/#{user['id']}';">
+                    <t t-call="website_profile.top3UserCard"></t>
+                </div>
+            </div>
+            <table class="table table-sm" t-if='users'>
+                <t t-foreach="users" t-as="user">
+                    <tr t-attf-onclick="location.href='/profile/user/#{user['id']}';" t-attf-class="o-wprofile-pointer bg-white #{user['id'] == userId.id &amp;&amp; 'o-wprofile-border-focus'}">
+                        <t t-call="website_profile.allUserCard"/>
+                    </tr>
+                </t>
+                <t t-if="myUser">
+                    <!-- keep same table to avoid missaligment -->
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                    <t t-set='user' t-value='myUser'/>
+                    <tr t-attf-onclick="location.href='/profile/user/#{user['id']}';" t-attf-class="o-wprofile-pointer bg-white o-wprofile-border-focus">
+                        <t t-call="website_profile.allUserCard">
+                        </t>
+                    </tr>
+                </t>
+            </table>
+            <t t-if='search &amp;&amp; !bool(users)'>
+                <div class='alert alert-warning'>No user found for <strong><t t-esc="search"/></strong>. Try another search.</div>
+            </t>
+            <div class="form-inline justify-content-center">
+                <t t-call="website_profile.pagerNobox"/>
+            </div>
+        </div>
+    </template>
+
+    <template id="top3UserCard" name="Top 3 User Card">
+        <div class="card w-100 text-center mb-2 border-bottom-0 o-wprofile-pointer">
+            <div class="card-body">
+                <div class="d-inline-block position-relative">
+                    <img class="rounded-circle img-fluid"
+                        style="width: 128px; height: 128px; object-fit: cover;"
+                         t-att-src="format('/profile/avatar/%s?field=avatar256%s', user['id'], bool(record) ? format('&amp;resModel=%s&amp;resId=%s', record._name, record.id) : '')"/>
+                    <img class="position-absolute" t-attf-src="/website_profile/static/src/img/rank_#{user_index + 1}.svg" alt="User rank" style="bottom: 0; right: -10px"/>
+                </div>
+                <h3 class="mt-2 mb-0" t-esc="user['label']"></h3>
+                <span class="badge badge-danger font-weight-normal px-2" t-if="! user['websitePublished']">Unpublished</span>
+                <strong class="text-muted" t-esc="user['rank']"/>
+                <div class="h3 my-2" t-if="user['karmaGain']">
+                    <span class="badge badge-pill badge-success px-3 py-2" ><t t-if="user['karmaGain'] > 0">+ </t> <t t-esc="user['karmaGain']"/> XP</span>
+                </div>
+            </div>
+            <div class="row mx-0 o-wprofile-top3-card-footer text-nowrap">
+                <div class="col py-3"><b t-esc="user['karma']"/> <span class="text-muted">XP</span></div>
+                <div class="col py-3"><b t-esc="user['badgeCount']"/> <span class="text-muted">Badges</span></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="allUserCard" name="All User Card">
+        <td class="align-middle text-right text-muted" style="width: 0">
+            <span t-esc="user['position']"/>
+        </td>
+        <td class="align-middle d-none d-sm-table-cell">
+            <img class="o-object-fit-cover rounded-circle o-wprofile-img-small" width="30" height="30" t-att-src="format('/profile/avatar/%s?field=avatar128%s', user['id'], bool(record) ? format('&amp;resModel=%s&amp;resId=%s', record._name, record.id) : '')"/>
+        </td>
+        <td class="align-middle w-md-75">
+            <span class="font-weight-bold" t-esc="user['label']"/><br/>
+            <span class="text-muted font-weight-bold" t-esc="user['rank']"></span>
+        </td>
+        <td class="align-middle text-nowrap">
+            <t t-if="user['karmaGain']">
+                <span class="badge badge-pill badge-success d-inline"><t t-if="user['karmaGain'] > 0">+ </t><t t-esc="user['karmaGain']"/> XP</span>
+                <span class="text-muted pl-2 pr-3">
+                    <t t-if="groupby == 'week'">this week</t>
+                    <t t-elif="groupby == 'month'">this month</t>
+                    <t t-else="">All time </t>
+                </span>
+            </t>
+        </td>
+        <td class="align-middle font-weight-bold text-right text-nowrap">
+            <span t-if="!user['websitePublished']" class="badge badge-danger font-weight-normal px-2 py-1 m-1">Unpublished</span>
+        </td>
+        <td class="align-middle font-weight-bold text-right text-nowrap">
+            <b t-esc="user['karma']"/> <span class="text-muted small font-weight-bold">XP</span>
+        </td>
+        <td class="align-middle font-weight-bold text-right pr-3 text-nowrap all-user-badge-count">
+            <b t-esc="user['badgeCount']"/> <span class="text-muted small font-weight-bold">Badges</span>
+        </td>
+    </template>
+
+    <!-- Custom Pager: lighter than existing one, no box around number, first / end displayed -->
+    <template id="pagerNobox" name="Pager (not box display)">
+        <ul t-if="pager['pageCount'] > 1" t-attf-class="o-wprofile-pager font-weight-bold pagination m-0">
+            <li t-attf-class="page-item o-wprofile-pager-arrow #{'disabled' if pager['page']['num'] == 1 else ''}">
+                <a t-att-href=" pager['page']['num'] != 1 ? pager['pageFirst']['url'] : null" class="page-link"><i class="fa fa-step-backward"/></a>
+            </li>
+            <li t-attf-class="page-item o-wprofile-pager-arrow #{pager['page']['num'] == 1 ? 'disabled' : ''}">
+                <a t-att-href=" pager['pagePrevious']['url'] if pager['page']['num'] != 1 else None" class="page-link"><i class="fa fa-caret-left"/></a>
+            </li>
+            <t t-foreach="pager['pages']" t-as="page">
+                <li t-attf-class="page-item #{'active disabled bg-primary rounded-circle' if page['num'] == pager['page']['num'] else ''}"> <a t-att-href="page['url']" class="page-link" t-out="page['num']"/></li>
+            </t>
+            <li t-attf-class="page-item o-wprofile-pager-arrow #{pager['page']['num'] == pager['pageCount'] ? 'disabled' : ''}">
+                <a t-att-href="pager['page']['num'] != pager['pageCount'] ? pager['pageNext']['url'] : null" class="page-link"><i class="fa fa-caret-right"/></a>
+            </li>
+            <li t-attf-class="page-item o-wprofile-pager-arrow #{pager['page']['num'] == pager['pageCount'] ? 'disabled' : ''}">
+                <a t-att-href=" pager['page']['num'] != pager['pageCount'] ? pager['pageLast']['url'] : null" class="page-link"><i class="fa fa-step-forward"/></a>
+            </li>
+        </ul>
+    </template>
+
+    <template id="emailValidationBanner">
+        <t t-set="sendAlertClasses" t-value="sendAlertClasses ? sendAlertClasses : 'alert alert-danger alert-dismissable'"/>
+        <t t-set="doneAlertClasses" t-value="doneAlertClasses ? doneAlertClasses : 'alert alert-success alert-dismissable'"/>
+
+        <div t-if="!validationEmailSent &amp;&amp; !isPublicUser &amp;&amp; await user.karma == 0" t-att-class="sendAlertClasses" role="alert">
+            <button type="button" class="close validation-email-close" data-dismiss="alert" aria-label="Close">×</button>
+            It appears your email has not been verified.<br/>
+            <a class="send-validation-email alert-link" href="#" t-att-data-redirect-url="redirectUrl">
+                <span t-esc="sendValidationEmailMessage"/>
+            </a>
+        </div>
+        <div t-if="validationEmailDone" t-att-class="doneAlertClasses" role="status">
+            <button type="button" class="close validated-email-close" data-dismiss="alert" aria-label="Close">×</button>
+            <span id="emailValidatedMessage">Congratulations! Your email has just been validated.</span>
+            <span t-esc="additionalValidatedEmailMessage"/>
+        </div>
+    </template>
+
+</data></verp>

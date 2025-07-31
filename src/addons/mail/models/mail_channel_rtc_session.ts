@@ -34,8 +34,8 @@ class MailRtcSession extends Model {
     const rows = [];
     for (const [channel, sessionsData] of (await rtcSessions._mailRtcSessionFormatByChannel()).entries()) {
       rows.push([channel, 'mail.channel/rtcSessionsUpdate', {
-        'id': channel.id,
-        'rtcSessions': [['insert', sessionsData ?? []]],
+        id: channel.id,
+        rtcSessions: [['insert', sessionsData ?? []]],
       }])
     }
     await this.env.items('bus.bus')._sendmany(rows);
@@ -55,16 +55,16 @@ class MailRtcSession extends Model {
     const notifications = []
     for (const [channel, sessionsData] of (await this._mailRtcSessionFormatByChannel()).entries()) {
       notifications.push([channel, 'mail.channel/rtcSessionsUpdate', {
-        'id': channel.id,
-        'rtcSessions': [[
-          'insert-and-unlink', sessionsData.map(sessionData => {return{'id': sessionData['id']}})
+        id: channel.id,
+        rtcSessions: [[
+          'insert-and-unlink', sessionsData.map(sessionData => ({id: sessionData['id']}))
         ]],
       }]); 
     }
     for (const rtcSession of this) {
       let target = await rtcSession.guestId;
       target = bool(target) ? target : await rtcSession.partnerId;
-      notifications.push([target, 'mail.channel.rtc.session/ended', {'session_id': rtcSession.id}]);
+      notifications.push([target, 'mail.channel.rtc.session/ended', {session_id: rtcSession.id}]);
     }
     await this.env.items('bus.bus')._sendmany(notifications)
     return _super(MailRtcSession, this).unlink();
@@ -107,10 +107,9 @@ class MailRtcSession extends Model {
    * Used for peer-to-peer communication,
         guarantees that the sender is the current guest or partner.
 
-        :param notifications: list of tuple with the following elements:
+   * @param notifications list of tuple with the following elements:
             - target_session_ids: a list of mail.channel.rtc.session ids
             - content: a string with the content to be sent to the targets
-   * @param notifications 
    * @returns 
    */
   async _notifyPeers(notifications) {
@@ -138,22 +137,22 @@ class MailRtcSession extends Model {
     const self: any =this;
     if (completeInfo) {
       Object.assign(vals, {
-        'isCameraOn': await self.isCameraOn,
-        'isDeaf': await self.isDeaf,
-        'isMuted': await self.isMuted,
-        'isScreenSharingOn': self.isScreenSharingOn,
+        isCameraOn: await self.isCameraOn,
+        isDeaf: await self.isDeaf,
+        isMuted: await self.isMuted,
+        isScreenSharingOn: self.isScreenSharingOn,
       });
     }
     if (await self.guestId) {
       vals['guest'] = [['insert', {
-        'id': (await self.guestId).id,
-        'label': (await self.guestId).label,
+        id: (await self.guestId).id,
+        label: (await self.guestId).label,
       }]]
     }
     else {
       vals['partner'] = [['insert', {
-        'id': (await self.partnerId).id,
-        'label': (await self.partnerId).label,
+        id: (await self.partnerId).id,
+        label: (await self.partnerId).label,
       }]];
     }
     return vals;

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp><data noupdate="1">
+    <!--Karma-->
+    <record id="base.userRoot" model="res.users">
+        <field name="karma">2500</field>
+    </record>
+    <record id="base.userAdmin" model="res.users">
+        <field name="karma">2500</field>
+    </record>
+
+    <!--Ranks-->
+    <record id="rankNewbie" model="gamification.karma.rank">
+        <field name="label">Newbie</field>
+        <field name="description" type="html"><p>You just began the adventure! Welcome!</p></field>
+        <field name="descriptionMotivational" type="html">
+            <div class="media align-items-center">
+                <div class="media-body">Earn your first points and join the adventure !</div>
+                <img class="ml-3 img img-fluid" style="max-height: 72px;" src="/gamification/static/img/rank_newbie_badge.svg"/>
+            </div>
+        </field>
+        <field name="karmaMin">1</field>
+        <field name="image1920" type="base64" file="gamification/static/img/rank_newbie_badge.svg"/>
+    </record>
+
+    <record id="rankStudent" model="gamification.karma.rank">
+        <field name="label">Student</field>
+        <field name="description" type="html"><p>You're a young padawan now. May the force be with you!</p></field>
+        <field name="descriptionMotivational" type="html">
+            <div class="media align-items-center">
+                <div class="media-body">Reach the next rank to show the rest of the world you exist.</div>
+                <img class="ml-3 img img-fluid" style="max-height: 72px;" src="/gamification/static/img/rank_student_badge.svg"/>
+            </div>
+        </field>
+        <field name="karmaMin">100</field>
+        <field name="image1920" type="base64" file="gamification/static/img/rank_student_badge.svg"/>
+    </record>
+
+    <record id="rankBachelor" model="gamification.karma.rank">
+        <field name="label">Bachelor</field>
+        <field name="description" type="html"><p>You love learning things. Curiosity is a good way to progress.</p></field>
+        <field name="descriptionMotivational" type="html">
+            <div class="media align-items-center">
+                <div class="media-body">Reach the next rank to improve your status!</div>
+                <img class="ml-3 img img-fluid" style="max-height: 72px;" src="/gamification/static/img/rank_bachelor_badge.svg"/>
+            </div>
+        </field>
+        <field name="karmaMin">500</field>
+        <field name="image1920" type="base64" file="gamification/static/img/rank_bachelor_badge.svg"/>
+    </record>
+
+    <record id="rankMaster" model="gamification.karma.rank">
+        <field name="label">Master</field>
+        <field name="description" type="html"><p>You know what you are talking about. People learn from you.</p></field>
+        <field name="descriptionMotivational" type="html">
+            <div class="media align-items-center">
+                <div class="media-body">Reach the next rank and become a Master!</div>
+                <img class="ml-3 img img-fluid" style="max-height: 72px;" src="/gamification/static/img/rank_master_badge.svg"/>
+            </div>
+        </field>
+        <field name="karmaMin">2000</field>
+        <field name="image1920" type="base64" file="gamification/static/img/rank_master_badge.svg"/>
+    </record>
+
+    <record id="rankDoctor" model="gamification.karma.rank">
+        <field name="label">Doctor</field>
+        <field name="description" type="html"><p>You have reached the last rank. Congratulations!</p></field>
+        <field name="descriptionMotivational" type="html">
+            <div class="media align-items-center">
+                <div class="media-body">Reach the next rank and become a powerful user!</div>
+                <img class="ml-3 img img-fluid" style="max-height: 72px;" src="/gamification/static/img/rank_doctor_badge.svg"/>
+            </div>
+        </field>
+        <field name="karmaMin">10000</field>
+        <field name="image1920" type="base64" file="gamification/static/img/rank_doctor_badge.svg"/>
+    </record>
+</data></verp>

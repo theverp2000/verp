@@ -1673,9 +1673,9 @@ class Export extends http.Controller {
     const _export = await env.items('ir.exports').browse([opts.exportId]).readOne();
     const exportFieldsList = await env.items('ir.exports.line').browse(_export['exportFields']).read();
 
-    const fieldsData = this.fieldsInfo(opts.model, exportFieldsList.map(f => f['name']));
+    const fieldsData = await this.fieldsInfo(opts.model, exportFieldsList.map(f => f['name']));
 
-    return exportFieldsList.map(field => { return { 'name': field['name'], 'label': fieldsData[field['name']] } });
+    return exportFieldsList.map(field => ({ name: field['name'], label: fieldsData[field['name']] }) );
   }
 
   async fieldsInfo(model, exportFields) {

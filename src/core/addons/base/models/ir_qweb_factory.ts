@@ -12,7 +12,7 @@ import { equal, isDigit, isInstance, rstringPart } from "../../../tools/func";
 import { chain, count, enumerate, extend, isIterable, iter, len, next, range } from "../../../tools/iterable";
 import { pop, popitem, repr } from '../../../tools/misc';
 import { compile, unsafeEval } from "../../../tools/save_eval";
-import { UpCamelCase } from "../../../tools/utils";
+import { lstrip, UpCamelCase } from "../../../tools/utils";
 import * as xml from '../../../tools/xml';
 import { markup } from '../../../tools/xml';
 import { QWeb, QWebCodeFound, QWebException, dedent } from './qweb';
@@ -146,6 +146,7 @@ export class IrQWebFactory extends QWeb {
       equal,
       repr,
       format,
+      lstrip,
       enumerate,
       range,
       pop,

@@ -75,7 +75,7 @@ class AccountMove extends Model {
     async _reverseMoves(defaultValuesList?: any, cancel = false) {
         // OVERRIDE
         if (!bool(defaultValuesList)) {
-            defaultValuesList = await this.map(move => { return {} });
+            defaultValuesList = await this.map(move => ({}));
         }
         for (const [move, defaultValues] of _.zip([...this], defaultValuesList)) {
             update(defaultValues, {

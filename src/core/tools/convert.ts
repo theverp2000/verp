@@ -290,10 +290,11 @@ function _getIdref(self, env, modelStr, idref) {
       date.setHours(0, 0, 0, 0);
       return date;
     },
-    time: () => DateTime.now(), // luxon DateTime != Date
+    time: () => DateTime.now(), // luxon DateTime != JSDate
     subDate: date_utils.subDate,
     addDate: date_utils.addDate,
     toFormat: date_utils.toFormat,
+    stringify: stringify,
     refId: (str: string, raiseIfNotFound = true) => idGet(self, str, raiseIfNotFound),
   });
   if (modelStr) {

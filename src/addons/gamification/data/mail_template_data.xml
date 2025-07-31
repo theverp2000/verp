@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data noupdate="1">
+        <record id="emailTemplateBadgeReceived" model="mail.template">
+            <t t-set="userId" t-value="await object.userId" />
+            <t t-set="badgeId" t-value="await object.badgeId" />
+            <field name="label">Received Badge</field>
+            <field name="subject">New badge {{ await badgeId.label }} granted</field>
+            <field name="modelId" ref="gamification.model_gamificationBadgeUser"/>
+            <field name="partnerTo">{{ (await userId.partnerId).id }}</field>
+            <field name="bodyHtml" type="html">
+<table border="0" cellpadding="0" style="padding-top: 16px; background-color: #F1F1F1; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<table border="0" width="590" cellpadding="0" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;" summary="oMailNotification">
+<tbody>
+    <!-- HEADER -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="middle">
+                    <span style="font-size: 10px;">Your Badge</span><br/>
+                    <span style="font-size: 20px; font-weight: bold;" t-out="await badgeId.label || ''"></span>
+                </td><td valign="middle" align="right">
+                    <img t-attf-src="/logo.png?company={{ (await userId.companyId).id }}" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="await (await userId.companyId).label"/>
+                </td></tr>
+                <tr><td colspan="2" style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+    <!-- CONTENT -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="top" style="font-size: 14px;">
+                    <div>
+                        Congratulations <t t-out="await userId.label || ''"></t> !<br/>
+                        You just received badge <strong t-out="await badgeId.label || ''"></strong> !<br/>
+                        <table t-if="!isHtmlEmpty(await badgeId.description)" cellspacing="0" cellpadding="0" border="0" style="width: 560px; margin-top: 5px;">
+                            <tbody><tr>
+                                <td valign="center">
+                                    <img t-attf-src="/web/image/gamification.badge/{{ badgeId.id }}/image128/80x80" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="await (await user.companyId).label"/>
+                                </td>
+                                <td valign="center">
+                                    <cite t-out="await badgeId.description || ''"></cite>
+                                </td>
+                            </tr></tbody>
+                        </table>
+                        <br/>
+                        <t t-if="bool(await object.senderId)">
+                            This badge was granted by <strong t-out="await (await object.senderId).label || ''"></strong>.
+                        </t>
+                        <br/>
+                        <t t-if="await object.comment" t-out="await object.comment || ''"></t>
+                        <br/><br/>
+                        Thank you,
+                        <t t-if="await (await object.senderId).signature">
+                            <br />
+                            <t t-out="await (await object.senderId).signature || ''"></t>
+                        </t>
+                    </div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+    <!-- FOOTER -->
+    <tr>
+        <t t-set="userCompanyId" t-value="await userId.companyId" />
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" style="min-width: 590px; background-color: white; font-size: 12px; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="middle" align="left">
+                    <t t-out="await userCompanyId.label || ''">YourCompany</t>
+                </td></tr>
+                <tr><td valign="middle" align="left" style="opacity: 0.7;">
+                    <t t-out="await userCompanyId.phone || ''">+1 650-123-4567</t>
+                    <t t-if="await userCompanyId.email">
+                        | <a t-attf-href="format('mailto:%s', {{ await userCompanyId.email }})" style="text-decoration:none; color: #454748;" t-out="await userCompanyId.email || ''">info@yourcompany.com</a>
+                    </t>
+                    <t t-if="await userCompanyId.website">
+                        | <a t-attf-href="'%s' % {{ await userCompanyId.website }}" style="text-decoration:none; color: #454748;" t-out="await userCompanyId.website || ''">http://www.example.com</a>
+                    </t>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+<!-- POWERED BY -->
+<tr><td align="center" style="min-width: 590px;">
+    <table width="590" border="0" cellpadding="0" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+      <tr><td style="text-align: center; font-size: 14px;">
+        Powered by <a target="_blank" href="https://www.verp.com?utmSource=db&amp;utmMedium=gamification" style="color: #875A7B;">Verp</a>
+      </td></tr>
+    </table>
+</td></tr>
+</table></field>
+            <field name="lang">{{ await userId.lang }}</field>
+            <field name="autoDelete" eval="true"/>
+        </record>
+
+        <record id="emailTemplateGoalReminder" model="mail.template">
+            <t t-set="userId" t-value="await object.userId" />
+            <field name="label">Goal: Reminder for Goal Update</field>
+            <field name="modelId" ref="gamification.model_gamificationGoal"/>
+            <field name="partnerTo">{{ (await userId.partnerId).id }}</field>
+            <field name="bodyHtml" type="html">
+<div>
+    <strong>Reminder</strong><br/>
+    You have not updated your progress for the goal <t t-out="await (await object.definitionId).label || ''"></t> (currently reached at <t t-out="await object.completeness || ''"></t>%) for at least <t t-out="await object.remindUpdateDelay || ''"></t> days. Do not forget to do it.
+    <br/><br/>
+    Thank you,
+    <t t-if="await (await (await object.challengeId).managerId).signature">
+        <br />
+        <t t-out="await (await (await object.challengeId).managerId).signature || ''"></t>
+    </t>
+</div></field>
+            <field name="lang">{{ await userId.lang }}</field>
+            <field name="autoDelete" eval="true"/>
+        </record>
+        
+        <record id="simpleReportTemplate" model="mail.template">
+            <field name="label">Challenge: Simple Challenge Report Progress</field>
+            <field name="modelId" ref="gamification.model_gamificationChallenge"/>
+            <field name="bodyHtml" type="html">
+<table cellspacing="0" cellpadding="0" width="100%" style="background-color: #EEE; border-collapse: collapse;">
+<tr>
+    <td valign="top" align="center">
+        <t t-set="objectCtx" t-value="ctx['object']"/>
+        <t t-set="company" t-value="objectCtx &amp;&amp; objectCtx.companyId || await user.companyId"/>
+        <t t-set="challengeLines" t-value="ctx['challengeLines'] ?? []"/>
+        <table cellspacing="0" cellpadding="0" width="600" style="margin: 0 auto; width: 570px;">
+            <tr><td>
+                <table cellspacing="0" cellpadding="0" width="100%">
+                    <tr>
+                        <div>
+                            <t t-if="await object.visibilityMode == 'ranking'">
+                                <td style="padding:15px;">
+                                    <p style="font-size:20px;color:#666666;" align="center">Leaderboard</p>
+                                </td>
+                            </t>
+                        </div>
+                    </tr>
+                </table>
+                <table cellspacing="0" cellpadding="0" width="100%" bgcolor="#fff" style="background-color:#fff;">
+                    <tr><td style="padding: 15px;">
+                        <t t-if="await object.visibilityMode == 'personal'">
+                            <span style="color:#666666;font-size:13px;">Here is your current progress in the challenge <strong t-out="await object.label || ''"></strong>.</span>
+                            <table cellspacing="0" cellpadding="0" width="100%" style="margin-top:20px;">
+                                <tr>
+                                    <td align="center">
+                                        <div>Personal Performance</div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table cellspacing="0" cellpadding="0" width="100%" style="margin-top:30px;color:#666666;">
+                                <thead>
+                                    <tr style="color:#9A6C8E; font-size:12px;">
+                                        <th align="left" style="padding-bottom: 0px;width:40%;text-align:left;">Goals</th>
+                                        <th style="width:20%;text-align:right;" align="left">Target</th>
+                                        <th style="width:20%;text-align:right;" align="right">Current</th>
+                                        <th style="width:20%;text-align:right;" align="right">Completeness</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" style="height:1px;background-color:#9A6C8E;"></td>
+                                    </tr>
+                                </thead>
+                                <tbody t-foreach="challengeLines" t-as="line">
+                                    <tr style="font-weight:bold;">
+                                        <td style="padding: 20px 0;" align="left">
+                                            <t t-out="line['label'] || ''"></t>
+                                            <t t-if="line['suffix'] || line['monetary']">
+                                                (<t t-out="line['fullSuffix'] || ''"></t>)
+                                            </t>
+                                        </td>
+                                        <td style="padding: 20px 0;" align="right"><t t-out="line['target'] ? line['target'].toFixed(2) : ''"></t>
+                                            <t t-if="line['suffix']" t-out="line['suffix'] || ''"></t>
+                                        </td>
+                                        <td style="padding: 20px 0;" align="right"><t t-out="line['current'] ? line['current'].toFixed(2) : ''"></t>
+                                            <t t-if="line['suffix']" t-out="line['suffix'] || ''"></t>
+                                        </td>
+                                        <td style="padding: 20px 0;font-size:25px;color:#9A6C8E;" align="right"><strong><t t-out="parseInt(line['completeness']) || ''"></t>%</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" style="height:1px;background-color:#e3e3e3;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>                   
+                        </t>
+                        <t t-else="">
+                            <span style="color:#A8A8A8;font-size:13px;">
+                                Challenge: <strong t-out="await object.label || ''"></strong>.
+                            </span> 
+                            <t t-foreach="challengeLines" t-as="line">
+                                <!-- Header + Button table -->
+                                <table cellspacing="0" cellpadding="0" width="100%" style="margin-top:35px;">
+                                    <tr>
+                                        <td width="50%">
+                                            <div>Top Achievers for goal <strong t-out="line['label'] || ''"></strong></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <!-- Podium -->
+                                <t t-if="len(line['goals']) == 2">
+                                    <table cellspacing="0" cellpadding="0" width="100%" style="margin-top:10px;">
+                                        <tr><td style="padding:0 30px;">
+                                            <table cellspacing="0" cellpadding="0" width="100%" style="table-layout: fixed;">
+                                                <tr>
+                                                    <t t-set="topGoals" t-value="line['goals'].slice(0,3)"/>
+                                                    <t t-foreach="topGoals" t-as="goal">
+                                                        <td align="center" style="width:32%;">
+                                                            <t t-if="loop.index == 1">
+                                                                <t t-set="extraDiv" t-value="'&lt;div style=&quot;height:40px;&quot;&gt;&lt;/div&gt;'"/>
+                                                                <t t-set="heightA" t-value="95"/>
+                                                                <t t-set="heightB" t-value="75"/>
+                                                                <t t-set="bgcolor" t-value="'#b898b0'"/>
+                                                                <t t-set="fontSize" t-value="50"/>
+                                                                <t t-set="podiumPosition" t-value="'2'"/>
+                                                            </t>
+                                                            <t t-elif="loop.index == 2">
+                                                                <t t-set="extraDiv" t-value="''"/>
+                                                                <t t-set="heightA" t-value="55"/>
+                                                                <t t-set="heightB" t-value="115"/>
+                                                                <t t-set="bgcolor" t-value="'#9A6C8E'"/>
+                                                                <t t-set="fontSize" t-value="85"/>
+                                                                <t t-set="podiumPosition" t-value="'1'"/>
+                                                            </t>
+                                                            <t t-elif="loop.index == 3">
+                                                                <t t-set="extraDiv" t-value="'&lt;div style=&quot;height:60px;&quot;&gt;&lt;/div&gt;'"/>
+                                                                <t t-set="heightA" t-value="115"/>
+                                                                <t t-set="heightB" t-value="55"/>
+                                                                <t t-set="bgcolor" t-value="'#c8afc1'"/>
+                                                                <t t-set="fontSize" t-value="35"/>
+                                                                <t t-set="podiumPosition" t-value="'3'"/>
+                                                            </t>
+                                                            <div style="margin:0 3px 0 3px;height:220px;">
+                                                                <div t-attf-style="height:{{ heightA }}px;">
+                                                                    <t t-out="extraDiv || ''"></t>
+                                                                    <div style="height:55px;">
+                                                                        <img style="margin-bottom:5px;width:50px;height:50px;border-radius:50%;object-fit:cover;" t-att-src="await imageDataUri(await (await object.env.items('res.users').browse(goal['userId']).partnerId).image128)" t-att-alt="goal['label']"/>
+                                                                    </div>
+                                                                    <div align="center" t-attf-style ="color:{{ bgcolor }};height:20px">
+                                                                        <t t-out="goal['label'] || ''"></t>
+                                                                    </div>
+                                                                </div>
+                                                                <div t-attf-style="background-color:{{ bgcolor }};height:{{ heightB }}px;">
+                                                                    <strong><span t-attf-style="color:#fff;font-size:{{ fontSize }}px;" t-out="podiumPosition || ''"></span></strong>
+                                                                </div>
+                                                                <div style="height:30px;">
+                                                                    <t t-out="goal['current'] ? goal['current'].toFixed(2) : ''"></t>
+                                                                    <t t-if="line['suffix'] || line['monetary']">
+                                                                        <t t-out="line['fullSuffix'] || ''"></t>
+                                                                    </t>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </t>
+                                                </tr>
+                                            </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </t>
+                                <!-- data table -->
+                                <table cellspacing="0" cellpadding="0" width="100%" style="margin-bottom:5px">
+                                    <tr>
+                                        <td>
+                                            <table cellspacing="0" cellpadding="0" width="100%" style="margin-top:30px;margin-bottom:5px;color:#666666;">
+                                                <thead>
+                                                    <tr style="color:#9A6C8E; font-size:12px;">
+                                                        <th style="width:15%;text-align:center;">Rank</th>
+                                                        <th style="width:25%;text-align:left;">Name</th>
+                                                        <th style="width:30%;text-align:right;">Performance 
+                                                            <t t-if="line['suffix']">
+                                                                (<t t-out="line['suffix'] || ''"></t>)
+                                                            </t>
+                                                            <t t-elif="line['monetary']">
+                                                                (<t t-out="await (await company.currencyId).symbol || ''"></t>)
+                                                            </t>
+                                                        </th>
+                                                        <th style="width:30%;text-align:right;">Completeness</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="5" style="height:1px;background-color:#9A6C8E;"></td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody t-foreach="line['goals']" t-as="goal">
+                                                    <tr>
+                                                        <t t-set="tdBgColor" t-value="'#fff'"/>
+                                                        <t t-set="tdColor" t-value="'gray'"/>
+                                                        <t t-set="mutedColor" t-value="'#AAAAAA'"/>
+                                                        <t t-set="tdPercentageColor" t-value="'#9A6C8E'"/>
+                                                        <td width="15%" align="center" valign="middle" t-attf-style="background-color:{{ tdBgColor }};padding :5px 0;font-size:20px;"><t t-out="goal['rank']+1 || ''"></t>
+                                                        </td>
+                                                        <td width="25%" align="left" valign="middle" t-attf-style="background-color:{{ tdBgColor }};padding :5px 0;font-size:13px;"><t t-out="goal['label'] || ''"></t></td>
+                                                        <td width="30%" align="right" t-attf-style="background-color:{{ tdBgColor }};padding:5px 0;line-height:1;"><t t-out="goal['current'] ? goal['current'].toFixed(2) : ''"></t><br/><span t-attf-style="font-size:13px;color:{{ mutedColor }};">on <t t-out="line['target'] ? line['target'].toFixed(2) : ''"></t></span>
+                                                        </td>
+                                                        <td width="30%" t-attf-style="color:{{ tdPercentageColor }};background-color:{{ tdBgColor }};padding-right:15px;font-size:22px;" align="right"><strong><t t-out="parseInt(goal['completeness']) || ''"></t>%</strong></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="5" style="height:1px;background-color:#DADADA;"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table> 
+                            </t>
+                        </t>
+                    </td></tr>
+                </table>
+            </td></tr>
+        </table>
+    </td>
+</tr>
+</table>
+            </field>
+        </record>
+
+        <record id="mailTemplateDataNewRankReached" model="mail.template">
+            <field name="label">User: New rank reached</field>
+            <field name="modelId" ref="base.model_resUsers"/>
+            <field name="subject">New rank: {{ await (await object.rankId).label }}</field>
+            <field name="emailTo"></field>
+            <field name="partnerTo">{{ (await object.partnerId).id }}</field>
+            <field name="bodyHtml" type="html">
+<div style="background:#F0F0F0;color:#515166;padding:10px 0px;font-family:Arial,Helvetica,sans-serif;font-size:14px;">
+<table style="width:600px;margin:0px auto;background:white;border:1px solid #e1e1e1;">
+    <tbody>
+        <tr>
+            <td style="padding:15px 20px 10px 20px;">
+                <p>
+                    Congratulations
+                    <span t-out="await object.label || ''">Joel Willis</span>!
+                </p>
+                <p>
+                    You just reached a new rank : <strong t-out="await (await object.rankId).label || ''">Newbie</strong>
+                </p>
+                <t t-if="await (await object.nextRankId).label">
+                    <p>Continue your work to become a <strong t-out="await (await object.nextRankId).label || ''">Student</strong> !</p>
+                </t>
+                <div style="margin: 16px 0px 16px 0px;">
+                    <t t-set="gamificationRedirectionData" t-value="await object.getGamificationRedirectionData()"/>
+                    <t t-foreach="gamificationRedirectionData" t-as="data">
+                        <t t-set="url" t-value="data['url']"/>
+                        <t t-set="label" t-value="data['label']"/>
+                        <a t-att-href="url" style="background-color: #875A7B; padding: 8px 16px 8px 16px; text-decoration: none; color: #fff; border-radius: 5px; font-size:13px;" t-out="label || ''">LABEL</a>
+                    </t>
+                </div>
+            </td>
+            <td style="padding:15px 20px 10px 20px;">
+                <p style="text-align: center;">
+                    <img t-attf-src="/web/image/gamification.karma.rank/{{ (await object.rankId).id }}/image128"/>
+                </p>
+            </td>
+        </tr>
+        <tr t-if="await user.signature">
+            <td style="padding:15px 20px 10px 20px;">
+                <t t-out="await user.signature || ''">--<br/>Mitchell Admin</t>
+            </td>
+        </tr>
+    </tbody>
+ </table>
+</div></field>
+            <field name="lang">{{ await object.lang }}</field>
+            <field name="autoDelete" eval="true"/>
+        </record>
+
+    </data>
+</verp>

@@ -75,7 +75,7 @@ export function pager(opts: { url?: string, total?: number, page?: number, step?
       'url': getUrl(pageCount),
       'num': pageCount
     },
-    "pages": Array.from(range(pmin, pmax + 1)).map(pageNum => { return { 'url': getUrl(pageNum), 'num': pageNum } })
+    "pages": Array.from(range(pmin, pmax + 1)).map(pageNum => ({ url: getUrl(pageNum), num: pageNum }))
   }
 }
 
@@ -263,7 +263,7 @@ export class CustomerPortal extends http.Controller {
   async _updatePassword(req: WebRequest, old: string, new1: string, new2: string) {
     for (const [k, v] of [['old', old], ['new1', new1], ['new2', new2]]) {
       if (v) {
-        return { 'errors': { 'password': { k: await this._t(await req.getEnv(), "You cannot leave any password empty.") } } };
+        return { 'errors': { 'password': { [k]: await this._t(await req.getEnv(), "You cannot leave any password empty.") } } };
       }
     }
     if (new1 !== new2) {
@@ -541,10 +541,10 @@ export class CustomerPortal extends http.Controller {
  */
 function getError(e, path = '') {
   for (const k of (path ? path.split('.') : [])) {
-    if (isInstance(e, Dict, Object)) {
+    if (typeof e !== 'object') {
       return null;
     }
     e = e[k];
   }
-  return typeof (e) === 'string' ? e : null;
+  return typeof e === 'string' ? e : null;
 }

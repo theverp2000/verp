@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data noupdate="1">
+        <!-- goal definitions -->
+        <record model="gamification.goal.definition" id="definitionBaseTimezone">
+            <field name="label">Set your Timezone</field>
+            <field name="description">Configure your profile and specify your timezone</field>
+            <field name="computationMode">count</field>
+            <field name="displayMode">boolean</field>
+            <field name="modelId" ref="base.model_resUsers"/>
+            <field name="domain">[['partnerId.tz', '!=', false]]</field>
+            <field name="actionId" ref="base.actionResUsersMy"/>
+            <field name="resIdField">user.id</field>
+            <field name="batchMode">true</field>
+            <field name="batchDistinctiveField" ref="base.field_resUsers_id"/>
+            <field name="batchUserExpression">user.id</field>
+        </record>
+
+        <record model="gamification.goal.definition" id="definitionBaseCompanyData">
+            <field name="label">Set your Company Data</field>
+            <field name="description">Write some information about your company (specify at least a name)</field>
+            <field name="computationMode">count</field>
+            <field name="displayMode">boolean</field>
+            <field name="modelId" ref="base.model_resCompany"/>
+            <field name="domain">[['userIds', 'in', [user.id]], ['label', '=', 'YourCompany']]</field>
+            <field name="condition">lower</field>
+            <field name="actionId" ref="base.actionResCompanyForm"/>
+            <field name="resIdField">user.companyId.id</field>
+        </record>
+
+        <record model="gamification.goal.definition" id="definitionBaseCompanyLogo">
+            <field name="label">Set your Company Logo</field>
+            <field name="computationMode">count</field>
+            <field name="displayMode">boolean</field>
+            <field name="modelId" ref="base.model_resCompany"/>
+            <field name="domain">[['userIds', 'in', [user.id]], ['logo', '!=', false]]</field>
+            <field name="actionId" ref="base.actionResCompanyForm"/>
+            <field name="resIdField">user.companyId.id</field>
+        </record>
+
+        <record id="actionNewSimplifiedResUsers" model="ir.actions.actwindow">
+            <field name="label">Create User</field>
+            <field name="type">ir.actions.actwindow</field>
+            <field name="resModel">res.users</field>
+            <field name="target">current</field>
+            <field name="viewId" ref="base.viewUsersSimpleForm"/>
+            <field name="context">{}</field>
+            <field name="help">Create and manage users that will connect to the system. Users can be deactivated should there be a period of time during which they will/should not connect to the system. You can assign them groups in order to give them specific access to the applications they need to use in the system.</field>
+        </record>
+
+        <record model="gamification.goal.definition" id="definitionBaseInvite">
+            <field name="label">Invite new Users</field>
+            <field name="description">Create at least another user</field>
+            <field name="displayMode">boolean</field>
+            <field name="computationMode">count</field>
+            <field name="modelId" ref="base.model_resUsers"/>
+            <field name="domain">[['id', '!=', user.id]]</field>
+            <field name="actionId" ref="actionNewSimplifiedResUsers"/>
+        </record>
+
+        <!-- challenges -->
+        <record model="gamification.challenge" id="challengeBaseDiscover">
+            <field name="label">Complete your Profile</field>
+            <field name="period">once</field>
+            <field name="visibilityMode">personal</field>
+            <field name="reportMessageFrequency">never</field>
+            <field name="userDomain" eval="stringify([['groupsId.id', '=', refId('base.groupUser')]])" />
+            <field name="state">inprogress</field>
+            <field name="challengeCategory">other</field>
+        </record>
+
+        <record model="gamification.challenge" id="challengeBaseConfigure">
+            <field name="label">Setup your Company</field>
+            <field name="period">once</field>
+            <field name="visibilityMode">personal</field>
+            <field name="reportMessageFrequency">never</field>
+            <field name="userDomain" eval="stringify([['groupsId.id', '=', refId('base.groupErpManager')]])" />
+            <field name="state">inprogress</field>
+            <field name="challengeCategory">other</field>
+        </record>
+
+        <!-- lines -->
+        <record model="gamification.challenge.line" id="lineBaseDiscover1">
+            <field name="definitionId" ref="definitionBaseTimezone"/>
+            <field name="targetGoal">1</field>
+            <field name="challengeId" ref="challengeBaseDiscover"/>
+        </record>
+
+        <record model="gamification.challenge.line" id="lineBaseAdmin2">
+            <field name="definitionId" ref="definitionBaseCompanyLogo"/>
+            <field name="targetGoal">1</field>
+            <field name="challengeId" ref="challengeBaseConfigure"/>
+        </record>
+        <record model="gamification.challenge.line" id="lineBaseAdmin1">
+            <field name="definitionId" ref="definitionBaseCompanyData"/>
+            <field name="targetGoal">0</field>
+            <field name="challengeId" ref="challengeBaseConfigure"/>
+        </record>
+        <record model="gamification.challenge.line" id="lineBaseAdmin3">
+            <field name="definitionId" ref="definitionBaseInvite"/>
+            <field name="targetGoal">1</field>
+            <field name="challengeId" ref="challengeBaseConfigure"/>
+        </record>
+    </data>
+
+</verp>

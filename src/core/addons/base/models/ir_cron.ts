@@ -528,7 +528,7 @@ export class IrCron extends Model {
       return;
     }
 
-    await (await this.env.items('ir.cron.trigger').sudo()).create(atList.map(at => { return { 'cronId': this.id, 'callAt': at } }));
+    await (await this.env.items('ir.cron.trigger').sudo()).create(atList.map(at => ({ cronId: this.id, callAt: at }) ));
     // if (isEnabledFor(logging.DEBUG)) 
     {
       const ats = atList.map(at => String(at)).join(', ');

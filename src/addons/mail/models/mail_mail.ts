@@ -283,8 +283,8 @@ class MailMail extends Model {
     dealing with the hard-to-parse trio (01/04/09 -> ?). In most use cases
     year will be given first as this is the expected default formatting.
 
-    :return datetime: parsed datetime (or false if parser failed)
    * @param scheduledDatetime 
+   * @returns (Date) parsed datetime (or false if parser failed)
    */
   _parseScheduledDatetime(scheduledDatetime): string {
     let parsedDatetime;

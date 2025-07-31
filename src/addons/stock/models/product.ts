@@ -929,7 +929,7 @@ class ProductTemplate extends Model {
   }
 
   async _computeNbrMoves() {
-    const res = new DefaultDict(() => { return { 'movesIn': 0, 'movesOut': 0 } });
+    const res = new DefaultDict(() => ({ 'movesIn': 0, 'movesOut': 0 }));
     const date = subDate(_Datetime.now(), { years: 1 });
     const incomingMoves = await this.env.items('stock.move.line').readGroup([
       ['productId.productTemplateId', 'in', this.ids],

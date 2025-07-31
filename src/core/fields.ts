@@ -193,9 +193,9 @@ export class Fields {
   static Many2oneReference(...args: any) {
     return new _Many2oneReference(...args);
   }
-  static One2many(comodelName: string | FieldOptions, relationField?: string | FieldOptions, kwargs: FieldOptions = {}) {
-    if (typeof (comodelName) === 'string') {
-      if (typeof (relationField) === 'string') {
+  static One2many(comodelName: string | FieldOptions, relationField: string | FieldOptions = {}, kwargs: FieldOptions = {}) {
+    if (typeof comodelName === 'string') {
+      if (typeof relationField === 'string') {
         kwargs = Object.assign(kwargs, { comodelName, relationField });
       } else {
         kwargs = Object.assign(relationField, { comodelName, relationField: pop(relationField, 'relationField') });
@@ -205,9 +205,13 @@ export class Fields {
     }
     return new _One2many(kwargs);
   }
-  static Many2many(comodelName: string | FieldOptions, kwargs: FieldOptions = {}) {
-    if (typeof (comodelName) === 'string') {
-      Object.assign(kwargs, { comodelName });
+  static Many2many(comodelName: string | FieldOptions, relation: string | FieldOptions = {}, kwargs: FieldOptions = {}) {
+    if (typeof comodelName === 'string') {
+      if (typeof relation === 'string') {
+        kwargs = Object.assign(kwargs, { comodelName, relation });
+      } else {
+        kwargs = Object.assign(relation, { comodelName, relation: pop(relation, 'relation') });
+      }
     } else {
       kwargs = comodelName;
     }

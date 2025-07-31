@@ -2360,7 +2360,7 @@ class IrFactory extends AbstractModel {
       try {
         await cr.savepoint(true, async () => {
           const recs = await self._loadRecords(dataList, mode == 'update');
-          extend(returnList, dataList.map(data => { return { xmlid: data['xmlid'], id: data['record'].id } }));
+          extend(returnList, dataList.map(data => ({ xmlid: data['xmlid'], id: data['record'].id }) ));
         });
         return;
       } catch (e) {

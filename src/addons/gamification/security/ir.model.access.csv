@@ -1,0 +1,35 @@
+id,label,modelId/id,groupId/id,permRead,permWrite,permCreate,permUnlink
+
+goal_employee,"Goal Employee",model_gamificationGoal,base.groupUser,1,1,0,0
+goal_manager,"Goal Manager",model_gamificationGoal,base.groupErpManager,1,1,1,1
+goal_portal,"Goal Portal",gamification.model_gamificationGoal,base.groupPortal,1,1,0,0
+
+goal_definition_employee,"Goal Definition Employee",model_gamificationGoalDefinition,base.groupUser,1,0,0,0
+goal_definition_manager,"Goal Definition Manager",model_gamificationGoalDefinition,base.groupErpManager,1,1,1,1
+goal_definition_portal,"Goal Definition Portal",gamification.model_gamificationGoalDefinition,base.groupPortal,1,0,0,0
+
+challenge_employee,"Goal Challenge Employee",model_gamificationChallenge,base.groupUser,1,0,0,0
+challenge_manager,"Goal Challenge Manager",model_gamificationChallenge,base.groupErpManager,1,1,1,1
+challenge_portal,"Goal Challenge Portal",gamification.model_gamificationChallenge,base.groupPortal,1,0,0,0
+
+challenge_line_employee,"Challenge Line Employee",model_gamificationChallengeLine,base.groupUser,1,0,0,0
+challenge_line_manager,"Challenge Line Manager",model_gamificationChallengeLine,base.groupErpManager,1,1,1,1
+challenge_line_portal,"Challenge Line Portal",gamification.model_gamificationChallengeLine,base.groupPortal,1,0,0,0
+
+badge_employee,"Badge Employee",model_gamificationBadge,base.groupUser,1,0,0,0
+badge_manager,"Badge Manager",model_gamificationBadge,base.groupErpManager,1,1,1,1
+badge_portal,"Badge Portal",gamification.model_gamificationBadge,base.groupPortal,1,0,0,0
+badge_public,"Badge Public",gamification.model_gamificationBadge,base.groupPublic,1,0,0,0
+
+badge_user_employee,"Badge-user Employee",model_gamificationBadgeUser,base.groupUser,1,1,1,0
+badge_user_manager,"Badge-user Manager",model_gamificationBadgeUser,base.groupErpManager,1,1,1,1
+badge_user_portal,"Badge-user Portal",gamification.model_gamificationBadgeUser,base.groupPortal,1,1,1,0
+badge_user_public,"Badge-user Public",gamification.model_gamificationBadgeUser,base.groupPublic,1,0,0,0
+
+gamification_karma_rank_access_all,gamification.karma.rank.access.all,gamification.model_gamificationKarmaRank,,1,0,0,0
+gamification_karma_rank_access_user_manager,gamification.karma.rank.access.user.manager,gamification.model_gamificationKarmaRank,base.groupSystem,1,1,1,1
+gamification_karma_tracking_access_all,gamification.karma.tracking.access.all,gamification.model_gamificationKarmaTracking,,0,0,0,0
+gamification_karma_tracking_access_user_manager,gamification.karma.tracking.access.user.manager,gamification.model_gamificationKarmaTracking,base.groupSystem,1,1,1,1
+
+access_gamification_goal_wizard,access.gamification.goal.wizard,model_gamificationGoalWizard,base.groupUser,1,1,1,0
+access_gamification_badge_user_wizard,access.gamification.badge.user.wizard,model_gamificationBadgeUserWizard,base.groupUser,1,1,1,0

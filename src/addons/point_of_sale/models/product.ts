@@ -82,7 +82,7 @@ class ProductProduct extends Model {
             pricelists = await config.pricelistId;
         }
         const pricePerPricelistId = await pricelists.priceGet(this.id, quantity);
-        const pricelistList = await pricelists.map(async (pl) => { return { 'label': await pl.label, 'price': pricePerPricelistId[pl.id] } });
+        const pricelistList = await pricelists.map(async (pl) => ({ label: await pl.label, price: pricePerPricelistId[pl.id] }) );
 
         // Warehouses
         const uomName = await this['uomName'];

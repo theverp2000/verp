@@ -595,7 +595,7 @@ class WebsiteSale extends http.Controller {
         if (post.promo) {
             const pricelist = await (await (await req.getEnv()).items('product.pricelist').sudo()).search([['code', '=', post.promo]], {limit: 1});
             if (!bool(pricelist) || (bool(pricelist) && ! await req.website.isPricelistAvailable(req, pricelist.id))) {
-                return req.redirect(f("%s?codeNotAvailable=1", redirect));
+                return req.redirect(res, f("%s?codeNotAvailable=1", redirect));
             }
         }
         await req.website.saleGetOrder({code: post.promo});

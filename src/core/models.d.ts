@@ -1578,6 +1578,11 @@ declare class BaseModel extends Function {
     addSign?: boolean, recordName?: any
   }): Promise<any>;
 
+  messageNotify(options: {
+    partnerIds?: any, parentId?: any, model?: any, resId?: any,
+    authorId?: any, emailFrom?: any, body?: string, subject?: any, subtypeXmlid?: any, emailLayoutXmlid?: any
+  }): Promise<any>;
+
   // User
   hasGroup(group): Promise<boolean>;
 }

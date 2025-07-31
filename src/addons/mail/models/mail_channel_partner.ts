@@ -159,10 +159,14 @@ class ChannelPartner extends Model {
       await channelId.messagePost(await this._t("%s started a live conference", await (await self.partnerId).label || await (await self.guestId).label), 'notification');
       const [invitedPartners, invitedGuests] = await self._rtcInviteMembers();
       if (bool(invitedGuests)) {
-        res['invitedGuests'] = [['insert', await Promise.all(invitedGuests.map(async guest => {return {'id': guest.id, 'label': await guest.label}}))]]
+        res['invitedGuests'] = [
+          ['insert', await invitedGuests.map(async guest => ({id: guest.id, label: await guest.label}))]
+        ];
       }
       if (bool(invitedPartners)) {
-        res['invitedPartners'] = [['insert', await Promise.all(invitedPartners.map(async partner => {return {'id': partner.id, 'label': await partner.label}}))]]
+        res['invitedPartners'] = [
+          ['insert', await invitedPartners.map(async partner => ({id: partner.id, label: await partner.label}) )]
+        ];
       }
     }
     return res;
@@ -250,10 +254,14 @@ class ChannelPartner extends Model {
     if (invitedGuests.ok || invitedPartners.ok) {
       const channelData = {'id': channelId.id}
       if (invitedGuests.ok) {
-        channelData['invitedGuests'] = [['insert', await Promise.all([...invitedGuests].map(async guest => {return {'id': guest.id, 'label': await guest.label}}))]]
+        channelData['invitedGuests'] = [
+          ['insert', await invitedGuests.map(async guest => ({id: guest.id, label: await guest.label}) )]
+        ];
       }
       if (invitedPartners.ok) {
-        channelData['invitedPartners'] = [['insert', await Promise.all([...invitedPartners].map(async partner => {return {'id': partner.id, 'label': await partner.label}}))]]
+        channelData['invitedPartners'] = [
+          ['insert', await invitedPartners.map(async partner => ({id: partner.id, label: await partner.label}) )]
+        ];
       }
       await self.env.items('bus.bus')._sendone(channelId, 'mail.channel/insert', channelData);
     }

@@ -508,7 +508,7 @@ class DiscussController extends http.Controller {
     return {
       'rtcSessions': [
         ['insert', await currentRtcSessions.map(rtcSessionSudo => rtcSessionSudo._mailRtcSessionFormat(false))],
-        ['insert-and-unlink', outdatedRtcSessions.map(missingRtcSessionSudo => { return { 'id': missingRtcSessionSudo.id } })],
+        ['insert-and-unlink', outdatedRtcSessions.map(missingRtcSessionSudo => ({ id: missingRtcSessionSudo.id } ))],
       ]
     };
   }

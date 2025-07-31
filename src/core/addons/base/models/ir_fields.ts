@@ -587,7 +587,7 @@ class IrFieldsConverter extends AbstractModel {
       extend(warnings, ws);
       // transform [{subfield:ref1,ref2,ref3}] into
       // [{subfield:ref1},{subfield:ref2},{subfield:ref3}]
-      records = record[subfield].split(',').map(item => {return {[subfield]: item}});
+      records = record[subfield].split(',').map(item => ({[subfield]: item}));
     }
     function log(f, exception) {
       if (! isInstance(exception, Warning)) {

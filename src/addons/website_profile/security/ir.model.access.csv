@@ -1,0 +1,2 @@
+id,label,modelId/id,groupId/id,permRead,permWrite,permCreate,permUnlink
+gamification_karma_rank_access_website_publisher,gamification.karma.rank.access.website.publisher,gamification.model_gamificationKarmaRank,website.groupWebsitePublisher,1,1,1,1

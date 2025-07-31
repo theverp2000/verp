@@ -1,0 +1,19 @@
+<verp>
+    <record id="viewGoalWizardUpdateCurrent" model="ir.ui.view">
+        <field name="label">Update the current value of the Goal</field>
+        <field name="model">gamification.goal.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Grant Badge To">
+                Set the current value you have reached for this goal
+                <group>
+                    <field name="goalId" invisible="1"/>
+                    <field name="current" />
+                </group>
+                <footer>
+                    <button string="Update" type="object" name="actionUpdateCurrent" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" special="cancel" data-hotkey="z" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</verp>

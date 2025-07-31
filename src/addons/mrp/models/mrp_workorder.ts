@@ -659,8 +659,8 @@ class MrpWorkorder extends Model {
             }
             if (bool(opts.workcenterId)) {
                 const notableIntervals = unavailabilityMapping[opts.workcenterId].filter(interval => interval[1].sub(interval[0]).ge(cellDt));
-                row['unavailabilities'] = notableIntervals.map(interval => {return {'start': interval[0], 'stop': interval[1]}});
-                return {'workcenterId': opts.workcenterId}
+                row['unavailabilities'] = notableIntervals.map(interval => ({start: interval[0], stop: interval[1]}));
+                return {workcenterId: opts.workcenterId};
             }
         }
 

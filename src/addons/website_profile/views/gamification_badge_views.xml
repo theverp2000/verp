@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<verp>
+    <record id="gamificationBadgeViewForm" model="ir.ui.view">
+        <field name="label">gamification.badge.view.form.inherit.website</field>
+        <field name="model">gamification.badge</field>
+        <field name="inheritId" ref="gamification.badgeFormView"/>
+        <field name="arch" type="xml">
+        	<xpath expr="//div[@name='buttonBox']" position="inside">
+                <button name="websitePublishButton" type="object" class="oe-stat-button" icon="fa-globe">
+                    <field name="isPublished" widget="websitePublishButton"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</verp>

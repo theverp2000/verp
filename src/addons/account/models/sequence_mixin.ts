@@ -297,7 +297,7 @@ class SequenceMixin extends AbstractModel {
    * @returns true if self are the last elements of the chain.
    */
   async _isEndOfSeqChain() {
-    const batched = new Map2(); // () => { return {'lastRec': this.browse(), 'seqList': [] } }
+    const batched = new Map2();
     for (const record of this) {
       const [format, formatValues] = await record._getSequenceFormatParam(await record[record._sequenceField]);
       const seq = pop(formatValues, 'seq');

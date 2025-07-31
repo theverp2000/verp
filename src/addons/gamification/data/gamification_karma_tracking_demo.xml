@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp><data noupdate="1">
+
+    <!--base.userDemo-->
+    <record id="karmaTrackingUserDemo1stDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.userDemo"/>
+        <field name="oldValue">0</field>
+        <field name="newValue">1000</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 1}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserDemo2ndDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.userDemo"/>
+        <field name="oldValue">1000</field>
+        <field name="newValue">1500</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 2}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserDemo5thDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.userDemo"/>
+        <field name="oldValue">1500</field>
+        <field name="newValue">2000</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 5}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserDemo20thDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.userDemo"/>
+        <field name="oldValue">2000</field>
+        <field name="newValue">2050</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 20}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserDemoToday" model="gamification.karma.tracking">
+        <field name="userId" ref="base.userDemo"/>
+        <field name="oldValue">2050</field>
+        <field name="newValue">2500</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="base.userDemo" model="res.users">
+        <field name="karma">2500</field>
+    </record>
+    <function model="gamification.karma.tracking" name="unlink">
+        <value model="gamification.karma.tracking" eval="(await obj.search([
+                ['userId', '=', await refId('base.userDemo')],
+                ['oldValue', '=', 0],
+                ['newValue', '=', 2500]
+            ])).id"/>
+    </function>
+
+    <!--base.demoUser0 -->
+    <record id="karmaTrackingUserPortal2ndDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.demoUser0"/>
+        <field name="oldValue">0</field>
+        <field name="newValue">5</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 2}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserPortal3rdDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.demoUser0"/>
+        <field name="oldValue">5</field>
+        <field name="newValue">10</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 3}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserPortal10thDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.demoUser0"/>
+        <field name="oldValue">10</field>
+        <field name="newValue">20</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 10}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserPortalYesterday" model="gamification.karma.tracking">
+        <field name="userId" ref="base.demoUser0"/>
+        <field name="oldValue">20</field>
+        <field name="newValue">25</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).minus({days: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserPortalToday" model="gamification.karma.tracking">
+        <field name="userId" ref="base.demoUser0"/>
+        <field name="oldValue">25</field>
+        <field name="newValue">30</field>
+        <field name="trackingDate" eval="now()"/>
+    </record>
+    <record id="base.demoUser0" model="res.users">
+        <field name="karma">30</field>
+    </record>
+    <function model="gamification.karma.tracking" name="unlink">
+        <value model="gamification.karma.tracking" eval="(await obj.search([
+                ['userId', '=', refId('base.demoUser0')],
+                ['oldValue', '=', 0],
+                ['newValue', '=', 30]
+            ])).id"/>
+    </function>
+
+    <!--base.userAdmin (already have a tracking to 2500)-->
+    <record id="karmaTrackingUserAdmin1stDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.userAdmin"/>
+        <field name="oldValue">0</field>
+        <field name="newValue">2000</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 1}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserAdmin5thDayLastMonth" model="gamification.karma.tracking">
+        <field name="userId" ref="base.userAdmin"/>
+        <field name="oldValue">2000</field>
+        <field name="newValue">2250</field>
+        <field name="trackingDate" eval="DateTime.fromJSDate(now()).set({day: 5}).minus({months: 1}).toFormat('yyyy-MM-dd')"/>
+    </record>
+    <record id="karmaTrackingUserAdminToday" model="gamification.karma.tracking">
+        <field name="userId" ref="base.userAdmin"/>
+        <field name="oldValue">2250</field>
+        <field name="newValue">2500</field>
+        <field name="trackingDate" eval="toFormat(now(), 'yyyy-MM-dd')"/>
+    </record>
+    <function model="gamification.karma.tracking" name="unlink">
+        <value model="gamification.karma.tracking" eval="(await obj.search([
+                ['userId', '=', refId('base.userAdmin')],
+                ['oldValue', '=', 0],
+                ['newValue', '=', 2500]
+            ])).id"/>
+    </function>
+
+</data>
+</verp>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data noupdate="1">
+        <record forcecreate="true" id="irCronCheckChallenge" model="ir.cron">
+            <field name="label">Gamification: Goal Challenge Check</field>
+            <field name="modelId" ref="model_gamificationChallenge"/>
+            <field name="state">code</field>
+            <field name="code">model._cronUpdate()</field>
+            <field name="intervalNumber">1</field>
+            <field name="intervalType">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="false" />
+        </record>
+
+        <record id="irCronConsolidateLastMonth" model="ir.cron">
+            <field name="label">Gamification: Karma tracking consolidation</field>
+            <field name="modelId" ref="model_gamificationKarmaTracking"/>
+            <field name="state">code</field>
+            <field name="code">model._consolidateLastMonth()</field>
+            <field name="active" eval="true"/>
+            <field name="intervalNumber">1</field>
+            <field name="intervalType">months</field>
+            <field name="numbercall">-1</field>
+            <field name="nextcall" eval="DateTime.fromJSDate(now()).set({day: 1}).plus({months: 1}).toFormat('yyyy-MM-dd 04:00:00')" />
+        </record>
+    </data>
+</verp>

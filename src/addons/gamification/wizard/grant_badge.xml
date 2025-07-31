@@ -1,0 +1,31 @@
+<verp>
+    <record id="viewBadgeWizardGrant" model="ir.ui.view">
+        <field name="label">Grant Badge User Form</field>
+        <field name="model">gamification.badge.user.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Grant Badge To">
+                Who would you like to reward?
+                <field name="badgeId" invisible="1"/>
+                <group>
+                    <field name="userId" nolabel="1" colspan="4"/>
+                    <field name="comment" nolabel="1" placeholder="Describe what they did and why it matters (will be public)" colspan="4"/>
+                </group>
+                <footer>
+                    <button string="Grant Badge" type="object" name="actionGrantBadge" class="btn-primary" data-hotkey="q"/>
+                    <button string="Cancel" special="cancel" data-hotkey="z" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="actionGrantWizard" model="ir.actions.actwindow">
+        <field name="label">Grant Badge</field>
+        <field name="resModel">gamification.badge.user.wizard</field>
+        <field name="viewId" ref="gamification.viewBadgeWizardGrant"/>
+        <field name="target">new</field>
+        <field name="context">{
+            'default_badgeId': activeId,
+            'badgeId': activeId
+        }</field>
+    </record>
+</verp>

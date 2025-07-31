@@ -120,7 +120,7 @@ class PhoneBlackList extends Model {
             await records.actionUnarchive();
         }
         if (bool(todo)) {
-            records = records.add(await this.create(todo.map(n => {return {'number': n}})));
+            records = records.add(await this.create(todo.map(n => ({number: n}))));
         }
         return records;
     }
@@ -155,7 +155,7 @@ class PhoneBlackList extends Model {
             await records.actionArchive();
         }
         if (bool(todo)) {
-            records = records.add(await this.create(todo.map(n => {return {'number': n, 'active': false}})));
+            records = records.add(await this.create(todo.map(n => ({number: n, active: false}))));
         }
         return records;
     }

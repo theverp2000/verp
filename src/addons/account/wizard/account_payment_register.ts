@@ -283,7 +283,7 @@ will be grouped together.
       throw new UserError(await this._t("You can't open the register payment wizard without at least one receivable/payable line."));
     }
 
-    const batches = new DefaultDict(() => { return { 'lines': this.env.items('account.move.line') } });
+    const batches = new DefaultDict(() => ({ lines: this.env.items('account.move.line') }));
     let vals;
     for (const line of lines) {
       const batchKey = await this._getLineBatchKey(line);

@@ -812,8 +812,8 @@ class PosSession extends Model {
         // E.g. `combine_receivables_bank` is derived from pos.payment records
         // in the self.orderIds with group key of the `paymentMethodId`
         // field of the pos.payment record.
-        const amounts = () => { return {'amount': 0.0, 'amountConverted': 0.0} }
-        const taxAmounts = () => { return {'amount': 0.0, 'amountConverted': 0.0, 'baseAmount': 0.0, 'baseAmountConverted': 0.0} }
+        const amounts = () => ({'amount': 0.0, 'amountConverted': 0.0});
+        const taxAmounts = () => ({'amount': 0.0, 'amountConverted': 0.0, 'baseAmount': 0.0, 'baseAmountConverted': 0.0});
         const splitReceivablesBank = new DefaultMapKey(amounts),
         splitReceivablesCash = new DefaultMapKey(amounts),
         splitReceivablesPayLater = new DefaultMapKey(amounts),
@@ -1422,7 +1422,7 @@ class PosSession extends Model {
             tax['accountId'] = (await taxRep.accountId).id;
         }
         const dateOrder = await (await orderLine.orderId).dateOrder;
-        taxes = taxes.map(tax => { return {'dateOrder': dateOrder, ...tax} });
+        taxes = taxes.map(tax => ({'dateOrder': dateOrder, ...tax}));
         return {
             'dateOrder': dateOrder,
             'incomeAccountId': (await getIncomeAccount(orderLine)).id,

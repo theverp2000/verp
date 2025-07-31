@@ -111,7 +111,7 @@ class WebsiteVisitor extends Model {
             const visitorInfo = mappedData[visitor.id] ?? { 'pageCount': 0, 'visitorPageCount': 0, 'pageIds': [] };
             await visitor.set('pageIds', [[6, 0, visitorInfo['pageIds']]]);
             await visitor.set('visitorPageCount', visitorInfo['visitorPageCount']);
-            await visitor.set('pageCount', visitorInfo['page_count']);
+            await visitor.set('pageCount', visitorInfo['pageCount']);
         }
     }
 
@@ -320,10 +320,8 @@ class WebsiteVisitor extends Model {
      * Link visitors to a partner. This method is meant to be overridden in
         order to propagate, if necessary, partner information to sub records.
 
-        :param partner: partner used to link sub records;
-        :param update_values: optional values to update visitors to link;
-     * @param partner 
-     * @param updateValues 
+     * @param partner partner used to link sub records;
+     * @param updateValues optional values to update visitors to link;
      */
     async _linkToPartner(partner, updateValues?: any) {
         const vals = { 'label': await partner.label }
@@ -340,10 +338,8 @@ class WebsiteVisitor extends Model {
         THis method is meant to be overridden in order to implement some specific
         behavior linked to sub records of duplicate management.
 
-        :param target: main visitor, target of link process;
-        :param keep_unique: if true, find a way to make target unique;
-     * @param target 
-     * @param keepUnique 
+     * @param target main visitor, target of link process;
+     * @param keepUnique if true, find a way to make target unique;
      * @returns 
      */
     async _linkToVisitor(target, keepUnique: boolean = true) {

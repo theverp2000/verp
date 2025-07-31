@@ -726,7 +726,7 @@ class Message extends Model {
 
     for (const [message, values, trackingValuesCmd] of _.zip<any>([...messages], valuesList, trackingValuesList)) {
       if (bool(trackingValuesCmd)) {
-        const valsLst = trackingValuesCmd.filter(cmd => len(cmd) == 3 && cmd[0] == 0).map(cmd => { return { ...cmd[2], mailMessageId: message.id } });
+        const valsLst = trackingValuesCmd.filter(cmd => len(cmd) == 3 && cmd[0] == 0).map(cmd => ({ ...cmd[2], mailMessageId: message.id }));
         const otherCmd = trackingValuesCmd.filter(cmd => len(cmd) != 3 || cmd[0] != 0);
         if (valsLst.length) {
           await (await this.env.items('mail.tracking.value').sudo()).create(valsLst);
@@ -1168,7 +1168,7 @@ class Message extends Model {
         'isDiscussion': (await messageSudo.subtypeId).id == comId,
         'subtypeDescription': await (await messageSudo.subtypeId).description,
         'isNotification': vals['messageType'] == 'userNotification',
-        'recipients': await Promise.all([...await messageSudo.partnerIds].map(async p => { return { 'id': p.id, 'label': await p.label } }))
+        'recipients': await (await messageSudo.partnerIds).map(async p => ({ 'id': p.id, 'label': await p.label }))
       });
       if (vals['model'] && this.env.items(vals['model'])._originalModule) {
         vals['moduleIcon'] = getModuleIcon(this.env.items(vals['model'])._originalModule);

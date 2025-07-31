@@ -401,11 +401,11 @@ class MailComposer extends TransientModel {
         if (await self.replyToForceNew && !mailValues['replyTo']) {
           mailValues['replyTo'] = mailValues['emailFrom'];
         }
-        // mail_mail values: body -> body_html, partner_ids -> recipient_ids
+        // mailMail values: body -> bodyHtml, partnerIds -> recipientIds
         mailValues['bodyHtml'] = mailValues['body'] || '';
         mailValues['recipientIds'] = pop(mailValues, 'partnerIds', []).map(id => Command.link(id));
 
-        // process attachments: should not be encoded before being processed by message_post / mail_mail create
+        // process attachments: should not be encoded before being processed by messagePost / mailMail create
         mailValues['attachments'] = pop(emailDict, 'attachments', []).map(([name, encCont]) => [name, b64decode(encCont)]);
         const attachmentIds = [];
         for (const attachId of pop(mailValues, 'attachmentIds')) {
@@ -428,11 +428,11 @@ class MailComposer extends TransientModel {
   }
 
   async _processRecipientValues(mailValuesDict: Dict<any>) {
-    // Preprocess res.partners to batch-fetch from db if recipient_ids is present
-    // it means they are partners (the only object to fill get_default_recipient this way)
+    // Preprocess res.partners to batch-fetch from db if recipientIds is present
+    // it means they are partners (the only object to fill getDefaultRecipient this way)
     const recipientPids = [];
     for (const mailValues of mailValuesDict.values()) {
-      // recipient_ids is a list of x2m command tuples at this point
+      // recipientIds is a list of x2m command tuples at this point
       for (const recipientCommand of mailValues['recipientIds'] ?? []) {
         if (recipientCommand[1]) {
           recipientPids.push(recipientCommand[1]);
@@ -524,13 +524,10 @@ class MailComposer extends TransientModel {
   /**
    * Get record ids for which at least one recipient is black listed.
  
-      :param dict mail_values_dict: mail values per record id
-      :param dict recipients_info: optional dict of recipients info per record id
+   * @param mailValuesDict mail values per record id
+   * @param recipientsInfo optional dict of recipients info per record id
           Optional for backward compatibility but without, result can be incomplete.
-      :return set: record ids with at least one black listed recipient.
-   * @param mailValuesDict 
-   * @param recipientsInfo 
-   * @returns 
+   * @returns set of record ids with at least one black listed recipient.
    */
   async _getBlacklistRecordIds(mailValuesDict: Dict<any>, recipientsInfo?: {}) {
     const blacklistedRecIds = new Set<string>();
@@ -573,7 +570,7 @@ class MailComposer extends TransientModel {
   }
 
   /**
-   * - mass_mailing: we cannot render, so return the template values
+   * - massMailing: we cannot render, so return the template values
           - normal mode: return rendered values
           /!\ for x2many field, this onchange return command instead of ids
    * @param templateId 
@@ -657,12 +654,9 @@ class MailComposer extends TransientModel {
       _messageGetDefaultRecipients. This allows to ensure a mass mailing has
       always some recipients specified.
  
-      :param browse wizard: current mail.compose.message browse record
+   * @param resIds current mail.compose.message browse record
       :param list resIds: list of record ids
- 
-      :return dict results: for each resId, the generated template values for
-                            subject, body, Cemail_from and replyTo
-   * @param resIds 
+   * @returns for each resId, the generated template values for subject, body, emailFrom and replyTo
    */
   async renderMessage(resIds) {
     this.ensureOne();
@@ -723,8 +717,7 @@ class MailComposer extends TransientModel {
   }
 
   /**
-   * Call email_template.generate_email(), get fields relevant for
-          mail.compose.message, transform email_cc and emailTo into partner_ids
+   * Call email_template.generate_email(), get fields relevant for mail.compose.message, transform emailCc and emailTo into partnerIds
    * @param templateId 
    * @param resIds 
    * @param fields 

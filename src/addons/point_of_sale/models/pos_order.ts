@@ -1533,15 +1533,15 @@ class ReportSaleDetails extends AbstractModel {
                 GROUP BY method.label
             `, [String(paymentIds)]);
 
-        const products = await Promise.all(Array.from(productsSold.items()).map(async ([[product, priceUnit, discount], qty]) => { return {
+        const products = await Promise.all(Array.from(productsSold.items()).map(async ([[product, priceUnit, discount], qty]) => ({
             'productId': product.id,
-            'productName': product.label,
+            'productName': await product.label,
             'code': await product.defaultCode,
             'quantity': qty,
             'priceUnit': priceUnit,
             'discount': discount,
             'uom': await (await product.uomId).label
-        }}));
+        }) ));
 
         return {
             'currencyPrecision': await userCurrency.decimalPlaces,
