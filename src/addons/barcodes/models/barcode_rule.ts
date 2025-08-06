@@ -3,7 +3,7 @@ import { Fields } from "../../../core/fields"
 import { ValidationError } from "../../../core/helper/errors"
 import { MetaModel, Model } from "../../../core/models"
 import { len } from "../../../core/tools/iterable"
-import { _f } from "../../../core/tools/utils"
+import { _f } from "../../../core/tools/string"
 
 @MetaModel.define()
 class BarcodeRule extends Model {

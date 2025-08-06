@@ -5,11 +5,12 @@ import assert from 'node:assert';
 import { api, tools } from '../../..';
 import { Environment } from '../../../api/api';
 import { getattr, hasattr } from '../../../api/func';
-import { Map2, Dict, FrozenDict } from "../../../helper/collections";
+import { Dict, FrozenDict, Map2 } from "../../../helper/collections";
 import { AccessDenied, AccessError, UserError, ValidationError } from '../../../helper/errors';
 import { WebRequest } from '../../../http';
 import { MetaModel, Model } from "../../../models";
 import { expression, Query } from '../../../osv';
+import { MetaDatebase } from '../../../service/db';
 import * as ipaddress from '../../../service/middleware/ipaddress';
 import { bool, doWith, isCallable, isInstance, quoteList, singleEmailRe } from '../../../tools';
 import * as context from '../../../tools/context';
@@ -17,16 +18,16 @@ import { chain, extend, len, repeat, sorted, sortedAsync } from '../../../tools/
 import { stringify } from '../../../tools/json';
 import * as lazy from '../../../tools/lazy';
 import { allTimezones, partition, pop, setOptions, sha256, update } from "../../../tools/misc";
-import { _f, f, urandom } from '../../../tools/utils';
+import { _f, f } from "../../../tools/string";
+import { urandom } from '../../../tools/utils';
 import { E, serializeXml } from "../../../tools/xml";
 import { Command, Fields, NO_ACCESS } from './../../../fields';
-import { AbstractModel, ModelRecords, TransientModel, _super } from './../../../models';
+import { _super, AbstractModel, ModelRecords, TransientModel } from './../../../models';
 import { MODULE_UNINSTALL_FLAG } from './ir_model';
-import { MetaDatebase } from '../../../service/db';
 
 const USER_PRIVATE_FIELDS = []
 
-const LIFE_TIME = 30*24*60*60*60; // 1 month
+const LIFE_TIME = 30 * 24 * 60 * 60 * 60; // 1 month
 
 function nameSelectionGroups(ids: any[]) {
   return 'selGroups_' + sorted(ids).map(id => String(id)).join('_');
@@ -937,7 +938,7 @@ class Users extends Model {
 
   @api.model()
   async _nameSearch(name: string = '', args?: any, operator: string = 'ilike', opts: { limit?: number, nameGetUid?: any } = {}): Promise<number | any[] | Query> {
-    let {limit=100, nameGetUid=false} = opts;
+    let { limit = 100, nameGetUid = false } = opts;
     args = args || [];
     let userIds = [];
     let domain;
@@ -1073,8 +1074,8 @@ class Users extends Model {
     for (const user of this) {
       const groups = await user.groupsId;
       await user.set('accessesCount', len(await groups.modelAccess)),
-      await user.set('rulesCount', len(await groups.ruleGroups)),
-      await user.set('groupsCount', len(groups))
+        await user.set('rulesCount', len(await groups.ruleGroups)),
+        await user.set('groupsCount', len(groups))
     }
   }
 

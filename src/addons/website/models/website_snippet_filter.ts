@@ -5,7 +5,7 @@ import { MissingError, OrderedDict, ValidationError } from "../../../core/helper
 import { MetaModel, Model } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { bool, f, isInstance, len, partition, range, stringPart } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { iterchildren, parseXml } from "../../../core/tools/xml";
 
 @MetaModel.define()

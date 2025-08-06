@@ -2,7 +2,7 @@ import { Fields } from "../../../core";
 import { NotImplementedError } from "../../../core/helper/errors";
 import { AbstractModel, MetaModel } from "../../../core/models";
 import { hash, repr } from "../../../core/tools";
-import { _f } from "../../../core/tools/utils";
+import { _f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class MailThread extends AbstractModel {

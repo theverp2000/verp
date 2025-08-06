@@ -1,10 +1,8 @@
 import fs from "fs/promises";
 import { api } from "../../..";
-import { setattr } from '../../../api/func';
 import { Fields } from "../../../fields";
-import { AbstractModel, MetaModel, findProperty } from "../../../models";
-import { b64encode, bool, filePath, getHslFromSeed, stringBase64 } from "../../../tools";
-import { escapeHtml } from "../../../tools/xml";
+import { AbstractModel, MetaModel } from "../../../models";
+import { b64encode, bool, escapeHtml, filePath, getHslFromSeed, stringBase64 } from "../../../tools";
 
 @MetaModel.define()
 class AvatarMixin extends AbstractModel {

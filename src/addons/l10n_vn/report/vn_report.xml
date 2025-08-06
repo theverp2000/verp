@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data>
+        <template id="l10nVnCommonTemplate">
+            <t t-set="o" t-value="await o.withContext({lang: lang})"/>
+            <t t-call="web.externalLayout">
+                <t t-set="reportHeaderStyle">margin-left:10px; margin-top:-10px</t>
+            </t>
+        </template>
+    </data>
+</verp>

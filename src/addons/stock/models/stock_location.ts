@@ -9,7 +9,7 @@ import { expression } from "../../../core/osv";
 import { bool } from "../../../core/tools/bool";
 import { floatCompare } from "../../../core/tools/float_utils";
 import { len, sum } from "../../../core/tools/iterable";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { parseFloat } from "../../../core/tools";
 
 @MetaModel.define()

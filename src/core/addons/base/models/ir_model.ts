@@ -9,7 +9,7 @@ import { expression } from '../../../osv';
 import { Query } from '../../../osv/query';
 import { Cursor } from '../../../sql_db';
 import { _convert$, _f, _format, bool, enumerate, extend, f, isInstance, itemgetter, len, quote, quoteDouble, quoteList, sorted, split, tableExists, tableKind, toText } from '../../../tools';
-import { literalEval } from '../../../tools/ast';
+import { literalEval } from '../../../tools/save_eval';
 import { groupby, unique } from "../../../tools/misc";
 import { Command, Field, Fields } from './../../../fields';
 import { Map2, OrderedSet2 } from './../../../helper/collections';
@@ -1974,7 +1974,7 @@ class IrModelData extends Model {
     const rowf = "(%s, %s, %s, %s, %s)"
     return `
       INSERT INTO "irModelData" ("module", "label", "model", "resId", "noupdate")
-      VALUES ${_.fill(Array(rows.length), rowf).join(', ')}
+      VALUES ${Array(rows.length).fill(rowf).join(', ')}
       ON CONFLICT ("module", "label")
       DO UPDATE SET ("model", "resId", "updatedAt") =
           (EXCLUDED."model", EXCLUDED."resId", now() at time zone 'UTC')
@@ -2592,7 +2592,7 @@ async function upsert(cr: Cursor, table: string, cols: string[], rows: any[], co
       if (sublen != subrows.length) {
         sublen = subrows.length;
         sql = _f(query, {
-          rows: _.fill(Array(sublen), rowf).join(', '),
+          rows: Array(sublen).fill(rowf).join(', '),
         });
         sql = _convert$(sql);
       }

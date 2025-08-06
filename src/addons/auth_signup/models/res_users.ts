@@ -9,7 +9,7 @@ import { UserError, ValueError } from "../../../core/helper/errors";
 import { MetaModel, Model, ModelRecords, _super } from "../../../core/models";
 import { FALSE_DOMAIN, NEGATIVE_TERM_OPERATORS, TERM_OPERATORS_NEGATION, TRUE_DOMAIN } from "../../../core/osv/expression";
 import { isInstance, pop, update } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { bool } from "../../../core/tools/bool";
 import { len } from "../../../core/tools/iterable";
 import { SignupError } from "./res_partner";

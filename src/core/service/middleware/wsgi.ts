@@ -1,9 +1,8 @@
 import fs from "fs";
 import http from "http";
-import { rsplit } from "../../tools/func";
-import { lstrip, rstrip } from "../../tools/utils";
-import { _encodeIdna, wsgiGetBytes } from "./idna";
+import { lstrip, rsplit, rstrip } from "../../tools";
 import { BaseRequest } from "./base_request";
+import { _encodeIdna, wsgiGetBytes } from "./idna";
 import { uriToIri, urlQuote } from "./utils";
 
 export function getCurrentUrl(

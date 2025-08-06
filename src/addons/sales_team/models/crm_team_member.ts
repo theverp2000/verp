@@ -4,7 +4,8 @@ import { ValidationError } from "../../../core/helper/errors"
 import { MetaModel, Model, ModelRecords, _super } from "../../../core/models"
 import { bool } from "../../../core/tools/bool"
 import { len } from "../../../core/tools/iterable"
-import { _f, f } from "../../../core/tools/utils"
+import { f } from "../../../core/tools/string"
+import { _f } from "../../../core/tools/string"
 
 @MetaModel.define()
 class CrmTeamMember extends Model {

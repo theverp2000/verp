@@ -4,7 +4,7 @@ import { _Date, api, Fields } from "../../../core";
 import { Dict, KeyError, MapKey, UserError } from "../../../core/helper";
 import { _super, MetaModel, Model } from "../../../core/models";
 import { _f2, bool, floatRound, isInstance, len, subDate, today, update } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { unsafeAsync, unsafeEval } from "../../../core/tools/save_eval";
 
 const DOMAIN_TEMPLATE = "[['store', '=', true], '|', ['modelId', '=', modelId], ['modelId', 'in', modelInheritedIds]%s]"

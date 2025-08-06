@@ -5,7 +5,7 @@ import { MetaModel, TransientModel, _super } from "../../../core/models";
 import { bool } from "../../../core/tools/bool";
 import { len } from "../../../core/tools/iterable";
 import { update } from "../../../core/tools/misc";
-import { _f } from "../../../core/tools/utils";
+import { _f } from "../../../core/tools/string";
 
 /**
  * Account move reversal wizard, it cancel an account move by reversing it.

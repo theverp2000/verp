@@ -3,11 +3,11 @@ import { getattr } from "../api";
 import { ValueError } from "../helper/errors";
 import { cleanString, urlJoin, urlParse } from "../service/middleware/utils";
 import { bool } from "./bool";
-import { toText } from "./compat";
-import { isInstance, stringPart } from "./func";
+import { isInstance } from "./func";
+import { stringPart } from "./string";
 import { len } from "./iterable";
+import { f, toText } from "./string";
 import { URI } from "./uri";
-import { f } from "./utils";
 
 function _guessMimetype(ext: any = null, defaultValue = 'text/html') {
   const exts = {

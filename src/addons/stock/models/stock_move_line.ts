@@ -8,7 +8,7 @@ import { bool } from "../../../core/tools/bool";
 import { floatCompare, floatIsZero, floatRound } from "../../../core/tools/float_utils";
 import { len, sortedAsync, sum } from "../../../core/tools/iterable";
 import { groupbyAsync, pop, setOptions } from "../../../core/tools/misc";
-import { _f } from "../../../core/tools/utils";
+import { _f } from "../../../core/tools/string";
 import { isInstance } from "../../../core/tools";
 
 function Counter(word) {

@@ -8,14 +8,15 @@ import { ValueError } from "../../../helper/errors";
 import { AbstractModel, MetaModel, ModelRecords, _super } from "../../../models";
 import { formatDate, formatDuration, getLang, getTimezoneInfo, posixToLdml, update } from "../../../tools";
 import { bool } from "../../../tools/bool";
-import { toText } from "../../../tools/compat";
+import { toText } from "../../../tools/string";
 import { TIMEDELTA_UNITS } from "../../../tools/date_utils";
 import { divmod, floatRound } from "../../../tools/float_utils";
 import { b64encode, base64ToImage, imageDataUri } from "../../../tools/image";
 import { parseLocale } from "../../../tools/locale";
 import { safeAttrs } from "../../../tools/mail";
 import { _lt } from "../../../tools/translate";
-import { _f, f } from "../../../tools/utils";
+import { f } from "../../../tools/string";
+import { _f } from "../../../tools/string";
 import * as xml from "../../../tools/xml";
 import { E, markup, serializeXml } from "../../../tools/xml";
 

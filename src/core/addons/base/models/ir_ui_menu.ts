@@ -8,7 +8,7 @@ import { expression } from "../../../osv";
 import { b64encode, filePath } from "../../../tools";
 import { bool } from "../../../tools/bool";
 import { extend, len, sorted } from "../../../tools/iterable";
-import { f } from "../../../tools/utils";
+import { f } from "../../../tools/string";
 
 const NUMBER_PARENS = /\(([0-9]+)\)/g;
 const MENU_ITEM_SEPARATOR = "/"

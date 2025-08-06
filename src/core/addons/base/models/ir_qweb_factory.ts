@@ -8,11 +8,14 @@ import { Dict, FrozenDict, FrozenSet, MapKey } from "../../../helper/collections
 import { ValueError } from "../../../helper/errors";
 import { MetaModel } from '../../../models';
 import { bool, stringBase64, toText } from '../../../tools';
-import { equal, isDigit, isInstance, rstringPart } from "../../../tools/func";
+import { equal, isDigit, isInstance } from "../../../tools/func";
+import { rstringPart } from "../../../tools/string";
 import { chain, count, enumerate, extend, isIterable, iter, len, next, range } from "../../../tools/iterable";
-import { pop, popitem, repr } from '../../../tools/misc';
+import { pop, popitem } from '../../../tools/misc';
+import { repr } from '../../../tools/string';
 import { compile, unsafeEval } from "../../../tools/save_eval";
-import { lstrip, UpCamelCase } from "../../../tools/utils";
+import { lstrip } from "../../../tools/string";
+import { UpCamelCase } from "../../../tools/string";
 import * as xml from '../../../tools/xml';
 import { markup } from '../../../tools/xml';
 import { QWeb, QWebCodeFound, QWebException, dedent } from './qweb';
@@ -184,7 +187,7 @@ export class IrQWebFactory extends QWeb {
       if (isNaN(indent)) {
         indent = 0;
       }
-      return [`${_.fill(Array(indent), '    ').join('')}yield \`${text}\`;`];
+      return [`${Array(indent).fill('    ').join('')}yield \`${text}\`;`];
     }
     else {
       return [];
@@ -195,7 +198,7 @@ export class IrQWebFactory extends QWeb {
     if (isNaN(indent)) {
       indent = 0;
     }
-    return _indent(code, _.fill(Array(indent), '    ').join(''));
+    return _indent(code, Array(indent).fill('    ').join(''));
   }
 
   _makeName(prefix = 'var') {

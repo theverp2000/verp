@@ -3,10 +3,11 @@ import os from "os";
 import { UnicodeEncodeError } from "../helper/errors";
 import { urlParse } from "../service/middleware/utils";
 import { bool } from "./bool";
-import { isInstance, rstringPart } from "./func";
+import { isInstance } from "./func";
+import { rstringPart } from "./string";
 import * as html from "./html";
 import { extend } from "./iterable";
-import { f, isASCII } from "./utils";
+import { isASCII, f } from "./string";
 import { escapeHtml, markup } from "./xml";
 
 export const safeAttrs = new Set(Array.from(html.safeAttrs).concat(['style',

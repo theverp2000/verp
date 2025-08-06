@@ -1,6 +1,6 @@
 import assert from "assert";
 import crypto from 'crypto';
-import _, { camelCase, difference, fill, intersection, isEqual, zip } from "lodash";
+import _, { camelCase, difference, fill, intersection, zip } from "lodash";
 import { DateTime, Duration } from 'luxon';
 import { format } from 'node:util';
 import * as path from "path";
@@ -9,21 +9,14 @@ import * as api from './api';
 import { CopyMode, Meta } from './api/api';
 import { discardattr, getattr, hasattr, setattr } from './api/func';
 import { Command, Field, Fields, _Datetime } from './fields';
-import { List, Map2, DefaultDict, Dict, LastOrderedSet, OrderedSet2 } from './helper/collections';
+import { DefaultDict, Dict, LastOrderedSet, List, Map2, OrderedSet2 } from './helper/collections';
 import { AccessError, KeyError, MissingError, NotImplementedError, UserError, ValidationError, ValueError } from './helper/errors';
 import { showConstraints } from './modules/db';
 import { Query, expression } from "./osv";
-import { DataTypes } from './service/sequelize';
 import * as tools from './tools';
-import { getLang, stringify } from './tools';
-import { bool } from './tools/bool';
+import { DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, IterableGenerator, _format, _t, allTimezones, bool, extend, f, filter, getLang, isCallable, isInstance, islice, len, map, partial, pop, remove, sorted, sortedAsync, stringify, update } from './tools';
 import { config } from "./tools/config";
-import { isCallable, isInstance, partial } from './tools/func';
-import { IterableGenerator, extend, filter, islice, len, map, remove, sorted, sortedAsync } from './tools/iterable';
-import { DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, allTimezones, pop, update } from './tools/misc';
 import { addConstraint, quoteList } from './tools/sql';
-import { _t } from './tools/translate';
-import { _format, f } from './tools/utils';
 
 export const PREFETCH_MAX = 1000;
 export const VALID_AGGREGATE_FUNCTIONS = [

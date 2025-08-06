@@ -1,11 +1,11 @@
-import { QueryTypes } from "../service/sequelize";
 import assert from "assert";
 import util, { format } from 'util';
 import { SQLError } from '../helper/errors';
 import { dbFactory } from '../service/db';
+import { QueryTypes } from "../service/sequelize";
 import { Cursor } from "../sql_db";
 import { bool } from "./bool";
-import { _f } from "./utils";
+import { _f } from "./string";
 
 export const quote = (x) => `'${x}'`;
 export const quoteDouble = (x) => `"${x}"`;

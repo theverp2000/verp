@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { Fields, api } from "../../../core"
 import { MetaModel, TransientModel, _super } from "../../../core/models"
-import { f } from "../../../core/tools/utils"
+import { f } from "../../../core/tools/string"
 import { bool } from "../../../core/tools/bool"
 
 @MetaModel.define()

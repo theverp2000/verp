@@ -15,8 +15,8 @@ import { ValueError } from '../helper/errors';
 import { bool } from './bool';
 import { isAlpha, isInstance } from './func';
 import { enumerate, iter, len, range } from './iterable';
-import { stringify } from './json';
 import { whichSync } from './which';
+import { repr } from './string';
 
 export const DEFAULT_SERVER_DATE_FORMAT = "yyyy-MM-dd";
 export const DEFAULT_SERVER_TIME_FORMAT = "HH:mm:ss";
@@ -439,13 +439,6 @@ export async function groupbyAsync(iterable: Iterable<any>, fKeyObj?: Function, 
     groups.get(key)[1].push(elem);
   }
   return groups.values();
-}
-
-export function repr(obj: any) {
-  if ((typeof obj === 'object' || typeof obj === 'function') && ('repr' in obj)) {
-    return obj.repr();
-  }
-  return stringify(obj);
 }
 
 export function ignore(exc: any[], func: Function) {

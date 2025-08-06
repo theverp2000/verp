@@ -1,9 +1,9 @@
 import { DateTime } from "luxon";
+import { format } from "util";
+import { hasattr } from "../api/func";
 import { urlEncode, urlQuote } from "../service/middleware/utils";
 import { len, sum } from "./iterable";
-import { hasattr } from "../api/func";
-import { safeEval, unsafeAsync } from "./save_eval";
-import { format } from "util";
+import { unsafeAsync } from "./save_eval";
 import { markup } from "./xml";
 
 export const templateEnvGlobals = {

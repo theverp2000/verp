@@ -2,7 +2,7 @@ import { v4 as uuid4 } from "uuid";
 import { Fields } from "../../../core/fields"
 import { MetaModel, AbstractModel, _super } from "../../../core/models"
 import { bool } from "../../../core/tools/bool";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { urlEncode } from "../../../core/service/middleware/utils";
 import { Dict } from "../../../core/helper/collections";
 import { api } from "../../../core";

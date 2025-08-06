@@ -12,19 +12,13 @@ import { v4 as uuid4 } from 'uuid';
 import { release } from "../../..";
 import { NotImplementedError, StopIteration, UserError, ValueError } from "../../../helper/errors";
 import { getResourcePath } from "../../../modules/modules";
-import { b64decode, filePath } from "../../../tools";
-import { bool } from "../../../tools/bool";
-import { toText } from "../../../tools/compat";
+import { _f, b64decode, bool, filePath, isInstance, setOptions, sha512, stringify, toText } from "../../../tools";
 import { findInPath } from "../../../tools/config";
-import { isInstance } from "../../../tools/func";
 import { chain, len, next, range } from "../../../tools/iterable";
 import { isErpModule, transpileJavascript } from "../../../tools/js_transpiler";
-import { stringify } from "../../../tools/json";
 import * as lazy from '../../../tools/lazy';
-import { setOptions, sha512 } from "../../../tools/misc";
 import { forceHook } from "../../../tools/profiler";
 import { SourceMapGenerator } from "../../../tools/sourcemap_generator";
-import { _f } from "../../../tools/utils";
 import { dedent } from "./qweb";
 
 export const EXTENSIONS = [".js", ".css", ".scss", ".sass", ".less"];
@@ -822,7 +816,7 @@ class WebAsset {
         return buffer;
       }
       else {
-        const buffer =  b64decode(await this._irAttach['datas']).toString('utf-8');
+        const buffer = b64decode(await this._irAttach['datas']).toString('utf-8');
         return buffer;
       }
     } catch (e) {
@@ -957,9 +951,9 @@ class JavascriptAsset extends WebAsset {
     const l = Math.max(...lines.map(line => line.length));
     return [
       "",
-      "/" + _.fill(Array(l + 5), "*"),
+      "/" + Array(l + 5).fill("*"),
       ...lines.map(line => `*  {line:<${l}}  *`),
-      _.fill(Array(l + 5), "*") + "/",
+      Array(l + 5).fill("*") + "/",
       content,
     ].join('\n');
   }

@@ -1,7 +1,7 @@
 import { Fields } from "../../../core/fields";
 import { httpGet } from "../../../core/http";
 import { MetaModel, Model } from "../../../core/models";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class MailIceServer extends Model {

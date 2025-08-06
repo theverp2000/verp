@@ -1,13 +1,13 @@
-import {glob} from 'glob';
-import * as path from 'path';
-import { Command } from './command';
-import * as core from './../index';
 import commandLineArgs from 'command-line-args';
-import * as server from './server';
+import { glob } from 'glob';
+import * as path from 'path';
 import { getModuleRoot, IGNORE_FOLDERS, MANIFEST_NAMES } from '../modules';
-import { extend } from '../tools/iterable';
-import { f } from '../tools';
 import { MetaDatebase } from '../service/db';
+import { f } from '../tools';
+import { extend } from '../tools/iterable';
+import * as core from './../index';
+import { Command } from './command';
+import * as server from './server';
 
 /**
  * Quick start the Verp server for your project

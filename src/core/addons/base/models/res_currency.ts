@@ -7,9 +7,13 @@ import { ValueError } from "../../../helper/errors";
 import { MetaModel, Model, _super } from "../../../models";
 import { bool } from "../../../tools/bool";
 import { floatCompare, floatIsZero, floatRound } from "../../../tools/float_utils";
-import { isInstance, stringPart } from "../../../tools/func";
+import { isInstance } from "../../../tools/func";
+import { stringPart } from "../../../tools/string";
 import { getLang } from "../../../tools/models";
-import { _f, f, num2words, ustr } from "../../../tools/utils";
+import { f } from "../../../tools/string";
+import { num2words } from "../../../tools/string";
+import { _f } from "../../../tools/string";
+import { ustr } from "../../../tools/string";
 import { serializeXml } from "../../../tools/xml";
 import { Query } from "../../../osv";
 

@@ -1,16 +1,15 @@
 require('./../globals');
 
-import { accessSync, constants, existsSync, readdirSync } from 'fs';
-import * as path from 'path';
 import assert from 'assert';
+import { accessSync, constants, existsSync, readdirSync } from 'fs';
 import _ from 'lodash';
+import * as path from 'path';
 import { addons } from '..';
 import { getattr } from '../api/func';
 import { Dict } from '../helper/collections';
 import * as release from '../release';
+import { commonPrefix, extend, isDir, isFile, isIterable } from '../tools';
 import { config } from '../tools/config';
-import { extend, isIterable } from '../tools/iterable';
-import { commonPrefix, isDir, isFile } from '../tools/misc';
 import { fileRead } from '../tools/models';
 
 export const MANIFEST_NAMES = ['package.json', '__manifest__.json'];

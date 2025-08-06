@@ -7,13 +7,7 @@ import { Dict } from '../helper/collections';
 import { NotImplementedError, ValueError } from '../helper/errors';
 import { BaseModel, ModelRecords } from '../models';
 import { Cursor } from '../sql_db';
-import { bool } from "../tools/bool";
-import { toText } from '../tools/compat';
-import { isInstance, split } from "../tools/func";
-import { isIterable } from "../tools/iterable";
-import { stringify } from "../tools/json";
-import { setOptions } from "../tools/misc";
-import { f } from "../tools/utils";
+import { bool, f, isInstance, isIterable, setOptions, split, stringify, toText } from "../tools";
 import { Query, _generateTableAlias } from "./query";
 
 export type Token = [string | number, string, any];
@@ -163,7 +157,7 @@ export function combine(operator, unit, zero, domains) {
       count += 1;
     }
   }
-  result = _.fill(Array(Math.max(count - 1, 0)), operator).concat(result);
+  result = Array(Math.max(count - 1, 0)).fill(operator).concat(result);
   return result.length ? result : unit
 }
 

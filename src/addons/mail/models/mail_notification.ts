@@ -4,7 +4,7 @@ import { Fields } from "../../../core/fields"
 import { Dict } from "../../../core/helper/collections"
 import { AccessError } from "../../../core/helper/errors"
 import { MetaModel, Model, _super } from "../../../core/models"
-import { f } from "../../../core/tools/utils"
+import { f } from "../../../core/tools/string"
 
 @MetaModel.define()
 class MailNotification extends Model {

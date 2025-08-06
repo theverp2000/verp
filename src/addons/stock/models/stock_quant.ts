@@ -9,7 +9,7 @@ import { dateMin } from "../../../core/tools/date_utils";
 import { floatCompare, floatIsZero } from "../../../core/tools/float_utils";
 import { sum } from "../../../core/tools/iterable";
 import { pop, update } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class StockQuant extends Model {

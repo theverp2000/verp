@@ -1,7 +1,7 @@
 import { Fields, api } from "../../../core";
 import { MetaModel, Model, _super } from "../../../core/models";
 import { bool } from "../../../core/tools/bool";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class Company extends Model {

@@ -5,7 +5,7 @@ import { len, update } from "../../../core/tools";
 import { bool } from "../../../core/tools/bool";
 import { reOpen } from "../../../core/tools/mail";
 import { getLang } from "../../../core/tools/models";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class AccountInvoiceSend extends TransientModel {

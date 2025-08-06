@@ -3,7 +3,7 @@ import { _Date, _Datetime, api, Fields } from "../../../core";
 import { _super, MetaModel, Model } from "../../../core/models";
 import { _f, _f2, addDate, bool, chain, enumerate, extend, islice, len, repeat, sorted, subDate, takewhile, today, update, ustr } from "../../../core/tools";
 import { UserError } from "../../../core/helper";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 
 // display top 3 in ranking, could be db variable
 const MAX_VISIBILITY_RANKING = 3;
@@ -606,7 +606,7 @@ class Challenge extends Model {
             if (len(goals) < 3) {
                 // display at least the top 3 in the results
                 const missing = 3 - len(goals);
-                for (const [ranking, mockGoal] of enumerate(_.fill(Array(missing), {'id': false,
+                for (const [ranking, mockGoal] of enumerate(Array(missing).fill({'id': false,
                                                       'userId': false,
                                                       'label': '',
                                                       'current': 0,

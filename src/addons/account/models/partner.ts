@@ -7,7 +7,9 @@ import { bool } from "../../../core/tools/bool";
 import { isDigit } from "../../../core/tools/func";
 import { extend, len, sum } from "../../../core/tools/iterable";
 import { DEFAULT_SERVER_DATETIME_FORMAT } from "../../../core/tools/misc";
-import { _convert$, _f, f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
+import { _convert$ } from "../../../core/tools/string";
+import { _f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class AccountFiscalPosition extends Model {

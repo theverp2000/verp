@@ -3,7 +3,7 @@ import path from "path";
 import { EXTENSIONS } from "../../../core/addons/base";
 import { AbstractModel, MetaModel } from "../../../core/models";
 import { b64decode, b64encode, bool, f, fileClose, fileOpen, fileRead, rsplit, update } from "../../../core/tools";
-import { strip } from "../../../core/tools/utils";
+import { strip } from "../../../core/tools/string";
 
 const _matchAssetFileUrlRegex = new RegExp("^/(\\w+)/(.+?)(\\.custom\\.(.+))?\\.(\\w+)$");
 

@@ -7,7 +7,8 @@ import { expression } from "../../../core/osv";
 import { dbFactory } from "../../../core/service/db";
 import { b64decode, emailNormalize, emailSplitAndFormat, len, pop, subDate, update } from "../../../core/tools";
 import { bool } from "../../../core/tools/bool";
-import { f, ustr } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
+import { ustr } from "../../../core/tools/string";
 
 function _reopen(self, resId, model, context: {} = {}) {
   // save original model in context, because selecting the list of available templates requires a model in context

@@ -3,7 +3,7 @@ import { DefaultDict } from "../helper/collections";
 import { getArgumentNames, isInstance } from "./func";
 import { isList } from "./iterable";
 import { unsafeEval } from "./save_eval";
-import { f } from "./utils";
+import { f } from "./string";
 
 export function logOrmCacheStats(sig?: any, frame?: any) {
   console.warn('Not implemented');
@@ -82,12 +82,10 @@ class Ormcache extends Function {
       if (cache.has(sKey)) {
         const result = cache.get(sKey);
         counter.hit += 1;
-        // console.log('hit', this.method.name, key, counter.hit, '=', result);
         return result;
       }
       else {
         counter.miss += 1;
-        // console.log('miss', this.method.name, key, counter.miss);
         const val = await this.method.apply(model, args);
         cache.set(sKey, val);
         return cache.get(sKey);

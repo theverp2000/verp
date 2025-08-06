@@ -4,7 +4,7 @@ import { ValidationError, ValueError } from "../../../core/helper";
 import { MetaModel, Model } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { bool, choices, len, next, parseInt } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { subDate } from "../../../core/tools/date_utils";
 
 @MetaModel.define()

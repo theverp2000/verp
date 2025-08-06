@@ -1,5 +1,5 @@
 import { ValueError } from "../helper/errors";
-import { f } from "./utils";
+import { f } from "./string";
 
 const MINYEAR = 1;
 const MAXYEAR = 9999;

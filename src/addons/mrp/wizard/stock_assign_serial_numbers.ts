@@ -75,7 +75,7 @@ class StockAssignSerialNumbers extends TransientModel{
         const serialNumbers = await this._getSerialNumbers();
         const production = await this['productionId'];
         const productions = await production._splitProductions(
-            MapKey.fromEntries([[production, _.fill(Array(len(serialNumbers)), 1)]]), cancelRemainingQuantity, true);
+            MapKey.fromEntries([[production, Array(len(serialNumbers)).fill(1)]]), cancelRemainingQuantity, true);
         const productionLotsVals = [];
         for (const serialName of serialNumbers) {
             productionLotsVals.push({

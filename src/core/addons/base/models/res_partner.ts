@@ -16,7 +16,10 @@ import { bool } from '../../../tools/bool';
 import { isInstance } from '../../../tools/func';
 import { len, next } from '../../../tools/iterable';
 import { emailNormalizeAll, formataddr } from '../../../tools/mail';
-import { _convert$, _f, _format, f } from '../../../tools/utils';
+import { f } from "../../../tools/string";
+import { _convert$ } from "../../../tools/string";
+import { _f } from "../../../tools/string";
+import { _format } from "../../../tools/string";
 import { parseHtml, serializeHtml } from '../../../tools/xml';
 
 export const WARNING_MESSAGE = [
@@ -976,7 +979,7 @@ class Partner extends Model {
         vat: unaccent('"resPartner"."vat"')
       });
 
-      whereClauseParams = whereClauseParams.concat(_.fill(Array(3), searchName));  // for email / displayName, reference
+      whereClauseParams = whereClauseParams.concat(Array(3).fill(searchName));  // for email / displayName, reference
       whereClauseParams = whereClauseParams.concat([searchName.replace(/[^a-zA-Z0-9\-\.]+/g, '') ?? null]);  // for vat
       whereClauseParams = whereClauseParams.concat([searchName]);  // for order by
       if (limit) {

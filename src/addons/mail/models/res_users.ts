@@ -7,7 +7,8 @@ import { MetaModel, Model, _super } from "../../../core/models"
 import { getModuleIcon } from "../../../core/modules/modules"
 import { bool } from "../../../core/tools/bool"
 import { extend, len } from "../../../core/tools/iterable"
-import { _f, f } from "../../../core/tools/utils"
+import { f } from "../../../core/tools/string"
+import { _f } from "../../../core/tools/string"
 
 /**
  * Update of res.users class

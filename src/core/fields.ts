@@ -1,5 +1,5 @@
 import assert from "assert";
-import _, { isNumber } from 'lodash';
+import _ from 'lodash';
 import { DateTime } from "luxon";
 import { encode } from "utf8";
 import util from "util";
@@ -182,7 +182,7 @@ export class Fields {
   static Many2one(comodelName: string | FieldOptions, kwargs: string | FieldOptions = {}) {
     if (typeof (comodelName) === 'string') {
       if (typeof (kwargs) === 'string') {
-        kwargs = {string: kwargs}
+        kwargs = { string: kwargs }
       }
       kwargs = Object.assign(kwargs, { comodelName });
     } else {
@@ -1145,7 +1145,7 @@ export class Field {
     if (!bool(records)) {
       return records;
     }
-    cache.update(records, this, _.fill(Array(records._length), cacheValue));
+    cache.update(records, this, Array(records._length).fill(cacheValue));
     if (this.store) {
       records.env.all.towrite[this.modelName] = records.env.all.towrite[this.modelName] ?? new Map<any, any>();
       const towrite = records.env.all.towrite[this.modelName];
@@ -1483,7 +1483,7 @@ class _Boolean extends Field {
 export class _Number extends Field {
   static type = 'number';
   static groupOperator = 'sum';
-  
+
   get columnType() { return ['NUMERIC', 'NUMERIC'] }
 
   async convertToRead(value, record, useNameGet = true) {
@@ -1774,7 +1774,7 @@ class _String extends Field {
     if (records.nok) {
       return records;
     }
-    cache.update(records, this, _.fill(Array(records._length), cacheValue));
+    cache.update(records, this, Array(records._length).fill(cacheValue));
 
     if (!this.store) {
       return records;
@@ -1817,7 +1817,7 @@ class _String extends Field {
       }
       if (this.translate) {
         cache.invalidate([[this, records.ids]]);
-        cache.update(records, this, _.fill(Array(records._length), cacheValue))
+        cache.update(records, this, Array(records._length).fill(cacheValue));
       }
     }
     if (updateTrans) {
@@ -2434,7 +2434,7 @@ class _Image extends _Binary {
       const newValue = await this._imageProcess(value);
       newRecordValues.push([record, newValue]);
       const cacheValue = await this.convertToCache(this.related ? value : newValue, record);
-      record.env.cache.update(record, this, _.fill(Array(record._length), cacheValue));
+      record.env.cache.update(record, this, Array(record._length).fill(cacheValue));
     }
     await super.create(newRecordValues);
   }
@@ -2459,7 +2459,7 @@ class _Image extends _Binary {
 
     await super.write(records, newValue);
     const cacheValue = await this.convertToCache(this.related ? value : newValue, records);
-    records.env.cache.update(records, this, _.fill(Array(records._length), cacheValue));
+    records.env.cache.update(records, this, Array(records._length).fill(cacheValue));
   }
 
   async _imageProcess(value) {
@@ -3089,7 +3089,7 @@ export class _Many2one extends _Relational {
     await this._removeInverses(records, cacheValue);
 
     // update the cache of this
-    cache.update(records, this, _.fill(Array(records._length), cacheValue));
+    cache.update(records, this, Array(records._length).fill(cacheValue));
 
     // update towrite
     if (this.store) {
@@ -3097,7 +3097,7 @@ export class _Many2one extends _Relational {
       const towrite = records.env.all.towrite[this.modelName];
       for (const record of await records.filtered('id')) {
         // cacheValue is already in database format
-        if (!towrite.has(record.id)) { 
+        if (!towrite.has(record.id)) {
           towrite.set(record.id, new Dict<any>());
         }
         towrite.get(record.id)[this.name] = cacheValue;
@@ -3735,7 +3735,7 @@ export class _One2many extends _RelationalMulti {
           }
           else if ([Command.CLEAR, Command.SET].includes(command[0])) {
             // assign the given lines to the last record only
-            cache.update(recs, this, _.fill(Array(len(recs)), []));
+            cache.update(recs, this, Array(len(recs)).fill([]));
             const lines = comodel.browse(command[0] == Command.SET ? command[2] : []);
             cache.set(recs([-1]), this, lines._ids);
           }
@@ -3844,7 +3844,7 @@ export class _One2many extends _RelationalMulti {
           }
           else if ([Command.CLEAR, Command.SET].includes(command[0])) {
             // assign the given lines to the last record only
-            cache.update(recs, this, _.fill(Array(len(recs)), []));
+            cache.update(recs, this, Array(len(recs)).fill([]));
             const lines = comodel.browse(command[0] == Command.SET ? command[2] : []);
             cache.set(recs([-1]), this, lines._ids);
           }
@@ -4133,7 +4133,7 @@ class _Many2many extends _RelationalMulti {
     }
     if (len(pairs)) {
       if (this.store) {
-        const query = `INSERT INTO "${this.relation}" ("${this.column1}", "${this.column2}") VALUES ${_.fill(Array(len(pairs)), '%s').join(', ')} ON CONFLICT DO NOTHING`;
+        const query = `INSERT INTO "${this.relation}" ("${this.column1}", "${this.column2}") VALUES ${Array(len(pairs)).fill('%s').join(', ')} ON CONFLICT DO NOTHING`;
         const params = pairs.map(([x, y]) => `(${x},${y})`);
         await cr.execute(query, { params: params });
       }
@@ -4195,7 +4195,7 @@ class _Many2many extends _RelationalMulti {
         }
         // delete the rows where (id1 IN xs AND id2 IN ys) OR ...
         const COND = `"${this.column1}" IN (%s) AND "${this.column2}" IN (%s)`;
-        const query = `DELETE FROM "${this.relation}" WHERE ${_.fill(Array(len(xsToYs)), COND).join(' OR ')}`;
+        const query = `DELETE FROM "${this.relation}" WHERE ${Array(len(xsToYs)).fill(COND).join(' OR ')}`;
         const params = [];
         for (const [xs, ys] of xsToYs) {
           for (const arg of [[...xs], [...ys]]) {

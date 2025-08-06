@@ -2,7 +2,7 @@ import { api } from "../../../core";
 import { Fields } from "../../../core/fields";
 import { MetaModel, Model } from "../../../core/models";
 import { formataddr } from "../../../core/tools/mail";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class Company extends Model {

@@ -1,98 +1,6 @@
-import _ from "lodash";
-import { format } from "util";
 import { NotImplementedError, ValueError } from "../helper/errors";
 import { parseInt } from "./func";
 import { accumulate, len, map, range } from "./iterable";
-
-export function ustr(data) {
-  return String(data);
-}
-
-/**
- * i_love_you_so_much => iLoveYouSoMuch => ILoveYouSoMuch
- * @param str 
- * @returns 
- */
-export function UpCamelCase(str: string) {
-  return _.upperFirst(_.camelCase(str));
-}
-
-/**
- * iLoveYouSoMuch => i-love-you-so-much
- * ILoveYouSoMuch => i-love-you-so-much
- * @param s 
- * @returns 
- */
-export function camelToHyphen(s: string) {
-  return _.lowerFirst(s).replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
-}
-
-/**
- * iLoveYouSoMuch => i_love_you_so_much
- * ILoveYouSoMuch => i_love_you_so_much
- * @param s 
- * @returns 
- */
-export function camelCaseTo_(s: string) {
-  return _.lowerFirst(s).replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
-}
-
-/**
- * iLoveYouSoMuch => i_love_you_so_much
- * ILoveYouSoMuch => i.love.you.so.much
- * @param s 
- * @returns 
- */
-export function camelCaseToDot(s: string) {
-  return _.lowerFirst(s).replace(/([a-z])([A-Z])/g, '$1.$2').toLowerCase();
-}
-
-/**
- * i_love_you_so_much => i-love-you-so-much
- * @param s 
- * @returns 
- */
-export function _toHyphen(s: string) {
-  return s.replace(/_/g, '-');
-}
-
-export function _format(str: string, replacements: Record<string, any> = {}): string {
-  return str.replace(
-    /{\w+}/g,
-    (all) => replacements[all.substring(1, all.length - 1)] ?? all
-  );
-}
-
-export const _f = _format;
-
-export function _format2(str: string, replacements: Record<string, any> = {}): string {
-  return str.replace(
-    /%\(\w+\)[ds]/g,
-    (all) => replacements[all.substring(2, all.length - 2)] ?? all
-  );
-}
-
-export const _f2 = _format2;
-
-export const f = format;
-
-/**
- * Convert %s in string to $n, with n = 1...
- * @param str 
- * @param fmt 
- * @returns 
- */
-export function _convert$(str: string, fmt = '%s') {
-  let index = 0;
-  let i = 0;
-  while (true) {
-    index = str.indexOf(fmt, index);
-    if (index == -1)
-      break;
-    str = str.replace(fmt, `$${++i}`);
-  }
-  return str;
-}
 
 export function getRandom(min: number, max?: number, step: number = 1): number {
   const floatRandom = Math.random();
@@ -158,7 +66,7 @@ export function sample(population, k) {
   if (!(0 <= k && k <= n)) {
     throw new ValueError("Sample larger than population or is negative");
   }
-  let result = _.fill(Array(k), [null]);
+  let result = Array(k).fill([null]);
   let setsize = 21;        // size of a small set minus size of an empty list
   if (k > 5) {
     setsize += 4 ** Math.ceil(Math.log(k * 3) / Math.log(4)) // table size for big sets
@@ -301,95 +209,6 @@ export class Slice {
     this.start = start;
     this.stop = stop;
   }
-}
-
-export function rstrip(str: string, sub: string = '/') {
-  if (str.endsWith(sub)) {
-    return str.substring(0, str.length - sub.length);
-  } else {
-    return str;
-  }
-}
-
-export function lstrip(str: string, sub: string = ' ') {
-  if (str.startsWith(sub)) {
-    return str.substring(sub.length);
-  } else {
-    return str;
-  }
-}
-
-export function strip(str: string, char?: string) {
-  if (!str) {
-    return str;
-  }
-  if (!char) {
-    return str.trim();
-  }
-  if (str.startsWith(char)) {
-    str = str.slice(1);
-  }
-  if (str.endsWith(char)) {
-    str = str.slice(0, -1);
-  }
-  return str;
-}
-
-/**
- * This function is difference to function stringify
- * ex: d = {'a': 'text', 'b': 100, 'c': true, 'd': [1,1], 'e': {ee: 1}}
- * stringify => '{"a":"text", "b": 100, "c": true, "d": [1,1], "e": {"ee": 1}}'
- * this func => "{'a': 'text','b': 100, 'c': true, 'd': [1,1], 'e': {'ee': 1}}" 
- * @param obj 
- * @returns string
- */
-export function objectToText(obj) {
-  //create an array that will later be joined into a string.
-  var result = [];
-
-  //is object
-  //    Both arrays and objects seem to return "object"
-  //    when typeof(obj) is applied to them. So instead
-  //    I am checking to see if they have the property
-  //    join, which normal objects don't have but
-  //    arrays do.
-  if (typeof (obj) == "object" && (obj.join == undefined)) {
-    result.push("{");
-    for (const prop in obj) {
-      result.push(`'${prop}'`, ": ", objectToText(obj[prop]), ",");
-    };
-    result.push("}");
-
-  //is array
-  } else if (typeof (obj) == "object" && !(obj.join == undefined)) {
-    result.push("[");
-    for (const prop in obj) {
-      result.push(objectToText(obj[prop]), ",");
-    }
-    result.push("]");
-
-  //is function
-  } else if (typeof (obj) == "function") {
-    result.push(obj.toString());
-
-  //quotes with string
-  } else if (typeof (obj) == "string") {
-    result.push(`'${obj}'`);
-
-  //all other values can be done with JSON.stringify
-  } else {
-    result.push(JSON.stringify(obj));
-  }
-
-  return result.join("");
-}
-
-export function num2words(num: number, lang: string) {
-  return String(num);
-}
-
-export function isASCII(str: string, extended: boolean = false) {
-  return (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(str);
 }
 
 /**

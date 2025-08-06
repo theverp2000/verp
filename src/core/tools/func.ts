@@ -234,47 +234,6 @@ export function parseFloat(value, raiseIfError=false) {
   }
 }
 
-export function stringPart(str: string, sub: string): [string, string, string] {
-  var index = str.indexOf(sub);  // Gets the first index where a sub occours
-  if (index < 0) {
-    return [str, '', ''];
-  } 
-  return [str.substring(0, index), sub, str.substring(index + sub.length)];
-}
-
-export function rstringPart(str: string, sub: string): [string, string, string] {
-  var index = str.lastIndexOf(sub);  // Gets the last index where a space occours
-  if (index < 0) {
-    return ['', '', str]; 
-  }
-  return [str.substring(0, index), sub, str.substring(index + sub.length)];
-}
-
-export const rpartition = rstringPart;
-
-export function split(str: string, sep: string=' ', num: number=1): string[] {
-  const split = str.split(sep);
-  const last = split.slice(num).join(sep);
-  return num ? split.slice(0, num).concat(last ? [last] : []) : split;
-}
-
-export function rsplit(str: string, sep: string=' ', num: number=1): string[] {
-  const split = str.split(sep);
-  const last = split.slice(0, -num).join(sep);
-  return num ? (last ? [last] : []).concat(split.slice(-num)) : split;
-}
-
-export function removeQuotes(value: string, quotes=`"'`) {
-  if (value.slice(0,1) === value.slice(-1) && quotes.includes(value[0])) {
-    value = value.slice(1,-1);
-  }
-  return value;
-}
-
-export function escapeRegExp(text: string) {
-  return text ? text.replace(/[[\]{}()*+?./,^$|#\s\t\n\r\v\f]/g, '\$&') : text;
-}
-
 const _MAX = 3;
 
 /**
@@ -362,13 +321,6 @@ export function equal(a, b, m=0) {
   return a!==a && b!==b;
 };
 
-export function ellipsis(text: string, size: number, chars: string='...') {
-  if (text.length > size) {
-    return text.slice(0, size - chars.length) + chars;
-  }
-  return text;
-}
-
 export function getArgumentNames(func) {
 	// String representation of the function code
 	let str = func.toString();
@@ -402,14 +354,4 @@ export function getArgumentNames(func) {
 	});
 
 	return params;
-}
-
-export async function replaceAsync(str, regex, asyncFn) {
-  const promises = [];
-  str.replace(regex, (match, ...args) => {
-    const promise = asyncFn(match, ...args);
-    promises.push(promise);
-  });
-  const data = await Promise.all(promises);
-  return str.replace(regex, () => data.shift());
 }

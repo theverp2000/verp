@@ -41,7 +41,7 @@
                                         <t t-if="! (parseInt(a['level']) &gt; 3)"><t t-set="style" t-value="'font-weight: bold;'"/></t>
 
                                         <td>
-                                            <span style="color: white;" t-esc="fill(Array(parseInt(a['level'] || '0')), '..').join('')"/>
+                                            <span style="color: white;" t-esc="Array(parseInt(a['level'] || '0')).fill('..').join('')"/>
                                             <span t-att-style="style" t-esc="a['label']"/>
                                         </td>
                                         <td class="text-right" style="white-space: text-nowrap;">
@@ -72,7 +72,7 @@
                                         <t t-if="! (parseInt(a['level']) &gt; 3)"><t t-set="style" t-value="'font-weight: bold;'"/></t>
 
                                         <td>
-                                            <span style="color: white;" t-esc="fill(Array(parseInt(a['level'] || '0')), '..').join('')"/>
+                                            <span style="color: white;" t-esc="Array(parseInt(a['level'] || '0')).fill('..').join('')"/>
                                             <span t-att-style="style" t-esc="a['label']"/>
                                         </td>
                                         <td class="text-right"><span t-att-style="style" t-esc="a['balance']" t-options="{'widget': 'monetary', 'displayCurrency': currencyId}"/></td>

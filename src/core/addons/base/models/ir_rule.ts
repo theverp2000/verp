@@ -5,7 +5,9 @@ import { expression } from "../../../osv";
 import { bool } from '../../../tools/bool';
 import { len } from "../../../tools/iterable";
 import { unsafeAsync } from "../../../tools/save_eval";
-import { UpCamelCase, _f, f } from '../../../tools/utils';
+import { f } from "../../../tools/string";
+import { _f } from "../../../tools/string";
+import { UpCamelCase } from "../../../tools/string";
 import { AccessError, ValidationError, ValueError } from './../../../helper/errors';
 import { ModelRecords } from './../../../models';
 

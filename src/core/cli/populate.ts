@@ -1,10 +1,10 @@
-import { tools } from ".."
 import * as core from "..";
+import { tools } from "..";
 import { Environment } from "../api";
 import { ValueError } from "../helper";
 import { doWith, len } from "../tools";
 import { fnmatch } from "../tools/fnmatch";
-import { Command } from "./command"
+import { Command } from "./command";
 
 class Populate extends Command {
     async run(args: string[]) {

@@ -7,7 +7,7 @@ import { expression } from "../../../core/osv";
 import { len } from "../../../core/tools/iterable";
 import { emailNormalize } from "../../../core/tools/mail";
 import { pop } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { AWAY_TIMER, DISCONNECTION_TIMER } from "../../bus/models/bus_presence";
 
 /**

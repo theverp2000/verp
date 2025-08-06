@@ -1,7 +1,7 @@
 require('./../globals');
 
-import { config } from './../tools/config';
 import * as core from './../../core';
+import { config } from './../tools/config';
 import { Command } from './command';
 import * as server from './server';
 

@@ -33,6 +33,8 @@
     "node_modules",
     "./src/test",
     "./src/test.ts",
+    "./src/draft",
+    "./src/**/*.py"
   ],
   "resolveSourceMapLocations": [
     "${workspaceFolder}/**",

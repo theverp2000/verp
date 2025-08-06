@@ -451,6 +451,7 @@ class IrActionsReport extends Model {
     @api.model()
     async _runPrintPdf(bodies: string[], opts: { header?: string, footer?: string, landscape?: boolean, specificPaperformatArgs?: {}, setViewportSize?: boolean } = {}): Promise<Uint8Array> {
         const { header, footer, landscape, specificPaperformatArgs, setViewportSize } = opts;
+
         const paperformatId = await this.getPaperformat();
 
         // Build the base command args for htmltoPdf bin
@@ -460,32 +461,7 @@ class IrActionsReport extends Model {
             specificPaperformatArgs,
             setViewportSize);
 
-        const filesCommandArgs = [],
-            temporaryFiles = [];
-        if (header) {
-            const dataFile: temp.OpenFile = await temp.open({ suffix: '.html', prefix: 'report.header.tmp.' });
-            await fsPro.writeFile(dataFile.path, encode(header));
-            temporaryFiles.push(dataFile.path);
-            extend(filesCommandArgs, ['--header-html', dataFile.path]);
-        }
-        if (footer) {
-            const dataFile: temp.OpenFile = await temp.open({ suffix: '.html', prefix: 'report.footer.tmp.' });
-            await fsPro.writeFile(dataFile.path, encode(footer));
-            temporaryFiles.push(dataFile.path);
-            extend(filesCommandArgs, ['--footer-html', dataFile.path]);
-        }
-        const paths = [];
-        for (const [i, body] of enumerate(bodies)) {
-            const prefix = f('%s%d.', 'report.body.tmp.', i);
-            const dataFile: temp.OpenFile = await temp.open({ suffix: '.html', prefix });
-            await fsPro.writeFile(dataFile.path, encode(body));
-            paths.push(dataFile.path);
-            temporaryFiles.push(dataFile.path);
-        }
-
-        const pdfReport: temp.OpenFile = await temp.open({ suffix: '.pdf', prefix: 'report.tmp.' });
-        fs.closeSync(pdfReport.fd);
-        temporaryFiles.push(pdfReport.path);
+        let pdfContent;
         try {
             const browser = await puppeteer.launch({
                 executablePath: tools.config.options['chromePath'],
@@ -493,41 +469,24 @@ class IrActionsReport extends Model {
                 args: ["--fast-start", "--disable-extensions", "--no-sandbox"],
             });
             const page = await browser.newPage();
-            await page.setContent(bodies[0]); // Tony must check multi articles/bodies
-            const pdfContent = await page.pdf({
+            await page.setContent(bodies[0]);
+            pdfContent = await page.pdf({
                 format: 'A4',
                 displayHeaderFooter: true,
-                headerTemplate:
-                    `<header style='margin-left: 10px; margin-top: -10px; width: 40%;'>
-                        <img style="float: left; margin-right: 10px; width: 40%" src="${logo}" alt="TheVerp" />
-                        <p style="font-family: arial; float: right; width: 55%; color: yellow; margin-top: 0px; font-size: 10px">
-                            <b>My company</b>
-                        </p>
-                    </header>`,
-                footerTemplate: 
-                    '<footer>Page <span style="font-size: 10px"> <span class="pageNumber"></span> of <span class="totalPages"></span></span></footer>',
+                headerTemplate: header.replace(/text\/css/gm, 'text/scss').replace(/loading="lazy"/g, 'loading="auto"'), // fix bug with pupperteer
+                footerTemplate: footer.replace(/text\/css/gm, 'text/scss').replace(/loading="lazy"/g, 'loading="auto"'), // fix bug with pupperteer
                 margin: {
-                    top: "50px",
+                    top: "80px",
+                    bottom: "50px",
                     left: "10px",
-                    right: "10px",
-                    bottom: "50px"
+                    right: "10px"
                 },
                 printBackground: true,
             });
             await browser.close();
-            return pdfContent;
         } catch (e) {
-            console.log(e);
-        }
-        const pdfContent = await fsPro.readFile(pdfReport.path);
-
-        // Manual cleanup of the temporary files
-        for (const temporaryFile of temporaryFiles) {
-            try {
-                await fsPro.unlink(temporaryFile);
-            } catch (e) {
-                console.error('Error when trying to remove file %s', temporaryFile);
-            }
+            console.error(e);
+            throw e;
         }
         return pdfContent;
     }
@@ -1008,7 +967,7 @@ class IrActionsReport extends Model {
                 "Can not separate file to save as attachment because the report's template does not contains the attributes 'data-oe-model' and 'data-oe-id' on the div with 'article' classname."].join('\n'), await this['label']));
         }
 
-        const pdfContent = await this._runPrintPdf(bodies, { header, footer, landscape: context['landscape'], specificPaperformatArgs: specificPaperformatArgs, setViewportSize: context['setViewportSize'] });
+        const pdfContent = await this._runPrintPdf(bodies, { header, footer, landscape: context['landscape'], specificPaperformatArgs, setViewportSize: context['setViewportSize'] });
         if (bool(resIds)) {
             await this._raiseOnUnreadablePdfs(Object.values(saveInAttachment), streamRecord);
             console.info('The PDF report has been generated for model: %s, records %s.', await selfSudo.model, String(resIds));

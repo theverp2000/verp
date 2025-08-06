@@ -3,7 +3,8 @@ import { setdefault } from "../../../core/api/func";
 import { AccessError } from "../../../core/helper/errors";
 import { MetaModel, Model, _super, isSubclass } from "../../../core/models";
 import { bool } from "../../../core/tools/bool";
-import { _f, f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
+import { _f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class IrTranslation extends Model {

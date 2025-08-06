@@ -4,7 +4,7 @@ import { Command, _Date, api } from "../../../core";
 import { UserError, ValidationError } from "../../../core/helper/errors";
 import { MetaModel, Model } from "../../../core/models";
 import { filePath, formatLang, isInstance } from "../../../core/tools";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class AccountChartTemplate extends Model {

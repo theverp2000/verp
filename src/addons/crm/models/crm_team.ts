@@ -4,7 +4,7 @@ import { Dict, UserError, ValidationError, ValueError } from "../../../core/help
 import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { _f, bool, choices, f, floatCompare, floatRound, len, next, parseInt, update } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { subDate } from "../../../core/tools/date_utils";
 import { safeEval } from "../../../core/tools/save_eval";
 

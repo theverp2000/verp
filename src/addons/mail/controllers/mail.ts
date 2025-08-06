@@ -1,7 +1,7 @@
 import { ServerResponse } from "http";
 import { http } from "../../../core"
 import { WebRequest } from "../../../core/http";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { urlEncode } from "../../../core/service/middleware/utils";
 import { consteq, pop } from "../../../core/tools/misc";
 import { isInstance } from "../../../core/tools/func";

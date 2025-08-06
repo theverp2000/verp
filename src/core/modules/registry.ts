@@ -8,18 +8,17 @@ import { dbFactory } from './../service/db';
 require('./../globals');
 
 import assert from 'assert';
+import { randomUUID } from 'crypto';
 import _ from 'lodash';
 import { Environment } from '../api/api';
 import { linearize } from '../api/mro';
 import { WebRequest } from '../http';
 import { BaseModel, MetaModel } from '../models';
 import { Cursor, TestCursor } from '../sql_db';
-import { addForeignKey, dropConstraint, extend, isIterable, len } from '../tools';
+import { addForeignKey, dropConstraint, extend, isInstance, isIterable, len, partial } from '../tools';
 import { config } from '../tools/config';
 import { contextmanager } from '../tools/context';
-import { isInstance, partial } from '../tools/func';
 import * as lazy from '../tools/lazy';
-import { randomUUID } from 'crypto';
 
 const _logger = console;//.getLogger(__name__)
 const _schema = console;//.getLogger('core.schema');

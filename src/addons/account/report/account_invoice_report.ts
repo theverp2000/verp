@@ -2,7 +2,8 @@ import { api } from "../../../core";
 import { Fields, _Date } from "../../../core/fields";
 import { Dict } from "../../../core/helper/collections";
 import { AbstractModel, MetaModel, Model, _super } from "../../../core/models"
-import { _f, f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
+import { _f } from "../../../core/tools/string";
 import { PAYMENT_STATE_SELECTION } from "../models/account_move";
 
 @MetaModel.define()

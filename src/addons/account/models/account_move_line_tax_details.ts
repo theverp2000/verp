@@ -3,7 +3,7 @@ import { MetaModel, Model } from "../../../core/models";
 import { Query } from "../../../core/osv";
 import { quoteDouble, quoteList } from "../../../core/tools";
 import { extend } from "../../../core/tools/iterable";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class AccountMoveLine extends Model {

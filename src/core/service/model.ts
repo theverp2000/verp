@@ -2,7 +2,7 @@ import { security } from ".";
 import * as core from "..";
 import { Environment, callKw } from "../api";
 import { NameError } from "../helper";
-import { checkMethodName, traverseContainers } from "../models";
+import { checkMethodName } from "../models";
 import { doWith, parseInt } from "../tools";
 
 export const PG_CONCURRENCY_ERRORS_TO_RETRY = [];

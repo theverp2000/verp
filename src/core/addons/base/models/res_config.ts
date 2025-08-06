@@ -6,11 +6,13 @@ import { Dict } from "../../../helper/collections";
 import { AccessError, NotImplementedError, RedirectWarning, UserError, ValueError } from "../../../helper/errors";
 import { BaseModel, MetaModel, TransientModel, _super } from "../../../models";
 import { bool } from "../../../tools/bool";
-import { isInstance, parseInt, partial, rsplit } from "../../../tools/func";
+import { isInstance, parseInt, partial } from "../../../tools/func";
+import { rsplit } from "../../../tools/string";
 import { next, sortedAsync } from "../../../tools/iterable";
 import { stringify } from "../../../tools/json";
-import { repr } from "../../../tools/misc";
-import { camelCaseTo_, f } from "../../../tools/utils";
+import { repr } from '../../../tools/string';
+import { f } from "../../../tools/string";
+import { camelCaseTo_ } from "../../../tools/string";
 import { serializeXml } from "../../../tools/xml";
 
 class ResConfigModuleInstallationMixin {

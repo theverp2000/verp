@@ -6,7 +6,7 @@ import { DefaultDict, Dict } from "../../../helper";
 import { KeyError, UserError } from "../../../helper/errors";
 import { BaseModel, MetaModel, TransientModel, _super } from "../../../models";
 import { _f, bool, f, isInstance, partial, update } from "../../../tools";
-import { literalEval } from "../../../tools/ast";
+import { literalEval } from '../../../tools/save_eval';
 import { chain, len, someAsync, sum } from "../../../tools/iterable";
 
 @MetaModel.define()

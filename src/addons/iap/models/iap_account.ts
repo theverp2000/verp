@@ -2,7 +2,7 @@ import uuid from 'uuid';
 import { Fields, api } from "../../../core";
 import { MetaModel, Model, _super } from "../../../core/models"
 import { update } from '../../../core/tools/misc';
-import { f } from '../../../core/tools/utils';
+import { f } from "../../../core/tools/string";
 import { urlEncode } from '../../../core/service/middleware/utils';
 import { iapGetEndpoint, iapJsonrpc } from '../tools/iap_tools';
 

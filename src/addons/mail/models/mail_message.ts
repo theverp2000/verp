@@ -9,7 +9,9 @@ import { expression } from "../../../core/osv";
 import { bool, extend, isInstance, len, replaceAsync } from "../../../core/tools";
 import { generateTrackingMessageId, html2Text, isHtmlEmpty } from "../../../core/tools/mail";
 import { cleanContext, pop, update } from "../../../core/tools/misc";
-import { _f, f, ustr } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
+import { _f } from "../../../core/tools/string";
+import { ustr } from "../../../core/tools/string";
 
 const _imageDataUrlReg = /(data:image\/[a-z]+?);base64,(?<body>[a-z0-9+\/\n]{3,}=*)\n*(?:data-filename="([^"]*)")?/gi;
 

@@ -3,9 +3,8 @@ import crc32 from 'crc-32';
 import _ from 'lodash';
 import utf8 from 'utf8';
 import { Cursor } from "../sql_db";
-import { extend } from "../tools/iterable";
-import { _convert$, _f } from "../tools/utils";
 import * as lazy from "../tools";
+import { _convert$, _f, extend } from "../tools";
 
 /**
  * Generate a standard table alias name. An alias is generated as following:

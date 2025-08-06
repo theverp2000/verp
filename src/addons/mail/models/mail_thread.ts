@@ -11,13 +11,15 @@ import { AbstractModel, MetaModel, _super, isSubclass } from "../../../core/mode
 import { expression } from "../../../core/osv";
 import { urlEncode } from "../../../core/service/middleware/utils";
 import { b64encode, bool, doWith, isInstance, setOptions, split } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { documentFromString } from "../../../core/tools/html";
 import { enumerate, isList, len, next, splitEvery } from "../../../core/tools/iterable";
 import { EmailMessage, decodeMessageHeader, emailNormalize, emailSplit, formataddr, generateTrackingMessageId, mailHeaderMsgidRe } from "../../../core/tools/mail";
 import { cleanContext, hash, pop, update } from "../../../core/tools/misc";
 import { slug } from "../../../core/tools/slug";
-import { _f, f, ustr } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
+import { _f } from "../../../core/tools/string";
+import { ustr } from "../../../core/tools/string";
 import { getAttribute, isElement, iterchildren, markup, parseHtml, serializeHtml } from "../../../core/tools/xml";
 
 class _Attachment {

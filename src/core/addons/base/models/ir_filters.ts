@@ -4,7 +4,7 @@ import { Fields } from "../../../fields";
 import { UserError } from "../../../helper/errors";
 import { MetaModel, Model, _super } from "../../../models";
 import { safeEval } from "../../../tools/save_eval";
-import { _f } from "../../../tools/utils";
+import { _f } from "../../../tools/string";
 
 @MetaModel.define()
 class IrFilters extends Model {

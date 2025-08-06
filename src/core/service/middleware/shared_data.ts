@@ -4,11 +4,8 @@ import http from 'http';
 import { DateTime } from 'luxon';
 import * as mime from 'mime-types';
 import * as pt from 'path';
+import { extend, isCallable, isFile, isInstance, isObject, URI } from "../../tools";
 import { fnmatch } from '../../tools/fnmatch';
-import { isCallable, isInstance, isObject } from "../../tools/func";
-import { extend } from '../../tools/iterable';
-import { isFile } from "../../tools/misc";
-import { URI } from '../../tools/uri';
 import { httpDate, isResourceModified } from './utils';
 import { wrapFile } from './wsgi';
 

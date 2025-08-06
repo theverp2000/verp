@@ -7,13 +7,10 @@ import { getattr, hasattr } from '../api/func';
 import { Map2 } from '../helper/collections';
 import { AttributeError, ImportError } from '../helper/errors';
 import { Cursor } from "../sql_db";
-import { isInstance } from '../tools/func';
-import { isDir } from '../tools/misc';
+import { _format, isDir, isInstance, sorted } from '../tools';
 import { parseVersion } from '../tools/parse_version';
-import { _format } from '../tools/utils';
 import { Graph } from './graph';
 import { getDirectories, getResourcePath, IGNORE_FOLDERS } from './modules';
-import { sorted } from '../tools/iterable';
 
 
 function loadScript(p: string, moduleName: string) {

@@ -6,7 +6,7 @@ import { Map2, Dict, MapKey } from "../../../core/helper";
 import { UserError } from "../../../core/helper/errors";
 import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { bool } from "../../../core/tools/bool";
 import { dateMax, dateMin } from "../../../core/tools/date_utils";
 import { floatCompare, floatIsZero, floatRound } from "../../../core/tools/float_utils";
@@ -14,7 +14,7 @@ import { all, itemgetter, len, sortedAsync, sum } from "../../../core/tools/iter
 import { stringify } from "../../../core/tools/json";
 import { DEFAULT_SERVER_DATETIME_FORMAT, groupby, groupbyAsync, pop } from "../../../core/tools/misc";
 import { formatDate, formatDatetime } from "../../../core/tools/models";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { PROCUREMENT_PRIORITIES } from "./stock_move";
 
 @MetaModel.define()

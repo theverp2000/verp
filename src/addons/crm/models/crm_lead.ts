@@ -5,7 +5,6 @@ import { getattr, hasattr, setdefault } from "../../../core/api";
 import { AccessError, DefaultDict, Dict, OrderedDict, UserError } from "../../../core/helper";
 import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { dbFactory } from "../../../core/service/db";
 import { _f, allTimezones, bool, createIndex, emailNormalize, emailNormalizeAll, emailSplit, emailSplitTuples, extend, f, floatCompare, floatRound, formataddr, isCallable, isHtmlEmpty, isInstance, islice, len, next, parseInt, pop, range, remove, rsplit, setOptions, someAsync, sorted, splitEvery, update } from "../../../core/tools";
 import { addDate, dateMax, dateMin, dateSetTz, dateWithoutTz, diffDate } from "../../../core/tools/date_utils";
 import { _MAIL_DOMAIN_BLACKLIST } from "../../iap";
@@ -1782,7 +1781,7 @@ class Lead extends Model {
             throw new UserError(await this._t('Please select more than one element (lead or opportunity) from the list view.'));
         }
 
-        if (maxLength && len(this.ids) > maxLength && ! this.env.isSuperuser()) {
+        if (maxLength && len(this.ids) > maxLength && !this.env.isSuperuser()) {
             throw new UserError(_f(await this._t("To prevent data loss, Leads and Opportunities can only be merged by groups of {maxLength}."), { maxLength: maxLength }));
         }
 
@@ -2073,7 +2072,7 @@ class Lead extends Model {
         if (!domain.length) {
             return this.env.items('crm.lead');
         }
-        domain = _.fill(Array(len(domain) - 1), '|').concat(domain);
+        domain = Array(len(domain) - 1).fill('|').concat(domain);
         if (includeLost) {
             extend(domain, ['|', ['type', '=', 'opportunity'], ['active', '=', true]]);
         }
@@ -2262,7 +2261,7 @@ class Lead extends Model {
         let salesmanActions;
         if (await this['type'] === 'lead') {
             const convertAction = await (this as any)._notifyGetActionLink('controller', { controller: '/lead/convert', ...localMsgVals });
-            salesmanActions = [{ 'url': convertAction, 'title': _('Convert to opportunity') }];
+            salesmanActions = [{ 'url': convertAction, 'title': await this._t('Convert to opportunity') }];
         }
         else {
             const wonAction = await (this as any)._notifyGetActionLink('controller', { controller: '/lead/caseMarkWon', ...localMsgVals });
@@ -3114,7 +3113,7 @@ class Lead extends Model {
         if (bool(domain)) {
             // activeTest = False as domain should take active into 'active' field it self
             const [fromClause, whereClause, whereParams] = await (await (await this.env.items('crm.lead').withContext({ activeTest: false }))._whereCalc(domain)).getSql();
-            const strFields = _.fill(Array(len(plsFields)), '%s').join(', ');
+            const strFields = Array(len(plsFields)).fill('%s').join(', ');
             const args = plsFields.map(field => this._cr._gen.quote(field));
 
             // Get leads values

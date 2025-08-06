@@ -7,7 +7,8 @@ import { version } from "../../../core/release";
 import { bool } from "../../../core/tools/bool";
 import { len, range } from "../../../core/tools/iterable";
 import { stringify } from "../../../core/tools/json";
-import { _convert$, _f, f, getRandom } from "../../../core/tools/utils";
+import { _convert$, _f, f } from "../../../core/tools/string";
+import { getRandom } from "../../../core/tools/utils";
 
 @MetaModel.define()
 class CrmTeam extends Model {
@@ -121,11 +122,13 @@ class CrmTeam extends Model {
   });
   static memberWarning = Fields.Text('Membership Issue Warning', { compute: '_computeMemberWarning' });
   static crmTeamMemberIds = Fields.One2many(
-    'crm.team.member', 'crmTeamId', { string: 'Sales Team Members',
+    'crm.team.member', 'crmTeamId', {
+      string: 'Sales Team Members',
     help: "Add members to automatically assign their documents to this sales team."
   });
   static crmTeamMemberAllIds = Fields.One2many(
-    'crm.team.member', 'crmTeamId', { string: 'Sales Team Members (incl. inactive)',
+    'crm.team.member', 'crmTeamId', {
+      string: 'Sales Team Members (incl. inactive)',
     context: { 'activeTest': false }
   });
   // UX options
@@ -414,7 +417,7 @@ class CrmTeam extends Model {
       'extraConditions': extraConditions
     });
 
-    return this._cr.execute(_convert$(query), {bind: whereClauseParams});
+    return this._cr.execute(_convert$(query), { bind: whereClauseParams });
   }
 
   async _getDashboardGraphData() {

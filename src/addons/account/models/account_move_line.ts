@@ -7,10 +7,10 @@ import { NotImplementedError, UserError, ValidationError } from "../../../core/h
 import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { bool, formatDate, formatLang, pop, update } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
 import { dateMax } from "../../../core/tools/date_utils";
 import { enumerate, extend, len, next, someAsync, sum } from "../../../core/tools/iterable";
-import { _convert$, _f, f } from "../../../core/tools/utils";
+import { literalEval } from '../../../core/tools/save_eval';
+import { _convert$, _f, f } from "../../../core/tools/string";
 import { escapeHtml } from "../../../core/tools/xml";
 import { MAX_HASH_VERSION } from "./account_move";
 
@@ -184,10 +184,10 @@ class AccountMoveLine extends Model {
     // Use the new hash version by default, but keep the old one for backward compatibility when generating the integrity report.
     const hashVersion = this._context['hashVersion'] ?? MAX_HASH_VERSION;
     if (hashVersion == 1) {
-        return ['debit', 'credit', 'accountId', 'partnerId'];
+      return ['debit', 'credit', 'accountId', 'partnerId'];
     }
     else if (hashVersion == MAX_HASH_VERSION) {
-        return ['label', 'debit', 'credit', 'accountId', 'partnerId'];
+      return ['label', 'debit', 'credit', 'accountId', 'partnerId'];
     }
     throw new NotImplementedError(`hashVersion=${hashVersion} doesn't exist`);
   }
@@ -422,7 +422,7 @@ class AccountMoveLine extends Model {
   async _computeAnalyticAccountId() {
     for (const record of this) {
       const [move, excludeFromInvoiceTab] = await record('moveId', 'excludeFromInvoiceTab');
-      if (! excludeFromInvoiceTab || ! await move.isInvoice(true)) {
+      if (!excludeFromInvoiceTab || ! await move.isInvoice(true)) {
         const [product, partner, account, date] = await record('productId', 'partnerId', 'accountId', 'date');
         const commercialPartner = await partner.commercialPartnerId;
         const rec = await this.env.items('account.analytic.default').accountGet({
@@ -435,7 +435,7 @@ class AccountMoveLine extends Model {
         });
         if (bool(rec)) {
           // await Promise.all([
-            await record.set('analyticAccountId', await rec.analyticId),
+          await record.set('analyticAccountId', await rec.analyticId),
             await record.set('analyticTagIds', await rec.analyticTagIds)
           // ]);
         }
@@ -448,7 +448,7 @@ class AccountMoveLine extends Model {
     for (const record of this) {
       const [move, excludeFromInvoiceTab] = await record('moveId', 'excludeFromInvoiceTab');
       if (!excludeFromInvoiceTab || ! await move.isInvoice(true)) {
-        const [product, partner, account, date] = await record('productId', 'partnerId', 'accountId', 'date'); 
+        const [product, partner, account, date] = await record('productId', 'partnerId', 'accountId', 'date');
         const commercialPartner = await partner.commercialPartnerId;
         const rec = await this.env.items('account.analytic.default').accountGet({
           productId: product.id,
@@ -957,7 +957,7 @@ class AccountMoveLine extends Model {
   }
 
   @api.model()
-  async searchRead(domain?: any, fields?: any[], options: {offset?: any, limit?: any, order?: any } = {}): Promise<Dict<any>[]> {
+  async searchRead(domain?: any, fields?: any[], options: { offset?: any, limit?: any, order?: any } = {}): Promise<Dict<any>[]> {
     if (!Array.isArray(domain)) {
       options = domain ?? {};
       domain = pop(options, 'domain');
@@ -997,7 +997,7 @@ class AccountMoveLine extends Model {
                     FROM {from}
                     WHERE {where}
                 `, { 'from': fromClause, 'where': whereClause || 'TRUE', 'orderby': orderString });
-    const res = await this.env.cr.execute(_convert$(sql), {bind: whereClauseParams});
+    const res = await this.env.cr.execute(_convert$(sql), { bind: whereClauseParams });
     const result = Object.fromEntries(res.map(r => [r['id'], r['sums']]));
     for (const record of this) {
       await record.set('cumulatedBalance', result[record.id]);
@@ -1027,8 +1027,8 @@ class AccountMoveLine extends Model {
       }
       else {
         await line.set('amountResidual', 0.0),
-        await line.set('amountResidualCurrency', 0.0),
-        await line.set('reconciled', false)
+          await line.set('amountResidualCurrency', 0.0),
+          await line.set('reconciled', false)
       }
     }
   }
@@ -1619,7 +1619,7 @@ class AccountMoveLine extends Model {
 
   @api.model()
   async _nameSearch(name: string, args?: any, operator = 'ilike', opts: { limit?: number, nameGetUid?: any } = {}) {
-    let {limit=100, nameGetUid=false} = opts;
+    let { limit = 100, nameGetUid = false } = opts;
     if (operator === 'ilike') {
       const domain = ['|', '|',
         ['label', 'ilike', name],

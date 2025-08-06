@@ -3,7 +3,7 @@ import { Fields, _Date } from "../../../core/fields";
 import { MetaModel, Model } from "../../../core/models";
 import { version } from "../../../core/release";
 import { DEFAULT_SERVER_DATE_FORMAT as DF, _f, f, isList, len, next, parseInt, pop, quoteList, range, update } from '../../../core/tools';
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { bool } from "../../../core/tools/bool";
 import { addDate, subDate, toFormat } from "../../../core/tools/date_utils";
 import { stringify } from "../../../core/tools/json";

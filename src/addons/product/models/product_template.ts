@@ -270,8 +270,8 @@ class ProductTemplate extends Model {
       }
 
       if (pricelist.ok) {
-        const quantities = _.fill(Array(this._length), quantity);
-        const partners = _.fill(Array(this._length), partner);
+        const quantities = Array(this._length).fill(quantity);
+        const partners = Array(this._length).fill(partner);
         prices = await pricelist.getProductsPrice(this, quantities, partners);
       }
     }
@@ -1494,7 +1494,7 @@ class ProductTemplate extends Model {
     // The following list reflects product_template_attribute_values_per_line
     // For each line, instead of a list of values, it contains the index of the selected value
     // -1 means no value has been picked for the line in the current (partial) combination
-    const valueIndexPerLine = _.fill(Array(len(productTemplateAttributeValuesPerLine)), -1);
+    const valueIndexPerLine = Array(len(productTemplateAttributeValuesPerLine)).fill(-1);
     // determines which line line we're working on
     let lineIndex = 0;
 

@@ -9,7 +9,9 @@ import { isInstance } from './func';
 import { isList, itemgetter, len, sorted } from './iterable';
 import { parseLocale } from './locale';
 import { DATE_LENGTH, FileDescriptor, expandVars, isFile, posixToLdml, processFileCsv } from './misc';
-import { _f, f, ustr } from './utils';
+import { f } from "./string";
+import { _f } from "./string";
+import { ustr } from "./string";
 import { config } from './config';
 import { toFormat } from './date_utils';
 

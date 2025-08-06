@@ -11,7 +11,7 @@ import { contextmanager } from "../../../core/tools/context";
 import { dateMin, getMonth, toDate } from "../../../core/tools/date_utils";
 import { extend, iter, len, some, sum, zipLongest } from "../../../core/tools/iterable";
 import { stringify } from "../../../core/tools/json";
-import { _f, f } from "../../../core/tools/utils";
+import { f, _f } from "../../../core/tools/string";
 import { escapeHtml } from "../../../core/tools/xml";
 import { INTEGRITY_HASH_LINE_FIELDS } from "./account_move_line";
 
@@ -3264,7 +3264,7 @@ class AccountMove extends Model {
     let partnerRefNr = (partnerRef || '').replace(/\D/, '').slice(-21) || String(partnerId.id).slice(-21);
     partnerRefNr = partnerRefNr.slice(-21);
     const checkDigits = calcCheckDigits(`${partnerRefNr}RF`);
-    const reference = f('RF%s %s', checkDigits, Array.from(zipLongest(_.fill(Array(4), iter(String(partnerRefNr))), "")).map(x => x.join(" ")));
+    const reference = f('RF%s %s', checkDigits, Array.from(zipLongest(_.fill(Array(4), partnerRefNr), "")).map(x => x.join(" ")));
     return reference;
   }
 

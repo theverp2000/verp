@@ -91,7 +91,7 @@ class IrTranslationImport {
                     VALUES `;
     const rowValue = '(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)';
     for (const rows of cr.splitForInConditions(this._rows)) {
-      let str = _convert$(_.fill(Array(len(rows)), rowValue).join(','));
+      let str = _convert$(Array(len(rows)).fill(rowValue).join(','));
       await cr.execute(query + str, { bind: rows.flat() });
     }
 
@@ -834,7 +834,7 @@ class IrTranslation extends Model {
             COALESCE(EXCLUDED."state", "irTranslation"."state"),
             COALESCE(EXCLUDED."comments", "irTranslation"."comments"))
         WHERE EXCLUDED."value" IS NOT NULL AND EXCLUDED."value" != '';
-      `, _.fill(Array(len(rowsByType['model'])), '%s').join(', '));
+      `, Array(len(rowsByType['model'])).fill('%s').join(', '));
       await this.env.cr.execute(query, { params: rowsByType['model'] });
     }
 
@@ -848,7 +848,7 @@ class IrTranslation extends Model {
               (EXCLUDED.label, EXCLUDED.lang, EXCLUDED."resId", EXCLUDED.src, EXCLUDED.type,
                 EXCLUDED.value, EXCLUDED.module, EXCLUDED.state, EXCLUDED.comments)
           WHERE EXCLUDED.value IS NOT NULL AND EXCLUDED.value != '';
-      `, _.fill(Array(len(rowsByType['modelTerms'])), '%s').join(', '));
+      `, Array(len(rowsByType['modelTerms'])).fill('%s').join(', '));
       await this.env.cr.execute(query, { params: rowsByType['modelTerms'] });
     }
   }

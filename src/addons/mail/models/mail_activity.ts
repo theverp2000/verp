@@ -9,7 +9,7 @@ import { expression } from "../../../core/osv";
 import { bool } from "../../../core/tools/bool";
 import { extend, len, sorted, sortedAsync } from "../../../core/tools/iterable";
 import { cleanContext } from "../../../core/tools/misc";
-import { _f } from "../../../core/tools/utils";
+import { _f } from "../../../core/tools/string";
 
 /**
  * An actual activity to perform. Activities are linked to

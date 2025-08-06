@@ -5,6 +5,7 @@ import _ from "lodash";
 import { DateTime } from 'luxon';
 import path from "path";
 import xpath from "xpath/xpath";
+import { bool, filePath, len, processFileCsv, stringify, toText } from ".";
 import { Command, release } from "..";
 import { callKw, getattr } from "../api/func";
 import { Dict } from "../helper/collections";
@@ -13,15 +14,10 @@ import { ModelRecords } from '../models';
 import { getModulePath } from '../modules';
 import * as tools from '../tools';
 import { Environment } from './../api/api';
-import { bool } from "./bool";
-import { toText } from "./compat";
 import { config } from "./config";
-import { len } from "./iterable";
+import * as date_utils from './date_utils';
 import { safeEval, unsafeAsync } from "./save_eval";
 import { E, SKIPPED_ELEMENT_TYPES, getrootXml, isElement, isText, iterchildren, parseXml, serializeHtml, serializeXml } from './xml';
-import { filePath, processFileCsv } from '../tools';
-import * as date_utils from './date_utils';
-import { stringify } from './json';
 
 export const ACTION_TYPES = {
   'ir.actions.server': 'Server Actions',

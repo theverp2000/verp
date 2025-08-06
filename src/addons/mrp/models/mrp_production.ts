@@ -2693,6 +2693,6 @@ class MrpProduction extends Model {
 
     async _generateBackorderProductionsMulti(serialNumbers, cancelRemainingQuantities = false) {
         console.warn("Method '_generateBackorderProductionsMulti()' is deprecated, use _splitProductions() instead.", 'DeprecationWarning');
-        await this._splitProductions(MapKey.fromEntries([[this, _.fill(Array(len(serialNumbers)), 1)]]), cancelRemainingQuantities);
+        await this._splitProductions(MapKey.fromEntries([[this, Array(len(serialNumbers)).fill(1)]]), cancelRemainingQuantities);
     }
 }

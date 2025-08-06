@@ -5,7 +5,8 @@ import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { NotFound } from "../../../core/service/middleware/exceptions";
 import { bool, len } from "../../../core/tools";
-import { _f, f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
+import { _f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class ChannelPartner extends Model {

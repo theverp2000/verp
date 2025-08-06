@@ -2,7 +2,7 @@ import { Fields, _Date, _Datetime, api } from "../../../core";
 import { Dict } from "../../../core/helper";
 import { AbstractModel, MetaModel } from "../../../core/models";
 import { bool, extend, formatTime, len } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { addDate, dateSetTz, dateWithoutTz } from "../../../core/tools/date_utils";
 
 @MetaModel.define()

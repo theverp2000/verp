@@ -6,7 +6,7 @@ import { MetaModel, Model, _super } from "../../../core/models";
 import { bool } from "../../../core/tools/bool";
 import { enumerate, len, sum } from "../../../core/tools/iterable";
 import { pop, update } from "../../../core/tools/misc";
-import { _f, f } from "../../../core/tools/utils";
+import { f, _f } from "../../../core/tools/string";
 import { E, getrootXml, parseXml, serializeXml } from "../../../core/tools/xml";
 
 @MetaModel.define()

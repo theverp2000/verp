@@ -19,7 +19,8 @@ import { publishString } from "../../../tools/mail";
 import { setOptions, topologicalSort } from "../../../tools/misc";
 import { parseVersion } from "../../../tools/parse_version";
 import { quoteList } from "../../../tools/sql";
-import { UpCamelCase, f } from "../../../tools/utils";
+import { f } from "../../../tools/string";
+import { UpCamelCase } from "../../../tools/string";
 import { iterlinks, parseHtml, serializeHtml } from "../../../tools/xml";
 import { MODULE_UNINSTALL_FLAG } from "./ir_model";
 

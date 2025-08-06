@@ -5,14 +5,11 @@ import { Transaction } from './api/api';
 import { getattr, setattr } from './api/func';
 import { OperationalError, SQLError } from './helper';
 import { Dict } from './helper/collections';
+import { dbFactory } from './service/db';
 import * as sequelize from './service/sequelize';
-import { _f, _format, bool, splitEvery } from './tools';
+import { _f, _format, bool, Callbacks, equal, isCallable, pop, split, splitEvery, URI, validateUri } from './tools';
 import { config } from './tools/config';
 import { contextmanager } from './tools/context';
-import { equal, isCallable, split } from './tools/func';
-import { Callbacks, pop } from './tools/misc';
-import { URI, validateUri } from './tools/uri';
-import { dbFactory } from './service/db';
 
 global.sqlCounter = 0;
 

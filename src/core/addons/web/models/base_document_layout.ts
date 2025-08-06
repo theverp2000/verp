@@ -5,7 +5,7 @@ import { CompileError } from "../../../helper/errors";
 import { MetaModel, TransientModel } from "../../../models";
 import { getResourcePath } from "../../../modules/modules";
 import { bool, isInstance } from "../../../tools";
-import { _f } from "../../../tools/utils";
+import { _f } from "../../../tools/string";
 import { nl2br } from "../../base/models/ir_qweb_fields";
 import { markup } from "../../../tools/xml";
 import libsass from 'node-sass';
@@ -158,7 +158,7 @@ class BaseDocumentLayout extends TransientModel {
             const company = await wizard.companyId;
             await wizard.set('logo', await company.logo),
             await wizard.set('reportHeader', await company.reportHeader),
-            // companyDetails and report_footer can store empty strings(set by the user) or false(meaning the user didn't set a value). Since both are falsy values, we use isinstance of string to differentiate them
+            // companyDetails and reportFooter can store empty strings(set by the user) or false(meaning the user didn't set a value). Since both are falsy values, we use isinstance of string to differentiate them
             await wizard.set('reportFooter', typeof(await company.reportFooter) === 'string' ? await company.reportFooter : await wizard.reportFooter),
             await wizard.set('companyDetails', typeof(await company.companyDetails) === 'string' ? await company.companyDetails : await wizard.companyDetails),
             await wizard.set('paperformatId', await company.paperformatId),

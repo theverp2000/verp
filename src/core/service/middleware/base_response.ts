@@ -1,7 +1,6 @@
 import http from 'http';
 import { Dict } from '../../helper/collections';
-import { isCallable, isInstance } from '../../tools/func';
-import { formatBytes } from '../../tools/misc';
+import { formatBytes, isCallable, isInstance } from '../../tools';
 import { cookieSerialize } from './cookie';
 import { httpDate, quoteEtag } from './utils';
 

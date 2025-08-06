@@ -1,6 +1,6 @@
 import fs from 'fs';
 import archiver from 'archiver';
-import { lstrip } from "./utils";
+import { lstrip } from "./string";
 
 const WINDOWS_RESERVED = /^(:?CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(:?\..*)?$/gi;
 // new RegExp(

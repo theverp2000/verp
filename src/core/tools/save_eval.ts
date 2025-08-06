@@ -1,8 +1,8 @@
-import vm from 'vm'
-import { parseStack, ValueError } from '../helper/errors'
-import { isInstance } from './func'
-import { range } from './iterable'
-import { f } from './utils'
+import vm from 'vm';
+import { parseStack, ValueError } from '../helper/errors';
+import { isInstance } from './func';
+import { range } from './iterable';
+import { f } from "./string";
 
 export const _BUILTINS = {
   // '__import__': require,
@@ -403,4 +403,23 @@ export function compile(code, expr?: string, func?: string) {
     console.debug(`Compile ${e.name}: ${message}\n${stack.join('\n')}`);
     return code;
   }
+}
+/**
+ * Safely evaluate an expression node or a string containing a Javascript
+    expression.  The string or node provided may only consist of the following
+    literal structures: strings, bytes, numbers, tuples, lists, dicts,
+    sets, booleans, and None.
+ * @param nodeOrString
+ * @returns
+ */
+export function literalEval(nodeOrString) {
+  if (typeof (nodeOrString) === 'string') {
+    try {
+      nodeOrString = safeEval(nodeOrString);
+    } catch (e) {
+      console.warn('Error eval "%s"', nodeOrString);
+      throw e;
+    }
+  }
+  return nodeOrString;
 }

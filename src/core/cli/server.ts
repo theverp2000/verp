@@ -1,8 +1,8 @@
-import { Command } from './command';
-import * as core from './../index';
 import * as fs from 'fs';
-import { fileWrite, isFile } from '../tools';
 import { MetaDatebase } from '../service/db';
+import { fileWrite, isFile } from '../tools';
+import * as core from './../index';
+import { Command } from './command';
 
 function checkRootUser() {
   if (process.platform != 'win32' && process.platform != 'darwin') {

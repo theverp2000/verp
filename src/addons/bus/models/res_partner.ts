@@ -1,7 +1,7 @@
 import { Fields } from "../../../core/fields";
 import { Dict } from "../../../core/helper/collections";
 import { MetaModel, Model } from "../../../core/models";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { AWAY_TIMER, DISCONNECTION_TIMER } from "./bus_presence";
 
 @MetaModel.define()

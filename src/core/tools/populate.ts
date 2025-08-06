@@ -2,7 +2,7 @@ import { randomInt } from "crypto";
 import { addDate, diffDate } from "./date_utils";
 import { parseInt } from "./func";
 import { enumerate, next } from "./iterable";
-import { _f, f } from "./utils";
+import { _f, f } from "./string";
 
 export class Populate {
 

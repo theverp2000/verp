@@ -3,7 +3,7 @@ import { Fields } from "../../../core/fields";
 import { UserError } from "../../../core/helper/errors";
 import { MetaModel, Model, _super } from "../../../core/models";
 import { bool } from "../../../core/tools/bool";
-import { _f } from "../../../core/tools/utils";
+import { _f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class AccountAnalyticAccount extends Model {

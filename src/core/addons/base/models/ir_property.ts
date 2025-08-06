@@ -10,7 +10,8 @@ import { isInstance } from "../../../tools/func";
 import { len } from "../../../tools/iterable";
 import { pop } from "../../../tools/misc";
 import { quoteList } from "../../../tools/sql";
-import { _f, f } from "../../../tools/utils";
+import { f } from "../../../tools/string";
+import { _f } from "../../../tools/string";
 
 const TYPE2FIELD = {
   'char': 'valueText',

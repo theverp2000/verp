@@ -5,8 +5,7 @@ import { Fields } from "../../../core/fields";
 import { AccessDenied, Map2, Dict, UserError } from "../../../core/helper";
 import { MetaModel, Model, ModelRecords } from "../../../core/models";
 import { urlEncode, urlJoin } from "../../../core/service/middleware/utils";
-import { randomToken } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
+import { randomToken, bool } from "../../../core/tools";
 
 export class SignupError extends UserError {}
 

@@ -6,7 +6,7 @@ import { MetaModel, Model, _super } from "../../../core/models"
 import { expression } from "../../../core/osv"
 import { bool } from "../../../core/tools/bool"
 import { sum } from "../../../core/tools/iterable"
-import { f } from "../../../core/tools/utils"
+import { f } from "../../../core/tools/string"
 
 @MetaModel.define()
 class AccountAnalyticDistribution extends Model {

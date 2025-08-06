@@ -2,7 +2,7 @@ import { api } from "../../../core";
 import { Fields } from "../../../core/fields";
 import { MetaModel, TransientModel, _super } from "../../../core/models";
 import { bool } from "../../../core/tools/bool";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class ResConfigSettings extends TransientModel {

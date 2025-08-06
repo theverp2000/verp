@@ -12,7 +12,8 @@ import { isInstance } from "../../../core/tools/func";
 import { enumerate, extend } from "../../../core/tools/iterable";
 import { htmlSanitize } from "../../../core/tools/mail";
 import { hmac } from "../../../core/tools/misc";
-import { _f, f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
+import { _f } from "../../../core/tools/string";
 import { markup } from "../../../core/tools/xml";
 
 @MetaModel.define()

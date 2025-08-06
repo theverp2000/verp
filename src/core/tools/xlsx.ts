@@ -1,9 +1,9 @@
 import * as ExcelJS from 'exceljs';
 import { UserError } from '../helper';
-import { toText } from './compat';
+import { toText } from "./string";
 import { doWithSync, isInstance } from "./func";
 import { enumerate } from "./iterable";
-import { f } from './utils';
+import { f } from './string';
 
 export class ExportXlsxWriter {
   fieldNames: string[];

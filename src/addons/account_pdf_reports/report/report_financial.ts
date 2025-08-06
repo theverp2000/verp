@@ -206,8 +206,7 @@ class ReportFinancial extends AbstractModel {
             'data': data['form'],
             'docs': docs,
             'now': () => new Date(),
-            'getAccountLines': reportLines,
-            'fill': _.fill
+            'getAccountLines': reportLines
         }
     }
 }

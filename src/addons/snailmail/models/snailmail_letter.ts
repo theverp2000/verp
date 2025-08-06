@@ -6,7 +6,7 @@ import { b64encode, isInstance, len, parseInt } from "../../../core/tools";
 import { bool } from "../../../core/tools/bool";
 import { update } from "../../../core/tools/misc";
 import { safeEval } from "../../../core/tools/save_eval";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { iapJsonrpc } from "../../iap/tools/iap_tools";
 
 const inch = 72.0;

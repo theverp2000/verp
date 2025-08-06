@@ -12,7 +12,7 @@ import { floatCompare, floatIsZero, floatRound } from "../../../core/tools/float
 import { equal, isInstance } from "../../../core/tools/func";
 import { enumerate, extend, itemgetter, len, range, sortedAsync, sum } from "../../../core/tools/iterable";
 import { cleanContext, groupby, groupbyAsync, update } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 export const PROCUREMENT_PRIORITIES = [['0', 'Normal'], ['1', 'Urgent']];
 

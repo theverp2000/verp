@@ -5,7 +5,7 @@ import { MetaModel, Model } from "../../../core/models"
 import { Dict } from "../../../core/helper/collections"
 import assert from "assert"
 import { getattr } from "../../../core/api/func"
-import { f } from "../../../core/tools/utils"
+import { f } from "../../../core/tools/string"
 import { bool } from "../../../core/tools/bool"
 import _ from "lodash"
 

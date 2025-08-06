@@ -6,7 +6,7 @@ import { OrderedDict } from '../../../helper';
 import { AbstractModel, MetaModel, _super } from '../../../models';
 import { urlQuote } from '../../../service/middleware/utils';
 import { sha512 } from '../../../tools';
-import { toText } from '../../../tools/compat';
+import { toText } from "../../../tools/string";
 import { markup } from '../../../tools/xml';
 
 /**

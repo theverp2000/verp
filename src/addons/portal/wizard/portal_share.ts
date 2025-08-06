@@ -2,7 +2,7 @@ import { Fields, api } from "../../../core";
 import { MetaModel, TransientModel, _super } from "../../../core/models";
 import { bool } from "../../../core/tools/bool";
 import { isInstance } from "../../../core/tools/func";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class PortalShare extends TransientModel {

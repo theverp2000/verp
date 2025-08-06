@@ -352,7 +352,7 @@ class StockMove extends Model {
                         const mlVals = await move._prepareMoveLineVals();
                         if (await (await line.productId).tracking === 'serial') {
                             extend(moveLinesToCreate, Array.from(range(parseInt(differenceQty))).map(i => mlVals));
-                            extend(mlsQties, _.fill(Array(parseInt(differenceQty)), 1));
+                            extend(mlsQties, Array(parseInt(differenceQty)).fill(1));
                         }
                         else {
                             moveLinesToCreate.push(mlVals);

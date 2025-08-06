@@ -6,7 +6,7 @@ import { MetaModel, Model, _super } from "../../../core/models";
 import { bool } from "../../../core/tools/bool";
 import { extend, len, range, sum } from "../../../core/tools/iterable";
 import { update } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 
 @MetaModel.define()
 class ProductionLot extends Model {

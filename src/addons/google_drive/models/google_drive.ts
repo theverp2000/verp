@@ -6,7 +6,7 @@ import { RedirectWarning, UserError, ValidationError } from "../../../core/helpe
 import { httpGet, httpPost } from "../../../core/http";
 import { MetaModel, Model } from "../../../core/models";
 import { _f, bool, f, jsonParse, stringify, update } from "../../../core/tools";
-import { literalEval } from "../../../core/tools/ast";
+import { literalEval } from '../../../core/tools/save_eval';
 import { GOOGLE_TOKEN_ENDPOINT, TIMEOUT } from "../../google_account";
 
 // https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob

@@ -1,5 +1,5 @@
 import http, { ServerResponse } from 'http';
-import _, { range, split } from "lodash";
+import _ from "lodash";
 import { DateTime } from 'luxon';
 import URL from 'node:url';
 import { encode } from 'utf8';
@@ -8,13 +8,15 @@ import { FrozenSet } from '../../helper';
 import { iterMultiItems } from "../../helper/datastructures";
 import { UnicodeError, ValueError } from "../../helper/errors";
 import { WebResponse } from '../../http';
-import { f, md5, setOptions } from '../../tools';
+import { md5, setOptions } from '../../tools';
 import { bool } from '../../tools/bool';
 import { isInstance } from "../../tools/func";
-import { iter, len, next, sorted } from "../../tools/iterable";
+import { split } from "../../tools/string";
+import { iter, len, next, range, sorted } from "../../tools/iterable";
 import { URI } from '../../tools/uri';
 import { ETags, IfRange } from './datastructures';
 import { parseDateTz } from './email';
+import { format } from 'node:util';
 
 const _schemeRe = /^[a-zA-Z0-9+-.]+$/g;
 
@@ -97,31 +99,6 @@ const _alwaysSafe = new Set(
  */
 export function urlQuote(str, options?: { charset?: string, errors?: string, safe?: string, unsafe?: string }) {
   return encodeURI(str);
-  options = options || {};
-  const charset = options.charset ?? "utf-8";
-  const errors = options.errors ?? "strict";
-  let safe: any = options.safe ?? "/:";
-  let unsafe: any = options.safe || "";
-  const encoder = new TextEncoder();
-  if (!isInstance(str, Uint8Array) || typeof (str) !== 'string')
-    str = String(str)
-  if (typeof (str) === 'string')
-    str = encoder.encode(str);
-  if (typeof (safe) === 'string')
-    safe = encoder.encode(safe)
-  if (typeof (unsafe) === 'string')
-    unsafe = encoder.encode(unsafe)
-  safe = _.intersection(safe, Array.from(_alwaysSafe))// - frozenset(bytearray(unsafe))
-  let rv = Buffer.from('');
-  for (const char of str) {
-    if (safe.includes(char)) {
-      rv = Buffer.concat([rv, Buffer.from([char])]);
-    }
-    else {
-      rv = Buffer.concat([rv, Buffer.from(_bytetohex[char])]);
-    }
-  }
-  return toNative(Buffer.from(rv));
 }
 
 /**
@@ -135,8 +112,8 @@ export function urlQuote(str, options?: { charset?: string, errors?: string, saf
  * @returns 
  */
 export function urlQuotePlus(str, safe = "", opts: { charset?: string, errors?: string } = {}) {
-  setOptions(opts, { charset: "utf-8", errors: "strict" });
-  return urlQuote(str, { charset: opts.charset, errors: opts.errors, safe: safe + " ", unsafe: "+" }).replace(" ", "+")
+  const { charset="utf-8", errors="strict" } = opts;
+  return urlQuote(str, { charset, errors, safe: safe + " ", unsafe: "+" }).replace(" ", "+")
 }
 
 const _hexdigits = "0123456789ABCDEFabcdef";
@@ -146,7 +123,6 @@ for (const a of _hexdigits) {
     _hextobyte[encode(a + b)] = parseInt(a + b, 16);
   }
 }
-const _bytetohex = range(256).map(char => cleanString(f("%%s", char.toString(16).toUpperCase())))
 
 const _unquoteMaps = new Map([[new Set(), _hextobyte]]);
 
@@ -219,10 +195,10 @@ export function urlUnquote(str, charset: any = "utf-8", errors = "replace", unsa
     you can set `errors` to ``'replace'`` or ``'strict'``.  In strict mode a
     `HTTPUnicodeError` is raised.
 
-    @param str: The string to unquote.
-    @param charset: the charset of the query string.  If set to `None`
+    @param str The string to unquote.
+    @param charset the charset of the query string.  If set to `None`
                     no unicode decoding will take place.
-    @param errors: The error handling for the `charset` decoding.
+    @param errors The error handling for the `charset` decoding.
     @returns 
  */
 export function urlUnquotePlus(str, charset = "utf-8", errors = "replace") {
@@ -239,7 +215,7 @@ export function urlUnquotePlus(str, charset = "utf-8", errors = "replace") {
  * The reverse operation to :meth:`urlParse`.  This accepts arbitrary
     as well as :class:`URL` tuples and returns a URL as a string.
 
-    @param components: the parsed URL as tuple which should be converted
+    @param components the parsed URL as tuple which should be converted
                        into a URL string.
  * @returns 
  */
@@ -282,28 +258,6 @@ export function urlUnparse(components) {
 export function _fastUrlQuote(buf: any, options?: { charset?: string, errors?: string, safe?: string, unsafe?: string }): string {
   buf = Buffer.from(buf || '');
   return encodeURI(buf);
-
-  setOptions(options, { charset: "utf-8", errors: "strict", safe: "/:", unsafe: "" })
-  let encoder = new TextEncoder();
-  let decoder = new TextDecoder(options.charset);
-
-  let safe, unsafe;
-  if (typeof (options.safe) === 'string') {
-    safe = encoder.encode(options.safe); // => String to Uint8Array
-  }
-
-  if (typeof (options.unsafe) === 'string') {
-    unsafe = encoder.encode(options.unsafe);// => String to Uint8Array
-  }
-
-  safe = _.difference(_.union(Array.from(safe), Array.from(_alwaysSafe)), Array.from(unsafe));
-  const table: any[] = range(256).map(c => safe.includes(c) ? String.fromCharCode(c) : `%${c.toString(16).padStart(2, '0').toUpperCase()}`);
-
-  // function quote(buf: Buffer) {
-  //   buf.map(c => table[c]).join('');
-  // }
-
-  return buf.map(c => table[c]).join('');
 }
 
 function _fastUrlQuotePlus(string) {
@@ -312,8 +266,7 @@ function _fastUrlQuotePlus(string) {
 
 export function toNative(x, options?: { charset?: string, errors?: string }): string {
   options = options || {};
-  // charset?:string='utf-8', errors?: string="strict"
-  if (x == null || typeof (x) === 'string')
+  if (x == null || typeof x === 'string')
     return x;
   return (new TextDecoder(options.charset ?? 'utf-8')).decode(x);
 }
@@ -584,9 +537,6 @@ export function urlJoin(base, url, allowFragments = true) {
     return base;
   }
   const buri = urlParse(base, null, allowFragments);
-  // const bscheme = uri.protocol;
-  // let pathname = uri.pathname;
-  // let hash = uri.hash;
   const uri = urlParse(url, buri.protocol, allowFragments);
   if (uri.protocol !== buri.protocol) {
     return url;

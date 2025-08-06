@@ -5,7 +5,7 @@ import { MetaModel, Model, _super } from "../../../core/models";
 import { bool, floatIsZero, floatRound, formatDate, isHtmlEmpty, len, parseInt, update } from "../../../core/tools";
 import { monthrange } from "../../../core/tools/calendar";
 import { dateMax, setDate, subDate } from "../../../core/tools/date_utils";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { MAX_HASH_VERSION } from "./account_move";
 
 const MONTH_SELECTION = [

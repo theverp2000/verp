@@ -10,7 +10,7 @@ import { floatCompare } from "../../../core/tools/float_utils";
 import { extend, len, splitEvery } from "../../../core/tools/iterable";
 import { jsonParse, stringify } from "../../../core/tools/json";
 import { setOptions } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/utils";
+import { f } from "../../../core/tools/string";
 import { ProcurementException } from "./stock_rule";
 
 /**

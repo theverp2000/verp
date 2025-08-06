@@ -1,9 +1,9 @@
 import assert from 'assert';
 import xpath from 'xpath';
-import * as xml from './xml';
 import { ValueError } from '../helper/errors';
 import { chain, extend, len } from './iterable';
 import { _t } from './translate';
+import * as xml from './xml';
 
 /**
  * Add text before `'node'` in its XML tree. 

@@ -7,7 +7,7 @@ import { bool } from "../../../core/tools/bool"
 import { extend } from "../../../core/tools/iterable"
 import { emailSplit, htmlSanitize } from "../../../core/tools/mail"
 import { pop, update } from "../../../core/tools/misc"
-import { f } from "../../../core/tools/utils"
+import { f } from "../../../core/tools/string"
 
 /**
  * 

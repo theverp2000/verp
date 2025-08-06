@@ -5,11 +5,7 @@ import { AccessError, DefaultDict, Dict, MapKey, UserError, ValidationError } fr
 import { MetaModel, Model, _super } from "../../../core/models";
 import { Registry } from "../../../core/modules/registry";
 import { Cursor } from "../../../core/sql_db";
-import { bool } from "../../../core/tools/bool";
-import { doWith, split } from "../../../core/tools/func";
-import { enumerate, extend, len, range } from "../../../core/tools/iterable";
-import { update } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/utils";
+import { bool, enumerate, extend, f, len, range, split, update } from "../../../core/tools";
 import { escapeHtml } from "../../../core/tools/xml";
 import { TYPE_TAX_USE } from "./account_tax";
 

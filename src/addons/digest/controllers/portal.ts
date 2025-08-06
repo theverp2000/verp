@@ -4,8 +4,7 @@ import { ValueError } from "../../../core/helper/errors";
 import { WebRequest } from "../../../core/http";
 import { Forbidden, NotFound } from "../../../core/service";
 import { urlEncode } from "../../../core/service/middleware/utils";
-import { consteq } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/utils";
+import { f, consteq } from "../../../core/tools";
 
 @http.define()
 export class DigestController extends http.Controller {

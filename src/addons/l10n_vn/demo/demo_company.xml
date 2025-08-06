@@ -3,8 +3,8 @@
     <record id="partnerDemoCompanyVn" model="res.partner">
         <field name="label">VN Company</field>
         <field name="vat"></field>
-        <field name="street">Lê A</field>
-        <field name="city">Phường Bảo Vinh</field>
+        <field name="street">Pasteur</field>
+        <field name="city">Sai Gon</field>
         <field name="countryId" ref="base.vn"/>
         <field name="stateId" ref="base.state_vn_VN-06"/>
         <field name="zip">76463</field>
@@ -16,6 +16,7 @@
     <record id="demoCompanyVn" model="res.company">
         <field name="label">VN Company</field>
         <field name="partnerId" ref="partnerDemoCompanyVn"/>
+        <field name="companyDetails">My company slogan</field>
     </record>
 
     <function model="res.company" name="_onchangeCountryId">

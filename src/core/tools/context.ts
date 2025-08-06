@@ -1,7 +1,7 @@
 import { randomBytes, scryptSync, timingSafeEqual } from 'crypto';
 import { setattr } from '../api/func';
 import { setOptions } from "./misc";
-import { rstringPart, stringPart } from './func';
+import { rstringPart, stringPart } from "./string";
 
 const _UNSET = new Object();
 

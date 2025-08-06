@@ -1,4 +1,3 @@
-import _ from "lodash";
 import sharp from "sharp";
 import { format } from "util";
 import { UserError, ValueError } from "../helper/errors";
@@ -89,7 +88,7 @@ export class ImageProcess {
         }
       }
       return obj;
-    } catch(e) {
+    } catch (e) {
       console.log(e.message);
       throw e;
     }
@@ -351,10 +350,10 @@ export function rgbToHex(rgb) {
 export function averageDominantColor(colors: number[], mitigate = 175, maxMargin = 140) {
   const dominantColor = Math.max(...colors);
   const dominantRgb = dominantColor[1].slice(0, 3);
-  const dominantSet = [dominantColor]
-  const remaining = []
+  const dominantSet = [dominantColor];
+  const remaining = [];
 
-  const margins = _.fill(Array(3),
+  const margins = Array(3).fill(
     maxMargin * (1 - dominantColor[0] /
       colors.map(col => col[0]).reduce((prev, val) => prev + val, 0))
   );
@@ -428,7 +427,7 @@ export async function isImageSizeAbove(base64Source1, base64Source2) {
   if (!base64Source1 || !base64Source2) {
     return false;
   }
-  if (base64Source1[0] === 'P' || base64Source1[0] === 'P'.charCodeAt(0) 
+  if (base64Source1[0] === 'P' || base64Source1[0] === 'P'.charCodeAt(0)
     || base64Source2[0] === 'P' || base64Source2[0] === 'P'.charCodeAt(0)) { //in (b'P', 'P'):
     // false for SVG
     return false;

@@ -14,8 +14,11 @@ import { bool } from "../../../tools/bool";
 import { equal, isCallable, isInstance, partial } from "../../../tools/func";
 import { CountingStream, chain, enumerate, extend, islice, itemgetter, len, map, next, sorted, takewhile } from "../../../tools/iterable";
 import { stringify } from "../../../tools/json";
-import { cleanContext, groupby, partition, pop, repr, unique, update } from "../../../tools/misc";
-import { UpCamelCase, _f, f } from "../../../tools/utils";
+import { cleanContext, groupby, partition, pop, unique, update } from "../../../tools/misc";
+import { repr } from '../../../tools/string';
+import { f } from "../../../tools/string";
+import { _f } from "../../../tools/string";
+import { UpCamelCase } from "../../../tools/string";
 import { E, getrootXml, parseXml, serializeXml } from "../../../tools/xml";
 import { MODULE_UNINSTALL_FLAG } from "./ir_model";
 
