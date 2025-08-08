@@ -487,7 +487,7 @@ export class DatabasePool {
         },
         showWarnings: false,
         logging: global.logSql,
-        native: true,
+        native: false,
       }));
     }
     if (!this._connections.get(dsn.database)) {

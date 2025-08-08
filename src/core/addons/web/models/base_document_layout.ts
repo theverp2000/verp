@@ -345,6 +345,7 @@ class BaseDocumentLayout extends TransientModel {
 
         try {
             return  libsass.renderSync({
+                silenceDeprecations: ['legacy-js-api'],
                 data: scssSource,
                 includePaths: [
                   bootstrapPath,

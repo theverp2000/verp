@@ -1,6 +1,5 @@
-import { LocalStorage } from "node-localstorage";
+// import { LocalStorage } from "node-localstorage";
 import _ from "lodash";
-import retry from "retry";
 import { setOptions, URI } from "../../tools";
 import { AbstractDialect } from "../dialects/abstract";
 import { Transaction, TransactionOptions } from "../sequelize";
@@ -368,7 +367,7 @@ export class Sequelize {
   readonly pool?: PoolOptions;
   readonly dialect: AbstractDialect;
   readonly connectionManager: any;
-  #transactionCls: LocalStorage | undefined;
+  // #transactionCls: LocalStorage | undefined;
 
   constructor(database, username?, password?, options?) {
     if (arguments.length === 1 && _.isPlainObject(database)) {
@@ -546,7 +545,7 @@ export class Sequelize {
   
   query(sql: any, options: any): any {
     const retryOptions = { ...this.options.retry, ...options.retry };
-    const operation = retry.operation();
+    // const operation = retry.operation();
     let bindParameters = options.bind;
     // return operation.attempt(() => 
     {
@@ -581,7 +580,7 @@ export class Sequelize {
   getCurrentClsTransaction(): Transaction | undefined {
     // return this.#transactionCls?.getStore();
     throw new Error('Not implemented');
-    return this.#transactionCls as any;
+    // return this.#transactionCls as any;
   }
 };
 

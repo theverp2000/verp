@@ -1174,6 +1174,7 @@ class ScssStylesheetAsset extends PreprocessedCSS {
     try {
       await forceHook();
       const result = libsass.renderSync({
+        silenceDeprecations: ['legacy-js-api'],
         data: source,
         includePaths: [
           this.bootstrapPath,
@@ -1194,7 +1195,7 @@ class ScssStylesheetAsset extends PreprocessedCSS {
     } catch (e) {
       sassc = 'sassc';
     }
-    return [sassc, '--stdin', '--precision', String(this.precision), '--load-path', this.bootstrapPath, '-t', this.outputStyle];
+    return [sassc, '--quiet-deps', '--stdin', '--precision', String(this.precision), '--load-path', this.bootstrapPath, '-t', this.outputStyle];
   }
 }
 

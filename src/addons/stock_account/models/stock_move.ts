@@ -60,13 +60,11 @@ class StockMove extends Model {
     }
 
     /**
-     * Returns a list of `valued_type` as strings. During `action_done`, we'll call
-        `_is_[valuedType]'. If the result of this method is truthy, we'll consider the move to be
+     * Returns a list of `valuedType` as strings. During `actionDone`, we'll call
+        `_is[valuedType]'. If the result of this method is truthy, we'll consider the move to be
         valued.
 
-        :returns: a list of `valuedType`
-        :rtype: list
-     * @returns 
+     * @returns a list of `valuedType`
      */
     @api.model()
     async _getValuedTypes() {
@@ -74,13 +72,11 @@ class StockMove extends Model {
     }
 
     /**
-     * Returns the `stock.move.line` records of `self` considered as incoming. It is done thanks
-        to the `_should_be_valued` method of their source and destionation location as well as their
+     * Returns the `stock.move.line` records of `this` considered as incoming. It is done thanks
+        to the `_shouldBeValued` method of their source and destionation location as well as their
         owner.
 
-        :returns: a subset of `self` containing the incoming records
-        :rtype: recordset
-     * @returns 
+     * @returns a subset of `this` containing the incoming records
      */
     async _getInMoveLines() {
         this.ensureOne();
@@ -100,9 +96,7 @@ class StockMove extends Model {
      * Check if the move should be considered as entering the company so that the cost method
         will be able to apply the correct logic.
 
-        :returns: True if the move is entering the company else false
-        :rtype: bool
-     * @returns 
+     * @returns true if the move is entering the company else false
      */
     async _isIn() {
         this.ensureOne();
@@ -113,13 +107,11 @@ class StockMove extends Model {
     }
 
     /**
-     * Returns the `stock.move.line` records of `self` considered as outgoing. It is done thanks
-        to the `_should_be_valued` method of their source and destionation location as well as their
+     * Returns the `stock.move.line` records of `this` considered as outgoing. It is done thanks
+        to the `_shouldBeValued` method of their source and destionation location as well as their
         owner.
 
-        :returns: a subset of `self` containing the outgoing records
-        :rtype: recordset
-     * @returns 
+     * @returns a subset of `this` containing the outgoing records
      */
     async _getOutMoveLines() {
         let res = this.env.items('stock.move.line');
@@ -138,13 +130,11 @@ class StockMove extends Model {
      * Check if the move should be considered as leaving the company so that the cost method
         will be able to apply the correct logic.
 
-        :returns: True if the move is leaving the company else false
-        :rtype: bool
-     * @returns 
+     * @returns true if the move is leaving the company else false
      */
     async _isOut() {
         this.ensureOne();
-        if (await this._getOutMoveLines() && ! await this._isDropshipped()) {
+        if (bool(await this._getOutMoveLines()) && ! await this._isDropshipped()) {
             return true;
         }
         return false;
@@ -154,9 +144,7 @@ class StockMove extends Model {
      * Check if the move should be considered as a dropshipping move so that the cost method
         will be able to apply the correct logic.
 
-        :returns: True if the move is a dropshipping one else false
-        :rtype: bool
-     * @returns 
+     * @returns true if the move is a dropshipping one else false
      */
     async _isDropshipped() {
         this.ensureOne();
@@ -167,9 +155,7 @@ class StockMove extends Model {
      * Check if the move should be considered as a returned dropshipping move so that the cost
         method will be able to apply the correct logic.
 
-        :returns: True if the move is a returned dropshipping one else false
-        :rtype: bool
-     * @returns 
+     * @returns true if the move is a returned dropshipping one else false
      */
     async _isDropshippedReturned() {
         this.ensureOne();
@@ -180,9 +166,7 @@ class StockMove extends Model {
      * When a `stock.valuation.layer` is created from a `stock.move`, we can prepare a dict of
         common vals.
 
-        :returns: the common values when creating a `stock.valuation.layer` from a `stock.move`
-        :rtype: dict
-     * @returns 
+     * @returns the common values when creating a `stock.valuation.layer` from a `stock.move`
      */
     async _prepareCommonSvlVals() {
         this.ensureOne();
@@ -196,11 +180,10 @@ class StockMove extends Model {
     }
 
     /**
-     * Create a `stock.valuation.layer` from `self`.
+     * Create a `stock.valuation.layer` from `this`.
 
-        :param forced_quantity: under some circunstances, the quantity to value is different than
-            the initial demand of the move (Default value = None)
-     * @param forcedQuantity 
+     * @param forcedQuantity under some circunstances, the quantity to value is different than
+            the initial demand of the move (Default value = null)
      * @returns 
      */
     async _createInSvl(forcedQuantity?: any) {
@@ -228,18 +211,17 @@ class StockMove extends Model {
     }
 
     /**
-     * Create a `stock.valuation.layer` from `self`.
+     * Create a `stock.valuation.layer` from `this`.
 
-        :param forcedQuantity: under some circunstances, the quantity to value is different than
+     * @param forcedQuantity under some circunstances, the quantity to value is different than
             the initial demand of the move (Default value = null)
-     * @param forcedQuantity 
      * @returns 
      */
     async _createOutSvl(forcedQuantity?: any) {
         const svlValsList = [];
         for (let move of this) {
             move = await move.withCompany(await move.companyId);
-            const [product] = await move('productId'); 
+            const product = await move['productId']; 
             const valuedMoveLines = await move._getOutMoveLines();
             let valuedQuantity = 0;
             for (const valuedMoveLine of valuedMoveLines) {
@@ -260,11 +242,10 @@ class StockMove extends Model {
     }
 
     /**
-     * Create a `stock.valuation.layer` from `self`.
+     * Create a `stock.valuation.layer` from `this`.
 
-        :param forced_quantity: under some circunstances, the quantity to value is different than
-            the initial demand of the move (Default value = None)
-     * @param forcedQuantity 
+     * @param forcedQuantity under some circunstances, the quantity to value is different than
+            the initial demand of the move (Default value = null)
      * @returns 
      */
     async _createDropshippedSvl(forcedQuantity?: any) {
@@ -311,9 +292,8 @@ class StockMove extends Model {
     /**
      * Create a `stock.valuation.layer` from `this`.
 
-        :param forcedQuantity: under some circunstances, the quantity to value is different than
-            the initial demand of the move (Default value = None)
-     * @param forcedQuantity 
+     * @param forcedQuantity under some circunstances, the quantity to value is different than
+            the initial demand of the move (Default value = null)
      * @returns 
      */
     async _createDropshippedReturnedSvl(forcedQuantity?: any) {
@@ -353,7 +333,7 @@ class StockMove extends Model {
         }
 
         let stockValuationLayers = await this.env.items('stock.valuation.layer').sudo();
-        // Create the valuation layers in batch by calling `moves._create_valued_type_svl`.
+        // Create the valuation layers in batch by calling `moves._createValuedTypeSvl`.
         for (const valuedType of await this._getValuedTypes()) {
             const todoValuedMoves = valuedMoves[valuedType];
             if (bool(todoValuedMoves)) {

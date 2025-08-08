@@ -2253,8 +2253,8 @@ export class BaseModel extends Function {
           if (isInstance(e, MissingError)) {
             const existing = await recs.exists();
             await field.recompute(existing);
-            for (const f of recs.pool.fieldComputed[field]) {
-              this.env.removeToCompute(f, await recs.filter((r) => !existing.includes(r)))
+            for (const f of recs.pool.fieldComputed.get(field)) {
+              self.env.removeToCompute(f, await recs.filter((r) => !existing.includes(r)))
             }
           }
           else {

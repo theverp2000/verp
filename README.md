@@ -1,7 +1,7 @@
-Verp (Very-easy Enterprise Resource Planning) is an ERP platform written in Typescript/Javascript based on Nodejs, and the web client-side follows the frontend development trio standard: JavaScript, HTML and CSS
+The Verp (Very-easy Enterprise Resource Planning), is an ERP platform written in Typescript/Javascript based on Nodejs, and the web client-side follows the frontend development trio standard: JavaScript, HTML and CSS
 
 1) written in just one programming language (Javascript/Typescript),
-2) allows running on any operating system platform (Linux/Windows/MacOS),
+2) running on any operating system platform (Linux/Windows/MacOS),
 3) easy to use (private server/cloud, web client/smart device),
 4) easy to extend (install/uninstall modules on runtime).
 
@@ -9,11 +9,13 @@ Verp is inspired by Odoo/OpenErp.
 
 ** Installation instructions:
 
+** ON WINDOWS:
+
 1) Get the Verp 1.0
 
   > git clone https://github.com/theverp2000/verp.git
 
-2) Install nodejs 20.15.1
+2) Install nodejs 22.18.0
 
   > https://nodejs.org/en/download/prebuilt-installer
 
@@ -63,3 +65,8 @@ Verp is inspired by Odoo/OpenErp.
 
   > http://localhost:7979 \
   (default password of master: admin)
+
+** ON LINUX
+
+  Just replace config.json by config.linux.json
+

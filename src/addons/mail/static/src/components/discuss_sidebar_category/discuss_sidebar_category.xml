@@ -13,11 +13,11 @@
                     <t t-if="category.hasViewCommand">
                         <i class="o_DiscussSidebarCategory_command o_DiscussSidebarCategory_commandView fa fa-cog" title="View or join channels" t-on-click="category.onClickCommandView" role="img"/>
                     </t>
-                    <t t-if="category.hasAddCommand &amp;&amp; category.isOpen">
+                    <t t-if="category.hasAddCommand and category.isOpen">
                         <i class="o_DiscussSidebarCategory_command o_DiscussSidebarCategory_commandAdd fa fa-plus" t-on-click="category.onClickCommandAdd" t-att-title="category.commandAddTitleText" role="img"/>
                     </t>
                 </div>
-                <t t-if="!category.isOpen &amp;&amp; category.counter > 0">
+                <t t-if="!category.isOpen and category.counter > 0">
                     <div class="o_DiscussSidebarCategory_counter o_DiscussSidebarCategory_headerItem badge badge-pill">
                         <t t-esc="category.counter"/>
                     </div>
@@ -46,7 +46,7 @@
                         />
                     </t>
                 </t>
-                <t t-if="!category.isOpen &amp;&amp; category.activeItem">
+                <t t-if="!category.isOpen and category.activeItem">
                     <DiscussSidebarCategoryItem
                         class="o_DiscussSidebarCategory_item"
                         categoryItemLocalId="category.activeItem.localId"

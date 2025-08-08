@@ -1,6 +1,7 @@
 import assert from 'assert';
 import commandLineArgs from 'command-line-args';
 import * as fs from 'fs';
+import * as os from 'os';
 import camelCase from 'lodash.camelcase';
 import { homedir, platform } from 'os';
 import * as path from 'path';
@@ -151,13 +152,11 @@ export class ConfigManager extends Function {
     //   }
     //   return map;
     // }, {});
-    // dict([
-    //   (getattr(loglevels, 'LOG_%s' % x), getattr(logging, x))
-    //   for x in ('CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET')
-    // ])
+    // Object.fromEntries(['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG', 'NOTSET'].map(
+    //   x => [getattr(loglevels, 'LOG_%s' % x), getattr(logging, x)]
+    // )
     this.version = `${release.description} ${release.version}`;
 
-    // console.log(this);
     this.levels = [
       'info', 'debugRpc', 'warn', 'test', 'critical', 'runbot',
       'debugSql', 'error', 'debug', 'debugRpcAnswer', 'notset'
@@ -327,11 +326,11 @@ export class ConfigManager extends Function {
     // if the server is run by an unprivileged user, he has to specify location of a config file where he has the rights to write,
     // else he won't be able to save the configurations, or even to start the server...
     let rcfilepath: string;
-    if (process.platform === 'win32') {
+    // if (process.platform === 'win32') {
       rcfilepath = path.resolve(global.ROOT_PATH, '..', 'config.json');
-    } else {
-      rcfilepath = path.resolve('~/.verprc');
-    }
+    // } else {
+    //   rcfilepath = path.resolve(os.homedir(), '.verprc');
+    // }
 
     this.rcfile = path.resolve(this.configFile || opt.config || process.env['VERP_RC'] || rcfilepath);
     this.load();
