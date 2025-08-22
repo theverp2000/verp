@@ -5,7 +5,7 @@
 <template name="Showcase" id="sShowcase">
     <section class="s-showcase pt48 pb48" data-vcss="002">
         <div class="container">
-            <div class="row no-gutters s-col-no-resize s-col-no-bgcolor s-nb-column-fixed">
+            <div class="row no-gutters s-col-no-resize s-col-no-bgColor s-nb-column-fixed">
                 <div class="col-lg text-lg-right">
                     <div class="row">
                         <div class="col-lg-12 pt24 pb24" data-name="Block">

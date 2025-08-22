@@ -1,18 +1,14 @@
+import { readFile } from "fs/promises";
 import https from "https";
 import { DateTime } from "luxon";
 import path from "path";
 import xpath from 'xpath';
-import { Field, _Date, _Datetime, api } from '../../../core';
-import { getattr } from "../../../core/api/func";
-import { ValueError } from "../../../core/helper/errors";
-import { AbstractModel, MetaModel, ModelRecords, _super } from "../../../core/models";
+import { AbstractModel, Field, MetaModel, ModelRecords, _Date, _Datetime, _super, api } from '../../../core';
+import { getattr } from "../../../core/api";
+import { ValueError } from "../../../core/helper";
 import { getResourcePath } from "../../../core/modules";
 import { urlParse } from "../../../core/service/middleware/utils";
-import { b64encode, bool, f, getLang, getTimezoneInfo, isDigit, pop, posixToLdml, split, toText } from '../../../core/tools';
-import { parseLocale } from '../../../core/tools/locale';
-import { escapeHtml, isElement, iterchildren, popAttribute, serializeXml } from "../../../core/tools/xml";
-import { readFile } from "fs/promises";
-import { stringify } from "../../../core/tools/json";
+import { b64encode, bool, escapeHtml, f, getLang, getTimezoneInfo, isDigit, isElement, iterchildren, parseLocale, pop, popAttribute, posixToLdml, serializeXml, split, stringify, toText } from '../../../core/tools';
 
 const REMOTE_CONNECTION_TIMEOUT = 2.5;
 
@@ -172,7 +168,7 @@ class IntegerConverter extends AbstractModel {
     async fromHtml(model, field, element) {
         const lang = await (this as any).userLang();
         const value = element.textContent.trim();
-        return parseInt(value.replace(await lang.thousandsSep || '', ''));
+        return parseInt(value.replaceAll(await lang.thousandsSep || '', ''));
     }
 }
 
@@ -187,8 +183,8 @@ class FloatConverter extends AbstractModel {
     async fromHtml(model, field, element) {
         const lang = await (this as any).userLang();
         const value = element.textContent.trim();
-        return parseFloat(value.replace(await lang.thousandsSep || '', '')
-                          .replace(await lang.decimalPoint, '.'));
+        return parseFloat(value.replaceAll(await lang.thousandsSep || '', '')
+                          .replaceAll(await lang.decimalPoint, '.'));
     }
 }
 
@@ -491,7 +487,7 @@ class ImageConverter extends AbstractModel {
         const group = matches ? matches.next().value.group : {};
         const rest = group['rest'];
         if (path.sep !== '/') {
-            rest.replace(path.sep, '/');
+            rest.replaceAll(path.sep, '/');
         }
 
         const p = getResourcePath(group['module'], 'static', ...rest.split('/'));
@@ -557,8 +553,8 @@ class MonetaryConverter extends AbstractModel {
 
         const value = xpath.select1('span', element) as Element;
 
-        return parseFloat(value.textContent.trim().replace(await lang.thousandsSep || '', '')
-                          .replace(await lang.decimalPoint, '.'));
+        return parseFloat(value.textContent.trim().replaceAll(await lang.thousandsSep || '', '')
+                          .replaceAll(await lang.decimalPoint, '.'));
     }
 }
 
@@ -644,7 +640,7 @@ function htmlToText(element) {
     // remove any leading or tailing whitespace, replace sequences of
     // (whitespace)\n(whitespace) by a single newline, where (whitespace) is a
     // non-newline whitespace in this case
-    return Array.from(_realizePadding(output)).join('').trim().replace(/[ \t\r\f]*\n[ \t\r\f]*/, '\n');
+    return Array.from(_realizePadding(output)).join('').trim().replace(/[ \t\r\f]*\n[ \t\r\f]*/g, '\n');
 }
 
 const _PADDED_BLOCK = new Set('p h1 h2 h3 h4 h5 h6'.split(' '));
@@ -658,7 +654,7 @@ const _MISC_BLOCK = new Set('address article aside audio blockquote canvas dd dl
  * @returns 
  */
 function _collapseWhitespace(text) {
-    return text.replace(/\s+/, ' ');
+    return text.replace(/\s+/g, ' ');
 }
 
 /**

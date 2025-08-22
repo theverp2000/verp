@@ -1,5 +1,4 @@
-import { api } from "../../../core";
-import { _super, MetaModel, TransientModel } from "../../../core/models"
+import { _super, api, MetaModel, TransientModel } from "../../../core";
 import { urlQuote } from "../../../core/service/middleware/utils";
 import { bool, sum, update } from "../../../core/tools";
 

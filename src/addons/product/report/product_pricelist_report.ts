@@ -1,7 +1,6 @@
-import { api } from "../../../core";
-import { Dict } from "../../../core/helper/collections";
-import { AbstractModel, MetaModel } from "../../../core/models"
-import { bool } from "../../../core/tools/bool";
+import { AbstractModel, api, MetaModel } from "../../../core";
+import { Dict } from "../../../core/helper";
+import { bool } from "../../../core/tools";
 
 @MetaModel.define()
 class ProductPricelistReport extends AbstractModel {

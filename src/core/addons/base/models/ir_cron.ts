@@ -1,18 +1,13 @@
-import { Client } from 'pg';
 import assert from "assert";
 import _ from "lodash";
 import { Duration, Interval } from "luxon";
-import { api } from "../../..";
+import { Client } from 'pg';
+import { Fields, MetaModel, Model, _Datetime, _super, api } from "../../..";
 import * as core from '../../../';
-import { Environment } from "../../../api";
-import { Fields, _Datetime } from "../../../fields";
 import { OperationalError, UserError, ValueError } from "../../../helper/errors";
-import { MetaModel, Model, _super } from "../../../models";
-import { resetModulesState } from "../../../modules/loading";
-import { loadInformationFromDescriptionFile } from "../../../modules/modules";
+import { loadInformationFromDescriptionFile, resetModulesState } from "../../../modules";
 import { Cursor, dbConnect } from "../../../sql_db";
-import { bool, config, isInstance, range } from "../../../tools";
-import { addDate } from "../../../tools/date_utils";
+import { addDate, bool, config, isInstance, range } from "../../../tools";
 
 const BASE_VERSION = loadInformationFromDescriptionFile('base')['version'];
 const MAX_FAIL_TIME = Duration.fromObject({ hours: 5 }).valueOf(); // chosen with a fair roll of the dice
@@ -132,7 +127,7 @@ export class IrCron extends Model {
     const jobCr = await (this as any).pool.cursor();
     const lastcall = _Datetime.toDatetime(job['lastcall']);
     const duration: Duration = _durationTypes[job['intervalType']](job['intervalNumber']);
-    const env = await Environment.new(jobCr, job['userId'], { 'lastcall': lastcall });
+    const env = await api.Environment.new(jobCr, job['userId'], { 'lastcall': lastcall });
     const irCron = env.items(this._name);
 
     // Use the user's timezone to compare and compute datetimes,

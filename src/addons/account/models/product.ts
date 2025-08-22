@@ -1,11 +1,8 @@
 import assert from "assert";
 import _ from "lodash";
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { formatAmount } from "../../../core/tools/models";
+import { api, Fields, MetaModel, Model } from "../../../core";
+import { ValidationError } from "../../../core/helper";
+import { bool, formatAmount } from "../../../core/tools";
 
 const ACCOUNT_DOMAIN = "['&', '&', '&', ['deprecated', '=', false], ['internalType','=','other'], ['companyId', '=', currentCompanyId], ['isOffBalance', '=', false]]";
 

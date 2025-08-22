@@ -1,13 +1,7 @@
 import { randomInt } from "crypto";
-import { Fields, _Date } from "../../../core/fields";
-import { MetaModel, Model } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date } from "../../../core";
 import { version } from "../../../core/release";
-import { DEFAULT_SERVER_DATE_FORMAT as DF, _f, f, isList, len, next, parseInt, pop, quoteList, range, update } from '../../../core/tools';
-import { literalEval } from '../../../core/tools/save_eval';
-import { bool } from "../../../core/tools/bool";
-import { addDate, subDate, toFormat } from "../../../core/tools/date_utils";
-import { stringify } from "../../../core/tools/json";
-import { formatDate, formatLang, getLang } from "../../../core/tools/models";
+import { DEFAULT_SERVER_DATE_FORMAT as DF, _f, addDate, bool, f, formatDate, formatLang, getLang, isList, len, literalEval, next, parseInt, pop, quoteList, range, stringify, subDate, toFormat, update } from '../../../core/tools';
 
 @MetaModel.define()
 class AccountJournal extends Model {
@@ -129,7 +123,7 @@ class AccountJournal extends Model {
     const data = [];
     const today = _Date.today();
     const lastMonth = subDate(today, { days: 30 });
-    const locale = (await (await getLang(this.env)).code).replace('_', '-');
+    const locale = (await (await getLang(this.env)).code).replaceAll('_', '-');
 
     //starting point of the graph is the last statement
     const lastStmt = await (this as any)._getLastBankStatement([['state', 'in', ['posted', 'confirm']]]);
@@ -181,7 +175,7 @@ class AccountJournal extends Model {
   async getBarGraphDatas() {
     const data = [];
     const today = _Date.today();
-    const locale = (await (await getLang(this.env)).code).replace('_', '-');
+    const locale = (await (await getLang(this.env)).code).replaceAll('_', '-');
     data.push({ 'label': await this._t('Due'), 'value': 0.0, 'type': 'past' });
     const dayOfWeek = parseInt(toFormat(today, 'c', { locale: locale }));
     const firstDayOfWeek = addDate(today, { days: -dayOfWeek + 1 });

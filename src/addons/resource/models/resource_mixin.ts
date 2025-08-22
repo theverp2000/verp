@@ -1,10 +1,7 @@
 import _ from "lodash";
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { DefaultMapKey, Dict } from "../../../core/helper/collections";
-import { AbstractModel, MetaModel, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { pop } from "../../../core/tools/misc";
+import { AbstractModel, Fields, MetaModel, _super, api } from "../../../core";
+import { DefaultMapKey, Dict } from "../../../core/helper";
+import { bool, pop } from "../../../core/tools";
 
 @MetaModel.define()
 class ResourceMixin extends AbstractModel {

@@ -472,7 +472,7 @@
 
     <!-- Background -->
     <t t-set="onlyBgColorSelector" t-value="'section .row > div, .s-text-highlight, .s-mega-menu-thumbnails-footer'"/>
-    <t t-set="onlyBgColorExclude" t-value="'.s-col-no-bgcolor, .s-col-no-bgcolor.row > div, .s-masonry-block .row > div, .s-color-blocks-2 .row > div, .s-image-gallery .row > div'"/>
+    <t t-set="onlyBgColorExclude" t-value="'.s-col-no-bgColor, .s-col-no-bgColor.row > div, .s-masonry-block .row > div, .s-color-blocks-2 .row > div, .s-image-gallery .row > div'"/>
 
     <t t-set="baseOnlyBgImageSelector" t-value="'.s-tabs .oe-structure > *, footer .oe-structure > *'"/>
     <t t-set="onlyBgImageSelector" t-value="baseOnlyBgImageSelector"/>
@@ -509,7 +509,7 @@
     <!-- Border | Columns -->
     <div data-js="Box"
          data-selector="section .row > div"
-         data-exclude=".s-col-no-bgcolor, .s-col-no-bgcolor.row > div, .s-image-gallery .row > div, .s-masonry-block .s-col-no-resize">
+         data-exclude=".s-col-no-bgColor, .s-col-no-bgColor.row > div, .s-image-gallery .row > div, .s-masonry-block .s-col-no-resize">
         <t t-call="website.snippetOptionsBorderWidgets"/>
         <t t-call="website.snippetOptionsShadowWidgets"/>
     </div>

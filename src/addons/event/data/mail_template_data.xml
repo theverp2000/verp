@@ -1,0 +1,478 @@
+<?xml version="1.0"?>
+<verp>
+    <data noupdate="1">
+
+        <record id="eventRegistrationMailTemplateBadge" model="mail.template">
+            <t t-set="objEvent" t-value="await object.eventId" />
+            <field name="label">Event: Registration Badge</field>
+            <field name="modelId" ref="event.model_eventRegistration"/>
+            <field name="subject">Your badge for {{ await objEvent.label }}</field>
+            <field name="emailFrom">{{ (await (eventOrganizer).emailFormatted || await (await objEvent.userId).emailFormatted || '') }}</field>
+            <field name="emailTo">{{ (await object.email &amp;&amp; format('"%s" &lt;%s&gt;', await object.label, await object.email) || await (await object.partnerId).emailFormatted || '') }}</field>
+            <field name="bodyHtml" type="html">
+<div>
+    Dear <t t-out="await object.label || ''">Oscar Morgan</t>,<br/>
+    Thank you for your inquiry.<br/>
+    Here is your badge for the event <t t-out="await objEvent.label || ''">OpenWood Collection Online Reveal</t>.<br/>
+    If you have any questions, please let us know.
+    <br/><br/>
+    Thank you,
+    <t t-if="await (await objEvent.userId).signature">
+        <br />
+        <t t-out="await (await objEvent.userId).signature || ''">--<br/>Mitchell Admin</t>
+    </t>
+</div></field>
+            <field name="reportTemplate" ref="actionReportEventRegistrationFoldableBadge"/>
+            <field name="reportName">Foldable Badge - {{ (await objEvent.label || 'Event').replace(/\//g,'_') }}</field>
+            <field name="lang">{{ await (await object.partnerId).lang }}</field>
+            <field name="autoDelete" eval="true"/>
+        </record>
+
+        <record id="eventSubscription" model="mail.template">
+            <t t-set="objEvent" t-value="await object.eventId" />
+            <t t-set="eventOrganizer" t-value="await objEvent.organizerId"/>
+            <t t-set="eventAddress" t-value="await objEvent.addressId"/>
+            <field name="label">Event: Registration</field>
+            <field name="modelId" ref="event.model_eventRegistration"/>
+            <field name="subject">Your registration at {{ await objEvent.label }}</field>
+            <field name="emailFrom">{{ (await (eventOrganizer).emailFormatted || await (await objEvent.userId).emailFormatted || '') }}</field>
+            <field name="emailTo">{{ (await object.email &amp;&amp; format('"%s" &lt;%s&gt;', await object.label, await object.email) || await (await object.partnerId).emailFormatted || '') }}</field>
+            <field name="bodyHtml" type="html">
+<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<t t-set="dateBegin" t-value="await formatDatetime(await objEvent.dateBegin, {tz: 'UTC', dtFormat: &quot;yyyyMMdd'T'HHmmss'Z'&quot;})"/>
+<t t-set="dateEnd" t-value="await formatDatetime(await objEvent.dateEnd, {tz: 'UTC', dtFormat: &quot;yyyyMMdd'T'HHmmss'Z'&quot;})"/>
+<t t-set="isOnline" t-value="'isPublished' in objEvent._fields &amp;&amp; await objEvent.isPublished"/>
+<table border="0" cellpadding="0" cellspacing="0" width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+    <!-- HEADER -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="middle">
+                    <span style="font-size: 10px;">Your registration</span><br/>
+                    <span style="font-size: 20px; font-weight: bold;">
+                        <t t-out="object.label or ''">Oscar Morgan</t>
+                    </span>
+                </td><td valign="middle" align="right">
+                    <t t-if="isOnline">
+                        <a t-att-href="await objEvent.websiteUrl"
+                            style="padding: 8px 12px; font-size: 12px; color: #FFFFFF; text-decoration: none !important; font-weight: 400; background-color: #875A7B; border: 0px solid #875A7B; border-radius:3px">
+                            View Event
+                        </a>
+                    </t>
+                    <t t-else="">
+                        <img t-att-src="format('/logo.png?company=%s', (await object.companyId).id)" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="format('%s', await (await object.companyId).label)"/>
+                    </t>
+                </td></tr>
+                <tr><td colspan="2" style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+    <!-- EVENT DESCRIPTION -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="top" style="font-size: 14px;">
+                    <div>
+                        Hello <t t-out="await object.label || ''">Oscar Morgan</t>,<br/>
+                        We are happy to confirm your registration to the event
+                        <t t-if="isOnline">
+                            <a t-att-href="await objEvent.websiteUrl" style="color:#875A7B;text-decoration:none;" t-out="await objEvent.label || ''">OpenWood Collection Online Reveal</a>
+                        </t>
+                        <t t-else="">
+                            <strong t-out="await objEvent.label || ''">OpenWood Collection Online Reveal</strong>
+                        </t>
+                        for attendee <t t-out="await object.label || ''">Oscar Morgan</t>.
+                    </div>
+                    <div>
+                        <br />
+                        <strong>Add this event to your calendar</strong>
+                        <a t-attf-href="https://www.google.com/calendar/render?action=TEMPLATE&amp;text={{ await objEvent.label }}&amp;dates={{ dateBegin }}/{{ dateEnd }}&amp;location={{ location }}" style="padding:3px 5px;border:1px solid #875A7B;color:#875A7B;text-decoration:none;border-radius:3px;" target="new"><img src="/web_editor/fontToImg/61525/rgb(135,90,123)/16" style="vertical-align:middle;" height="16" alt=""/> Google</a>
+                        <a t-attf-href="/event/{{ await objEvent.slug() }}/ics" style="padding:3px 5px;border:1px solid #875A7B;color:#875A7B;text-decoration:none;border-radius:3px;"><img src="/web_editor/fontToImg/61525/rgb(135,90,123)/16" style="vertical-align:middle;" height="16" alt=""/> iCal/Outlook</a>
+                        <a t-attf-href="https://calendar.yahoo.com/?v=60&amp;view=d&amp;type=20&amp;title={{ await objEvent.label }}&amp;inLoc={{ location }}&amp;st={{ await formatDatetime(await objEvent.dateBegin, {tz: 'UTC', dtFormat: 'yyyyMMdd\'T\'HHmmss'}) }}&amp;et={{ await formatDatetime(await objEvent.dateEnd, {tz: 'UTC', dtFormat: 'yyyyMMdd\'T\'HHmmss'}) }}" style="padding:3px 5px;border:1px solid #875A7B;color:#875A7B;text-decoration:none;border-radius:3px;" target="new">
+                            <img src="/web_editor/fontToImg/61525/rgb(135,90,123)/16" style="vertical-align:middle;" height="16" alt=""/> Yahoo
+                        </a>
+                        <br /><br />
+                    </div>
+                    <div>
+                        See you soon,<br/>
+                        <span style="color: #454748;">
+                        -- <br/>
+                        <t t-if="bool(eventOrganizer)">
+                            <t t-out="await eventOrganizer.label || ''">YourCompany</t>
+                        </t>
+                        <t t-else="">
+                            The <t t-out="await objEvent.label || ''">OpenWood Collection Online Reveal</t> Team
+                        </t>
+                        </span>
+                    </div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+    <!-- DETAILS -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="top" style="font-size: 14px;">
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="vertical-align:top;">
+                                <img src="/web_editor/fontToImg/61555/rgb(81,81,102)/34" style="padding:4px;max-width:inherit;" height="34" alt=""/>
+                            </td>
+                            <td style="padding: 0px 10px 0px 10px;width:50%;line-height:20px;vertical-align:top;">
+                                <div><strong>From</strong> <t t-out="await objEvent.dateBeginLocated || ''">May 4, 2021, 7:00:00 AM</t></div>
+                                <div><strong>To</strong> <t t-out="await objEvent.dateEndLocated || ''">May 6, 2021, 5:00:00 PM</t></div>
+                                <div style="font-size:12px;color:#9e9e9e"><i><strong>TZ</strong> <t t-out="await objEvent.dateTz || ''">Europe/Brussels</t></i></div>
+                            </td>
+                            <td style="vertical-align:top;">
+                                <t t-if="bool(eventAddress)">
+                                    <img src="/web_editor/fontToImg/61505/rgb(81,81,102)/34" style="padding:4px;max-width:inherit;" height="34" alt=""/>
+                                </t>
+                            </td>
+                            <td style="padding: 0px 10px 0px 10px;width:50%;vertical-align:top;">
+                                <t t-if="bool(eventAddress)">
+                                    <t t-set="location" t-value="''"/>
+                                    <t t-if="await eventAddress.label">
+                                        <div t-out="await eventAddress.label || ''">Teksa SpA</div>
+                                    </t>
+                                    <t t-if="await eventAddress.street">
+                                        <div t-out="await eventAddress.street || ''">Puerto Madero 9710</div>
+                                        <t t-set="location" t-value="await eventAddress.street"/>
+                                    </t>
+                                    <t t-if="await eventAddress.street2">
+                                        <div t-out="await eventAddress.street2 || ''">Of A15, Santiago (RM)</div>
+                                        <t t-set="location" t-value="format('%s, %s', location, await eventAddress.street2)"/>
+                                    </t>
+                                    <div>
+                                    <t t-if="await eventAddress.city">
+                                        <t t-out="await eventAddress.city || ''">Pudahuel</t>,
+                                        <t t-set="location" t-value="format('%s, %s', location, await eventAddress.city)"/>
+                                    </t>
+                                    <t t-if="await (await eventAddress.stateId).label">
+                                        <t t-out="await (await eventAddress.stateId).label || ''">C1</t>,
+                                        <t t-set="location" t-value="format('%s, %s', location, await (await eventAddress.stateId).label)"/>
+                                    </t>
+                                    <t t-if="await eventAddress.zip">
+                                        <t t-out="await eventAddress.zip || ''">98450</t>
+                                        <t t-set="location" t-value="format('%s, %s', location, await eventAddress.zip)"/>
+                                    </t>
+                                    </div>
+                                    <t t-if="await (await eventAddress.countryId).label">
+                                        <div t-out="await (await eventAddress.countryId).label || ''">Argentina</div>
+                                        <t t-set="location" t-value="format('%s, %s', location, await (await eventAddress.countryId).label)"/>
+                                    </t>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                    <t t-if="bool(eventOrganizer)">
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                    </t>
+                </td></tr>
+
+                <tr><td valign="top" style="font-size: 14px;">
+                    <!-- CONTACT ORGANIZER -->
+                    <t t-if="bool(eventOrganizer)">
+                        <div>
+                            <span style="font-weight:300;margin:10px 0px">Questions about this event?</span>
+                            <div>Please contact the organizer:</div>
+                            <ul>
+                                <li><t t-out="await eventOrganizer.label || ''">YourCompany</t></li>
+                                <t t-if="await eventOrganizer.email">
+                                    <li>Mail: <a t-attf-href="mailto:{{ await eventOrganizer.email }}" style="text-decoration:none;color:#875A7B;" t-out="await eventOrganizer.email || ''">info@yourcompany.com</a></li>
+                                </t>
+                                <t t-if="await eventOrganizer.phone">
+                                    <li>Phone: <t t-out="await eventOrganizer.phone || ''">+1 650-123-4567</t></li>
+                                </t>
+                            </ul>
+                        </div>
+                    </t>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                    <!-- CONTACT ORGANIZER SEPARATION -->
+                    <t t-if="isOnline || bool(eventAddress)">
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                    </t>
+                </td></tr>
+
+                <tr><td valign="top" style="font-size: 14px;">
+                    <!-- PWA MARKGETING -->
+                    <t t-if="isOnline">
+                        <div>
+                            <strong>Get the best mobile experience.</strong>
+                            <a href="/event">Install our mobile app</a>
+                        </div>
+                    </t>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                    <!-- PWA MARKGETING SEPARATION-->
+                    <t t-if="isOnline &amp;&amp; bool(eventAddress)">
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                    </t>
+                </td></tr>
+
+                <tr><td valign="top" style="font-size: 14px;">
+                    <!-- GOOGLE MAPS LINK -->
+                    <t t-if="bool(eventAddress)">
+                        <table style="width:100%;"><tr><td>
+                            <div>
+                                <a t-attf-href="https://maps.google.com/maps?q={{ location }}" target="new">
+                                    <img t-attf-src="http://maps.googleapis.com/maps/api/staticmap?autoscale=1&amp;size=598x200&amp;maptype=roadmap&amp;format=png&amp;visual_refresh=true&amp;markers=size:mid%7Ccolor:0xa5117d%7Clabel:%7C{{ location }}" style="vertical-align:bottom; width: 100%;" alt="Google Maps"/>
+                                </a>
+                            </div>
+                        </td></tr></table>
+                    </t>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+<!-- FOOTER BY -->
+<tr><td align="center" style="min-width: 590px;">
+    <t t-if="bool(await object.companyId)">
+        <table width="590" border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+        <tr><td style="text-align: center; font-size: 14px;">
+            Sent by <a target="_blank" t-attf-href="{{ await (await object.companyId).website }}" style="color: #875A7B;" t-out="await (await object.companyId).label || ''">YourCompany</a>
+            <t t-if="isOnline">
+                <br />
+                Discover <a href="/event" style="color:#875A7B;">all our events</a>.
+            </t>
+        </td></tr>
+        </table>
+    </t>
+</td></tr>
+</table>
+            </field>
+            <field name="reportTemplate" ref="actionReportEventRegistrationFullPageTicket"/>
+            <field name="reportName">Full Page Ticket - {{ (await objEvent.label || 'Event').replace(/\//g,'') }}</field>
+            <field name="lang">{{ await (await object.partnerId).lang }}</field>
+        </record>
+
+        <record id="eventReminder" model="mail.template">
+            <t t-set="objEvent" t-value="await object.eventId" />
+            <t t-set="eventOrganizer" t-value="await objEvent.organizerId"/>
+            <t t-set="eventAddress" t-value="await objEvent.addressId"/>
+            <field name="label">Event: Reminder</field>
+            <field name="modelId" ref="event.model_eventRegistration"/>
+            <field name="subject">{{ await objEvent.label }}: {{ await object.getDateRangeStr() }}</field>
+            <field name="emailFrom">{{ (await eventOrganizer.emailFormatted || await (await objEvent.userId).emailFormatted || '') }}</field>
+            <field name="emailTo">{{ (await object.email &amp;&amp; format('"%s" &lt;%s&gt;', await object.label,await object.email) || await (await object.partnerId).emailFormatted || '') }}</field>
+            <field name="bodyHtml" type="html">
+<table border="0" cellpadding="0" cellspacing="0" style="padding-top: 16px; background-color: #F1F1F1; font-family:Verdana, Arial,sans-serif; color: #454748; width: 100%; border-collapse:separate;"><tr><td align="center">
+<t t-set="dateBegin" t-value="await formatDatetime(await objEvent.dateBegin, {tz: 'UTC', dtFormat: &quot;yyyyMMdd'T'HHmmss'Z'&quot;})"/>
+<t t-set="dateEnd" t-value="await formatDatetime(await objEvent.dateEnd, {tz: 'UTC', dtFormat: &quot;yyyyMMdd'T'HHmmss'Z'&quot;})"/>
+<t t-set="isOnline" t-value="'isPublished' in objEvent._fields &amp;&amp; await objEvent.isPublished"/>
+<table border="0" cellpadding="0" cellspacing="0"  width="590" style="padding: 16px; background-color: white; color: #454748; border-collapse:separate;">
+<tbody>
+    <!-- HEADER -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="middle">
+                    <span style="font-size: 10px;">Your registration</span><br/>
+                    <span style="font-size: 20px; font-weight: bold;" t-out="object.label or ''">Oscar Morgan</span>
+                </td><td valign="middle" align="right">
+                    <t t-if="isOnline">
+                        <a t-attf-href="{{ await objEvent.websiteUrl }}"
+                            style="padding: 8px 12px; font-size: 12px; color: #FFFFFF; text-decoration: none !important; font-weight: 400; background-color: #875A7B; border: 0px solid #875A7B; border-radius:3px">
+                            View Event
+                        </a>
+                    </t>
+                    <t t-else="">
+                        <img t-att-src="format('/logo.png?company=%s', (await object.companyId).id)" style="padding: 0px; margin: 0px; height: auto; width: 80px;" t-att-alt="format('%s', await (await object.companyId).label)"/>
+                    </t>
+                </td></tr>
+                <tr><td colspan="2" style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin:16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+    <!-- EVENT DESCRIPTION -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="top" style="font-size: 14px;">
+                    <div>
+                        Hello <t t-out="await object.label || ''">Oscar Morgan</t>,<br/>
+                        We are excited to remind you that the event
+                        <t t-if="isOnline">
+                            <a t-att-href="await objEvent.websiteUrl" style="color:#875A7B;text-decoration:none;" t-out="await objEvent.label || ''">OpenWood Collection Online Reveal</a>
+                        </t>
+                        <t t-else="">
+                            <strong t-out="await objEvent.label || ''">OpenWood Collection Online Reveal</strong>
+                        </t>
+                        is starting <strong t-out="await object.getDateRangeStr() || ''">today</strong>.
+                    </div>
+                    <div>
+                        <br />
+                        <strong>Add this event to your calendar</strong>
+                        <a t-attf-href="https://www.google.com/calendar/render?action=TEMPLATE&amp;text={{ await objEvent.label }}&amp;dates={{ dateBegin }}/{{ dateEnd }}&amp;location={{ location }}" style="padding:3px 5px;border:1px solid #875A7B;color:#875A7B;text-decoration:none;border-radius:3px;" target="new"><img src="/web_editor/fontToImg/61525/rgb(135,90,123)/16" style="vertical-align:middle;" height="16" alt=""/> Google</a>
+                        <a t-attf-href="/event/{{ await objEvent.slug() }}/ics" style="padding:3px 5px;border:1px solid #875A7B;color:#875A7B;text-decoration:none;border-radius:3px;"><img src="/web_editor/fontToImg/61525/rgb(135,90,123)/16" style="vertical-align:middle;" height="16" alt=""/> iCal/Outlook</a>
+                        <a t-attf-href="https://calendar.yahoo.com/?v=60&amp;view=d&amp;type=20&amp;title={{ await objEvent.label }}&amp;in_loc={{ location }}&amp;st={{ await formatDatetime(await objEvent.dateBegin, {tz: 'UTC', dtFormat: 'yyyyMMdd\'T\'HHmmss'}) }}&amp;et={{ await formatDatetime(await objEvent.dateEnd, {tz: 'UTC', dtFormat: 'yyyyMMdd\'T\'HHmmss'}) }}" style="padding:3px 5px;border:1px solid #875A7B;color:#875A7B;text-decoration:none;border-radius:3px;" target="new">
+                            <img src="/web_editor/fontToImg/61525/rgb(135,90,123)/16" style="vertical-align:middle;" height="16" alt=""/> Yahoo
+                        </a>
+                        <br /><br />
+                    </div>
+                    <div>
+                        We confirm your registration and hope to meet you there,<br/>
+                        <span style="color: #454748;">
+                        -- <br/>
+                        <t t-if="bool(eventOrganizer)">
+                            <t t-out="await eventOrganizer.label || ''">YourCompany</t>
+                        </t>
+                        <t t-else="">
+                            The <t t-out="await objEvent.label || ''">OpenWood Collection Online Reveal</t> Team
+                        </t>
+                        </span>
+                    </div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                  <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+    <!-- DETAILS -->
+    <tr>
+        <td align="center" style="min-width: 590px;">
+            <table width="590" border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr><td valign="top" style="font-size: 14px;">
+                    <table style="width:100%;">
+                        <tr>
+                            <td style="vertical-align:top;">
+                                <img src="/web_editor/fontToImg/61555/rgb(81,81,102)/34" style="padding:4px;max-width:inherit;" height="34" alt=""/>
+                            </td>
+                            <td style="padding: 0px 10px 0px 10px;width:50%;line-height:20px;vertical-align:top;">
+                                <div><strong>From</strong> <t t-out="await objEvent.dateBeginLocated || ''">May 4, 2021, 7:00:00 AM</t></div>
+                                <div><strong>To</strong> <t t-out="await objEvent.dateEndLocated || ''">May 6, 2021, 5:00:00 PM</t></div>
+                                <div style="font-size:12px;color:#9e9e9e"><i><strong>TZ</strong> <t t-out="await objEvent.dateTz || ''">Europe/Brussels</t></i></div>
+                            </td>
+                            <td style="vertical-align:top;">
+                                <t t-if="bool(eventAddress)">
+                                    <img src="/web_editor/fontToImg/61505/rgb(81,81,102)/34" style="padding:4px;max-width:inherit;" height="34" alt=""/>
+                                </t>
+                            </td>
+                            <td style="padding: 0px 10px 0px 10px;width:50%;vertical-align:top;">
+                                <t t-if="bool(eventAddress)">
+                                    <t t-set="location" t-value="''"/>
+                                    <t t-if="await eventAddress.label">
+                                        <div t-out="await eventAddress.label || ''">Teksa SpA</div>
+                                    </t>
+                                    <t t-if="await eventAddress.street">
+                                        <div t-out="await eventAddress.street || ''">Puerto Madero 9710</div>
+                                        <t t-set="location" t-value="await eventAddress.street"/>
+                                    </t>
+                                    <t t-if="await eventAddress.street2">
+                                        <div t-out="await eventAddress.street2 || ''">Of A15, Santiago (RM)</div>
+                                        <t t-set="location" t-value="format('%s, %s', location, await eventAddress.street2)"/>
+                                    </t>
+                                    <div>
+                                    <t t-if="await eventAddress.city">
+                                        <t t-out="await eventAddress.city || ''">Pudahuel</t>,
+                                        <t t-set="location" t-value="format('%s, %s', location, await eventAddress.city)"/>
+                                    </t>
+                                    <t t-if="await (await eventAddress.stateId).label">
+                                        <t t-out="await (await eventAddress.stateId).label || ''">C1</t>,
+                                        <t t-set="location" t-value="format('%s, %s', location, await (await eventAddress.stateId).label)"/>
+                                    </t>
+                                    <t t-if="await eventAddress.zip">
+                                        <t t-out="await eventAddress.zip || ''">98450</t>
+                                        <t t-set="location" t-value="format('%s, %s', location, await eventAddress.zip)"/>
+                                    </t>
+                                    </div>
+                                    <t t-if="await (await eventAddress.countryId).label">
+                                        <div t-out="await (await eventAddress.countryId).label || ''">Argentina</div>
+                                        <t t-set="location" t-value="format('%s, %s', location, await (await eventAddress.countryId).label)"/>
+                                    </t>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                    <t t-if="eventOrganizer">
+                        <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                    </t>
+                </td></tr>
+
+                <tr><td valign="top" style="font-size: 14px;">
+                    <!-- CONTACT ORGANIZER -->
+                    <t t-if="bool(eventOrganizer)">
+                        <div>
+                            <span style="font-weight:300;margin:10px 0px">Questions about this event?</span>
+                            <div>Please contact the organizer:</div>
+                            <ul>
+                                <li t-out="await eventOrganizer.label || ''">YourCompany</li>
+                                <t t-if="await eventOrganizer.email">
+                                    <li>Mail: <a t-attf-href="mailto:{{ await eventOrganizer.email }}" style="text-decoration:none;color:#875A7B;" t-out="await eventOrganizer.email || ''"></a></li>
+                                </t>
+                                <t t-if="await eventOrganizer.phone">
+                                    <li>Phone: <t t-out="await eventOrganizer.phone || ''"></t></li>
+                                </t>
+                            </ul>
+                        </div>
+                    </t>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                    <!-- CONTACT ORGANIZER SEPARATION -->
+                    <hr t-if="isOnline or event_address" width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+
+                <tr><td valign="top" style="font-size: 14px;">
+                    <!-- PWA MARKGETING -->
+                    <div t-if="isOnline">
+                        <strong>Get the best mobile experience.</strong>
+                        <a href="/event">Install our mobile app</a>
+                    </div>
+                </td></tr>
+                <tr><td style="text-align:center;">
+                    <!-- PWA MARKGETING SEPARATION-->
+                    <hr t-if="isOnline &amp;&amp; bool(eventAddress)" width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0; margin: 16px 0px 16px 0px;"/>
+                </td></tr>
+
+                <tr><td valign="top" style="font-size: 14px;">
+                    <!-- GOOGLE MAPS LINK -->
+                    <table t-if="bool(eventAddress)" style="width:100%;"><tr><td>
+                        <div>
+                            <a t-attf-href="https://maps.google.com/maps?q={{ location }}" target="new">
+                                <img t-attf-src="http://maps.googleapis.com/maps/api/staticmap?autoscale=1&amp;size=598x200&amp;maptype=roadmap&amp;format=png&amp;visual_refresh=true&amp;markers=size:mid%7Ccolor:0xa5117d%7Clabel:%7C{{ location }}" style="vertical-align:bottom; width: 100%;" alt="Google Maps"/>
+                            </a>
+                        </div>
+                    </td></tr></table>
+                </td></tr>
+            </table>
+        </td>
+    </tr>
+</tbody>
+</table>
+</td></tr>
+<!-- FOOTER BY -->
+<tr><td align="center" style="min-width: 590px;">
+    <table t-if="bool(await object.companyId)" width="590" border="0" cellpadding="0" cellspacing="0" style="min-width: 590px; background-color: #F1F1F1; color: #454748; padding: 8px; border-collapse:separate;">
+      <tr><td style="text-align: center; font-size: 14px;">
+        Sent by <a target="_blank" t-attf-href="{{ await (await object.companyId).website }}" style="color: #875A7B;" t-out="await (await object.companyId).label || ''">YourCompany</a>
+        <t t-if="'websiteUrl' in objEvent._fields &amp;&amp; await objEvent.websiteUrl">
+            <br />
+            Discover <a href="/event" style="color:#875A7B;">all our events</a>.
+        </t>
+      </td></tr>
+    </table>
+</td></tr>
+</table>
+            </field>
+            <field name="lang">{{ await (await object.partnerId).lang }}</field>
+        </record>
+
+    </data>
+</verp>

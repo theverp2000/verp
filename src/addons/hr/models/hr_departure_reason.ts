@@ -1,7 +1,6 @@
 import _ from "lodash";
-import { Fields, api } from "../../../core";
+import { Fields, MetaModel, Model, api } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { MetaModel, Model } from "../../../core/models";
 
 @MetaModel.define()
 class DepartureReason extends Model {

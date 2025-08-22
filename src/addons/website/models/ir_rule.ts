@@ -1,5 +1,4 @@
-import { api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { MetaModel, Model, _super, api } from "../../../core";
 import { bool } from "../../../core/tools";
 import { getRequestWebsite } from "./ir_http";
 

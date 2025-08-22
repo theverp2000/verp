@@ -1,9 +1,6 @@
-import { api } from "../../../core";
-import { Fields, _Date } from "../../../core/fields";
-import { Dict } from "../../../core/helper/collections";
-import { AbstractModel, MetaModel, Model, _super } from "../../../core/models"
-import { f } from "../../../core/tools/string";
-import { _f } from "../../../core/tools/string";
+import { AbstractModel, Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { Dict } from "../../../core/helper";
+import { _f, f } from "../../../core/tools";
 import { PAYMENT_STATE_SELECTION } from "../models/account_move";
 
 @MetaModel.define()

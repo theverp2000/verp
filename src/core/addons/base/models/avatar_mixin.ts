@@ -1,7 +1,5 @@
 import fs from "fs/promises";
-import { api } from "../../..";
-import { Fields } from "../../../fields";
-import { AbstractModel, MetaModel } from "../../../models";
+import { AbstractModel, MetaModel, Fields, api } from "../../..";
 import { b64encode, bool, escapeHtml, filePath, getHslFromSeed, stringBase64 } from "../../../tools";
 
 @MetaModel.define()
@@ -66,10 +64,10 @@ class AvatarMixin extends AbstractModel {
     const avatar = await this[this._avatarNameField];
     const initial = escapeHtml(avatar[0].toUpperCase());
     const createdAt = await (this as any).createdAt;
-    const bgcolor = getHslFromSeed((await this[this._avatarNameField]) + String(createdAt ? Date.parse(createdAt).valueOf() : ""))
+    const bgColor = getHslFromSeed((await this[this._avatarNameField]) + String(createdAt ? Date.parse(createdAt).valueOf() : ""))
     return b64encode(stringBase64(
       "<svg height='180' width='180' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'>"
-      + `<rect fill='${bgcolor}' height='180' width='180'/>`
+      + `<rect fill='${bgColor}' height='180' width='180'/>`
       + `<text fill='#ffffff' font-size='96' text-anchor='middle' x='90' y='125' font-family='sans-serif'>${initial}</text>`
       + "</svg>"
     ));

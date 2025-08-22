@@ -1,5 +1,4 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models"
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 
 @MetaModel.define()
 class ResPartner extends Model {

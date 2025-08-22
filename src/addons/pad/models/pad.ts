@@ -1,8 +1,6 @@
-import { api } from "../../../core";
-import { hasattr } from "../../../core/api";
+import { _super, AbstractModel, api, MetaModel } from "../../../core";
 import { UserError } from "../../../core/helper";
 import { httpGet } from "../../../core/http";
-import { _super, AbstractModel, MetaModel } from "../../../core/models"
 import { bool, f, getRandom, markup, range, rstrip } from "../../../core/tools";
 import { EtherpadLiteClient } from "../etherpad";
 
@@ -46,7 +44,7 @@ class PadCommon extends AbstractModel {
         // path
         // etherpad hardcodes pad id length limit to 50
         let path = f('-%s-%s', this._name, salt);
-        path = f('%s%s', this.env.cr.dbName.replace('_', '-').slice(0, 50 - path.length), path);
+        path = f('%s%s', this.env.cr.dbName.replaceAll('_', '-').slice(0, 50 - path.length), path);
         // contruct the url
         const url = f('%s/p/%s', pad["server"], path);
 

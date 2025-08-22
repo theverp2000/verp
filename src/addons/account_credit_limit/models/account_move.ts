@@ -1,6 +1,5 @@
-import { Fields, api } from "../../../core";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { f } from "../../../core/tools";
 
 @MetaModel.define()

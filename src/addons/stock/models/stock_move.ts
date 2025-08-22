@@ -1,18 +1,9 @@
 import _ from "lodash";
 import { DateTime } from "luxon";
-import { api, tools } from "../../../core";
-import { Command, Fields, _Date, _Datetime } from "../../../core/fields";
-import { DefaultDict, Dict, Map2, MapKey, OrderedSet2 } from "../../../core/helper/collections";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, ModelRecords, _super } from "../../../core/models";
+import { Command, Fields, MetaModel, Model, ModelRecords, _Date, _Datetime, _super, api, tools } from "../../../core";
+import { DefaultDict, Dict, Map2, MapKey, OrderedSet2, UserError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { bool } from "../../../core/tools/bool";
-import { dateMax, dateMin } from "../../../core/tools/date_utils";
-import { floatCompare, floatIsZero, floatRound } from "../../../core/tools/float_utils";
-import { equal, isInstance } from "../../../core/tools/func";
-import { enumerate, extend, itemgetter, len, range, sortedAsync, sum } from "../../../core/tools/iterable";
-import { cleanContext, groupby, groupbyAsync, update } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/string";
+import { bool, cleanContext, dateMax, dateMin, enumerate, equal, extend, f, floatCompare, floatIsZero, floatRound, groupby, groupbyAsync, isInstance, itemgetter, len, range, sortedAsync, sum, update } from "../../../core/tools";
 
 export const PROCUREMENT_PRIORITIES = [['0', 'Normal'], ['1', 'Urgent']];
 
@@ -1658,7 +1649,7 @@ class StockMove extends Model {
     }
     const productId = await (await this['productId']).withContext({ lang: await (this as any)._getLang() });
     return {
-      'productDescriptionVariants': descriptionPicking && descriptionPicking.replace(await productId._getDescription(pickingTypeId), ''),
+      'productDescriptionVariants': descriptionPicking && descriptionPicking.replaceAll(await productId._getDescription(pickingTypeId), ''),
       'datePlanned': date,
       'dateDeadline': dateDeadline,
       'moveDestIds': this,

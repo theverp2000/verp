@@ -1,17 +1,12 @@
 
-import { http } from "../../../core";
-import { AccessError } from "../../../core/helper/errors";
+import { http, isSubclass } from "../../../core";
+import { AccessError } from "../../../core/helper";
 import { WebRequest } from "../../../core/http";
-import { isSubclass } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { Forbidden, NotFound } from "../../../core/service";
 import { urlEncode, urlParse } from "../../../core/service/middleware/utils";
-import { bool } from "../../../core/tools/bool";
-import { isInstance } from "../../../core/tools/func";
-import { plaintext2html } from "../../../core/tools/mail";
-import { consteq, pop, setOptions, update } from "../../../core/tools/misc";
+import { bool, consteq, isInstance, plaintext2html, pop, setOptions, update } from "../../../core/tools";
 import * as mail from '../../mail';
-
 
 async function _checkSpecialAccess(req: WebRequest, resModel, resId, token = '', hash = '', pid = false) {
   const env = await req.getEnv();

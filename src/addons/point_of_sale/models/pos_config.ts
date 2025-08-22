@@ -1,9 +1,8 @@
 import { v4 as uuid4 } from 'uuid';
-import { MetaModel, Model, _super } from "../../../core/models"
-import { _f, bool, camelCaseTo_, dateSetTz, diffDate, f, len, map, some, someAsync, subDate, update } from '../../../core/tools';
-import { Fields, _Date, api } from '../../../core';
+import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { getattr } from '../../../core/api';
 import { UserError, ValidationError } from '../../../core/helper';
-import { getattr, hasattr } from '../../../core/api';
+import { _f, bool, camelCaseTo_, dateSetTz, diffDate, f, len, some, update } from '../../../core/tools';
 
 @MetaModel.define()
 class PosConfig extends Model {

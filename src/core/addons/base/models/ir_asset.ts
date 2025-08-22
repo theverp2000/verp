@@ -1,21 +1,13 @@
 import glob from 'glob';
 import _ from "lodash";
 import pt from 'path';
-import * as api from "../../../api";
+import { Fields, MetaModel, Model, _super, api, tools } from "../../..";
 import * as conf from "../../../conf";
-import { Fields } from "../../../fields";
 import { Dict } from '../../../helper/collections';
 import { FileNotFoundError, ValueError } from "../../../helper/errors";
 import { _root, addonsManifest } from "../../../http";
-import { MetaModel, Model, _super } from "../../../models";
-import { isInstance } from "../../../tools/func";
-import { rstringPart } from "../../../tools/string";
-import { enumerate, extend, len, sorted } from "../../../tools/iterable";
-import { filePath,  } from '../../../tools/models';
-import { URI } from "../../../tools/uri";
-import { bool } from '../../../tools/bool';
-import { tools } from '../../..';
-import { topologicalSort } from '../../../tools/misc';
+import { URI, rstringPart, bool, isInstance, enumerate, extend, len, sorted, topologicalSort } from "../../../tools";
+import { filePath, } from '../../../tools/models';
 
 export const SCRIPT_EXTENSIONS = ['js'];
 export const STYLE_EXTENSIONS = ['css', 'scss', 'sass', 'less'];

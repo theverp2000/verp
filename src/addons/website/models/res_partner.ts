@@ -1,5 +1,4 @@
-import { Fields } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _super } from "../../../core";
 import { urlEncode } from "../../../core/service/middleware/utils";
 import { f } from "../../../core/tools";
 

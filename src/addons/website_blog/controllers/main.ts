@@ -1,11 +1,10 @@
-import URL from 'node:url';
-import { _Datetime, http } from "../../../core"
+import { _Datetime, http } from "../../../core";
 import { OrderedDict } from "../../../core/helper";
 import { WebRequest, WebResponse } from "../../../core/http";
 import { NotFound } from "../../../core/service";
-import { bool, f, getLang, groupby, html2Text, incrementFieldSkiplock, isInstance, len, parseInt, remove, setOptions, slug, sortedAsync, stringPart, timezone, toFormat, unslug, URI } from "../../../core/tools";
-import { QueryURL, queryURL } from '../../website';
+import { bool, f, getLang, groupby, html2Text, incrementFieldSkiplock, isInstance, len, parseInt, remove, slug, sortedAsync, stringPart, timezone, toFormat, unslug } from "../../../core/tools";
 import { buildUrlWParams } from '../../portal';
+import { QueryURL, queryURL } from '../../website';
 
 @http.define()
 class WebsiteBlog extends http.Controller {
@@ -79,7 +78,7 @@ class WebsiteBlog extends http.Controller {
         const BlogTag = env.items('blog.tag');
 
         // prepare domain
-        let domain = await req.website.websiteDomain();
+        let domain = req.website.websiteDomain();
 
         if (bool(blog)) {
             domain = domain.concat([['blogId', '=', blog.id]]);
@@ -95,7 +94,7 @@ class WebsiteBlog extends http.Controller {
             const fixedTagSlug = (await Promise.all(activeTags.map(async (tag) => slug([tag.id, await tag.seoName || await tag.displayName])))).join(',');
             if (fixedTagSlug != tags) {
                 const path = req.httpRequest.path;
-                const newUrl = path.replace(f("/tag/%s", tags), fixedTagSlug && f("/tag/%s", fixedTagSlug) || "");
+                const newUrl = path.replaceAll(f("/tag/%s", tags), fixedTagSlug && f("/tag/%s", fixedTagSlug) || "");
                 if (newUrl != path) {  // check that really replaced and avoid loop
                     return req.redirect(res, newUrl, 301);
                 }
@@ -241,7 +240,7 @@ class WebsiteBlog extends http.Controller {
                 throw new NotFound(res);
             }
         }
-        const blogs = await Blog.search(await req.website.websiteDomain(), {order: "createdAt asc, id asc"});
+        const blogs = await Blog.search(req.website.websiteDomain(), {order: "createdAt asc, id asc"});
 
         if (!bool(blog) && len(blogs) == 1) {
             const url = await queryURL(f('/blog/%s', await blogs[0].slug()), opts);
@@ -317,7 +316,7 @@ class WebsiteBlog extends http.Controller {
         const BlogPost = env.items('blog.post');
         const [dateBegin, dateEnd] = [post['dateBegin'], post['dateEnd']];
 
-        const domain = await req.website.websiteDomain();
+        const domain = req.website.websiteDomain();
         const blogs = await blog.search(domain, {order: "createdAt, id asc"});
 
         let tag;

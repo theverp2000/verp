@@ -1,15 +1,8 @@
 import { DateTime } from "luxon";
-import { Fields, api } from "../../../core";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { WARNING_HELP, WARNING_MESSAGE } from "../../../core/addons/base";
-import { ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { isDigit } from "../../../core/tools/func";
-import { extend, len, sum } from "../../../core/tools/iterable";
-import { DEFAULT_SERVER_DATETIME_FORMAT } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/string";
-import { _convert$ } from "../../../core/tools/string";
-import { _f } from "../../../core/tools/string";
+import { ValidationError } from "../../../core/helper";
+import { DEFAULT_SERVER_DATETIME_FORMAT, _convert$, _f, bool, extend, f, isDigit, len, sum } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountFiscalPosition extends Model {

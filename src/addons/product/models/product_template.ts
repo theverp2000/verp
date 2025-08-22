@@ -1,14 +1,8 @@
 import _ from "lodash";
-import { api, tools } from "../../../core";
-import { Fields, _Date } from "../../../core/fields";
-import { Dict, MapKey } from "../../../core/helper/collections";
-import { StopIteration, UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date, _super, api, tools } from "../../../core";
+import { Dict, MapKey, StopIteration, UserError, ValidationError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { f } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { isImageSizeAbove } from "../../../core/tools/image";
-import { extend, isList, len, nextAsync, product } from "../../../core/tools/iterable";
+import { bool, extend, f, isImageSizeAbove, isList, len, nextAsync, product } from "../../../core/tools";
 
 @MetaModel.define()
 class ProductTemplate extends Model {

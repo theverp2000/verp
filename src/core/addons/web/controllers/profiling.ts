@@ -1,8 +1,7 @@
 import { http } from "../../..";
 import { UserError } from "../../../helper";
 import { WebResponse } from "../../../http";
-import { f, isInstance, pop } from "../../../tools";
-import { stringify } from "../../../tools/json";
+import { f, isInstance, pop, stringify } from "../../../tools";
 
 @http.define()
 export class Profiling extends http.Controller {

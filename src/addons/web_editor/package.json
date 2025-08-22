@@ -1,7 +1,10 @@
 {
     "label": "Web Editor",
     "category": "Hidden",
-    "description": "Verp Web Editor widget.\n==========================",
+    "descriptions": [
+        "Verp Web Editor widget.",
+        "=========================="
+    ],
     "depends": ["web"],
     "data": [
         "security/ir.model.access.csv",

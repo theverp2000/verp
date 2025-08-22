@@ -1,9 +1,7 @@
 import _ from "lodash";
-import { _Date, _Datetime, api, Fields } from "../../../core";
-import { _super, MetaModel, Model } from "../../../core/models";
-import { _f, _f2, addDate, bool, chain, enumerate, extend, islice, len, repeat, sorted, subDate, takewhile, today, update, ustr } from "../../../core/tools";
+import { _Date, _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { literalEval } from '../../../core/tools/save_eval';
+import { _f2, addDate, bool, chain, enumerate, extend, islice, len, literalEval, repeat, sorted, subDate, takewhile, today, update, ustr } from "../../../core/tools";
 
 // display top 3 in ranking, could be db variable
 const MAX_VISIBILITY_RANKING = 3;
@@ -510,7 +508,7 @@ class Challenge extends Model {
             'label': <gamification.goal.description label>,
             'description': <gamification.goal.description description>,
             'condition': <reach condition {lower,higher}>,
-            'computationMode': <target computation {manually,count,sum,python}>,
+            'computationMode': <target computation {manually,count,sum,javascript}>,
             'monetary': <{true,false}>,
             'suffix': <value suffix>,
             'action': <{true,false}>,

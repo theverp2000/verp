@@ -45,7 +45,7 @@
     <t t-out="ribbon.html"/>
     <span t-attf-class="fa fa-#{isTag ? 'tag' : 'bookmark'} ml-auto"></span>
     <span t-attf-class="fa fa-arrow-#{isLeft ? 'left' : 'right'} ml-1"></span>
-    <span t-attf-class="o-wsale-color-preview #{colorClasses} ml-1" t-attf-style="background-color: #{ribbon.bgcolor}"></span>
+    <span t-attf-class="o-wsale-color-preview #{colorClasses} ml-1" t-attf-style="background-color: #{ribbon.bgColor}"></span>
     <span t-attf-class="o-wsale-color-preview #{colorClasses} ml-1" t-attf-style="background-color: #{textColor} !important;"></span>
 </we-button>
 

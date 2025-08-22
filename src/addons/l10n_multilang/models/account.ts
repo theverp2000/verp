@@ -1,5 +1,4 @@
-import { Fields } from "../../../core/fields"
-import { MetaModel, Model } from "../../../core/models"
+import { Fields, MetaModel, Model } from "../../../core";
 
 @MetaModel.define()
 class AccountAccountTag extends Model {

@@ -1,7 +1,6 @@
-import { Fields, _Date, _Datetime, api } from "../../../core";
+import { Fields, MetaModel, Model, _Date, _Datetime, api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
-import { MetaModel, Model } from "../../../core/models"
-import { bool, f, floatIsZero, formatLang } from "../../../core/tools";
+import { f, floatIsZero, formatLang } from "../../../core/tools";
 
 /**
  * Used to register payments made in a pos.order.

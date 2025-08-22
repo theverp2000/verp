@@ -1,10 +1,8 @@
 import { DateTime } from "luxon";
-import { api, tools } from "../../..";
-import { Fields } from "../../../fields";
+import { Fields, MetaModel, Model, _super, api, tools } from "../../..";
 import { UserError } from "../../../helper/errors";
-import { MetaModel, Model, _super } from "../../../models";
+import { _f } from "../../../tools";
 import { safeEval } from "../../../tools/save_eval";
-import { _f } from "../../../tools/string";
 
 @MetaModel.define()
 class IrFilters extends Model {

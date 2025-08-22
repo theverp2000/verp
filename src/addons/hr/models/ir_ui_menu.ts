@@ -1,4 +1,4 @@
-import { MetaModel, Model, _super } from "../../../core/models"
+import { MetaModel, Model, _super } from "../../../core/models";
 
 @MetaModel.define()
 class IrUiMenu extends Model {

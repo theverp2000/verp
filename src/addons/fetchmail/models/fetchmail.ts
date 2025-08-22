@@ -1,7 +1,6 @@
 import Imap from "imap";
-import { Fields, _Datetime, api } from "../../../core";
+import { Fields, MetaModel, Model, _Datetime, _super, api } from "../../../core";
 import { UserError, ValueError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { _f, bool, isInstance, range, ustr } from "../../../core/tools";
 
 const MAX_POP_MESSAGES = 50;
@@ -194,7 +193,7 @@ verp_mailgate: "|/path/to/verp-mailgate.js --host=localhost -u {uid} -p PASSWORD
                     const imapServer = await server.connect();
                     await imapServer.select();
                     let [result, data] = await imapServer.search(null, '(UNSEEN)');
-                    for (const num of data[0].replace('  ', ' ').split(' ')) {
+                    for (const num of data[0].replaceAll('  ', ' ').split(' ')) {
                         let resId;
                         [result, data] = await imapServer.fetch(num, '(RFC822)');
                         await imapServer.store(num, '-FLAGS', '\\Seen');

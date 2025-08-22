@@ -3,19 +3,15 @@ import http from 'http';
 import _ from 'lodash';
 import path from 'node:path';
 import { format } from 'node:util';
-import { api, conf, modules, service, tools } from "../../..";
-import { Environment } from '../../../api';
+import { AbstractModel, BaseModel, MetaModel, api, conf, modules, service, tools } from "../../..";
 import { getattr, setattr } from '../../../api/func';
-import { Dict } from '../../../helper/collections';
-import { AccessDenied, AccessError, MissingError, ValueError } from "../../../helper/errors";
+import { AccessDenied, AccessError, Dict, MissingError, ValueError } from '../../../helper';
 import { ALLOWED_DEBUG_MODES, STATIC_CACHE_LONG, SessionExpiredException, WebRequest, WebResponse, _generateRoutingRules } from "../../../http";
-import { AbstractModel, BaseModel, MetaModel } from "../../../models";
-import { getModulePath, getResourcePath } from '../../../modules/modules';
+import { getModulePath, getResourcePath } from '../../../modules';
 import { BaseConverter, Forbidden, HTTPException, NotFound, NumberConverter, Router, Rule } from '../../../service/middleware';
 import { BaseResponse } from '../../../service/middleware/base_response';
 import { urlQuote } from '../../../service/middleware/utils';
-import { UpCamelCase, b64decode, b64encode, bool, consteq, filePath, isInstance, md5, setOptions, sha512, sorted, str2bool, toText, ustr } from "../../../tools";
-import { getExtension, guessExtension, guessMimetype, guessType } from '../../../tools/mimetypes';
+import { UpCamelCase, b64decode, b64encode, bool, consteq, filePath, getExtension, guessExtension, guessMimetype, guessType, isInstance, md5, setOptions, sha512, sorted, str2bool, toText, ustr } from "../../../tools";
 
 export class RequestUID extends Dict<any> {
   constructor(options = {}) {
@@ -347,7 +343,7 @@ class IrHttp extends AbstractModel {
   * Binary server
   * ------------------------------------------------------*/
 
-  async _xmlidToObj(req, env: Environment, xmlid) {
+  async _xmlidToObj(req, env: api.Environment, xmlid) {
     return env.ref(xmlid, false);
   }
 
@@ -377,7 +373,7 @@ class IrHttp extends AbstractModel {
           }
         }
       }
-      if (!content) {
+      if (!bool(content)) {
         status = 301;
         content = record.url;
       }
@@ -407,14 +403,14 @@ class IrHttp extends AbstractModel {
       if (options.model === 'ir.attachment') {
         const optionsAccessToken = options.accessToken;
         const recordSudo = await record.sudo();
-        const [accessToken, isPublic] = await recordSudo(['accessToken', 'isPublic']);
+        const accessToken = await recordSudo.accessToken;
         if (optionsAccessToken && !consteq(accessToken || '', optionsAccessToken)) {
           return [null, 403];
         }
         else if (optionsAccessToken && consteq(accessToken || '', optionsAccessToken)) {
           record = recordSudo;
         }
-        else if (isPublic) {
+        else if (await recordSudo.isPublic) {
           record = recordSudo;
         }
         else if (await (await this.env.user()).hasGroup('base.groupPortal')) {
@@ -430,7 +426,7 @@ class IrHttp extends AbstractModel {
         if (!record.env.su) {
           record._cache.clear();
         }
-        await record['__lastUpdate'];
+        // const __lastUpdate = await record['__lastUpdate']; 
       } catch (e) {
         if (isInstance(e, AccessError)) {
           return [null, 403];
@@ -470,7 +466,7 @@ class IrHttp extends AbstractModel {
         checksum = await record['checksum'];
       }
     }
-    if (!content) {
+    if (!bool(content)) {
       try {
         content = await record[field] || '';
       } catch (e) {
@@ -512,7 +508,7 @@ class IrHttp extends AbstractModel {
       }
     }
     if (!checksum) {
-      checksum = `${md5(toText(content))}`;
+      checksum = md5(toText(content));
     }
 
     const status = content.length ? 200 : 404;
@@ -576,9 +572,12 @@ class IrHttp extends AbstractModel {
       [status, content, options.defaultFilename, options.mimetype, filehash] = await this._binaryIrAttachmentRedirectContent(record, options.defaultMimetype);
       options.filename = options.filename ?? options.defaultFilename;
     }
-    if (!content) {
+    if (!bool(content)) {
       [status, content, options.filename, options.mimetype, filehash] = await this._binaryRecordContent(
         record, options.field, options.filename, options.filenameField, 'application/octet-stream');
+    }
+    if (global.logAttachment && !content) {
+      console.log('No content', record.id, options.field, options.filename, options.filenameField);
     }
 
     [status, headers, content] = await this._binarySetHeaders(

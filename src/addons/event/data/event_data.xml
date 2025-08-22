@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data noupdate="1">
+        <!-- Event Categories -->
+        <record id="eventTypeDataTicket" model="event.type">
+            <field name="label">Ticketing</field>
+            <field name="autoConfirm" eval="false"/>
+        </record>
+        <record id="eventTypeDataConference" model="event.type">
+            <field name="label">Conference</field>
+            <field name="autoConfirm" eval="true"/>
+        </record>
+
+        <!-- Event stages -->
+        <record id="eventStageNew" model="event.stage">
+            <field name="label">New</field>
+            <field name="description">Freshly created</field>
+            <field name="sequence">1</field>
+        </record>
+        <record id="eventStageBooked" model="event.stage">
+            <field name="label">Booked</field>
+            <field name="description">The place has been reserved</field>
+            <field name="sequence">2</field>
+        </record>
+        <record id="eventStageAnnounced" model="event.stage">
+            <field name="label">Announced</field>
+            <field name="description">The event has been publicly announced</field>
+            <field name="sequence">3</field>
+        </record>
+        <record id="eventStageDone" model="event.stage">
+            <field name="label">Ended</field>
+            <field name="description">Fully ended</field>
+            <field name="sequence">5</field>
+            <field name="pipeEnd" eval="true"/>
+            <field name="fold" eval="true"/>
+        </record>
+        <record id="eventStageCancelled" model="event.stage">
+            <field name="label">Cancelled</field>
+            <field name="description">The event has been cancelled</field>
+            <field name="sequence">6</field>
+            <field name="pipeEnd" eval="true"/>
+            <field name="fold" eval="true"/>
+        </record>
+    </data>
+</verp>

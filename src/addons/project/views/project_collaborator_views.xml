@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+
+    <record id="project_collaborator_view_form" model="ir.ui.view">
+        <field name="label">project.collaborator.view.form</field>
+        <field name="model">project.collaborator</field>
+        <field name="arch" type="xml">
+            <form string="Project Collaborator" create="0" edit="0">
+                <sheet>
+                    <group>
+                        <field name="projectId" options="{'no_create': True}" />
+                        <field name="partnerId" options="{'no_create': True}" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="project_sharing_access_view_tree" model="ir.ui.view">
+        <field name="label">project.collaborator.view.tree</field>
+        <field name="model">project.collaborator</field>
+        <field name="arch" type="xml">
+            <tree string="Project Collaborators" create="0">
+                <field name="projectId" options="{'no_create': True}"/>
+                <field name="partnerId" options="{'no_create': True}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="project_collaborator_view_search" model="ir.ui.view">
+        <field name="label">project.collaborator.view.search</field>
+        <field name="model">project.collaborator</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partnerId" />
+                <field name="projectId" />
+                <group expand="0" string="Group By">
+                    <filter name="project" string="Project" context="{'group_by': 'projectId'}" />
+                    <filter name="collaborator" string="Collaborator" context="{'group_by': 'partnerId'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="project_collaborator_action" model="ir.actions.actwindow">
+        <field name="label">Project Collaborators</field>
+        <field name="resModel">project.collaborator</field>
+        <field name="viewMode">tree,form</field>
+        <field name="domain">[('projectId', '=', activeId)]</field>
+        <field name="search_view_id" ref="project_collaborator_view_search"/>
+    </record>
+
+</verp>

@@ -72,7 +72,7 @@
             <field name="arch" type="xml">
                 <form string="Routing Work Centers">
                     <sheet>
-                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                         <group>
                             <group name="description">
                                 <field name="active" invisible="1"/>

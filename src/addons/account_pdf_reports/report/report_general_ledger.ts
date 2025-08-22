@@ -1,9 +1,6 @@
-import { api } from "../../../core";
+import { AbstractModel, api, MetaModel } from "../../../core";
 import { UserError } from "../../../core/helper/errors";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { _convert$, parseValues } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { pop } from "../../../core/tools/misc";
+import { _convert$, bool, parseValues, pop } from "../../../core/tools";
 
 @MetaModel.define()
 class ReportGeneralLedger extends AbstractModel {

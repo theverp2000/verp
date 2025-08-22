@@ -1,11 +1,6 @@
-import { api } from "../../../core";
-import { Fields, _Date, _Datetime } from "../../../core/fields";
-import { RedirectWarning, UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool, floatIsZero, floatRound, formatDate, isHtmlEmpty, len, parseInt, update } from "../../../core/tools";
-import { monthrange } from "../../../core/tools/calendar";
-import { dateMax, setDate, subDate } from "../../../core/tools/date_utils";
-import { f } from "../../../core/tools/string";
+import { Fields, MetaModel, Model, _Date, _Datetime, _super, api } from "../../../core";
+import { RedirectWarning, UserError, ValidationError } from "../../../core/helper";
+import { bool, dateMax, f, floatIsZero, floatRound, formatDate, isHtmlEmpty, len, monthrange, parseInt, setDate, subDate, update } from "../../../core/tools";
 import { MAX_HASH_VERSION } from "./account_move";
 
 const MONTH_SELECTION = [
@@ -284,7 +279,7 @@ class ResCompany extends Model {
 
   getNewAccountCode(currentCode: string, oldPrefix: string, newPrefix: string) {
     const digits = len(currentCode);
-    return newPrefix + currentCode.replace(new RegExp(oldPrefix), '').replace(/^0*/, '').padStart(digits - newPrefix.length, '0');
+    return newPrefix + currentCode.replaceAll(new RegExp(oldPrefix), '').replace(/^0*/g, '').padStart(digits - newPrefix.length, '0');
   }
 
   async reflectCodePrefixChange(oldCode, newCode) {

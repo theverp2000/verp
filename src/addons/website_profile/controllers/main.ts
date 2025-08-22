@@ -1,28 +1,11 @@
-// # -*- coding: utf-8 -*-
-// # Part of Verp. See LICENSE file for full copyright and licensing details.
-
-import { http } from "../../../core"
+import { http } from "../../../core";
 import { Dict } from "../../../core/helper";
 import { setSafeImageHeaders } from "../../../core/http";
-import { getModulePath, getResourcePath } from "../../../core/modules";
+import { getResourcePath } from "../../../core/modules";
 import { expression } from "../../../core/osv";
 import { Forbidden } from "../../../core/service";
 import { BaseResponse } from "../../../core/service/middleware/base_response";
 import { b64decode, b64encode, bool, f, fileClose, fileOpen, fileRead, imageGuessSizeFromFieldName, imageProcess, itemgetter, len, pop, sorted, subDate, today, update } from "../../../core/tools";
-
-// import base64
-// import werkzeug
-// import werkzeug.exceptions
-// import werkzeug.urls
-// import werkzeug.wrappers
-// import math
-
-// from dateutil.relativedelta import relativedelta
-// from operator import itemgetter
-
-// from verp import fields, http, modules, tools
-// from verp.http import request
-// from verp.osv import expression
 
 @http.define()
 class WebsiteProfile extends http.Controller {

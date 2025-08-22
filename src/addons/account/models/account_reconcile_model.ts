@@ -1,13 +1,9 @@
 import _ from "lodash";
 import { DateTime } from "luxon";
-import { api, tools } from "../../../core";
-import { Command, Fields, _Date } from "../../../core/fields";
-import { UserError, ValidationError, ValueError } from "../../../core/helper/errors";
-import { MetaModel, Model } from "../../../core/models";
+import { Command, Fields, MetaModel, Model, _Date, api, tools } from "../../../core";
+import { UserError, ValidationError, ValueError } from "../../../core/helper";
 import { getUnaccentWrapper } from "../../../core/osv/expression";
-import { _f, extend, f, html2Text, isInstance, len, sum } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { copysign, update } from "../../../core/tools/misc";
+import { _f, bool, copysign, extend, f, html2Text, isInstance, len, sum, update } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountReconcileModelPartnerMapping extends Model {
@@ -490,8 +486,8 @@ class AccountReconcileModel extends Model {
         if (match) {
           const sign = residualBalance > 0.0 ? 1 : -1;
           try {
-            const extractedMatchGroup = match[1].replace(new RegExp('[^\d' + decimalSeparator + ']'), '');
-            const extractedBalance = parseFloat(extractedMatchGroup.replace(decimalSeparator, '.'));
+            const extractedMatchGroup = match[1].replaceAll(new RegExp('[^\d' + decimalSeparator + ']', 'g'), '');
+            const extractedBalance = parseFloat(extractedMatchGroup.replaceAll(decimalSeparator, '.'));
             balance = copysign(extractedBalance * sign, residualBalance);
           } catch (e) {
             if (isInstance(e, ValueError)) {

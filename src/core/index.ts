@@ -5,8 +5,8 @@ console.log(`*** Loading Verp core...`);
 export * from './globals';
 
 export * as addons from './addons';
-export * as models from './models';
-export * from './fields'
+export * from './models';
+export * from './fields';
 export * as modules from './modules';
 export * as tests from './tests';
 export * as sql_db from './sql_db';

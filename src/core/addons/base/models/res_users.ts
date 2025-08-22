@@ -2,27 +2,16 @@ import * as crypto from 'crypto';
 import _ from 'lodash';
 import { DateTime, Duration } from 'luxon';
 import assert from 'node:assert';
-import { api, tools } from '../../..';
-import { Environment } from '../../../api/api';
-import { getattr, hasattr } from '../../../api/func';
-import { Dict, FrozenDict, Map2 } from "../../../helper/collections";
-import { AccessDenied, AccessError, UserError, ValidationError } from '../../../helper/errors';
+import { _super, AbstractModel, api, Command, Fields, MetaModel, Model, ModelRecords, NO_ACCESS, tools, TransientModel } from '../../..';
+import { Environment, getattr, hasattr } from '../../../api';
+import { AccessDenied, AccessError, Dict, FrozenDict, Map2, UserError, ValidationError } from "../../../helper";
 import { WebRequest } from '../../../http';
-import { MetaModel, Model } from "../../../models";
 import { expression, Query } from '../../../osv';
 import { MetaDatebase } from '../../../service/db';
 import * as ipaddress from '../../../service/middleware/ipaddress';
-import { bool, doWith, isCallable, isInstance, quoteList, singleEmailRe } from '../../../tools';
+import { _f, allTimezones, bool, chain, doWith, E, extend, f, isCallable, isInstance, len, partition, pop, quoteList, repeat, serializeXml, setOptions, sha256, singleEmailRe, sorted, sortedAsync, stringify, update, urandom } from '../../../tools';
 import * as context from '../../../tools/context';
-import { chain, extend, len, repeat, sorted, sortedAsync } from '../../../tools/iterable';
-import { stringify } from '../../../tools/json';
 import * as lazy from '../../../tools/lazy';
-import { allTimezones, partition, pop, setOptions, sha256, update } from "../../../tools/misc";
-import { _f, f } from "../../../tools/string";
-import { urandom } from '../../../tools/utils';
-import { E, serializeXml } from "../../../tools/xml";
-import { Command, Fields, NO_ACCESS } from './../../../fields';
-import { _super, AbstractModel, ModelRecords, TransientModel } from './../../../models';
 import { MODULE_UNINSTALL_FLAG } from './ir_model';
 
 const USER_PRIVATE_FIELDS = []
@@ -528,7 +517,7 @@ class Users extends Model {
       `SELECT COALESCE(password, '') AS password FROM "resUsers" WHERE id=%s`,
       [user.id]
     )
-    const hashed = res[0]['password'].replace(PREFIX_HASH, '');
+    const hashed = res[0]['password'].replaceAll(PREFIX_HASH, '');
     const [valid, replacement] = this._cryptContext().verifyAndUpdate(password, hashed);
     if (replacement != null) {
       const [time, pass] = replacement.split('$');

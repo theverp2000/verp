@@ -1,7 +1,5 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, TransientModel, _super } from "../../../core/models"
-import { isList, update } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
+import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
+import { bool, isList, update } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountingReport extends TransientModel {

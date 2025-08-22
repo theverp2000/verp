@@ -1,7 +1,6 @@
-import { api, Fields, tools } from "../../../core";
-import { _super, MetaModel, Model } from "../../../core/models"
+import { _super, api, Fields, MetaModel, Model, tools } from "../../../core";
 import { bool, len, update, urlFor } from "../../../core/tools";
-import { getRequestWebsite } from "../../website/models";
+import { getRequestWebsite } from "../../website";
 
 @MetaModel.define()
 class Website extends Model {
@@ -231,7 +230,7 @@ class Website extends Model {
     }
 
     async saleProductDomain() {
-        return [["saleOk", "=", true]].concat(await (await (this as any).getCurrentWebsite()).websiteDomain());
+        return [["saleOk", "=", true]].concat((await (this as any).getCurrentWebsite()).websiteDomain());
     }
 
     @api.model()

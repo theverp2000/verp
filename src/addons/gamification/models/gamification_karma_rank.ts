@@ -1,5 +1,4 @@
-import { api, Fields } from "../../../core";
-import { _super, MetaModel, Model } from "../../../core/models"
+import { _super, api, Fields, MetaModel, Model } from "../../../core";
 import { equal, htmlTranslate, some } from "../../../core/tools";
 
 @MetaModel.define()

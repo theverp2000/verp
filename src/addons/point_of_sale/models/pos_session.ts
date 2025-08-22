@@ -1,7 +1,6 @@
-import { Command, Fields, _Date, _Datetime, api } from "../../../core";
+import { Command, Fields, MetaModel, Model, _Date, _Datetime, _super, api } from "../../../core";
 import { setdefault } from "../../../core/api";
-import { AccessError, DefaultDict, DefaultMapKey, MapKey, UserError, ValidationError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models"
+import { AccessError, DefaultMapKey, MapKey, UserError, ValidationError } from "../../../core/helper";
 import { _f, bool, f, floatCompare, floatIsZero, isInstance, len, subDate, sum, update } from "../../../core/tools";
 
 const POS_SESSION_STATE = [
@@ -1806,7 +1805,7 @@ class PosSession extends Model {
                       `${await currency.position == 'after' ? await currency.symbol : ''}<br/>`;
         }
         if (notes) {
-            message += notes.replace('\n', '<br/>');
+            message += notes.replaceAll('\n', '<br/>');
         }
         if (message) {
             await this.env.items('mail.message').create({

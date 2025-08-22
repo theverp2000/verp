@@ -1,5 +1,4 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, Model } from "../../../core/models";
+import { Fields, MetaModel, Model, api } from "../../../core";
 
 @MetaModel.define()
 class Contacts extends Model {

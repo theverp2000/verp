@@ -1,6 +1,5 @@
-import { Fields } from "../../../core/fields";
-import { MetaModel, Model } from "../../../core/models";
-import { dropViewIfExists } from "../../../core/tools/sql";
+import { Fields, MetaModel, Model } from "../../../core";
+import { dropViewIfExists } from "../../../core/tools";
 
 @MetaModel.define()
 class ReportStockQuantity extends Model {

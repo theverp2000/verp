@@ -1,4 +1,4 @@
-import { _super, MetaModel, TransientModel } from "../../../core/models";
+import { _super, MetaModel, TransientModel } from "../../../core";
 
 @MetaModel.define()
 class SetupBarBankConfigWizard extends TransientModel {

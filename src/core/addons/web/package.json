@@ -2,7 +2,11 @@
   "label": "Web",
   "category": "Hidden",
   "version": "1.0",
-  "description": "Verp Web core module.\n========================\nThis module provides the core of the Verp Web Client.",
+  "descriptions": [
+    "Verp Web core module.",
+    "========================",
+    "This module provides the core of the Verp Web Client."
+  ],
   "depends": ["base"],
   "autoInstall": true,
   "data": [

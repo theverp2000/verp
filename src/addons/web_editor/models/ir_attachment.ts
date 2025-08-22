@@ -1,9 +1,6 @@
-import { api } from "../../../core"
-import { Fields } from "../../../core/fields"
-import { MetaModel, Model } from "../../../core/models"
-import { urlQuote } from "../../../core/service/middleware/utils"
-import { ImageProcess } from "../../../core/tools/image"
-import { f } from "../../../core/tools/string"
+import { api, Fields, MetaModel, Model } from "../../../core";
+import { urlQuote } from "../../../core/service/middleware/utils";
+import { f, ImageProcess } from "../../../core/tools";
 
 export const SUPPORTED_IMAGE_MIMETYPES = ['image/gif', 'image/jpe', 'image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml'];
 export const SUPPORTED_IMAGE_EXTENSIONS = ['.gif', '.jpe', '.jpeg', '.jpg', '.png', '.svg'];

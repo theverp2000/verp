@@ -1,6 +1,4 @@
-import { api } from "../../../core";
-import { _super } from "../../../core/models";
-import { AbstractModel, MetaModel } from "../../../core/models"
+import { _super, AbstractModel, api, MetaModel } from "../../../core";
 
 @MetaModel.define()
 class PublisherWarrantyContract extends AbstractModel {

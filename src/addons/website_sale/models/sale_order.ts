@@ -1,7 +1,6 @@
-import { _Date, _Datetime, api, Fields } from "../../../core";
+import { _Date, _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
 import { setdefault } from "../../../core/api";
 import { UserError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models"
 import { expression } from "../../../core/osv";
 import { bool, extend, len, parseInt, sample, subDate, sum, update } from "../../../core/tools";
 

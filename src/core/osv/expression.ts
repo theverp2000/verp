@@ -432,7 +432,7 @@ export class Expression {
     /**
      * Return a domain implementing the childOf operator for [[left,childOf,ids]],
         either as a range using the parent_path tree lookup field
-        (when available), or as an expanded [[left,in,child_ids]]
+        (when available), or as an expanded [[left,in,childIds]]
      * @param left 
      * @param ids 
      * @param leftModel 

@@ -1,0 +1,14 @@
+{
+    "label": "Attachments List and Document Indexation",
+    "version": "2.1",
+    "category": "Hidden/Tools",
+    "descriptions": [
+        "Attachments list and document indexation", 
+        "========================================",
+        "* Show attachment on the top of the forms",
+        "* Document Indexation: odt, pdf, xlsx, docx"
+    ],
+    "depends": ["web"],
+    "installable": true,
+    "license": "MIT Expat"
+}

@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<verp>
+    <data>
+        <!-- EVENT.TAG.CATEGORY VIEWS -->
+        <record id="eventTagCategoryViewTree" model="ir.ui.view">
+            <field name="label">event.tag.category.view.tree</field>
+            <field name="model">event.tag.category</field>
+            <field name="arch" type="xml">
+                <tree string="Event Category">
+                    <field name="sequence" widget="handle"/>
+                    <field name="label"/>
+                    <field name="tagIds" widget="many2manyTags" options="{'colorField': 'color'}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="eventTagCategoryViewForm" model="ir.ui.view">
+            <field name="label">event.tag.category.view.form</field>
+            <field name="model">event.tag.category</field>
+            <field name="arch" type="xml">
+                <form string="Event Category">
+                    <sheet>
+                        <div class="oe-title">
+                            <h1><field nolabel="1" name="label"/></h1>
+                        </div>
+                        <group>
+                            <field name="tagIds" context="{'default_categoryId': activeId}">
+                                <tree string="Tags" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="label"/>
+                                    <field name="color" widget="colorPicker"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="eventTagCategoryActionTree" model="ir.actions.actwindow" >
+            <field name="label">Event Tags Categories</field>
+            <field name="resModel">event.tag.category</field>
+            <field name="viewMode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    Create an Event Tag Category
+                </p><p>
+                    Use Event Tag Categories to classify and organize your event tags.
+                </p>
+            </field>
+        </record>
+
+        <!-- EVENT.TAG VIEWS -->
+        <record id="eventTagViewTree" model="ir.ui.view">
+            <field name="label">event.tag.view.tree</field>
+            <field name="model">event.tag</field>
+            <field name="arch" type="xml">
+                <tree string="Event Tags Categories">
+                    <field name="sequence" widget="handle"/>
+                    <field name="label"/>
+                    <field name="categoryId"/>
+                    <field name="color" widget="colorPicker"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="eventTagViewForm" model="ir.ui.view">
+            <field name="label">event.tag.view.form</field>
+            <field name="model">event.tag</field>
+            <field name="arch" type="xml">
+                <form string="Event Category Tag">
+                    <sheet>
+                        <group>
+                            <field name="label"/>
+                            <field name="categoryId" widget="many2one"/>
+                            <field name="color" widget="colorPicker"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="menuEventCategory" model="ir.ui.menu">
+            <field name="action" ref="event.eventTagCategoryActionTree"/>
+        </record>
+
+    </data>
+</verp>

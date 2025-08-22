@@ -1,9 +1,8 @@
 import { readFile } from "fs/promises";
-import { api, Fields } from "../../../core";
-import { _super, MetaModel, Model } from "../../../core/models";
+import { v4 as uuid4 } from 'uuid';
+import { _super, api, Fields, MetaModel, Model } from "../../../core";
 import { getResourcePath } from "../../../core/modules";
 import { b64encode, bool, f, update } from "../../../core/tools";
-import {v4 as uuid4} from 'uuid';
 
 export const RATING_LIMIT_SATISFIED = 5;
 export const RATING_LIMIT_OK = 3;

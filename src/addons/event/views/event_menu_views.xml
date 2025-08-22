@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<verp><data>
+
+    <!-- MAIN MENU -->
+    <menuitem name="Events"
+        id="eventMainMenu"
+        sequence="125"
+        groups="event.groupEventRegistrationDesk"
+        webIcon="event,static/description/icon.png"/>
+
+    <!-- HEADER: EVENTS -->
+    <menuitem name="Events"
+        id="menuEventEvent"
+        sequence="1"
+        parent="event.eventMainMenu"
+        groups="event.groupEventRegistrationDesk"/>
+
+    <!-- HEADER: REPORTING -->
+    <menuitem name="Reporting"
+        id="menuReportingEvents"
+        sequence="50"
+        parent="eventMainMenu"
+        groups="event.groupEventUser"/>
+
+    <!-- HEADER: CONFIGURATION -->
+    <menuitem name="Configuration"
+        id="menuEventConfiguration"
+        sequence="99"
+        parent="eventMainMenu"
+        groups="event.groupEventUser"/>
+    <menuitem name="Event Templates"
+        id="menuEventType"
+        sequence="1"
+        parent="menuEventConfiguration"/>
+    <menuitem name="Event Stages"
+        id="eventStageMenu"
+        sequence="2"
+        parent="menuEventConfiguration"/>
+    <menuitem name="Mail Schedulers"
+        id="menuEventMailSchedulers"
+        sequence="10"
+        parent="menuEventConfiguration"
+        groups="base.groupNoOne"/>
+    <menuitem name="Event Tags Categories"
+        id="menuEventCategory"
+        sequence="3"
+        parent="menuEventConfiguration"/>
+
+</data></verp>

@@ -101,19 +101,19 @@ span.o-force-ltr {
     object-fit: cover;
 }
 
-.o-image-24_cover {
+.o-image-24-cover {
     width: 24px;
     height: 24px;
     object-fit: cover;
 }
 
-.o-image-40_cover {
+.o-image-40-cover {
     width: 40px;
     height: 40px;
     object-fit: cover;
 }
 
-.o-image-64_cover {
+.o-image-64-cover {
     width: 64px;
     height: 64px;
     object-fit: cover;
@@ -128,12 +128,12 @@ span.o-force-ltr {
 
 // When having a square is not necessary, the image will take less space if any
 // of its width or height is smaller than 64px.
-.o-image-64_max {
+.o-image-64-max {
     max-width: 64px;
     max-height: 64px;
 }
 
-.o-image-128_max {
+.o-image-128-max {
     max-width: 128px !important;
     max-height: 128px !important;
 }

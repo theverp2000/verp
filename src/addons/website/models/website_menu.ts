@@ -1,5 +1,4 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { NotFound } from "../../../core/service";
 import { urlParse } from "../../../core/service/middleware/utils";
 import { bool, f, htmlTranslate, isInstance } from "../../../core/tools";

@@ -1,10 +1,8 @@
 import _ from "lodash";
 import { DateTime } from "luxon";
-import { Fields, _Date, _Datetime, api, registry } from "../../../core";
-import { setdefault } from "../../../core/api/func";
-import { DefaultDict, DefaultMapKey, Map2, MapKey } from "../../../core/helper/collections";
-import { parseStack, UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date, _Datetime, _super, api, registry } from "../../../core";
+import { setdefault } from "../../../core/api";
+import { DefaultDict, MapKey, UserError, parseStack } from "../../../core/helper";
 import { expression } from "../../../core/osv";
 import { bool, extend, floatCompare, floatIsZero, isCallable, isInstance, len, sortedAsync, splitEvery, subDate, sum } from "../../../core/tools";
 

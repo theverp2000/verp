@@ -1,6 +1,5 @@
-import { Fields } from "../../../core/fields";
-import { MetaModel, TransientModel } from "../../../core/models";
-import { literalEval } from '../../../core/tools/save_eval';
+import { Fields, MetaModel, TransientModel } from "../../../core";
+import { literalEval } from '../../../core/tools';
 
 @MetaModel.define()
 class ResConfigSettings extends TransientModel {

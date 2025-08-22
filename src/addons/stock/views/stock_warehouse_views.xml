@@ -14,7 +14,7 @@
                                     class="oe-stat-button"
                                     type="object"/>
                         </div>
-                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                         <label for="label"/>
                         <h1><field name="label" placeholder="e.g. Central Warehouse"/></h1>
                         <group>

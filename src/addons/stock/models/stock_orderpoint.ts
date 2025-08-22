@@ -1,16 +1,8 @@
 import { DateTime } from "luxon";
-import { Fields, _Date, _Datetime, api, registry } from "../../../core";
-import { DefaultDict, Dict, FrozenDict } from "../../../core/helper/collections";
-import { RedirectWarning, UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date, _super, api, registry } from "../../../core";
+import { DefaultDict, Dict, FrozenDict, RedirectWarning, UserError, ValidationError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { bool, isInstance } from "../../../core/tools";
-import { combine } from "../../../core/tools/date_utils";
-import { floatCompare } from "../../../core/tools/float_utils";
-import { extend, len, splitEvery } from "../../../core/tools/iterable";
-import { jsonParse, stringify } from "../../../core/tools/json";
-import { setOptions } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/string";
+import { bool, combine, extend, f, floatCompare, isInstance, jsonParse, len, setOptions, splitEvery, stringify } from "../../../core/tools";
 import { ProcurementException } from "./stock_rule";
 
 /**

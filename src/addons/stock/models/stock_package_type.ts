@@ -1,6 +1,5 @@
-import { Fields } from "../../../core/fields";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { update } from "../../../core/tools/misc";
+import { Fields, MetaModel, Model, _super } from "../../../core";
+import { update } from "../../../core/tools";
 
 @MetaModel.define()
 class PackageType extends Model {

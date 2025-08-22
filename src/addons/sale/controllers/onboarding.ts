@@ -1,4 +1,4 @@
-import { http } from "../../../core"
+import { http } from "../../../core";
 
 @http.define()
 class OnboardingController extends http.Controller {

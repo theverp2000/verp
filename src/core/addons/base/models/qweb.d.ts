@@ -1,5 +1,4 @@
-import { FrozenSet } from "../../../helper/collections";
-import { XmlError } from "../../../helper/errors";
+import { FrozenSet, XmlError } from "../../../helper";
 import { AbstractModel } from '../../../models';
 
 declare class QWebException extends XmlError {

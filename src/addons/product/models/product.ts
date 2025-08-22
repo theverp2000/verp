@@ -1,14 +1,8 @@
-import { api } from "../../../core";
-import { setdefault } from "../../../core/api/func";
-import { Fields, _Date, _Datetime } from "../../../core/fields";
-import { Dict } from "../../../core/helper/collections";
-import { UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date, _Datetime, _super, api } from "../../../core";
+import { setdefault } from "../../../core/api";
+import { Dict, UserError, ValidationError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { extend, floatCompare, floatRound, isImageSizeAbove, isList, len, sum } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { dateMax } from "../../../core/tools/date_utils";
-import { _f, f } from "../../../core/tools/string";
+import { _f, bool, dateMax, extend, f, floatCompare, floatRound, isImageSizeAbove, isList, len, sum } from "../../../core/tools";
 
 @MetaModel.define()
 class ProductCategory extends Model {

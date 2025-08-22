@@ -1,7 +1,6 @@
-import { api, Fields, http } from "../../../core";
+import { _super, api, Fields, http, MetaModel, Model } from "../../../core";
 import { ValidationError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models"
-import { _f, f, lstrip, rstrip } from "../../../core/tools";
+import { _f, lstrip, rstrip } from "../../../core/tools";
 import { API_ENDPOINT_VERSIONS } from "../const";
 
 @MetaModel.define()
@@ -57,7 +56,7 @@ class PaymentAcquirer extends Model {
     async _adyenTrimApiUrls(values) {
         for (const fieldName of ['adyenCheckoutApiUrl', 'adyenRecurringApiUrl']) {
             if (values[fieldName]) {  // Test the value in case we're duplicating an acquirer
-                values[fieldName] = values[fieldName].replace(/[vV]\d+(\/.*)?/, '');
+                values[fieldName] = values[fieldName].replace(/[vV]\d+(\/.*)?/g, '');
             }
         }
     }

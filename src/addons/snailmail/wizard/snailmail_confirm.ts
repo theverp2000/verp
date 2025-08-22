@@ -1,7 +1,5 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { f } from "../../../core/tools/string";
+import { AbstractModel, api, Fields, MetaModel } from "../../../core";
+import { f } from "../../../core/tools";
 
 @MetaModel.define()
 class SnailmailConfirm extends AbstractModel {

@@ -1,9 +1,8 @@
 import _ from "lodash";
 import uuid from "uuid";
-import { Fields, api, tools } from "../../../core";
+import { Fields, MetaModel, Model, _super, api, tools } from "../../../core";
 import { getattr, setdefault } from "../../../core/api";
 import { AccessError, ValueError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { Forbidden } from "../../../core/service";
 import { bool, equal, f, isInstance, sortedAsync, update } from "../../../core/tools";

@@ -1,6 +1,4 @@
-import { Fields, api } from "../../../core";
-import { Environment } from "../../../core/api";
-import { MetaModel, Model, _super } from "../../../core/models"
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { bool } from "../../../core/tools";
 
 @MetaModel.define()
@@ -56,7 +54,7 @@ class ResCompany extends Model {
         await this._installModules(['payment_stripe', 'account_payment']);
 
         // Create a new env including the freshly installed module(s)
-        const newEnv = await Environment.new(this.env.cr, this.env.uid, this.env.context);
+        const newEnv = await api.Environment.new(this.env.cr, this.env.uid, this.env.context);
 
         // Configure Stripe
         const defaultJournal = await newEnv.items('account.journal').search(

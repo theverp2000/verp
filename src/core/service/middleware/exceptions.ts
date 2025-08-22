@@ -73,7 +73,7 @@ export class HTTPException extends Function {
   }
 
   getDescription(res?: any) {
-    return format("<p>%s</p>", _.escape(this.description).replace("\n", "<br>"));
+    return format("<p>%s</p>", _.escape(this.description).replaceAll("\n", "<br>"));
   }
 
   get description() {

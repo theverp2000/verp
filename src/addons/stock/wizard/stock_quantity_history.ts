@@ -1,7 +1,6 @@
-import { Fields, _Datetime } from "../../../core";
-import { MetaModel, TransientModel } from "../../../core/models";
+import { Fields, MetaModel, TransientModel, _Datetime } from "../../../core";
 import { expression } from "../../../core/osv";
-import { bool } from "../../../core/tools/bool";
+import { bool } from "../../../core/tools";
 
 @MetaModel.define()
 class StockQuantityHistory extends TransientModel {

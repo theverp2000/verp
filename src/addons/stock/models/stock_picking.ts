@@ -1,20 +1,9 @@
 import { DateTime } from "luxon";
-import { api } from "../../../core";
-import { attrgetter, getattr, setdefault } from "../../../core/api/func";
-import { Fields, _Date, _Datetime } from "../../../core/fields";
-import { Map2, Dict, MapKey } from "../../../core/helper";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date, _Datetime, _super, api } from "../../../core";
+import { attrgetter, getattr, setdefault } from "../../../core/api";
+import { Dict, Map2, MapKey, UserError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { literalEval } from '../../../core/tools/save_eval';
-import { bool } from "../../../core/tools/bool";
-import { dateMax, dateMin } from "../../../core/tools/date_utils";
-import { floatCompare, floatIsZero, floatRound } from "../../../core/tools/float_utils";
-import { all, itemgetter, len, sortedAsync, sum } from "../../../core/tools/iterable";
-import { stringify } from "../../../core/tools/json";
-import { DEFAULT_SERVER_DATETIME_FORMAT, groupby, groupbyAsync, pop } from "../../../core/tools/misc";
-import { formatDate, formatDatetime } from "../../../core/tools/models";
-import { f } from "../../../core/tools/string";
+import { DEFAULT_SERVER_DATETIME_FORMAT, all, bool, dateMax, dateMin, f, floatCompare, floatIsZero, floatRound, formatDate, formatDatetime, groupby, groupbyAsync, itemgetter, len, literalEval, pop, sortedAsync, stringify, sum } from '../../../core/tools';
 import { PROCUREMENT_PRIORITIES } from "./stock_move";
 
 @MetaModel.define()

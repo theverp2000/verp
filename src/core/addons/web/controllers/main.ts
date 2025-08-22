@@ -7,15 +7,12 @@ import { DateTime } from 'luxon';
 import path from "node:path";
 import temp from 'temp';
 import xpath from 'xpath';
-import { http, modules, tools } from "../../..";
-import { Environment } from '../../../api';
-import { callKw, setattr, setdefault } from "../../../api/func";
+import { checkMethodName, http, modules, tools } from "../../..";
+import { Environment, callKw, setattr, setdefault } from '../../../api';
 import { serverWideModules } from "../../../conf";
-import { Dict, OrderedDict } from "../../../helper/collections";
-import { AccessDenied, AccessError, AttributeError, FileNotFoundError, NotImplementedError, StopIteration, UserError, ValueError } from "../../../helper/errors";
+import { AccessDenied, AccessError, AttributeError, Dict, FileNotFoundError, NotImplementedError, OrderedDict, StopIteration, UserError, ValueError } from "../../../helper";
 import { WebRequest, WebResponse, serializeException as _serializeException, addonsManifest, contentDisposition, dbFilter, dbList, dbMonodb, dispatchRpc, sendFile } from "../../../http";
-import { checkMethodName } from '../../../models';
-import { getResourcePath, listDir } from "../../../modules/modules";
+import { getResourcePath, listDir } from "../../../modules";
 import { expVersion } from "../../../service/common";
 import { MetaDatebase } from '../../../service/db';
 import { BadRequest, HTTPException, InternalServerError, abort } from "../../../service/middleware/exceptions";
@@ -23,15 +20,11 @@ import { urlEncode, urlParse } from "../../../service/middleware/utils";
 import { wrapFile } from "../../../service/middleware/wsgi";
 import { computeSessionToken } from '../../../service/security';
 import * as lazy from "../../../tools";
-import { _t, all, b64decode, b64encode, bool, chain, config, enumerate, extend, f, fileOpen, filePath, groupby, isInstance, isList, itemgetter, iter, len, localWebTranslations, next, partial, pop, repr, setOptions, some, sorted, split, sum, toText } from "../../../tools";
-import { fragmentFromString } from "../../../tools/html";
-import { jsonParse, stringify } from '../../../tools/json';
-import { guessMimetype } from "../../../tools/mimetypes";
+import { E, _t, all, b64decode, b64encode, bool, chain, config, enumerate, escapeHtml, extend, f, fileOpen, filePath, fragmentFromString, getrootXml, groupby, guessMimetype, isElement, isInstance, isList, itemgetter, iter, jsonParse, len, localWebTranslations, next, parseXml, partial, pop, repr, serializeHtml, setOptions, some, sorted, split, stringify, sum, toText } from "../../../tools";
 import { cleanFilename } from '../../../tools/osutils';
 import { unsafeAsync } from '../../../tools/save_eval';
 import { applyInheritanceSpecs } from "../../../tools/template_inheritance";
 import { ExportXlsxWriter, GroupExportXlsxWriter } from '../../../tools/xlsx';
-import { E, escapeHtml, getrootXml, isElement, parseXml, serializeHtml } from "../../../tools/xml";
 import { render } from "../../base/models/ir_qweb";
 
 const CONTENT_MAXAGE = http.STATIC_CACHE_LONG;
@@ -117,7 +110,7 @@ function serializeException() {
 }
 
 function clean(name: string) {
-  return name.replace('\x3c', '');
+  return name.replaceAll('\x3c', '');
 }
 
 /**
@@ -644,7 +637,7 @@ export class WebClient extends http.Controller {
   @http.route('/web/webclient/locale/<string:lang>', { type: 'http', auth: "none" })
   loadLocale(req: WebRequest, res: ServerResponse, opts: {} = {}) {
     const lang: string = opts['lang'];
-    const magicFileFinding = [lang.replace("_", '-').toLowerCase(), lang.split('_')[0]];
+    const magicFileFinding = [lang.replaceAll("_", '-').toLowerCase(), lang.split('_')[0]];
     for (const code of magicFileFinding) {
       try {
         return new WebResponse(req, res,
@@ -1571,11 +1564,9 @@ class Export extends http.Controller {
 
   /**
    * Returns all valid export formats
-    :returns: for each export format, a pair of identifier and printable name
-    :rtype: [(str, str)]
    * @param req 
    * @param res 
-   * @returns 
+   * @returns [[string, string]] for each export format, a pair of identifier and printable name
    */
   @http.route('/web/export/formats', { type: 'json', auth: "user" })
   async formats() {
@@ -1660,7 +1651,7 @@ class Export extends http.Controller {
       if (len(id.split('/')) < 3 && 'relation' in field) {
         const ref = field.pop('relation')
         record['value'] += '/id'
-        record['params'] = { 'model': ref, 'prefix': id, 'name': name, 'parentField': field }
+        record['params'] = { 'model': ref, 'prefix': id, 'name': name, 'parentField': field, 'label': name} // Tony check 'label' = name?
         record['children'] = true
       }
     }

@@ -1,9 +1,6 @@
-import { api } from "../../../core"
-import { Fields } from "../../../core/fields"
-import { ValidationError } from "../../../core/helper/errors"
-import { MetaModel, Model } from "../../../core/models"
-import { len } from "../../../core/tools/iterable"
-import { _f } from "../../../core/tools/string"
+import { api, Fields, MetaModel, Model } from "../../../core";
+import { ValidationError } from "../../../core/helper";
+import { _f, len } from "../../../core/tools";
 
 @MetaModel.define()
 class BarcodeRule extends Model {
@@ -32,7 +29,7 @@ class BarcodeRule extends Model {
   async _checkPattern() {
     for (const rule of this) {
       const pattern: string = await rule.pattern;
-      const p = pattern.replace('\\\\', 'X').replace('\\{', 'X').replace('\\}', 'X');
+      const p = pattern.replaceAll('\\\\', 'X').replaceAll('\\{', 'X').replaceAll('\\}', 'X');
       const findall = Array.from(p.matchAll(/[{]|[}]/g));  // p does not contain escaped { or }
       if (len(findall) == 2) {
         if (! p.match(/[{][N]*[D]*[}]/)) {

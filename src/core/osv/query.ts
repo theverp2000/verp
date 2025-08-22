@@ -146,10 +146,10 @@ export class Query {
 
         >>> rhsAlias = query.join(
         ...     "resUsers",
-        ...     "partner_id",
+        ...     "partnerId",
         ...     "res_partner",
         ...     "id",
-        ...     "partner_id",           # partner_id is the "link" from res_users to res_partner
+        ...     "partnerId",           # partnerId is the "link" from res_users to res_partner
         ...     "{lhs}.\"name\" != %s",
         ...     ("Mitchell Admin",),
         ... )
@@ -161,7 +161,7 @@ export class Query {
             SELECT ...
             FROM "res_users" AS "res_users"
             JOIN "res_partner" AS "res_users_res_partner__partner_id"
-                ON "res_users"."partner_id" = "res_users_res_partner__partner_id"."id"
+                ON "res_users"."partnerId" = "res_users_res_partner__partner_id"."id"
                 AND "res_users"."name" != 'Mitchell Admin'
             WHERE ...
 

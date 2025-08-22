@@ -439,25 +439,25 @@ export function isDocumentFragment(el: any) {
  * @returns boolean
  */
 export function isNotationNode(el: any) {
-  return el && el.nodeType === NodeType.NOTATION_NODE // 12
+  return el && el.nodeType === NodeType.NOTATION_NODE; // 12
 }
 
-export function getAttributes(el: any, func: Function=(a)=>a) {
-  return Array.from<Attr>(el?.attributes ?? []).filter(attr => isAttribute(attr) && func(attr));
+export function getAttributes(el: any, func?: Function) {
+  return Array.from<Attr>(el?.attributes ?? []).filter(attr => isAttribute(attr) && (func ? func(attr) : true));
 }
 
-export function firstChild(el: Element, func: Function=(a)=>a) {
+export function firstChild(el: Element, func?: Function) {
   for (let i = 0; i < el.childNodes.length; i++) {
     const child = el.childNodes.item(i);
-    if (func(child)) {
+    if (func ? func(child) : true) {
       return child;
     }
   };
   return null;
 }
 
-export function childNodes(el: Element, func: Function=(a)=>a) {
-  return Array.from<any>(el?.childNodes ?? []).filter(child => func(child));
+export function childNodes<T=any>(el: Element, func?: Function) {
+  return Array.from<T>(el?.childNodes ?? [] as any).filter(child => func ? func(child): child);
 }
 
 export function getObjectAttributes(el: any, func: Function=(a)=>a) {
@@ -599,11 +599,11 @@ export const E = ElementMaker;
 
 export function escapeHtml(unsafe: string) {
   return unsafe
-    .replace('&', '&amp;')
-    .replace('<', '&lt;')
-    .replace('>', '&gt;')
-    .replace('"', '&quot;')
-    .replace("'", '&#039;');
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
 }
 
 export function unescapeHtml(htmlStr: string) {

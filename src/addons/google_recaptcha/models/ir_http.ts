@@ -1,7 +1,6 @@
-import { api } from "../../../core";
+import { AbstractModel, MetaModel, _super, api } from "../../../core";
 import { UserError, ValidationError } from "../../../core/helper";
 import { WebRequest, httpPost } from "../../../core/http";
-import { AbstractModel, MetaModel, _super } from "../../../core/models";
 
 @MetaModel.define()
 class Http extends AbstractModel {

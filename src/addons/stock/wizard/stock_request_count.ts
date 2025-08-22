@@ -1,6 +1,5 @@
-import { Fields, _Datetime } from "../../../core";
-import { MetaModel, TransientModel } from "../../../core/models"
-import { bool } from "../../../core/tools/bool";
+import { Fields, MetaModel, TransientModel, _Datetime } from "../../../core";
+import { bool } from "../../../core/tools";
 
 @MetaModel.define()
 class StockRequestCount extends TransientModel {

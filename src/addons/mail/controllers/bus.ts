@@ -1,9 +1,8 @@
 import { ServerResponse } from "http";
-import { WebRequest } from "../../../core/http";
 import { http } from "../../../core";
-import { BusController } from "../../bus/controllers/main"
-import { bool } from "../../../core/tools/bool";
-import { plaintext2html } from "../../../core/tools/mail";
+import { WebRequest } from "../../../core/http";
+import { bool, plaintext2html } from "../../../core/tools";
+import { BusController } from "../../bus/controllers/main";
 
 @http.define()
 class MailChatController extends BusController {

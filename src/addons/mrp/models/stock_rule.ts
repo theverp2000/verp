@@ -1,9 +1,8 @@
-import { ProcurementException } from "../../stock";
-import { _Datetime, api, Fields } from "../../../core";
+import { _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
 import { DefaultDict, MapKey, OrderedSet } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models"
 import { AND } from "../../../core/osv/expression";
-import { addDate, bool, extend, floatCompare, subDate, update } from "../../../core/tools";
+import { addDate, bool, floatCompare, subDate, update } from "../../../core/tools";
+import { ProcurementException } from "../../stock";
 
 @MetaModel.define()
 class StockRule extends Model {

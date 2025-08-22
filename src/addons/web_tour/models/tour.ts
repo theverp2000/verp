@@ -1,6 +1,4 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { MetaModel, Model } from "../../../core/models"
+import { api, Fields, MetaModel, Model } from "../../../core";
 
 @MetaModel.define()
 class Tour extends Model {

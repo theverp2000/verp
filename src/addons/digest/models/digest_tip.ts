@@ -1,6 +1,5 @@
-import { Fields } from "../../../core/fields"
-import { MetaModel, Model } from "../../../core/models"
-import { htmlTranslate } from "../../../core/tools/translate"
+import { Fields, MetaModel, Model } from "../../../core";
+import { htmlTranslate } from "../../../core/tools";
 
 @MetaModel.define()
 class DigestTip extends Model {

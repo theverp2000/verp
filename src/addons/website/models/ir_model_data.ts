@@ -1,6 +1,5 @@
-import { api } from "../../../core";
+import { MetaModel, Model, _super, api } from "../../../core";
 import { MODULE_UNINSTALL_FLAG } from "../../../core/addons/base";
-import { MetaModel, Model, _super } from "../../../core/models";
 
 @MetaModel.define()
 class IrModelData extends Model {

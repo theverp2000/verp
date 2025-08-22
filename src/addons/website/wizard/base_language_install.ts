@@ -1,5 +1,4 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
 import { bool } from "../../../core/tools";
 
 @MetaModel.define()
@@ -31,7 +30,7 @@ class BaseLanguageInstall extends TransientModel {
         const params = this._context['params'] ?? {};
         if ('urlReturn' in params) {
             return {
-                'url': params['urlReturn'].replace('[lang]', await this['lang']),
+                'url': params['urlReturn'].replaceAll('[lang]', await this['lang']),
                 'type': 'ir.actions.acturl',
                 'target': 'self'
             }

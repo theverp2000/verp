@@ -5,7 +5,7 @@
     <section class="s-comparisons pt32 pb32">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 s-col-no-bgcolor text-center pt32 pb16" data-name="Box">
+                <div class="col-lg-4 s-col-no-bgColor text-center pt32 pb16" data-name="Box">
                     <div class="card bg-200">
                         <h4 class="card-header">Beginner</h4>
                         <div class="card-body text-center">
@@ -28,7 +28,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 s-col-no-bgcolor text-center pt32 pb16" data-name="Box">
+                <div class="col-lg-4 s-col-no-bgColor text-center pt32 pb16" data-name="Box">
                     <div class="card bg-o-color-5">
                         <h4 class="card-header">Professional</h4>
                         <div class="card-body">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 s-col-no-bgcolor text-center pt32 pb16" data-name="Box">
+                <div class="col-lg-4 s-col-no-bgColor text-center pt32 pb16" data-name="Box">
                     <div class="card bg-secondary">
                         <h4 class="card-header">Expert</h4>
                         <div class="card-body text-center">

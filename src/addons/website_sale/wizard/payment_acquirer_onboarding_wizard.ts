@@ -1,4 +1,4 @@
-import { MetaModel, TransientModel } from "../../../core/models"
+import { MetaModel, TransientModel } from "../../../core";
 
 @MetaModel.define()
 class PaymentWizard extends TransientModel {

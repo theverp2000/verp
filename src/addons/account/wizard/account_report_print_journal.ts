@@ -1,6 +1,5 @@
-import { Fields } from "../../../core";
-import { MetaModel, TransientModel } from "../../../core/models"
-import { update } from "../../../core/tools/misc";
+import { Fields, MetaModel, TransientModel } from "../../../core";
+import { update } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountPrintJournal extends TransientModel {

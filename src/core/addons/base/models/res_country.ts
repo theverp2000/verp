@@ -1,10 +1,7 @@
-import { api } from "../../..";
-import { Fields } from "../../../fields";
+import { _super, api, Fields, MetaModel, Model } from "../../..";
 import { KeyError, UserError, ValueError } from "../../../helper";
-import { MetaModel, Model, _super } from "../../../models";
 import { expression, Query } from "../../../osv";
-import { f, isInstance } from "../../../tools";
-import { len } from "../../../tools/iterable";
+import { f, isInstance, len } from "../../../tools";
 
 const FLAG_MAPPING = {
   "GF": "fr",

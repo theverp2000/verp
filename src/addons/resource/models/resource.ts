@@ -1,18 +1,11 @@
 import { getAllTimezones } from "countries-and-timezones";
 import { DateTime } from "luxon";
 import { RRule } from 'rrule';
-import { api, tools } from "../../../core";
+import { Fields, MetaModel, Model, _Date, _Datetime, _super, api, tools } from "../../../core";
 import { _tzGet } from "../../../core/addons/base";
-import { Fields, _Date, _Datetime } from "../../../core/fields";
-import { DefaultDict, Dict, MapKey } from "../../../core/helper";
-import { ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { DefaultDict, Dict, MapKey, ValidationError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { f, parseInt, timezone, update } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { addDate, combine, dateMax, dateMin, dateSetTz, dateWithoutTz, diffDate, floatToTime, subDate } from "../../../core/tools/date_utils";
-import { floatRound, round } from "../../../core/tools/float_utils";
-import { chain, enumerate, len, range, rangeList, sorted, zip } from "../../../core/tools/iterable";
+import { addDate, bool, chain, combine, dateMax, dateMin, dateSetTz, dateWithoutTz, diffDate, enumerate, f, floatRound, floatToTime, len, parseInt, range, rangeList, round, sorted, subDate, timezone, update, zip } from "../../../core/tools";
 
 // Default hour per day value. The one should
 // only be used when the one from the calendar
@@ -849,9 +842,9 @@ class ResourceCalendar extends Model {
         this.ensureOne();
         // Set timezone in UTC if no timezone is explicitly given
         // if (! startDt.tzinfo)
-        //     start_dt = start_dt.replace(tzinfo=utc)
+        //     start_dt = start_dt.replaceAll(tzinfo=utc)
         // if not end_dt.tzinfo:
-        //     end_dt = end_dt.replace(tzinfo=utc)
+        //     end_dt = end_dt.replaceAll(tzinfo=utc)
 
         let intervals;
         if (computeLeaves) {

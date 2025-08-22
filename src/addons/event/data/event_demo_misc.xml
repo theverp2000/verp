@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<verp><data>
+
+    <!-- Event Type -->
+    <record id="eventType0" model="event.type">
+        <field name="label">Exhibition</field>
+        <field name="autoConfirm" eval="false"/>
+    </record>
+    <record id="eventType1" model="event.type">
+        <field name="label">Training</field>
+        <field name="autoConfirm" eval="false"/>
+    </record>
+    <record id="eventType2" model="event.type">
+        <field name="label">Sport</field>
+        <field name="autoConfirm" eval="false"/>
+        <field name="defaultTimezone">US/Pacific</field>
+    </record>
+    <record id="eventTypeDataConference" model="event.type">
+        <field name="defaultTimezone">Europe/Brussels</field>
+    </record>
+
+    <!-- Category and Tags -->
+    <record id="eventTagCategory1" model="event.tag.category">
+        <field name="label">Age</field>
+        <field name="sequence">3</field>
+    </record>
+    <record id="eventTagCategory2" model="event.tag.category">
+        <field name="label">Activity</field>
+        <field name="sequence">1</field>
+    </record>
+    <record id="eventTagCategory3" model="event.tag.category">
+        <field name="label">Type</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="eventTagCategory1Tag1" model="event.tag">
+        <field name="label">5-10</field>
+        <field name="sequence">1</field>
+        <field name="categoryId" ref="eventTagCategory1"/>
+        <field name="color">1</field>
+    </record>
+
+    <record id="eventTagCategory1Tag2" model="event.tag">
+        <field name="label">10-14</field>
+        <field name="sequence">2</field>
+        <field name="categoryId" ref="eventTagCategory1"/>
+        <field name="color">2</field>
+    </record>
+
+    <record id="eventTagCategory1Tag3" model="event.tag">
+        <field name="label">15-18</field>
+        <field name="sequence">3</field>
+        <field name="categoryId" ref="eventTagCategory1"/>
+        <field name="color">3</field>
+    </record>
+
+    <record id="eventTagCategory1Tag4" model="event.tag">
+        <field name="label">18+</field>
+        <field name="sequence">4</field>
+        <field name="categoryId" ref="eventTagCategory1"/>
+        <field name="color">4</field>
+    </record>
+
+    <record id="eventTagCategory2Tag1" model="event.tag">
+        <field name="label">Culture</field>
+        <field name="sequence">10</field>
+        <field name="categoryId" ref="eventTagCategory2"/>
+        <field name="color">5</field>
+    </record>
+    <record id="eventTagCategory2Tag2" model="event.tag">
+        <field name="label">Music</field>
+        <field name="sequence">11</field>
+        <field name="categoryId" ref="eventTagCategory2"/>
+        <field name="color">6</field>
+    </record>
+    <record id="eventTagCategory2Tag3" model="event.tag">
+        <field name="label">Sport</field>
+        <field name="sequence">12</field>
+        <field name="categoryId" ref="eventTagCategory2"/>
+        <field name="color">7</field>
+    </record>
+
+    <record id="eventTagCategory3Tag1" model="event.tag">
+        <field name="label">Online</field>
+        <field name="sequence">20</field>
+        <field name="categoryId" ref="eventTagCategory3"/>
+        <field name="color">8</field>
+    </record>
+    <record id="eventTagCategory3Tag2" model="event.tag">
+        <field name="label">Conference</field>
+        <field name="sequence">21</field>
+        <field name="categoryId" ref="eventTagCategory3"/>
+        <field name="color">9</field>
+    </record>
+
+</data></verp>

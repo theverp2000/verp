@@ -1,6 +1,5 @@
+import { _super, AbstractModel, MetaModel } from "../../../core";
 import { WebRequest } from "../../../core/http";
-import { _super, AbstractModel } from "../../../core/models"
-import { MetaModel } from "../../../core/models"
 import { parseInt } from "../../../core/tools";
 
 @MetaModel.define()

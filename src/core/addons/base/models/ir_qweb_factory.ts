@@ -4,20 +4,11 @@ import fs from 'fs';
 import { Generator } from 'javascript-compiling-tokenizer';
 import _ from "lodash";
 import { format } from 'util';
-import { Dict, FrozenDict, FrozenSet, MapKey } from "../../../helper/collections";
-import { ValueError } from "../../../helper/errors";
-import { MetaModel } from '../../../models';
-import { bool, stringBase64, toText } from '../../../tools';
-import { equal, isDigit, isInstance } from "../../../tools/func";
-import { rstringPart } from "../../../tools/string";
-import { chain, count, enumerate, extend, isIterable, iter, len, next, range } from "../../../tools/iterable";
-import { pop, popitem } from '../../../tools/misc';
-import { repr } from '../../../tools/string';
+import { MetaModel } from '../../..';
+import { Dict, FrozenDict, FrozenSet, MapKey, ValueError } from "../../../helper";
+import * as xml from '../../../tools';
+import { UpCamelCase, bool, chain, count, enumerate, equal, extend, isDigit, isInstance, isIterable, iter, len, lstrip, markup, next, pop, popitem, range, repr, rstringPart, stringBase64, toText } from '../../../tools';
 import { compile, unsafeEval } from "../../../tools/save_eval";
-import { lstrip } from "../../../tools/string";
-import { UpCamelCase } from "../../../tools/string";
-import * as xml from '../../../tools/xml';
-import { markup } from '../../../tools/xml';
 import { QWeb, QWebCodeFound, QWebException, dedent } from './qweb';
 
 function _debug(msg, ...args) {
@@ -265,7 +256,7 @@ export class IrQWebFactory extends QWeb {
     for (const m of matches) {
       literal = expr.slice(baseIdx, m.index);
       if (literal) {
-        text += literal.replace('{', '{{').replace("}", "}}");
+        text += literal.replaceAll('{', '{{').replaceAll("}", "}}");
       }
       text += '%s';
       values.push(`await self._compileToStr(${this._compileExpr(m[1] || m[2])})`);
@@ -274,7 +265,7 @@ export class IrQWebFactory extends QWeb {
     // str past last regex match
     literal = expr.slice(baseIdx);
     if (literal) {
-      text += literal.replace('{', '{{').replace("}", "}}");
+      text += literal.replaceAll('{', '{{').replaceAll("}", "}}");
     }
 
     let code = repr(text);
@@ -755,7 +746,7 @@ export class IrQWebFactory extends QWeb {
 
   // compile directives
   async _compileDirective(el: xmldom.Element, options: {}, directive: any, indent: number = 0) {
-    const name = `_compileDirective${UpCamelCase(directive.replace('-', '_'))}`;
+    const name = `_compileDirective${UpCamelCase(directive.replaceAll('-', '_'))}`;
     const compileHandler = this[name];
     if (compileHandler) {
       return compileHandler.apply(this, [el, options, indent]);
@@ -852,7 +843,7 @@ export class IrQWebFactory extends QWeb {
       const defName = `qwebTSet_${options['lastPathNode'].replace(_VARNAME_REGEX, '_')}`;
       const defValue = defName + '_value';
       const content = (await this._compileDirectiveContent(el, options, indent + 1)).concat(this._flushText(options, indent + 1));
-      if (content) {
+      if (bool(content)) {
         code.push(this._indent(`async function* ${defName}() {`, indent));
         extend(code, content);
         code.push(this._indent(`}`, indent));

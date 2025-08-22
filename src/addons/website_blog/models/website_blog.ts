@@ -1,8 +1,7 @@
 import _ from "lodash";
-import { textFromHtml } from "../../website/tools";
-import { _Datetime, api, Fields } from "../../../core";
-import { _super, MetaModel, Model } from "../../../core/models"
+import { _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
 import { bool, f, htmlTranslate, jsonParse, len, strip, unslug } from "../../../core/tools";
+import { textFromHtml } from "../../website/tools";
 
 @MetaModel.define()
 class Blog extends Model {
@@ -228,7 +227,7 @@ class BlogPost extends Model {
             }
             else {
                 let content = textFromHtml(await blogPost.content);
-                content = content.replace(/\\s+/, ' ').trim();
+                content = content.replace(/\\s+/g, ' ').trim();
                 await blogPost.set('teaser', content.slice(0, 200) + '...');
             }
         }
@@ -390,7 +389,7 @@ class BlogPost extends Model {
         dateBegin = options['dateBegin'],
         dateEnd = options['dateEnd'],
         state = options['state'],
-        domain = [await website.websiteDomain()];
+        domain = [website.websiteDomain()];
         if (bool(blog)) {
             domain.push([['blogId', '=', unslug(blog)[1]]]);
         }

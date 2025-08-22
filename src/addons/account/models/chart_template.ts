@@ -1,12 +1,9 @@
 import _ from "lodash";
-import { Fields, api } from "../../../core";
-import { Environment } from "../../../core/api";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { AccessError, DefaultDict, Dict, MapKey, UserError, ValidationError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { Registry } from "../../../core/modules/registry";
 import { Cursor } from "../../../core/sql_db";
-import { bool, enumerate, extend, f, len, range, split, update } from "../../../core/tools";
-import { escapeHtml } from "../../../core/tools/xml";
+import { bool, enumerate, escapeHtml, extend, f, len, range, split, update } from "../../../core/tools";
 import { TYPE_TAX_USE } from "./account_tax";
 
 /**
@@ -17,7 +14,7 @@ import { TYPE_TAX_USE } from "./account_tax";
  * @param module 
  */
 async function migrateSetTagsAndTaxesUpdatable(cr: Cursor, registry: Registry, module: string) {
-  const env = await Environment.new(cr, global.SUPERUSER_ID);
+  const env = await api.Environment.new(cr, global.SUPERUSER_ID);
   const xmlRecordIds = (await env.items('ir.model.data').search([
     ['model', 'in', ['account.tax.template', 'account.account.tag']],
     ['module', 'like', module]
@@ -34,7 +31,7 @@ async function migrateSetTagsAndTaxesUpdatable(cr: Cursor, registry: Registry, m
  * @param module 
  */
 async function preserveExistingTagsOnTaxes(cr: Cursor, registry: Registry, module: string) {
-  const env = await Environment.new(cr, global.SUPERUSER_ID);
+  const env = await api.Environment.new(cr, global.SUPERUSER_ID);
   const xmlRecords = await env.items('ir.model.data').search([
     ['model', '=', 'account.account.tag'],
     ['module', 'like', module]
@@ -525,8 +522,6 @@ class AccountChartTemplate extends Model {
    * @param installDemo 
    */
   async tryLoading(opts: {req?: any, company?: any, installDemo?: boolean}={}) {
-    const _debug = global.logDebug;
-    global.logDebug = true;
     // do not use `request.env` here, it can cause deadlocks
     let {req, company, installDemo=true} = opts;
     if (!bool(company)) {
@@ -550,7 +545,6 @@ class AccountChartTemplate extends Model {
         }))._createDemoData();
       }
     }
-    global.logDebug = _debug;
   }
 
   async _createDemoData() {

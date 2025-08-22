@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<verp>
+<data>
+    <record id="eventStageViewForm" model="ir.ui.view">
+        <field name="label">event.stage.view.form</field>
+        <field name="model">event.stage</field>
+        <field name="arch" type="xml">
+            <form string="Events Stage">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="label"/>
+                            <field name="pipeEnd"/>
+                        </group>
+                        <group>
+                            <field name="fold"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <group string="Stage Description and Tooltips">
+                        <p class="text-muted" colspan="2">
+                            You can define here labels that will be displayed for the state instead
+                            of the default labels in the kanban view.
+                        </p>
+                        <label for="legendNormal" string=" " class="o-status " title="Task in progress. Click to block or set as done." aria-label="Task in progress. Click to block or set as done." role="img"/>
+                        <field name="legendNormal" nolabel="1"/>
+                        <label for="legendBlocked" string=" " class="o-status o-status-red" title="Task is blocked. Click to unblock or set as done." aria-label="Task is blocked. Click to unblock or set as done." role="img"/>
+                        <field name="legendBlocked" nolabel="1"/>
+                        <label for="legendDone" string=" " class="o-status o-status-green" title="This step is done. Click to block or set in progress." aria-label="This step is done. Click to block or set in progress." role="img"/>
+                        <field name="legendDone" nolabel="1"/>
+
+                        <p class="text-muted" colspan="2">
+                            You can also add a description to help your coworkers understand the meaning and purpose of the stage.
+                        </p>
+                        <field name="description" placeholder="Add a description..." nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="eventStageViewTree" model="ir.ui.view">
+        <field name="label">event.stage.view.tree</field>
+        <field name="model">event.stage</field>
+        <field name="arch" type="xml">
+            <tree string="Events Stage">
+                <field name="sequence" widget="handle"/>
+                <field name="label"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="eventStageAction" model="ir.actions.actwindow">
+        <field name="label">Event Stages</field>
+        <field name="resModel">event.stage</field>
+        <field name="viewMode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o-view-nocontent-smiling-face">
+                Create an Event Stage
+            </p><p>
+                Event stages are used to track the progress of an Event from its origin until its conclusion.
+            </p>
+        </field>
+    </record>
+
+    <record id="eventStageMenu" model="ir.ui.menu">
+        <field name="action" ref="event.eventStageAction"/>
+    </record>
+
+</data>
+</verp>

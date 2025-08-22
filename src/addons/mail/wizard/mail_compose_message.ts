@@ -1,14 +1,9 @@
 import _ from "lodash";
-import { Command, Fields, _Datetime, api } from "../../../core";
-import { hasattr } from "../../../core/api/func";
-import { Dict } from "../../../core/helper/collections";
-import { MetaModel, TransientModel, _super, isSubclass } from "../../../core/models";
+import { Command, Fields, MetaModel, TransientModel, _Datetime, _super, api, isSubclass } from "../../../core";
+import { hasattr } from "../../../core/api";
+import { Dict } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { dbFactory } from "../../../core/service/db";
-import { b64decode, emailNormalize, emailSplitAndFormat, len, pop, subDate, update } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { f } from "../../../core/tools/string";
-import { ustr } from "../../../core/tools/string";
+import { b64decode, bool, emailNormalize, emailSplitAndFormat, f, len, pop, subDate, update, ustr } from "../../../core/tools";
 
 function _reopen(self, resId, model, context: {} = {}) {
   // save original model in context, because selecting the list of available templates requires a model in context
@@ -356,7 +351,7 @@ class MailComposer extends TransientModel {
     if (massMailMode && ! await self.replyToForceNew) {
       const records = this.env.items(await self.model).browse(resIds);
       replyToValue = await records._notifyGetReplyTo(false);
-      // when having no specific reply-to, fetch rendered email_from value
+      // when having no specific reply-to, fetch rendered emailFrom value
       for (const [resId, replyTo] of Object.entries(replyToValue)) {
         if (!replyTo) {
           replyToValue[resId] = (renderedValues[resId] ?? {})['emailFrom'] ?? false;

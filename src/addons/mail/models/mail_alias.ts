@@ -191,8 +191,8 @@ class Alias extends Model {
      */
     function _sanitizeAliasName(name) {
       let sanitizedName = removeAccents(name).toLowerCase().split('@')[0];
-      sanitizedName = sanitizedName.replace(/[^\w+.]+/, '-');
-      sanitizedName = sanitizedName.replace(/^\.+|\.+$|\.+(?=\.)/, '');
+      sanitizedName = sanitizedName.replace(/[^\w+.]+/g, '-');
+      sanitizedName = sanitizedName.replace(/^\.+|\.+$|\.+(?=\.)/g, '');
       sanitizedName = cleanString(sanitizedName, 'replace');
       return sanitizedName;
     }

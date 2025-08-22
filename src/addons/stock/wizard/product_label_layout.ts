@@ -1,7 +1,5 @@
-import { tools } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { Dict } from "../../../core/helper/collections";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { Fields, MetaModel, TransientModel, _super, tools } from "../../../core";
+import { Dict } from "../../../core/helper";
 
 @MetaModel.define()
 class ProductLabelLayout extends TransientModel {

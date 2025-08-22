@@ -1,6 +1,5 @@
-import { Fields } from "../../../core";
+import { _super, Fields, MetaModel, Model } from "../../../core";
 import { UserError, ValidationError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models"
 import { isInstance } from "../../../core/tools";
 
 @MetaModel.define()

@@ -1,17 +1,11 @@
-import fs from "fs";
-import fsPro from "fs/promises";
 import * as _ from 'lodash';
 import { DateTime } from 'luxon';
 import { PDFCatalog, PDFDict, PDFDocument, PDFName } from "pdf-lib";
 import puppeteer from 'puppeteer';
-import temp from 'temp';
-import { encode } from 'utf8';
 import xpath from "xpath";
-import { api, models, tools } from "../../..";
+import { MetaModel, Model, _super, api, tools, Fields, _Datetime } from "../../..";
 import { setdefault } from '../../../api';
-import { Fields, _Datetime } from "../../../fields";
 import { AccessError, OrderedDict, UserError, ValueError } from '../../../helper';
-import { MetaModel, Model, _super } from "../../../models";
 import { FALSE_DOMAIN, NEGATIVE_TERM_OPERATORS } from "../../../osv/expression";
 import { UpCamelCase, _f, b64decode, base64ToImage, bool, camelCaseToDot, config, enumerate, equal, extend, f, isHtmlEmpty, isInstance, isIterable, len, parseInt, pop, range, toFormat, update } from "../../../tools";
 import { unsafeAsync } from '../../../tools/save_eval';
@@ -1034,7 +1028,7 @@ class IrActionsReport extends Model {
     }
 
     async _render(resIds, data?: any) {
-        const reportType = (await this['reportType']).toLowercase().replace('-', '_');
+        const reportType = (await this['reportType']).toLowercase().replaceAll('-', '_');
         const renderFunc = this['_render' + UpCamelCase(reportType)];
         if (!renderFunc) {
             return null;
@@ -1054,7 +1048,7 @@ class IrActionsReport extends Model {
         let context = this.env.context;
         let activeIds;
         if (docIds) {
-            if (isInstance(docIds, models.Model)) {
+            if (isInstance(docIds, Model)) {
                 activeIds = docIds.ids;
             }
             else if (typeof (docIds) === 'number') {

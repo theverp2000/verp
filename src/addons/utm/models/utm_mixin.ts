@@ -1,5 +1,4 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, AbstractModel, _super } from "../../../core/models"
+import { AbstractModel, Fields, MetaModel, _super, api } from "../../../core";
 import { bool } from "../../../core/tools";
 
 /**

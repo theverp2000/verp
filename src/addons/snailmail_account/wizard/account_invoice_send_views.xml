@@ -37,7 +37,7 @@
                         </span>
                     </div>
                 </xpath>
-                <xpath expr="//footer/button[contains(@class,'sendAndPrint')]" position='attributes'>
+                <xpath expr="//footer/button[contains(@class,'send-and-print')]" position='attributes'>
                     <attribute name="attrs">{'invisible': ['|', ['isPrint', '=', false], '&amp;', '&amp;', ['isPrint', '=', true], ['snailmailIsLetter', '=', false], ['isEmail', '=', false]]}</attribute>
                 </xpath>
                 <xpath expr="//footer/button[contains(@class,'send')]" position='attributes'>

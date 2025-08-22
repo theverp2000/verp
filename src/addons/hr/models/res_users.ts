@@ -1,6 +1,5 @@
-import { Fields, api } from "../../../core";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { AccessError, MapKey } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { bool, len, pop } from "../../../core/tools";
 
 const HR_READABLE_FIELDS = [

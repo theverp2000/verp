@@ -1,9 +1,6 @@
-import { DateTime } from "luxon";
-import { _Date, api } from "../../../core";
+import { _Date, AbstractModel, api, MetaModel } from "../../../core";
 import { Map2, ValidationError } from "../../../core/helper";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { _f, bool, formatDate } from "../../../core/tools";
-import { toFormat } from "../../../core/tools/date_utils";
+import { _f, bool, formatDate, toFormat } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountFollowupReport extends AbstractModel {

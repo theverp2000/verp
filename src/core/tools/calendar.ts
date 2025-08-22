@@ -74,7 +74,7 @@ function weekday(year, month, day) {
 /**
  * Return weekday (0-6 ~ Mon-Sun) and number of days (28-31) for year, month (1-12).
  * @param year 
- * @param month 
+ * @param month 1-12
  * @returns 
  */
 export function monthrange(year, month) {

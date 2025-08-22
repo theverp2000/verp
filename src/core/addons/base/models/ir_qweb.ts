@@ -1,16 +1,11 @@
 import { LexicalAnalyzer } from 'javascript-compiling-tokenizer';
 import { Module } from "module";
-import * as api from "../../../api";
-import { Dict } from "../../../helper/collections";
-import { NotImplementedError, ValueError } from "../../../helper/errors";
-import { MetaModel } from "../../../models";
-import { getResourcePath } from '../../../modules/modules';
+import { MetaModel, api } from "../../..";
+import { Dict, NotImplementedError, ValueError } from "../../../helper";
+import { getResourcePath } from '../../../modules';
 import * as tools from "../../../tools";
-import { _format, extend, getLang, repr } from '../../../tools';
-import { isInstance } from "../../../tools/func";
-import { QwebTracker } from '../../../tools/profiler';
+import { _format, extend, getLang, getrootXml, isElement, isInstance, parseXml, popAttribute, repr } from '../../../tools';
 import { _BUILTINS, testExpr } from "../../../tools/save_eval";
-import { getrootXml, isElement, parseXml, popAttribute } from "../../../tools/xml";
 import { AssetsBundle } from './assets_bundle';
 import { SCRIPT_EXTENSIONS, STYLE_EXTENSIONS, canAggregate } from './ir_asset';
 import { IrQWebFactory } from './ir_qweb_factory';
@@ -166,12 +161,12 @@ class IrQWeb extends IrQWebFactory {
     })), indent));
     extend(code, this._compileAttributes(options, indent + 1));
     code.push(this._indent(dedent(`
-      if (! content && self._voidElements.has(tagName)) {
+      if (!bool(content) && self._voidElements.has(tagName)) {
         yield '/>';
       }
       else {
         yield '>';
-        if (content) {
+        if (bool(content)) {
           yield content;
         }
         yield '</';
@@ -207,7 +202,7 @@ class IrQWeb extends IrQWebFactory {
     let result = await super._render(template, values, compileOptions);
 
     if (! values || ! values['__keepEmptyLines']) {
-      result = result.replace(this._emptyLines, '\n');
+      result = result.replaceAll(this._emptyLines, '\n');
     }
 
     if (!result.includes('data-pagebreak=')) {
@@ -531,7 +526,7 @@ export async function render(templateName, values, load, options: {}={}) {
   class MockIrQWeb extends IrQWeb {
     static _module = module;
     static _parents = 'ir.qweb';
-    static _register = false;               // not visible in real registry
+    static _register = false; // not visible in real registry
 
     env: any;
     pool: any;

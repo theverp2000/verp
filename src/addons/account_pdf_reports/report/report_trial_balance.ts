@@ -1,9 +1,6 @@
-import { DateTime } from "luxon";
-import { api } from "../../../core";
-import { UserError } from "../../../core/helper/errors";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { pop } from "../../../core/tools/misc";
-import { _convert$, parseFloat, parseValues } from "../../../core/tools";
+import { AbstractModel, api, MetaModel } from "../../../core";
+import { UserError } from "../../../core/helper";
+import { _convert$, parseValues, pop } from "../../../core/tools";
 
 @MetaModel.define()
 class ReportTrialBalance extends AbstractModel {
@@ -30,7 +27,7 @@ class ReportTrialBalance extends AbstractModel {
         const accountResult = {};
         // Prepare sql query base on selected parameters from wizard
         let [tables, whereClause, whereParams] = await this.env.items('account.move.line')._queryGet();
-        // tables = tables.replace('"','');
+        // tables = tables.replaceAll('"','');
         if (! tables) {
             tables = '"accountMoveLine"';
         }

@@ -1,12 +1,10 @@
 import _ from "lodash";
 import { RRule } from "rrule";
-import { Fields, _Date, api } from "../../../core";
+import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
 import { AccessError, ValidationError, ValueError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { Query, expression } from "../../../core/osv";
 import { urlEncode } from "../../../core/service/middleware/utils";
-import { _f, bool, choice, f, formatDate, isDigit, isInstance, len, range, update } from "../../../core/tools";
-import { addDate, combine, dateSetTz } from "../../../core/tools/date_utils";
+import { _f, addDate, bool, choice, combine, dateSetTz, f, formatDate, isDigit, isInstance, len, range, update } from "../../../core/tools";
 
 /**
  * NB: Any field only available on the model hr.employee (i.e. not on the

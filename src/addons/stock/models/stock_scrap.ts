@@ -1,10 +1,6 @@
-import { api } from "../../../core";
-import { Fields, _Datetime } from "../../../core/fields";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, Model } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { floatCompare } from "../../../core/tools/float_utils";
-import { sum } from "../../../core/tools/iterable";
+import { Fields, MetaModel, Model, _Datetime, api } from "../../../core";
+import { UserError } from "../../../core/helper";
+import { bool, floatCompare, sum } from "../../../core/tools";
 
 @MetaModel.define()
 class StockScrap extends Model {

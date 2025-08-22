@@ -1,4 +1,4 @@
-import { MetaModel, Model, _super } from "../../../core/models"
+import { MetaModel, Model, _super } from "../../../core";
 
 @MetaModel.define()
 class ResCurrency extends Model {

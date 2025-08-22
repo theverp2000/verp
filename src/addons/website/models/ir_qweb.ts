@@ -1,6 +1,6 @@
+import { AbstractModel, MetaModel, _super } from "../../../core";
 import { AssetsBundle } from "../../../core/addons/base";
 import { OrderedDict } from "../../../core/helper";
-import { AbstractModel, MetaModel, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { bool, f, replaceAsync, urlFor } from "../../../core/tools";
 import { getRequestWebsite } from "./ir_http";

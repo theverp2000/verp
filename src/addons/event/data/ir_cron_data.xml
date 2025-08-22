@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp><data noupdate="1">
+    <!-- Event Mail Scheduler-->
+    <record model="ir.cron" forcecreate="true" id="eventMailScheduler">
+        <field name="label">Event: Mail Scheduler</field>
+        <field name="modelId" ref="model_eventMail"/>
+        <field name="state">code</field>
+        <field name="code">model.scheduleCommunications(true)</field>
+        <field name="userId" ref="base.userRoot"/>
+        <field name="intervalNumber">1</field>
+        <field name="intervalType">hours</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="false" />
+    </record>
+</data></verp>

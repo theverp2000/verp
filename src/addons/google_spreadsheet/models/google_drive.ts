@@ -1,7 +1,6 @@
 import xpath from 'xpath';
-import { api } from "../../../core";
+import { _super, api, MetaModel, Model } from "../../../core";
 import { httpPost } from "../../../core/http";
-import { _super, MetaModel, Model } from "../../../core/models"
 import { urlEncode } from "../../../core/service/middleware/utils";
 import { bool, f, getrootXml, jsonParse, parseXml, stringify } from "../../../core/tools";
 
@@ -73,7 +72,7 @@ class GoogleDrive extends Model {
             }
         }
         fields = displayFields.join(" ");
-        domain = domain.replace(/\'/gm, "'").replace('"', "'");
+        domain = domain.replace(/\'/gm, "'").replaceAll('"', "'");
         let formula;
         if (bool(groupbys)) {
             fields = f("%s %s", groupbys, fields);

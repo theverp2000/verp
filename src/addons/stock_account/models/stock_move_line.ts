@@ -1,5 +1,4 @@
-import { api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models"
+import { MetaModel, Model, _super, api } from "../../../core";
 import { floatCompare, floatIsZero } from "../../../core/tools";
 
 @MetaModel.define()

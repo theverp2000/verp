@@ -1,11 +1,8 @@
-import { Fields, _Datetime, api } from "../../../core";
+import { Fields, MetaModel, Model, _Datetime, api } from "../../../core";
 import { getattr } from "../../../core/api";
 import { ValidationError, ValueError } from "../../../core/helper";
-import { MetaModel, Model } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { bool, choices, len, next, parseInt } from "../../../core/tools";
-import { literalEval } from '../../../core/tools/save_eval';
-import { subDate } from "../../../core/tools/date_utils";
+import { bool, choices, len, literalEval, next, parseInt, subDate } from "../../../core/tools";
 
 @MetaModel.define()
 class Team extends Model {

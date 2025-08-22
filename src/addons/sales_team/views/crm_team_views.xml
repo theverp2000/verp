@@ -28,7 +28,7 @@
                 </div>
                 <sheet>
                     <div class="oe-button-box" name="buttonBox"/>
-                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <div class="oe-title">
                         <label for="label" string="Sales Team"/>
                         <h1>
@@ -64,7 +64,7 @@
                                                 <div class="o-kanban-card-content d-flex">
                                                     <div>
                                                         <img t-att-src="kanbanImage('res.users', 'avatar128', record.id.rawValue)"
-                                                            class="o-kanban-image o-image-64_cover" alt="Avatar"/>
+                                                            class="o-kanban-image o-image-64-cover" alt="Avatar"/>
                                                     </div>
                                                     <div class="oe-kanban-details d-flex flex-column ml-3">
                                                         <strong class="o-kanban-record-title oe-partner-heading"><field name="label"/></strong>

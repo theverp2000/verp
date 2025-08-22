@@ -1,5 +1,4 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
 
 @MetaModel.define()
 class StockRulesReport extends TransientModel {

@@ -54,7 +54,7 @@
             <field name="bindingViewTypes">list</field>
             <field name="groupsId" eval="[[4, refId('mrp.groupMrpRoutings')]]"/>
             <field name="state">code</field>
-            <field name="code">await records.buttonPlan()</field>
+            <field name="code">records.buttonPlan()</field>
         </record>
 
         <record id="actionProductionOrderMarkDone" model="ir.actions.server">

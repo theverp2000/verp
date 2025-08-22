@@ -1,9 +1,7 @@
-import _ from "lodash";
-import { api, Command, Fields } from "../../../core";
-import { OrderedSet, OrderedSet2 } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models";
-import { bool, enumerate, extend, f, floatCompare, floatIsZero, floatRound, len, pop, sum } from "../../../core/tools";
+import { _super, api, Command, Fields, MetaModel, Model } from "../../../core";
+import { OrderedSet2 } from "../../../core/helper";
 import { expression } from "../../../core/osv";
+import { bool, extend, f, floatCompare, floatIsZero, floatRound, len, pop, sum } from "../../../core/tools";
 
 @MetaModel.define()
 class StockMoveLine extends Model {

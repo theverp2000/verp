@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<verp>
+    <record id="base.userDemo" model="res.users">
+        <field name="groupsId" eval="[[4, refId('event.groupEventUser')]]"/>
+    </record>
+ </verp>

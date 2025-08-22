@@ -1,11 +1,7 @@
 import _ from "lodash";
-import { Fields, _Date, api } from "../../../core";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { len } from "../../../core/tools/iterable";
-import { update } from "../../../core/tools/misc";
-import { _f } from "../../../core/tools/string";
+import { Fields, MetaModel, TransientModel, _Date, _super, api } from "../../../core";
+import { UserError } from "../../../core/helper";
+import { _f, bool, len, update } from "../../../core/tools";
 
 /**
  * Account move reversal wizard, it cancel an account move by reversing it.

@@ -1,9 +1,6 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { _f, bool, extend, f, len, range, update } from "../../../core/tools";
-import { _lt } from "../../../core/tools/translate";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { UserError } from "../../../core/helper";
+import { _f, _lt, bool, extend, f, len, range, update } from "../../../core/tools";
 
 async function ROUTE_NAMES() {
   return {
@@ -713,7 +710,7 @@ class Warehouse extends Model {
     const receptionSteps = vals['receptionSteps'] ?? defValues['receptionSteps'];
     const deliverySteps = vals['deliverySteps'] ?? defValues['deliverySteps'];
     code = vals['code'] || code || '';
-    code = code.replace(' ', '').toUpperCase();
+    code = code.replaceAll(' ', '').toUpperCase();
     const companyId = vals['companyId'] ?? (await this.defaultGet(['companyId']))['companyId'];
     const subLocations = {
       'lotStockId': {
@@ -1052,14 +1049,14 @@ class Warehouse extends Model {
       for (const warehouse of this) {
         const routes = await warehouse.routeIds;
         for (const route of routes) {
-          await route.write({ 'label': (await route.label).replace(await warehouse.label, newName, 1) });
+          await route.write({ 'label': (await route.label).replaceAll(await warehouse.label, newName, 1) });
           for (const pull of await route.ruleIds) {
-            await pull.write({ 'label': (await pull.label).replace(await warehouse.label, newName, 1) });
+            await pull.write({ 'label': (await pull.label).replaceAll(await warehouse.label, newName, 1) });
           }
         }
         const mtoPullId = await warehouse.mtoPullId;
         if (mtoPullId.ok) {
-          await mtoPullId.write({ 'label': (await mtoPullId.label).replace(await warehouse.label, newName, 1) });
+          await mtoPullId.write({ 'label': (await mtoPullId.label).replaceAll(await warehouse.label, newName, 1) });
         }
       }
     }
@@ -1174,27 +1171,27 @@ class Warehouse extends Model {
     return {
       'inTypeId': {
         'defaultLocationDestId': inputLoc.id,
-        'barcode': code.replace(" ", "").toUpperCase() + "-RECEIPTS",
+        'barcode': code.replaceAll(" ", "").toUpperCase() + "-RECEIPTS",
       },
       'outTypeId': {
         'defaultLocationSrcId': outputLoc.id,
-        'barcode': code.replace(" ", "").toUpperCase() + "-DELIVERY",
+        'barcode': code.replaceAll(" ", "").toUpperCase() + "-DELIVERY",
       },
       'pickTypeId': {
         'active': deliverySteps !== 'shipOnly' && active,
         'defaultLocationDestId': deliverySteps === 'pickShip' ? outputLoc.id : whPackStockLocId.id,
-        'barcode': code.replace(" ", "").toUpperCase() + "-PICK",
+        'barcode': code.replaceAll(" ", "").toUpperCase() + "-PICK",
       },
       'packTypeId': {
         'active': deliverySteps === 'pickPackShip' && active,
-        'barcode': code.replace(" ", "").toUpperCase() + "-PACK",
+        'barcode': code.replaceAll(" ", "").toUpperCase() + "-PACK",
       },
       'intTypeId': {
-        'barcode': code.replace(" ", "").toUpperCase() + "-INTERNAL",
+        'barcode': code.replaceAll(" ", "").toUpperCase() + "-INTERNAL",
       },
       'returnTypeId': {
         'defaultLocationDestId': outputLoc.id,
-        'barcode': code.replace(" ", "").toUpperCase() + "-RETURNS",
+        'barcode': code.replaceAll(" ", "").toUpperCase() + "-RETURNS",
       },
     }
   }

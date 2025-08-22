@@ -53,7 +53,7 @@
                 </header>
                 <sheet>
                     <div class="oe-button-box" name="buttonBox"/>
-                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <field name="image1920" widget="image" class="oe-avatar" options="{'previewImage': 'image128'}"/>
                     <div class="oe-title">
                         <label for="label"/>

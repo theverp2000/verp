@@ -1,5 +1,5 @@
 {
-  "addonsPath": "./src/core/addons,./src/addons,./src/draft",
+  "addonsPath": "./src/core/addons,./src/addons",
   "adminPasswd": "",
   "binPath": "thirdparty",
   "chromePath": "/opt/google/chrome/chrome",

@@ -1,21 +1,19 @@
+import assert from "assert";
 import { ServerResponse } from "http";
 import _ from "lodash";
 import path from "path";
 import xpath from "xpath";
-import { api, registry } from "../../../core";
+import { AbstractModel, BaseModel, MetaModel, _super, api, registry } from "../../../core";
 import { Environment, getattr, hasattr, setattr } from "../../../core/api";
 import { serverWideModules } from "../../../core/conf";
 import { AccessError, KeyError, ValueError } from "../../../core/helper";
 import { WebRequest, WebResponse } from "../../../core/http";
-import { AbstractModel, BaseModel, MetaModel, _super } from "../../../core/models";
 import { FALSE_DOMAIN } from "../../../core/osv/expression";
 import { Forbidden, NotFound } from "../../../core/service";
 import { Router } from "../../../core/service/middleware";
-import { bool, doWith, extend, f, getTimezoneInfo, isInstance, len, parseInt, partial, pop, rstrip, setOptions, update } from "../../../core/tools";
-import { safeEval } from "../../../core/tools/save_eval";
+import { bool, doWith, extend, f, getTimezoneInfo, isInstance, len, parseInt, partial, pop, rstrip, safeEval, setOptions, update } from "../../../core/tools";
 import * as ir_http from '../../http_routing';
 import { buildUrlWParams } from "../../portal";
-import assert from "assert";
 
 @MetaModel.define()
 class IrHttp extends AbstractModel {

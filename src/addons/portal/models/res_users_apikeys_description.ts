@@ -1,5 +1,5 @@
+import { MetaModel, TransientModel, _super } from "../../../core";
 import { AccessError } from "../../../core/helper";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
 
 @MetaModel.define()
 class APIKeyDescription extends TransientModel {

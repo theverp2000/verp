@@ -12,9 +12,7 @@ import { v4 as uuid4 } from 'uuid';
 import { release } from "../../..";
 import { NotImplementedError, StopIteration, UserError, ValueError } from "../../../helper/errors";
 import { getResourcePath } from "../../../modules/modules";
-import { _f, b64decode, bool, filePath, isInstance, setOptions, sha512, stringify, toText } from "../../../tools";
-import { findInPath } from "../../../tools/config";
-import { chain, len, next, range } from "../../../tools/iterable";
+import { _f, b64decode, bool, chain, filePath, findInPath, isInstance, len, next, range, setOptions, sha512, stringify, toText } from "../../../tools";
 import { isErpModule, transpileJavascript } from "../../../tools/js_transpiler";
 import * as lazy from '../../../tools/lazy';
 import { forceHook } from "../../../tools/profiler";
@@ -248,7 +246,7 @@ export class AssetsBundle {
           window.alert(message);
         }
       })("%s");
-    `, message.replace('"', '\\"').replace('\n', '&NewLine;'));
+    `, message.replaceAll('"', '\\"').replaceAll('\n', '&NewLine;'));
   }
 
   /**
@@ -472,7 +470,7 @@ export class AssetsBundle {
     }
 
     function sanitize(...group: any[]) {
-      const reg = /^[.|~|\/]/
+      const reg = /^[.|~|\/]/g
       const ref: string = group[2];
       const line = format('@import "%s"%s', ref, group[3]);
       if (!ref.includes('.') && !(imports.includes(line)) && !reg.test(ref)) {
@@ -496,14 +494,14 @@ export class AssetsBundle {
     compiled = compiled.trim();
 
     // Post process the produced css to add required vendor prefixes here
-    compiled = compiled.replace(/(appearance: (\w+);)/, '-webkit-appearance: $2; -moz-appearance: $2; $1');
+    compiled = compiled.replace(/(appearance: (\w+);)/g, '-webkit-appearance: $2; -moz-appearance: $2; $1');
 
-    compiled = compiled.replace(/(display: ((?:inline-)?)flex((?: ?!important)?);)/, 'display: -webkit-$2box$3; display: -webkit-$2flex$3; $1');
-    compiled = compiled.replace(/(justify-content: flex-(\w+)((?: ?!important)?);)/, '-webkit-box-pack: $2$3; $1');
-    compiled = compiled.replace(/(flex-flow: (\w+ \w+);)/, '-webkit-flex-flow: $2; $1');
-    compiled = compiled.replace(/(flex-direction: (column);)/, '-webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: $2; $1');
-    compiled = compiled.replace(/(flex-wrap: (\w+);)/, '-webkit-flex-wrap: $2; $1');
-    compiled = compiled.replace(/(flex: ((\d)+ \d+ (?:\d+|auto));)/, '-webkit-box-flex: $3; -webkit-flex: $2; $1');
+    compiled = compiled.replace(/(display: ((?:inline-)?)flex((?: ?!important)?);)/g, 'display: -webkit-$2box$3; display: -webkit-$2flex$3; $1');
+    compiled = compiled.replace(/(justify-content: flex-(\w+)((?: ?!important)?);)/g, '-webkit-box-pack: $2$3; $1');
+    compiled = compiled.replace(/(flex-flow: (\w+ \w+);)/g, '-webkit-flex-flow: $2; $1');
+    compiled = compiled.replace(/(flex-direction: (column);)/g, '-webkit-box-orient: vertical; -webkit-box-direction: normal; -webkit-flex-direction: $2; $1');
+    compiled = compiled.replace(/(flex-wrap: (\w+);)/g, '-webkit-flex-wrap: $2; $1');
+    compiled = compiled.replace(/(flex: ((\d)+ \d+ (?:\d+|auto));)/g, '-webkit-box-flex: $3; -webkit-flex: $2; $1');
 
     return compiled;
   }
@@ -514,7 +512,7 @@ export class AssetsBundle {
   }
 
   getPreprocessorError(stderr, source?: any) {
-    let error = String(stderr).split('Load paths')[0].replace('  Use --trace for backtrace.', '')
+    let error = String(stderr).split('Load paths')[0].replaceAll('  Use --trace for backtrace.', '')
     if (error.includes('Cannot load compass')) {
       error += "\nMaybe you should install the compass gem using this extra argument:\n" +
         "    $ sudo gem install compass --pre";
@@ -579,13 +577,10 @@ export class AssetsBundle {
     await attachment.write(values);
     await attachment.flush();
 
-    const _debug = global.logDebug;
-    global.logDebug = true;
-    if (global.logDebug || this.env.context['commitAssetsbundle'] == true) {
+    if (this.env.context['commitAssetsbundle'] == true) {
       await this.env.cr.commit();
       await this.env.cr.reset();
     }
-    global.logDebug = _debug;
 
     await this.cleanAttachments(extension);
 
@@ -620,7 +615,7 @@ export class AssetsBundle {
     let contentLineCount = contentImportRules.split("\n").length;
     for (const asset of this.stylesheets) {
       let content: string = await asset.getContent();
-      if (content) {
+      if (bool(content)) {
         content = await asset.withHeader(content);
         if (asset.url) {
           generator.addSource(await asset.url, content, contentLineCount);
@@ -631,7 +626,7 @@ export class AssetsBundle {
         contentLineCount += content.split("\n").length;
       }
     }
-    const contentBundle = contentBundleList.join('\n') + `\n//*# sourceMappingURL=${await sourcemapAttachment.url} */`
+    const contentBundle = contentBundleList.join(';\n') + `\n/*# sourceMappingURL=${await sourcemapAttachment.url} */`;
     const cssAttachment = await this.saveAttachment('css', contentBundle);
 
     generator._file = await cssAttachment.url;
@@ -691,7 +686,7 @@ export class AssetsBundle {
       contentLineCount += content.split("\n").length + lineHeader;
     }
 
-    const contentBundle = contentBundleList.join(';\n') + '\n//# sourceMappingURL=' + await sourcemapAttachment.url;
+    const contentBundle = contentBundleList.join(';\n') + `\n/*# sourceMappingURL=${await sourcemapAttachment.url} */`;
     const jsAttachment = await this.saveAttachment('js', contentBundle);
 
     generator._file = await jsAttachment.url;
@@ -797,7 +792,7 @@ class WebAsset {
       try {
         // Test url against ir.attachments
         const attach = await (await this.bundle.env.items('ir.attachment').sudo()).getServeAttachment(this.url);
-        this._irAttach = await attach(0);
+        this._irAttach = await attach[0];
       } catch (e) {
         throw new AssetNotFound("Could not find %s", this.name);
       }
@@ -960,11 +955,11 @@ class JavascriptAsset extends WebAsset {
 }
 
 class StylesheetAsset extends WebAsset {
-  rxImport = /@import\s+('|")(?!'|"|\/|https?:\/\/)/u;
-  rxUrl = /url\s*\(\s*('|"|)(?!'|"|\/|https?:\/\/|data:)/u;
-  rxSourceMap = /(\/\*# sourceMappingURL=.*)/u;
-  rxCharset = /(@charset "[^"]+";)/u;
-  rxIndent = /'^( +|\t+)/m;
+  rxImport = /@import\s+('|")(?!'|"|\/|https?:\/\/)/gu;
+  rxUrl = /url\s*\(\s*('|"|)(?!'|"|\/|https?:\/\/|data:)/gu;
+  rxSourceMap = /(\/\*# sourceMappingURL=.*)/gu;
+  rxCharset = /(@charset "[^"]+";)/gu;
+  rxIndent = /'^( +|\t+)/gm;
 
   media: any;
   direction: any;
@@ -1028,10 +1023,10 @@ class StylesheetAsset extends WebAsset {
     let content: string = await this.getContent();
     content = content.replace(this.rxSourceMap, '');
     // comments
-    content = content.replace(/\/\*.*?\*\//, '');
+    content = content.replace(/\/\*.*?\*\//g, '');
     // space
-    content = content.replace(/\s+/, ' ');
-    content = content.replace(/ *([{}]) */, '$1');
+    content = content.replace(/\s+/g, ' ');
+    content = content.replace(/ *([{}]) */g, '$1');
     return this.withHeader(content);
   }
 
@@ -1134,7 +1129,7 @@ class SassStylesheetAsset extends PreprocessedCSS {
           throw new StopIteration();
         }
       }
-      return ind.replace(self.indent, self.reindent);
+      return ind.replaceAll(self.indent, self.reindent);
     }
 
     let content = dedent(this.inline ?? await this._fetchContent());

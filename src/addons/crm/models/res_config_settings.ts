@@ -1,8 +1,6 @@
-import { Fields, _Date, _Datetime, api } from "../../../core";
+import { Fields, MetaModel, TransientModel, _Date, _Datetime, _super, api } from "../../../core";
 import { UserError, ValueError } from "../../../core/helper";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
-import { bool, isInstance } from "../../../core/tools";
-import { addDate, subDate } from "../../../core/tools/date_utils";
+import { addDate, bool, isInstance, subDate } from "../../../core/tools";
 
 @MetaModel.define()
 class ResConfigSettings extends TransientModel {

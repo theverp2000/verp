@@ -881,7 +881,7 @@ QUnit.module('core', function () {
                     {
                         "departmentId": false,
                         "lang": "en_US",
-                        "project_id": false,
+                        "projectId": false,
                         "section_id": false,
                         "tz": false,
                         "uid": 1
@@ -907,7 +907,7 @@ QUnit.module('core', function () {
         assert.deepEqual(result, {
             departmentId: false,
             lang: 'en_US',
-            project_id: false,
+            projectId: false,
             section_id: false,
             tz: false,
             uid: 1,

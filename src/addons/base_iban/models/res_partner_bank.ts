@@ -1,8 +1,6 @@
-import { api } from "../../../core";
-import { UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { isInstance } from "../../../core/tools/func";
-import { len, range } from "../../../core/tools/iterable";
+import { MetaModel, Model, _super, api } from "../../../core";
+import { UserError, ValidationError } from "../../../core/helper";
+import { isInstance, len, range } from "../../../core/tools";
 
 function normalizeIban(iban: string): string {
     return (iban || '').replace(/[\W_]/gm, '');
@@ -48,7 +46,7 @@ async function validateIban(model, iban: string): Promise<void> {
     }
 
     const ibanTemplate = _mapIbanTemplate[countryCode];
-    if (len(iban) != len(ibanTemplate.replace(' ', '')) || !iban.match(/^[a-zA-Z0-9]+$/)) {
+    if (len(iban) != len(ibanTemplate.replaceAll(' ', '')) || !iban.match(/^[a-zA-Z0-9]+$/)) {
         throw new ValidationError(await model._t("The IBAN does not seem to be correct. You should have entered something like this %s\nWhere B = National bank code, S = Branch code, C = Account No, k = Check digit", ibanTemplate));
     }
 

@@ -1,5 +1,4 @@
-import { api } from "../../../core";
-import { AbstractModel, MetaModel, _super } from "../../../core/models";
+import { AbstractModel, MetaModel, _super, api } from "../../../core";
 
 @MetaModel.define()
 class Contact extends AbstractModel {

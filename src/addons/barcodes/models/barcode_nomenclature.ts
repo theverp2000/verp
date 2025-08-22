@@ -1,7 +1,5 @@
-import { api } from "../../../core"
-import { Fields } from "../../../core/fields"
-import { MetaModel, Model } from "../../../core/models"
-import { len } from "../../../core/tools"
+import { api, Fields, MetaModel, Model } from "../../../core";
+import { len } from "../../../core/tools";
 
 const UPC_EAN_CONVERSIONS = [
   ['none', 'Never'],
@@ -82,7 +80,7 @@ class BarcodeNomenclature extends Model {
       'match': false,
     }
 
-    barcode = barcode.replace('\\', '\\\\').replace('{', '\\{').replace('}', '\\}').replace('.', '\\.');
+    barcode = barcode.replaceAll('\\', '\\\\').replaceAll('{', '\\{').replaceAll('}', '\\}').replaceAll('.', '\\.');
     const numericalContent = pattern.match(/[{][N]*[D]*[}]/);  // look for numerical content in pattern
 
     if (numericalContent) {  // the pattern encodes a numerical content
@@ -100,7 +98,7 @@ class BarcodeNomenclature extends Model {
       match['value'] = parseInt(wholePart) + parseFloat(decimalPart)
 
       match['baseCode'] = barcode.slice(0, numStart) + Array(numEnd - numStart - 2).fill("0") + barcode.slice(numEnd - 2)  // replace numerical content by 0's in barcode
-      match['baseCode'] = match['baseCode'].replace("\\\\", "\\").replace("\\{", "{").replace("\\}", "}").replace("\\.", ".")
+      match['baseCode'] = match['baseCode'].replaceAll("\\\\", "\\").replaceAll("\\{", "{").replaceAll("\\}", "}").replaceAll("\\.", ".")
       pattern = pattern.slice(0, numStart) + Array(numEnd - numStart - 2).fill("0") + pattern.slice(numEnd)  // replace numerical content by 0's in pattern to match
     }
 

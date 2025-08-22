@@ -1,7 +1,6 @@
-import { _Date, api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { MetaModel, Model, _Date, _super, api } from "../../../core";
 import { getModuleIcon } from "../../../core/modules";
-import { combine, dateSetTz } from "../../../core/tools/date_utils";
+import { combine, dateSetTz } from "../../../core/tools";
 
 @MetaModel.define()
 class Users extends Model {

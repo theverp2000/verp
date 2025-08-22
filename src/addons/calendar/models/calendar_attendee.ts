@@ -1,8 +1,7 @@
 import * as uuid from "uuid";
-import { Fields, api } from "../../../core";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { _tzGet } from "../../../core/addons/base";
 import { DefaultDict, UserError, ValueError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { b64encode, bool } from "../../../core/tools";
 
 export const STATE_SELECTION = [

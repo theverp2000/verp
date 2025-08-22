@@ -1,14 +1,9 @@
 import { DateTime } from "luxon";
-import { Fields, _Date, api, tools } from "../../../core";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date, _super, api, tools } from "../../../core";
+import { UserError } from "../../../core/helper";
 import { Query } from "../../../core/osv";
 import { version } from "../../../core/release";
-import { bool } from "../../../core/tools/bool";
-import { len, range } from "../../../core/tools/iterable";
-import { stringify } from "../../../core/tools/json";
-import { _convert$, _f, f } from "../../../core/tools/string";
-import { getRandom } from "../../../core/tools/utils";
+import { _convert$, _f, bool, f, getRandom, len, range, stringify } from "../../../core/tools";
 
 @MetaModel.define()
 class CrmTeam extends Model {
@@ -451,7 +446,7 @@ class CrmTeam extends Model {
     let yField = 'value';
 
     // generate all required x_fields and update the y_values where we have data for them
-    const locale = (this._context['lang'] || 'en_US').replace('_', '-');
+    const locale = (this._context['lang'] || 'en_US').replaceAll('_', '-');
 
     const weeksInStartYear = DateTime.local(startDate.getFullYear(), 12, 28).weekNumber; // This date is always in the last week of ISO years
     const weekCount = (DateTime.fromJSDate(endDate).weekNumber - DateTime.fromJSDate(startDate).weekNumber) % weeksInStartYear + 1;

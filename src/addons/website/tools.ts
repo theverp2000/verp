@@ -1,7 +1,6 @@
 import _ from "lodash";
 import { registry } from "../../core";
-import { _f, f, len, range } from "../../core/tools";
-import { parseXml } from "../../core/tools/xml"
+import { _f, f, len, parseXml, range } from "../../core/tools";
 
 /**
  * Computes the valid iframe from given URL that can be embedded

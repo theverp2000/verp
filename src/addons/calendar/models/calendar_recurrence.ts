@@ -1,12 +1,10 @@
 import { DateTime } from 'luxon';
 import { RRule, Weekday, rrulestr } from 'rrule';
-import { Fields, _Date, api } from '../../../core';
+import { Fields, MetaModel, Model, _Date, api } from '../../../core';
 import { _tzGet } from '../../../core/addons/base';
 import { getattr } from '../../../core/api';
 import { UserError } from '../../../core/helper';
-import { MetaModel, Model } from '../../../core/models';
-import { _f, allTimezones, bool, extend, f, isInstance, len, parseInt, quoteList } from '../../../core/tools';
-import { addDate, combine, dateSetTz, dateWithoutTz, subDate } from '../../../core/tools/date_utils';
+import { _f, addDate, allTimezones, bool, combine, dateSetTz, dateWithoutTz, extend, f, isInstance, len, parseInt, quoteList, subDate } from '../../../core/tools';
 
 const MAX_RECURRENT_EVENT = 720;
 

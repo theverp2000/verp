@@ -1,13 +1,9 @@
 import { ServerResponse } from "http";
-import { http } from "../../../core"
+import { http } from "../../../core";
+import { AccessError, Dict } from "../../../core/helper";
 import { WebRequest } from "../../../core/http";
-import { f } from "../../../core/tools/string";
 import { urlEncode } from "../../../core/service/middleware/utils";
-import { consteq, pop } from "../../../core/tools/misc";
-import { isInstance } from "../../../core/tools/func";
-import { AccessError } from "../../../core/helper/errors";
-import { Dict } from "../../../core/helper/collections";
-import { bool } from "../../../core/tools/bool";
+import { bool, consteq, f, isInstance, pop } from "../../../core/tools";
 
 @http.define()
 export class MailController extends http.Controller {

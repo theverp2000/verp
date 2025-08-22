@@ -102,7 +102,7 @@ function translate(pat: string) {
       else {
         let stuff = pat.slice(i, j);
         if (!stuff.includes('--'))
-          stuff = stuff.replace(/\\/, '\\');
+          stuff = stuff.replace(/\\/g, '\\');
         else {
           const chunks = []
           let k = pat[i] === '!' ? i+2 : i+1
@@ -117,10 +117,10 @@ function translate(pat: string) {
           chunks.push(pat.slice(i, j))
           // Escape backslashes and hyphens for set difference (--).
           // Hyphens that create ranges shouldn't be escaped.
-          stuff = chunks.map(s => s.replace(/\\/, '\\').replace('\-', '-')).join('-');
+          stuff = chunks.map(s => s.replace(/\\/g, '\\').replaceAll('\-', '-')).join('-');
         }
         // Escape set operations (&&, ~~ and ||).
-        stuff = stuff.replace(/([&~|])/, '\\$1');
+        stuff = stuff.replace(/([&~|])/g, '\\$1');
         i = j+1
         if (stuff[0] === '!')
           stuff = '^' + stuff.slice(1);

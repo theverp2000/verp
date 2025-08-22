@@ -1,10 +1,9 @@
 import _ from "lodash";
-import { _Date, _Datetime, api, Fields } from "../../../core";
+import { _Date, _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
+import { setdefault } from "../../../core/api";
 import { UserError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { _f, addDate, bool, f, floatCompare, floatIsZero, floatRound, getLang, len, map, some, sum, update } from "../../../core/tools";
-import { setdefault } from "../../../core/api";
 
 @MetaModel.define()
 class SaleOrderLine extends Model {
@@ -1064,7 +1063,7 @@ class SaleOrderLine extends Model {
         e.g:
         - custom attributes and attributes that don't create variants, both introduced by the "product configurator"
         - in event_sale we need to know specifically the sales order line as well as the product to generate the name:
-          the product is not sufficient because we also need to know the event_id and the event_ticket_id (both which belong to the sale order line).
+          the product is not sufficient because we also need to know the eventId and the eventTicketId (both which belong to the sale order line).
      */
     async getSaleOrderLineMultilineDescriptionSale(product) {
         return await product.getProductMultilineDescriptionSale() + await this._getSaleOrderLineMultilineDescriptionVariants();

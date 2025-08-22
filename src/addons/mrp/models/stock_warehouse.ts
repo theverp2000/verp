@@ -1,8 +1,7 @@
-import { Routing } from "../../stock";
-import { api, Fields } from "../../../core";
+import { _super, api, Fields, MetaModel, Model } from "../../../core";
 import { UserError, ValidationError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models"
 import { bool, update } from "../../../core/tools";
+import { Routing } from "../../stock";
 
 @MetaModel.define()
 class StockWarehouse extends Model {
@@ -197,7 +196,7 @@ class StockWarehouse extends Model {
         const defValues = await this.defaultGet(['companyId', 'manufactureSteps']);
         const manufactureSteps = vals['manufactureSteps'] ?? defValues['manufactureSteps'];
         code = vals['code'] || code || '';
-        code = code.replace(' ', '').toUpperCase();
+        code = code.replaceAll(' ', '').toUpperCase();
         const companyId = vals['companyId'] ?? defValues['companyId'];
         update(values, {
             'pbmLocId': {
@@ -271,11 +270,11 @@ class StockWarehouse extends Model {
         update(data, {
             'pbmTypeId': {
                 'active': manufactureToResupply && ['pbm', 'pbmSam'].includes(manufactureSteps) && active,
-                'barcode': code.replace(" ", "").toUpperCase() + "-PC",
+                'barcode': code.replaceAll(" ", "").toUpperCase() + "-PC",
             },
             'samTypeId': {
                 'active': manufactureToResupply && manufactureSteps == 'pbmSam' && active,
-                'barcode': code.replace(" ", "").toUpperCase() + "-SFP",
+                'barcode': code.replaceAll(" ", "").toUpperCase() + "-SFP",
             },
             'manuTypeId': {
                 'active': manufactureToResupply && active,
@@ -321,7 +320,7 @@ class StockWarehouse extends Model {
         // change the manufacture stock rule name
         for (const warehouse of this) {
             if (bool(await warehouse.manufacturePullId) && label) {
-                await (await warehouse.manufacturePullId).write({'label': (await (await warehouse.manufacturePullId).label).replace(await warehouse.label, label)});
+                await (await warehouse.manufacturePullId).write({'label': (await (await warehouse.manufacturePullId).label).replaceAll(await warehouse.label, label)});
             }
         }
         return res;

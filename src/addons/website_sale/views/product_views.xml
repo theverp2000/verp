@@ -196,7 +196,7 @@
                         </group>
                         <group>
                             <field name="htmlClass"/>
-                            <field name="bgcolor"/>
+                            <field name="bgColor"/>
                         </group>
                     </group>
                 </sheet>

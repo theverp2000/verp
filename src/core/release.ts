@@ -20,4 +20,4 @@ export const author = 'The Verp JSC';
 export const authorEmail = 'info@theverp.com';
 export const license = 'MIT Expat';
 
-export const ntServiceName = "verp-server-" + series.replace('~','-')
+export const ntServiceName = "verp-server-" + series.replaceAll('~','-')

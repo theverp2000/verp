@@ -1,11 +1,7 @@
 import _ from "lodash";
-import { api } from "../../../core";
-import { Fields, _Date, _Datetime } from "../../../core/fields";
-import { UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, NewId, TransientModel, _super } from "../../../core/models";
-import { _f, copysign, enumerate, extend, f, floatIsZero, len, pop, sum, update } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { formatLang } from "../../../core/tools/models";
+import { Fields, MetaModel, Model, NewId, TransientModel, _Date, _Datetime, _super, api } from "../../../core";
+import { UserError, ValidationError } from "../../../core/helper";
+import { _f, bool, copysign, enumerate, extend, f, floatIsZero, formatLang, len, pop, sum, update } from "../../../core/tools";
 
 /**
  * Cash Box Details

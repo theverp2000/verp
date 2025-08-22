@@ -1,7 +1,5 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { MetaModel, TransientModel, _super } from "../../../core/models"
-import { update } from "../../../core/tools/misc";
+import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
+import { update } from "../../../core/tools";
 
 @MetaModel.define()
 class SnailmailLetterMissingRequiredFields extends TransientModel {

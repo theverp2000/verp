@@ -158,7 +158,7 @@
                 </div>
                 <sheet>
                     <div class="oe-button-box" name="buttonBox"/>
-                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <field name="avatar128" invisible="1"/>
                     <field name="image1920" widget='image' class="oe-avatar" options='{"previewImage": "avatar128"}'/>
                     <div class="oe-title mb24">

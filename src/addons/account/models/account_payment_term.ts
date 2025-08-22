@@ -1,10 +1,7 @@
 import { DateTime } from "luxon";
-import { api } from "../../../core";
-import { Fields, _Date } from "../../../core/fields";
-import { UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool, f } from "../../../core/tools";
-import { len } from "../../../core/tools/iterable";
+import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { UserError, ValidationError } from "../../../core/helper";
+import { bool, f, len } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountPaymentTerm extends Model {

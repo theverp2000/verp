@@ -1,5 +1,4 @@
-import { _super, AbstractModel } from "../../../core/models"
-import { MetaModel } from "../../../core/models"
+import { _super, AbstractModel, MetaModel } from "../../../core";
 
 @MetaModel.define()
 class WebsitePage extends AbstractModel {

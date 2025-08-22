@@ -1,18 +1,17 @@
 import assert from "assert";
 import { ServerResponse } from "http";
 import { decode } from "utf8";
-import { api, registry, tools } from "../../../core";
+import { AbstractModel, MetaModel, _super, api, registry, tools } from "../../../core";
 import { QWebException } from "../../../core/addons/base";
 import * as ir_http from '../../../core/addons/base/models/ir_http';
 import { Environment, getattr, hasattr } from "../../../core/api";
 import { AccessError, MissingError, UserError } from "../../../core/helper";
 import { WebRequest, _root } from "../../../core/http";
-import { AbstractModel, MetaModel, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { HTTPException, MethodNotAllowed, NotFound } from "../../../core/service";
+import { RequestRedirect, Rule } from "../../../core/service/middleware";
 import { BaseResponse } from "../../../core/service/middleware/base_response";
 import { HTTP_STATUS_CODES, cleanString, urlUnquotePlus } from "../../../core/service/middleware/utils";
-import { RequestRedirect, Rule } from "../../../core/service/middleware";
 import { bool, config, doWith, f, isInstance, len, lstrip, parseInt, slug, stringPart, update, urlFor, ustr } from "../../../core/tools";
 
 export function _guessMimetype(ext: any = null, value: string = 'text/html'): {} {
@@ -256,7 +255,7 @@ class IrHttp extends AbstractModel {
         let newUrl;
         // handle // in url
         if (req.httpRequest.method === 'GET' && req.uri.pathname.includes('//')) {
-            newUrl = req.uri.pathname.replace('//', '/') + '?' + decode(req.uri.search);
+            newUrl = req.uri.pathname.replaceAll('//', '/') + '?' + decode(req.uri.search);
             return req.redirect(res, newUrl, 301);
         }
         // locate the controller method

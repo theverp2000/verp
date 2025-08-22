@@ -95,7 +95,7 @@ export class BaseRequest extends http.IncomingMessage {
   async parseBody(callback = (msg) => { }) {
     let body = await this.getBody();
     if (typeof body === 'string') {
-      body = body.replace('+', '%2B');
+      body = body.replaceAll('+', '%2B');
       try {
         body = decodeURIComponent(body);
       } catch (e) {
@@ -124,7 +124,7 @@ export class BaseRequest extends http.IncomingMessage {
       this.params.updateFrom(len(body.form) ? body.form : {});
       this.files = body.files;
     }
-    console.log('-> Curl:', this.url);
+    global.logHttp && console.debug('-> Curl:', this.url);
   }
 
   async getBody() {

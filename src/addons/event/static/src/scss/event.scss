@@ -1,0 +1,26 @@
+.o-kanban-view.o-event-kanban-view {
+    .o-kanban-record {
+        min-height: 140px;
+    }
+    .o-kanban-content {
+        .o-event-fontsize-09 {
+            font-size: .9rem;
+        }
+
+        .o-event-fontsize-11 {
+            font-size: 1.1rem;
+        }
+
+        .o-event-fontsize-20 {
+            font-size: 2rem;
+        }
+    }
+}
+
+.o-kanban-view.o-event-attendee-kanban-view {
+    @media (max-width: 768px) {
+        .o-event-registration-kanban {
+            min-height: 80px;
+        }
+    }
+}

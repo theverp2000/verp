@@ -4,15 +4,10 @@ import * as mimetypes from 'mime-types';
 import * as path from 'path';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
-import { api, tools } from "../../..";
-import { Fields } from "../../../fields";
-import { Map2, Dict } from "../../../helper/collections";
+import { Fields, MetaModel, Model, _super, api, tools } from "../../..";
+import { Dict, Map2 } from "../../../helper/collections";
 import { AccessError, UserError, ValidationError } from "../../../helper/errors";
-import { MetaModel, Model, _super } from "../../../models";
-import { ImageProcess, b64decode, b64encode, bool, config, fileClose, fileWrite, humanSize, isDir, isFile, sameContent, setOptions, sha1, str2bool } from '../../../tools';
-import { isInstance } from "../../../tools/func";
-import { extend, len } from "../../../tools/iterable";
-import { guessMimetype } from '../../../tools/mimetypes';
+import { ImageProcess, b64decode, b64encode, bool, config, extend, fileClose, fileWrite, guessMimetype, humanSize, isDir, isFile, isInstance, len, sameContent, setOptions, sha1, str2bool } from '../../../tools';
 
 /**
  * Attachments are used to link binary files or url to any verp document.
@@ -20,8 +15,8 @@ import { guessMimetype } from '../../../tools/mimetypes';
     External attachment storage
     ---------------------------
 
-    The computed field ``datas`` is implemented using ``_file_read``,
-    ``_file_write`` and ``_file_delete``, which can be overridden to implement
+    The computed field ``datas`` is implemented using ``_fileRead``,
+    ``_fileWrite`` and ``_fileDelete``, which can be overridden to implement
     other storage engines. Such methods should check for other location pseudo
     uri (example: hdfs://hadoopserver).
 
@@ -380,8 +375,8 @@ class IrAttachment extends Model {
   @api.model()
   _fullPath(p: string) {
     // sanitize path
-    p = p.replace(/[.]/, '');
-    p = p.replace(/\\/, '');
+    p = p.replace(/[.]/g, '');
+    p = p.replace(/\\/g, '');
     return path.join(this._filestore(), p);
   }
 
@@ -449,8 +444,8 @@ class IrAttachment extends Model {
    * @param fname 
    */
   _markForGc(fname: string) {
-    fname = fname.replace(/[.]/, '');
-    fname = fname.replace(/\\/, '');
+    fname = fname.replace(/[.]/g, '');
+    fname = fname.replace(/\\/g, '');
     // we use a spooldir: add an empty file in the subdirectory 'checklist'
     const fullPath = path.join(this._fullPath('checklist'), fname);
     if (!fs.existsSync(fullPath)) {
@@ -556,14 +551,14 @@ class IrAttachment extends Model {
     return sha1(binData || '');
   }
 
-  @api.model()
-  _sameContent_All(binData: Buffer, filepath: string) {
-    const temp = fs.readFileSync(filepath);
-    if (temp.compare(binData) !== 0) {
-      return false;
-    }
-    return true
-  }
+  // @api.model()
+  // _sameContent_All(binData: Buffer, filepath: string) {
+  //   const temp = fs.readFileSync(filepath);
+  //   if (temp.compare(binData) !== 0) {
+  //     return false;
+  //   }
+  //   return true
+  // }
 
   async _checkContents(values) {
     const mimetype = values['mimetype'] = await this._computeMimetype(values);
@@ -679,8 +674,8 @@ class IrAttachment extends Model {
           if (w > nw || h > nh) {
             img = await img.resize(nw, nh);
             const quality = parseInt(ICP('base.imageAutoresizeQuality', 80));
-            fnQuality = isRaw ? img.imageQuality : img.imageBase64
-            values[(isRaw && 'raw') ?? 'datas'] = await fnQuality(quality);
+            fnQuality = isRaw ? img.imageQuality : img.imageBase64;
+            values[isRaw && 'raw' || 'datas'] = await fnQuality(quality);
           }
         } catch (e) {
           if (isInstance(e, UserError)) {

@@ -357,6 +357,9 @@ export function fileClose(fd: number) {
 }
 
 export function fileWrite(name: string, buffer: Buffer, force = true) {
+  if (buffer.length == 0) {
+    console.warn('fileWrite 0 byte of', name);
+  }
   const fd = fs.openSync(name, force ? 'w' : 'wx');
   let offset = 0;
   while (offset < buffer.length) {
@@ -567,7 +570,7 @@ export async function formatAmount(env, amount, currency, langCode: boolean = fa
   const lang = await getLang(env, langCode);
 
   let formattedAmount = (await lang.format(fmt, await currency.round(amount), { grouping: true, monetary: true }));
-  formattedAmount = formattedAmount.replace(' ', nbsp).replace('-', '-\u200b'); //U+200B
+  formattedAmount = formattedAmount.replaceAll(' ', nbsp).replaceAll('-', '-\u200b'); //U+200B
 
   let pre = '', post = '';
   if (await currency.position === 'before') {

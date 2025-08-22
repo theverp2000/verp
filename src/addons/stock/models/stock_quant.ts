@@ -1,15 +1,7 @@
-import { api } from "../../../core";
-import { Fields, _Date, _Datetime } from "../../../core/fields";
-import { MapKey } from "../../../core/helper";
-import { UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date, _Datetime, _super, api } from "../../../core";
+import { MapKey, UserError, ValidationError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { bool } from "../../../core/tools/bool";
-import { dateMin } from "../../../core/tools/date_utils";
-import { floatCompare, floatIsZero } from "../../../core/tools/float_utils";
-import { sum } from "../../../core/tools/iterable";
-import { pop, update } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/string";
+import { bool, dateMin, f, floatCompare, floatIsZero, pop, sum, update } from "../../../core/tools";
 
 @MetaModel.define()
 class StockQuant extends Model {

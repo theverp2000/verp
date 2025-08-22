@@ -1,7 +1,5 @@
-import { api } from "../../../core";
-import { Fields, _Date } from "../../../core/fields";
-import { MetaModel, TransientModel } from "../../../core/models"
-import { addDate } from "../../../core/tools/date_utils";
+import { Fields, MetaModel, TransientModel, _Date, api } from "../../../core";
+import { addDate } from "../../../core/tools";
 
 @MetaModel.define()
 class StockOrderpointSnooze extends TransientModel {

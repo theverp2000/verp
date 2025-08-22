@@ -1,8 +1,6 @@
-import { format as f } from "util";
-import { Fields, api } from "../../../core";
+import { Fields, MetaModel, TransientModel, api } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { MetaModel, TransientModel } from "../../../core/models";
-import { len } from "../../../core/tools";
+import { len, f } from "../../../core/tools";
 
 @MetaModel.define()
 class ResConfigSettings extends TransientModel {

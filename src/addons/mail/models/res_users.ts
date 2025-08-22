@@ -173,7 +173,7 @@ class Users extends Model {
       'menuId': await self.env.items('ir.model.data')._xmlidToResId('mail.menuRootDiscuss'),
       'needactionInboxCounter': await partnerId._getNeedactionCount(),
       'partnerRoot': (await (await partnerRoot.sudo()).mailPartnerFormat()).get(partnerRoot.id),
-      'publicPartners': Array.from((await (await (await (await (await (await self.env.ref('base.groupPublic')).sudo()).withContext({ activeTest: false })).users).partnerId).mailPartnerFormat()).values()),
+      'publicPartners': (await (await (await (await (await (await self.env.ref('base.groupPublic')).sudo()).withContext({ activeTest: false })).users).partnerId).mailPartnerFormat()).values(),
       'shortcodes': await (await self.env.items('mail.shortcode').sudo()).searchRead([],  ['source', 'substitution', 'description']),
       'starredCounter': await self.env.items('mail.message').searchCount([['starredPartnerIds', 'in', partnerId.ids]]),
     }

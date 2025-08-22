@@ -1,6 +1,5 @@
-import { Fields, api } from "../../../core";
+import { AbstractModel, Fields, MetaModel, api } from "../../../core";
 import { AccessError, Dict, NotImplementedError, UserError } from "../../../core/helper";
-import { AbstractModel, MetaModel } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { _f, len, quoteDouble } from "../../../core/tools";
 import { phoneSanitizeNumbersWRecord } from "../tools";
@@ -97,7 +96,7 @@ class PhoneMixin extends AbstractModel {
             }
             const query = `SELECT model.id FROM "${this.cls._table}" model WHERE ${whereStr};`;
 
-            let term = value.slice(value.startsWith('+') ? 1 : 2).replace(pattern, '');
+            let term = value.slice(value.startsWith('+') ? 1 : 2).replaceAll(pattern, '');
             if (!['=', '!='].includes(operator)) {  // for like operators
                 term = `${term}%`;
             }
@@ -114,7 +113,7 @@ class PhoneMixin extends AbstractModel {
                 whereStr = phoneFields.map(phoneField => _f(`(model.{phoneField} IS NOT NULL AND REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s')`, { phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator })).join();
             }
             const query = `SELECT model.id FROM ${this.cls._table} model WHERE ${whereStr};`;
-            let term = value.replace(pattern, '');
+            let term = value.replaceALl(pattern, '');
             if (!['=', '!='].includes(operator)) { // for like operators
                 term = `%${term}%`;
             }

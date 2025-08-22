@@ -1,13 +1,8 @@
 import _ from "lodash";
 import xpath from "xpath";
-import { Fields, _Date, api } from "../../../core";
-import { DefaultDict } from "../../../core/helper/collections";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { len, sum } from "../../../core/tools/iterable";
-import { update } from "../../../core/tools/misc";
-import { E, getrootXml, parseXml, serializeXml } from "../../../core/tools/xml";
+import { Fields, MetaModel, TransientModel, _Date, _super, api } from "../../../core";
+import { DefaultDict, UserError } from "../../../core/helper";
+import { E, bool, getrootXml, len, parseXml, serializeXml, sum, update } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountPaymentRegister extends TransientModel {

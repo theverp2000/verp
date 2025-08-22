@@ -113,7 +113,7 @@
                     <div class="oe-button-box" name="buttonBox">
                         <button string="Document" icon="fa-bars" type="object" name="actionOpenCalendarEvent" attrs="{'invisible': ['|', ['resModel', '=', false], ['resId', '=', false]]}"/>
                     </div>
-                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <field name="resModel" invisible="1" />
                     <field name="resId" invisible="1" />
                     <field name="attendeeStatus" invisible="1"/>

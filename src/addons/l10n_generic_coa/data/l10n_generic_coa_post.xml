@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+<data noupdate="1">
+    <!-- Tax template for sale and purchase -->
+    <record id="taxGroup15" model="account.tax.group">
+        <field name="label">Tax 15%</field>
+    </record>
+</data>
+<data>
+    <!-- Chart template account links -->
+    <record id="configurableChartTemplate" model="account.chart.template">
+        <field name="completeTaxSet" eval="false"/>
+        <field name="useAngloSaxon" eval="true"/>
+
+        <field name="propertyAccountReceivableId" ref="receivable"/>
+        <field name="propertyAccountPayableId" ref="payable"/>
+
+        <field name="propertyAccountExpenseCategId" ref="expense"/>
+        <field name="propertyAccountIncomeCategId" ref="income"/>
+
+        <field name="propertyStockAccountInputCategId" ref="stockIn"/>
+        <field name="propertyStockAccountOutputCategId" ref="stockOut"/>
+        <field name="propertyStockValuationAccountId" ref="stockValuation"/>
+
+        <field name="incomeCurrencyExchangeAccountId" ref="incomeCurrencyExchange"/>
+        <field name="expenseCurrencyExchangeAccountId" ref="expenseCurrencyExchange"/>
+
+        <field name="defaultCashDifferenceIncomeAccountId" ref="cashDiffIncome"/>
+        <field name="defaultCashDifferenceExpenseAccountId" ref="cashDiffExpense"/>
+        <field name="defaultPosReceivableAccountId" ref="posReceivable"/>
+
+        <field name="propertyTaxPayableAccountId" ref="taxPayable"/>
+        <field name="propertyTaxReceivableAccountId" ref="taxReceivable"/>
+    </record>
+
+    <record id="saleTaxTemplate" model="account.tax.template">
+        <field name="chartTemplateId" ref="configurableChartTemplate"/>
+        <field name="label">Tax 15%</field>
+        <field name="amount">15</field>
+        <field name="typeTaxUse">sale</field>
+        <field name="taxGroupId" ref="taxGroup15"/>
+        <field name="invoiceRepartitionLineIds" eval="[[5, 0, 0],
+            [0,0, {
+                'factorPercent': 100,
+                'repartitionType': 'base',
+            }],
+            [0,0, {
+                'factorPercent': 100,
+                'repartitionType': 'tax',
+                'accountId': refId('taxReceived'),
+            }],
+        ]"/>
+        <field name="refundRepartitionLineIds" eval="[[5, 0, 0],
+            [0,0, {
+                'factorPercent': 100,
+                'repartitionType': 'base',
+            }],
+            [0,0, {
+                'factorPercent': 100,
+                'repartitionType': 'tax',
+                'accountId': refId('taxReceived'),
+            }],
+        ]"/>
+    </record>
+
+   <record id="purchaseTaxTemplate" model="account.tax.template">
+        <field name="chartTemplateId" ref="configurableChartTemplate"/>
+        <field name="label">Purchase Tax 15%</field>
+        <field name="amount">15</field>
+        <field name="typeTaxUse">purchase</field>
+        <field name="taxGroupId" ref="taxGroup15"/>
+        <field name="invoiceRepartitionLineIds" eval="[[5, 0, 0],
+            [0,0, {
+                'factorPercent': 100,
+                'repartitionType': 'base',
+            }],
+            [0,0, {
+                'factorPercent': 100,
+                'repartitionType': 'tax',
+                'accountId': refId('taxPaid'),
+            }],
+        ]"/>
+        <field name="refundRepartitionLineIds" eval="[[5, 0, 0],
+            [0,0, {
+                'factorPercent': 100,
+                'repartitionType': 'base',
+            }],
+            [0,0, {
+                'factorPercent': 100,
+                'repartitionType': 'tax',
+                'accountId': refId('taxPaid'),
+            }],
+        ]"/>
+    </record>
+
+    <!-- Try to instanciate for relevant companies -->
+</data>
+<data noupdate="1">
+    <function model="account.chart.template" name="tryLoading">
+        <value eval="[refId('l10n_generic_coa.configurableChartTemplate')]"/>
+    </function>
+</data>
+</verp>

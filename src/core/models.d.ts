@@ -217,12 +217,6 @@ declare class BaseModel extends Function {
    */
   static get _mro(): Function[];
 
-  env: Environment;
-  pool: Registry;
-  _ids: number[];
-  _prefetchIds: number[];
-  _name: string;
-
   /**
    * Method Resolution Order filtered by type
    */
@@ -323,10 +317,9 @@ declare class BaseModel extends Function {
 
   /**
    * Verifies that the operation given by ``operation`` is allowed for the current user according to ir.rules.
-    @param operation: one of ``write``, ``unlink``
-    @throw UserError: * if current ir.rules do not permit this operation.
-    @returns None if the operation is allowed
-   * @param operation 
+    @param operation one of ``write``, ``unlink``
+    @throw UserError * if current ir.rules do not permit this operation.
+    @returns null if the operation is allowed
    */
   checkAccessRule(operation: string): Promise<void>;
 
@@ -1184,14 +1177,19 @@ declare class BaseModel extends Function {
    */
   _flushSearch(domain: any[], options?: { fields?: any, order?: string, seen?: Set<string> }): Promise<void>;
 
+  _name: string; // assign for easy debuging
+  _ids: number[];
+  _prefetchIds: number[];
+  env: Environment;
+  pool: Registry;
+  cls: any;
+
   /**
    * Return the list of actual record ids corresponding to ``this``. 
    */
   get ids(): any[];
 
   get id(): any;
-
-  get cls(): any;
 
   get _cr(): Cursor;
 
@@ -1464,7 +1462,7 @@ declare class BaseModel extends Function {
     @param func a function or a dot-separated sequence of field names
     @returns recordset of records satisfying func, may be empty.
 
-    .. code-block:: python3
+    .. code-block:: javascript
 
         // only keep records whose company is the current user's
         records.filtered((r => r.companyId == user.companyId)
@@ -1582,6 +1580,8 @@ declare class BaseModel extends Function {
     partnerIds?: any, parentId?: any, model?: any, resId?: any,
     authorId?: any, emailFrom?: any, body?: string, subject?: any, subtypeXmlid?: any, emailLayoutXmlid?: any
   }): Promise<any>;
+
+  messageSubscribe(partnerIds?: any, subtypeIds?: any): Promise<boolean>;
 
   // User
   hasGroup(group): Promise<boolean>;

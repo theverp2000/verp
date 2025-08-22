@@ -50,7 +50,7 @@ export class ImageProcess {
   static async new(base64Source: any, verifyResolution: boolean = true) {
     try {
       const obj = new ImageProcess();
-      obj.base64Source = base64Source ?? false;
+      obj.base64Source = base64Source || false;
       obj.operationsCount = 0;
       obj.verifyResolution = verifyResolution;
 
@@ -144,22 +144,22 @@ export class ImageProcess {
           outputImage = outputImage
             .toColorspace('rgba')
             .pipelineColourspace('rgb')
-            .toColorspace('p')
+            .toColorspace('p');
         }
       }
     }
     if (outputFormat === 'jpeg') {
       opt['optimiseScans'] = true;
-      opt['quality'] = quality ?? 95;
+      opt['quality'] = quality || 95;
     }
     if (outputFormat === 'gif') {
       opt['optimiseScans'] = true;
       opt['saveAll'] = true;
     }
 
-    const outMeta = await outputImage.metadata()
+    const outMeta = await outputImage.metadata();
     const outSpace = outMeta.space?.toLowerCase() || '';
-    if (!["1", "l", "p", "rgb", "rgba"].includes(outSpace) || (space === 'jpeg' && outSpace === 'rgba')) {
+    if (!["1", "l", "p", "rgb", "rgba", "srgb"].includes(outSpace) || (space === 'jpeg' && outSpace === 'rgba')) {
       outputImage = outputImage.toColorspace("rgb");
     }
 
@@ -182,20 +182,27 @@ export class ImageProcess {
 
   async resize(maxWidth = 0, maxHeight = 0) {
     if (this.image && this.originalFormat !== 'gif' && (maxWidth || maxHeight)) {
-      const image = this.image as sharp.Sharp;
-      const meta = await image.metadata();
+      const meta = await this.image.metadata();
       const [w, h] = [meta.width, meta.height];
-      const askedWidth = maxWidth ?? Math.floor((w * maxHeight) / h);
-      const askedHeight = maxHeight ?? Math.floor((h * maxWidth) / w);
-      if (askedWidth !== w || askedHeight !== h) {
-        this.image = image.resize(askedWidth, askedHeight, { kernel: 'lanczos2' });
+      const width = maxWidth || Math.floor((w * maxHeight) / h);
+      const height = maxHeight || Math.floor((h * maxWidth) / w);
+      if (width !== w || height !== h) {
+        this.image = this.image.resize({
+          width: width >= height ? width : null, 
+          height: height >= width ? height : null,
+          kernel: 'lanczos2',
+          fit: 'contain', position: 'center'});
       }
     }
     return this;
   }
 
-  async cropResize(maxWIdth = 0, maxHeight = 0, centerX = 0.5, centerY = 0.5) {
-    console.warn('Not implement');
+  async cropResize(maxWidth = 0, maxHeight = 0, centerX = 0.5, centerY = 0.5) {
+    this.image = this.image.resize({
+      width: maxWidth >= maxHeight ? maxWidth : null, 
+      height: maxHeight >= maxWidth ? maxHeight : null, 
+      kernel: 'lanczos2',
+      fit: 'contain', position: 'center'});
     return this;
   }
 
@@ -206,7 +213,7 @@ export class ImageProcess {
       const color = { r: randrange(32, 224, 24), g: randrange(32, 224, 24), b: randrange(32, 224, 24) };
       this.image = original.clone()
         .tint(color)
-        .resize(meta.width, meta.height)
+        .resize({width: meta.width, height: meta.height, fit: 'contain', position: 'center', kernel: 'lanczos2'})
         .composite([{ input: await original.toBuffer() }]);
       this.operationsCount += 1;
     }
@@ -276,7 +283,7 @@ export async function imageFixOrientation(image: sharp.Sharp) {
       else if (method === ROTATE_90)
         image = image.rotate(90);
       else if (method === ROTATE_180)
-        image = image.rotate(190);
+        image = image.rotate(180);
       else if (method === ROTATE_270)
         image = image.rotate(270);
     }
@@ -291,7 +298,7 @@ export async function imageFixOrientation(image: sharp.Sharp) {
  * @param opt 
  * @returns the image formatted
  */
-function imageApplyOpt(image: sharp.Sharp, format: any, opt?: {}) {
+async function imageApplyOpt(image: sharp.Sharp, format: any, opt?: {}) {
   image = image.toFormat(format, opt);
   return image;
 }

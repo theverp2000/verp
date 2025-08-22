@@ -1,14 +1,9 @@
 import fs from "fs/promises";
 import http from 'http';
-import { api, conf, service, tools } from "../../..";
+import { AbstractModel, MetaModel, _super, api, conf, service, tools } from "../../..";
 import { HttpRequest, WebRequest, setSafeImageHeaders } from "../../../http";
-import { AbstractModel, MetaModel, _super } from "../../../models";
 import { expVersion } from "../../../service/common";
-import { b64decode, b64encode, imageGuessSizeFromFieldName, imageProcess } from '../../../tools/image';
-import { len } from '../../../tools/iterable';
-import { stringify } from '../../../tools/json';
-import { setOptions, sha512 } from "../../../tools/misc";
-import { filePath } from '../../../tools/models';
+import { b64decode, b64encode, filePath, imageGuessSizeFromFieldName, imageProcess, len, setOptions, sha512, stringify } from '../../../tools';
 import { HomeStaticTemplateHelpers } from '../controllers/main';
 
 @MetaModel.define()
@@ -149,10 +144,10 @@ class IrHttp extends AbstractModel {
   }
 
   @api.model()
-  async _contentImage(req, res, kw: { xmlid?: any, model?: string, resId?: any, field?: string, filenameField?: string, unique?: any, filename?: any, mimetype?: any, download?: any, width?: number, height?: number, crop?: boolean, quality?: number, accessToken?: any } = {}) {
-    setOptions(kw, { model: 'ir.attachment', field: 'datas', filenameField: 'label', width: 0, height: 0, crop: false, quality: 0, defaultMimetype: 'image/png' });
-    const [status, headers, imageBase64] = await (this as any).binaryContent(req, kw);
-    return this._contentImageGetResponse(req, res, status, headers, imageBase64, kw);
+  async _contentImage(req, res, options: { xmlid?: any, model?: string, resId?: any, field?: string, filenameField?: string, unique?: any, filename?: any, mimetype?: any, download?: any, width?: number, height?: number, crop?: boolean, quality?: number, accessToken?: any } = {}) {
+    setOptions(options, { model: 'ir.attachment', field: 'datas', filenameField: 'label', width: 0, height: 0, crop: false, quality: 0, defaultMimetype: 'image/png' });
+    const [status, headers, imageBase64] = await (this as any).binaryContent(req, options);
+    return this._contentImageGetResponse(req, res, status, headers, imageBase64, options);
   }
 
   @api.model()

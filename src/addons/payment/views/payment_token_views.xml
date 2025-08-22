@@ -14,7 +14,7 @@
                                 type="action" icon="fa-money" string="Payments">
                         </button>
                     </div>
-                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <group>
                         <field name="label"/>
                         <field name="partnerId" />

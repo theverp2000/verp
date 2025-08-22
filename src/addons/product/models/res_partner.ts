@@ -1,7 +1,5 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models"
-import { bool } from "../../../core/tools/bool";
-import { f } from "../../../core/tools/string";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { bool, f } from "../../../core/tools";
 
 @MetaModel.define()
 class Partner extends Model {

@@ -1,5 +1,4 @@
-import { Fields } from "../../../core";
-import { MetaModel, TransientModel, _super } from "../../../core/models"
+import { Fields, MetaModel, TransientModel, _super } from "../../../core";
 
 @MetaModel.define()
 class ResConfigSettings extends TransientModel {

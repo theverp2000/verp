@@ -130,13 +130,13 @@ verp.define('partner_autocomplete.tests', function (require) {
                         countryId: {string: "Country", type: "integer", searchable: true},
                         comment: {string: "Comment", type: "char", searchable: true},
                         vat: {string: "Vat", type: "char", searchable: true},
-                        is_company: {string: "Is company", type: "bool", searchable: true},
+                        isCompany: {string: "Is company", type: "bool", searchable: true},
                         partner_gid: {string: "Company data ID", type: "integer", searchable: true},
                     },
                     records: [],
                     onchanges: {
                         company_type: function (obj) {
-                            obj.is_company = obj.company_type === 'company';
+                            obj.isCompany = obj.company_type === 'company';
                         },
                     },
                 },

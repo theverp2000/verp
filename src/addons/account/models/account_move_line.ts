@@ -1,17 +1,9 @@
 import _ from "lodash";
-import { api } from "../../../core";
-import { hasattr, setdefault } from "../../../core/api/func";
-import { Command, Fields, _Date } from "../../../core/fields";
-import { Dict } from "../../../core/helper/collections";
-import { NotImplementedError, UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Command, Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { hasattr, setdefault } from "../../../core/api";
+import { Dict, NotImplementedError, UserError, ValidationError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
-import { bool, formatDate, formatLang, pop, update } from "../../../core/tools";
-import { dateMax } from "../../../core/tools/date_utils";
-import { enumerate, extend, len, next, someAsync, sum } from "../../../core/tools/iterable";
-import { literalEval } from '../../../core/tools/save_eval';
-import { _convert$, _f, f } from "../../../core/tools/string";
-import { escapeHtml } from "../../../core/tools/xml";
+import { _convert$, _f, bool, dateMax, enumerate, escapeHtml, extend, f, formatDate, formatLang, len, literalEval, next, pop, someAsync, sum, update } from "../../../core/tools";
 import { MAX_HASH_VERSION } from "./account_move";
 
 //forbidden fields

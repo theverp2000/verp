@@ -10,7 +10,7 @@ import { extend } from "./iterable";
 import { isASCII, f } from "./string";
 import { escapeHtml, markup } from "./xml";
 
-export const safeAttrs = new Set(Array.from(html.safeAttrs).concat(['style',
+export const safeAttrs = new Set(Array.from(html.htmlSafeAttrs).concat(['style',
   'data-o-mail-quote',  // quote detection
   'data-oe-model', 'data-oe-id', 'data-oe-field', 'data-oe-type', 'data-oe-expression', 'data-oe-translation-id', 'data-oe-nodeid',
   'data-last-history-steps',
@@ -95,7 +95,7 @@ export function emailSplitTuples(text) {
  * @returns 
  */
 function quote(str) {
-  return str.replace('\\', '\\\\').replace('"', '\\"');
+  return str.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
 }
 
 class AddrlistClass {
@@ -119,7 +119,7 @@ class AddrlistClass {
     // Note that RFC 2822 now specifies `.' as obs-phrase, meaning that it
     // is obsolete syntax.  RFC 2822 requires that we recognize obsolete
     // syntax, so allow dots in phrases.
-    this.phraseends = this.atomends.replace('.', '');
+    this.phraseends = this.atomends.replaceAll('.', '');
     this.field = field;
     this.commentlist = [];
   }
@@ -712,7 +712,7 @@ export function html2Text(body = '') {
     .replace(/<\/\s*(?:p|div)>/ig, '\n')
     .replace(/<br[^>]*\/?>/ig, '\n')
     .replace(/<[^>]*>/ig, '') // one for removing all with tag <>
-    .replace('&nbsp;', ' ')
+    .replaceAll('&nbsp;', ' ')
     .replace(/[^\S\r\n][^\S\r\n]+/ig, ' ')
 }
 
@@ -734,7 +734,7 @@ export function plaintext2html(text, containerTag?: any) {
   text = escapeHtml(String(text));
 
   // 1. replace \n and \r
-  text = text.replace(/(\r\n|\r|\n)/, '<br/>');
+  text = text.replace(/(\r\n|\r|\n)/g, '<br/>');
 
   // 2. clickable links
   text = htmlKeepUrl(text);

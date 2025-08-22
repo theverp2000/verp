@@ -1,8 +1,6 @@
-import { Fields, _Datetime, api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Datetime, _super, api } from "../../../core";
 import { expression } from "../../../core/osv";
-import { _f, bool, escapePsql, escapeRegExp, f, len, parseInt, quote, quoteList, slugify } from "../../../core/tools";
-import { safeEval } from "../../../core/tools/save_eval";
+import { _f, bool, escapePsql, escapeRegExp, f, len, parseInt, quote, quoteList, safeEval, slugify } from "../../../core/tools";
 import { textFromHtml } from "../tools";
 
 @MetaModel.define()
@@ -405,7 +403,7 @@ class Page extends Model {
       // Search might have matched words in the xml tags and parameters therefore we make
       // sure the terms actually appear inside the text.
       const text = f('%s %s %s', await page.label, await page.url, textFromHtml(await page.arch));
-      const pattern = search.replace('  ', ' ').split(' ').map(searchTerm => escapeRegExp(searchTerm)).join('|');
+      const pattern = search.replaceAll('  ', ' ').split(' ').map(searchTerm => escapeRegExp(searchTerm)).join('|');
       return pattern ? text.matchAll(new RegExp(f('(%s)', pattern), 'gi')) : false;
     }
 

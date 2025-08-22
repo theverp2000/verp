@@ -1,11 +1,9 @@
 import _ from "lodash";
-import { _Date, _Datetime, api, Field, Fields } from "../../../core";
+import { _Date, _Datetime, _super, api, Field, Fields, MetaModel, Model } from "../../../core";
 import { setdefault } from "../../../core/api";
 import { AccessError, UserError, ValidationError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { _f, addDate, bool, dateMin, extend, f, floatIsZero, groupby, htmlKeepUrl, isHtmlEmpty, isInstance, len, parseInt, pop, sorted, update } from "../../../core/tools";
-import { stringify } from "../../../core/tools/json";
+import { _f, addDate, bool, dateMin, extend, f, floatIsZero, groupby, htmlKeepUrl, isHtmlEmpty, isInstance, len, parseInt, pop, sorted, stringify, update } from "../../../core/tools";
 import { checkRightsOnRecordset } from "../../payment";
 
 @MetaModel.define()

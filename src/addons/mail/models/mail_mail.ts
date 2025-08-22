@@ -547,7 +547,7 @@ class MailMail extends Model {
           await notifs.flush(['notificationStatus', 'failureType', 'failureReason'], notifs);
         }
 
-        // protect against ill-formatted email_from when formataddr was used on an already formatted email
+        // protect against ill-formatted emailFrom when formataddr was used on an already formatted email
         const emailsFrom = emailSplitAndFormat(await mail.emailFrom);
         const emailFrom = bool(emailsFrom) ? emailsFrom[0] : await mail.emailFrom;
 

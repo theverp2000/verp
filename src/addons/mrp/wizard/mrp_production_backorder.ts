@@ -1,5 +1,4 @@
-import { api, Fields } from "../../../core";
-import { MetaModel, moduleXmlid, TransientModel } from "../../../core/models"
+import { api, Fields, MetaModel, TransientModel } from "../../../core";
 import { len, pop } from "../../../core/tools";
 
 @MetaModel.define()

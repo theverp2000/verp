@@ -1,8 +1,6 @@
 import _ from "lodash";
-import { api } from "../../..";
-import { AbstractModel } from "../../../models"
-import { MetaModel } from "../../../models"
-import { UpCamelCase, _toHyphen, bool, sorted } from "../../../tools";
+import { AbstractModel, MetaModel, api } from "../../..";
+import { bool, sorted } from "../../../tools";
 
 @MetaModel.define()
 class IrModelReferenceReport extends AbstractModel {
@@ -20,7 +18,7 @@ class IrModelReferenceReport extends AbstractModel {
 
     async _fieldsFind(model, module) {
         const Data = await this.env.items('ir.model.data').sudo();
-        const fnameWildcard = 'field_' + _.camelCase(model.replace('.', '_')) + '_%';
+        const fnameWildcard = 'field_' + _.camelCase(model.replaceAll('.', '_')) + '_%';
         const data = await Data.search([['model', '=', 'ir.model.fields'], ['module', '=', await module.label], ['label', 'like', fnameWildcard]]);
         if (bool(data)) {
             const resIds = await data.mapped('resId');

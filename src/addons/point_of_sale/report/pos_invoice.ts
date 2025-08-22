@@ -1,7 +1,5 @@
 import _ from "lodash";
-import { api } from "../../../core";
-import { AbstractModel } from "../../../core/models"
-import { MetaModel } from "../../../core/models"
+import { AbstractModel, api, MetaModel } from "../../../core";
 import { UserError } from "../../../core/helper";
 
 @MetaModel.define()

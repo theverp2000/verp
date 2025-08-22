@@ -1,10 +1,8 @@
-import {v4} from 'uuid';
+import { v4 } from 'uuid';
 import { Environment } from '../../../core/api';
-import { AccessError, parseStack, UserError } from "../../../core/helper/errors";
+import { AccessError, parseStack, UserError } from "../../../core/helper";
 import { httpPost } from '../../../core/http';
 import { _t, isInstance, rpartition, setOptions, toText, update } from '../../../core/tools';
-import { stringify } from '../../../core/tools/json';
-import { contextmanager } from '../../../core/tools/context';
 
 const DEFAULT_ENDPOINT = 'https://iap.theverp.com';
 

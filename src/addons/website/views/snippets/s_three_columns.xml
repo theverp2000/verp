@@ -5,7 +5,7 @@
     <section class="s-three-columns o-cc o-cc2 pt32 pb32" data-vcss="001">
         <div class="container">
             <div class="row d-flex align-items-stretch">
-                <div class="col-lg-4 s-col-no-bgcolor pt16 pb16">
+                <div class="col-lg-4 s-col-no-bgColor pt16 pb16">
                     <div class="card bg-white h-100">
                         <img class="card-img-top" src="/web/image/website.sThreeColumnsDefaultImage_1" alt=""/>
                         <div class="card-body">
@@ -14,7 +14,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 s-col-no-bgcolor pt16 pb16">
+                <div class="col-lg-4 s-col-no-bgColor pt16 pb16">
                     <div class="card bg-white h-100">
                         <img class="card-img-top" src="/web/image/website.sThreeColumnsDefaultImage_2" alt=""/>
                         <div class="card-body">
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 s-col-no-bgcolor pt16 pb16">
+                <div class="col-lg-4 s-col-no-bgColor pt16 pb16">
                     <div class="card bg-white h-100">
                         <img class="card-img-top" src="/web/image/website.sThreeColumnsDefaultImage_3" alt=""/>
                         <div class="card-body">

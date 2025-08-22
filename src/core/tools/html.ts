@@ -8,7 +8,7 @@ import { isBasestring, isInstance } from "./func";
 import { len } from "./iterable";
 import { E, _elementName, _nons, isText, parseHtml, parseXml } from "./xml";
 
-export const safeAttrs = new Set([
+export const htmlSafeAttrs = new Set([
   'abbr', 'accept', 'accept-charset', 'accesskey', 'action', 'align',
   'alt', 'axis', 'border', 'cellpadding', 'cellspacing', 'char', 'charoff',
   'charset', 'checked', 'cite', 'class', 'clear', 'cols', 'colspan',
@@ -186,7 +186,7 @@ export function getDiff(dataFrom, dataTo, customStyle: boolean = false) {
     for (const [_old, _new] of Object.entries(toAppend)) {
       htmlDiff = htmlDiff.replace(_old, format("%s %s", _old, _new));
     }
-    htmlDiff = htmlDiff.replace('nowrap', '');
+    htmlDiff = htmlDiff.replaceAll('nowrap', '');
     htmlDiff += customStyle || `
             <style>
                 .modal-dialog.modal-lg:has(table.diff) {

@@ -1,12 +1,10 @@
 import ical, { ICalAlarm, ICalCalendarMethod } from 'ical-generator';
 import _ from "lodash";
-import { Command, Field, Fields, _Date, _Datetime, api, tools } from "../../../core";
+import { Command, Field, Fields, MetaModel, Model, _Date, _Datetime, _super, api, tools } from "../../../core";
 import { _tzGet } from "../../../core/addons/base";
 import { UserError, ValidationError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { AND } from "../../../core/osv/expression";
-import { _f, allTimezones, bool, extend, floatRound, getLang, html2Text, isHtmlEmpty, len, next, pop, repeat, update } from "../../../core/tools";
-import { addDate, dateSetTz, dateWithoutTz, diffDate, subDate, toFormat } from "../../../core/tools/date_utils";
+import { _f, addDate, allTimezones, bool, dateSetTz, dateWithoutTz, diffDate, extend, floatRound, getLang, html2Text, isHtmlEmpty, len, next, pop, repeat, subDate, toFormat, update } from "../../../core/tools";
 import { STATE_SELECTION } from "./calendar_attendee";
 import { BYDAY_SELECTION, END_TYPE_SELECTION, MONTH_BY_SELECTION, RRULE_TYPE_SELECTION, WEEKDAY_SELECTION, weekdayToField } from "./calendar_recurrence";
 
@@ -16,8 +14,7 @@ const SORT_ALIASES = {
 }
 
 /**
- *     :returns: ocurrence
-
+ *
     >>> getWeekdayOccurence(date(2019, 12, 17))
     3  # third Tuesday of the month
 
@@ -25,7 +22,7 @@ const SORT_ALIASES = {
     -1  # last Friday of the month
 
  * @param date 
- * @returns 
+ * @returns ocurrence
  */
 function getWeekdayOccurence(date: Date) {
   const occurenceInMonth = Math.ceil(date.getDate() / 7);
@@ -247,10 +244,10 @@ class Meeting extends Model {
 
   /**
    * Check if the organizer of the event is the only one who has accepted the event.
-          It does not apply if the organizer is the only attendee of the event because it
-          would represent a personnal event.
-          The goal of this field is to highlight to the user that the others attendees are
-          not available for this event.
+      It does not apply if the organizer is the only attendee of the event because it
+      would represent a personnal event.
+      The goal of this field is to highlight to the user that the others attendees are
+      not available for this event.
    */
   @api.depends('partnerId', 'attendeeIds')
   async _computeIsOrganizerAlone() {
@@ -270,9 +267,9 @@ class Meeting extends Model {
 
   /**
    * Adapt the value of startDate(time)/stopDate(time)
-          according to start/stop fields and allday. Also, compute
-          the duration for not allday meeting ; otherwise the
-          duration is set to zero, since the meeting last all the day.
+      according to start/stop fields and allday. Also, compute
+      the duration for not allday meeting ; otherwise the
+      duration is set to zero, since the meeting last all the day.
    */
   @api.depends('allday', 'start', 'stop')
   async _computeDates() {
@@ -321,9 +318,9 @@ class Meeting extends Model {
 
   /**
    * This method is used to set the start and stop values of all day events.
-          The calendar view needs dateStart and dateStop values to display correctly the allday events across
-          several days. As the user edit the {start,stop}_date fields when allday is true,
-          this inverse method is needed to update the  start/stop value and have a relevant calendar view.
+      The calendar view needs dateStart and dateStop values to display correctly the allday events across
+      several days. As the user edit the {start,stop}_date fields when allday is true,
+      this inverse method is needed to update the  start/stop value and have a relevant calendar view.
    */
   async _inverseDates() {
     for (const meeting of this) {
@@ -556,7 +553,6 @@ class Meeting extends Model {
     }
 
     if ((!recurrenceUpdateSetting || recurrenceUpdateSetting === 'selfOnly' && len(this) == 1) && !('followRecurrence' in values)) {
-      // if any({field: values[field] for field in timeFields if field in values}):
       if (timeFields.some(field => field in values)) {
         values['followRecurrence'] = false;
       }
@@ -587,7 +583,7 @@ class Meeting extends Model {
       await _super(Meeting, this).write(values);
       await this._syncActivities(Object.keys(values));
     }
-    // We reapply recurrence for future events and when we add a rrule and 'recurrency' == True on the event
+    // We reapply recurrence for future events and when we add a rrule and 'recurrency' == true on the event
     if (!['selfOnly', 'allEvents'].includes(recurrenceUpdateSetting) && !breakRecurrence) {
       detachedEvents = detachedEvents.or(await this._applyRecurrenceValues(recurrenceValues, recurrenceUpdateSetting === 'futureEvents'));
     }
@@ -688,8 +684,7 @@ class Meeting extends Model {
   }
 
   /**
-   * When an event is copied, the attendees should be recreated to avoid sharing the same attendee records
-       between copies
+   * When an event is copied, the attendees should be recreated to avoid sharing the same attendee records between copies
    * @param defaultValues 
    */
   async copy(defaultValues?: any) {
@@ -706,10 +701,8 @@ class Meeting extends Model {
   }
 
   /**
-   * :param partnerCommands: ORM commands for partnerId field (0 and 1 commands not supported)
-      :return: associated attendeeIds ORM commands
-   * @param partnerCommands 
-   * @returns 
+   * @param partnerCommands ORM commands for partnerId field (0 and 1 commands not supported)
+   * @returns associated attendeeIds ORM commands
    */
   async _attendeesValues(partnerCommands) {
     let attendeeCommands = [];
@@ -924,15 +917,11 @@ class Meeting extends Model {
       and create all missing events according to the rrule.
       If the changes are applied to future
       events only, a new recurrence is created with the updated rrule.
- 
-      :param values: new recurrence values to apply
-      :param future: rrule values are applied to future events only if True.
+   * @param values new recurrence values to apply
+   * @param future rrule values are applied to future events only if True.
                      Rrule changes are applied to all events in the recurrence otherwise.
                      (ignored if no recurrence exists yet).
-      :return: events detached from the recurrence
-   * @param values 
-   * @param future 
-   * @returns 
+   * @returns events detached from the recurrence
    */
   async _applyRecurrenceValues(values, future: boolean = true) {
     if (!bool(values)) {
@@ -969,10 +958,8 @@ class Meeting extends Model {
 
   /**
    * Apply time changes to events and update the recurrence accordingly.
- 
-      :return: detached events
    * @param timeValues 
-   * @returns 
+   * @returns detached events
    */
   async _splitRecurrence(timeValues) {
     this.ensureOne()
@@ -999,9 +986,8 @@ class Meeting extends Model {
    * Breaks the event's recurrence.
       Stop the recurrence at the current event if `future` is True, leaving past events in the recurrence.
       If `future` is False, all events in the recurrence are detached and the recurrence itself is unlinked.
-      :return: detached events excluding the current events
    * @param future 
-   * @returns 
+   * @returns detached events excluding the current events
    */
   async _breakRecurrence(future: boolean = true) {
     let recurrencesToUnlink = this.env.items('calendar.recurrence');
@@ -1160,8 +1146,7 @@ class Meeting extends Model {
   /**
    * Return the event starting date in the event's timezone.
       If no starting time is assigned (yet), return today as default
-      :return: date
-   * @returns 
+   * @returns Date
    */
   async _getStartDate() {
     let start = await this['start'];
@@ -1201,8 +1186,7 @@ class Meeting extends Model {
 
   /**
    * Returns iCalendar file for the event invitation. https://github.com/sebbo2002/ical-generator
-          :returns a dict of .ics file content for each meeting
-   * @returns 
+   * @returns a dict of .ics file content for each meeting 
    */
   async _getIcsFile() {
     function icsDatetime(idate, allday: boolean = false) {
@@ -1304,9 +1288,9 @@ class Meeting extends Model {
     let descStr = String(description);
     const tagsToReplace = ["<ul>", "</ul>", "<li>"];
     for (const tag of tagsToReplace) {
-      descStr = descStr.replace(tag, "");
+      descStr = descStr.replaceAll(tag, "");
     }
-    descStr = descStr.replace("</li>", "<br/>");
+    descStr = descStr.replaceAll("</li>", "<br/>");
     return html2Text(descStr);
   }
 
@@ -1382,8 +1366,7 @@ class Meeting extends Model {
 
   /**
    * get current date and time format, according to the context lang
-          :return: a tuple with (format date, format time)
-   * @returns 
+   * @returns  a tuple with [format date, format time]
    */
   @api.model()
   async _getDateFormats() {

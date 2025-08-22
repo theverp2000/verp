@@ -5,7 +5,7 @@
     <section class="s-website-form pt16 pb16" data-vcss="001" data-snippet="sWebsiteForm">
         <div class="container">
             <form action="/website/form/" method="post" enctype="multipart/form-data" class="o-mark-required" data-mark="*" data-pre-fill="true">
-                <div class="s-website-form-rows row s-col-no-bgcolor">
+                <div class="s-website-form-rows row s-col-no-bgColor">
                     <div class="form-group col-12 s-website-form-submit" data-name="Submit Button">
                         <div style="width: 200px;" class="s-website-form-label"/>
                         <a href="#" role="button" class="btn btn-primary btn-lg s-website-form-send">Submit</a>

@@ -1,6 +1,5 @@
-import { _Datetime, Fields } from "../../../core";
+import { _Datetime, _super, Fields, MetaModel, Model } from "../../../core";
 import { AccessError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models"
 
 @MetaModel.define()
 class Rating extends Model {

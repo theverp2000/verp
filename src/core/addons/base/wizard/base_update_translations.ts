@@ -1,7 +1,5 @@
-import { api } from "../../..";
-import { Fields } from "../../../fields";
-import { UserError } from "../../../helper/errors";
-import { MetaModel, TransientModel } from "../../../models";
+import { api, Fields, MetaModel, TransientModel } from "../../..";
+import { UserError } from "../../../helper";
 
 const tarfile: any = {}
 

@@ -1,8 +1,7 @@
-import { Fields, api } from "../../../core";
+import { AbstractModel, Fields, MetaModel, Model, _super, api } from "../../../core";
 import { AFTER_DIRECTIVE, APPEND_DIRECTIVE, BEFORE_DIRECTIVE, DEFAULT_SEQUENCE, INCLUDE_DIRECTIVE, PREPEND_DIRECTIVE, REMOVE_DIRECTIVE, REPLACE_DIRECTIVE } from "../../../core/addons/base/models/ir_asset";
 import { getattr, hasattr } from "../../../core/api";
-import { Dict } from "../../../core/helper/collections";
-import { AbstractModel, MetaModel, Model, _super } from "../../../core/models";
+import { Dict } from "../../../core/helper";
 import { getResourceFromPath } from "../../../core/modules";
 import { f, xmlTranslate } from "../../../core/tools";
 

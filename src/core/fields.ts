@@ -3,21 +3,16 @@ import _ from 'lodash';
 import { DateTime } from "luxon";
 import { encode } from "utf8";
 import util from "util";
-
-import { Map2, OrderedSet2 } from './helper/collections';
-import { KeyError, UserError } from './helper/errors';
+import { Cache, CopyMode, Environment, Meta } from './api/api';
+import { attrgetter, getattr, hasattr, setattr, setdefault } from "./api/func";
+import { AccessError, CacheMiss, DefaultDict, Dict, KeyError, Map2, MapKey, MissingError, NotImplementedError, OrderedSet2, UserError, ValueError } from './helper';
+import { BaseModel, ModelRecords, NewId, PREFETCH_MAX, checkObjectName, expandIds, isDefinitionClass, isRegistryClass, newId } from './models';
 import { Registry } from './modules/registry';
 import { dbFactory } from './service/db';
 import { Cursor } from './sql_db';
+import { DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT, IterableGenerator, UpCamelCase, _convert$, _f, _t as _translate, b64decode, bool, chain, enumerate, extend, floatCompare, floatIsZero, floatRepr, floatRound, fromFormat, htmlSanitize, htmlTranslate, humanSize, imageProcess, isCallable, isInstance, isList, islice, len, markup, mergeSequences, repeat, setOptions, sorted, toDate, toDatetime, toText, today, unique } from './tools';
 import * as func from "./tools/func";
 import * as sql from './tools/sql';
-
-import { Cache, CopyMode, Environment, Meta } from './api/api';
-import { attrgetter, getattr, hasattr, setattr, setdefault } from "./api/func";
-import { AccessError, CacheMiss, DefaultDict, Dict, MapKey, MissingError, NotImplementedError, ValueError } from "./helper";
-import { BaseModel, ModelRecords, NewId, PREFETCH_MAX, checkObjectName, expandIds, isDefinitionClass, isRegistryClass, newId } from './models';
-
-import { DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT, IterableGenerator, UpCamelCase, _convert$, _f, _t as _translate, b64decode, bool, chain, enumerate, extend, floatCompare, floatIsZero, floatRepr, floatRound, fromFormat, htmlSanitize, htmlTranslate, humanSize, imageProcess, isCallable, isInstance, isList, islice, len, markup, mergeSequences, pop, repeat, setOptions, sorted, toDate, toDatetime, toText, today, unique } from './tools';
 
 export const NO_ACCESS = '.';
 
@@ -166,25 +161,26 @@ export class Fields {
     return new _Image(args, kwargs);
   }
   static Selection(selection: string | any[] | Function | FieldOptions, kwargs: FieldOptions = {}) {
-    if (!(Array.isArray(selection) || typeof (selection) === 'string' || typeof (selection) === 'function')) {
+    if (!(Array.isArray(selection) || typeof selection === 'string' || typeof selection === 'function')) {
       kwargs = selection as FieldOptions;
       selection = kwargs.selection;
     }
     return new _Selection(selection, kwargs);
   }
   static Reference(selection: string | any[] | Function | FieldOptions, kwargs: FieldOptions = {}) {
-    if (!(Array.isArray(selection) || typeof (selection) === 'string' || typeof (selection) === 'function')) {
+    if (!(Array.isArray(selection) || typeof selection === 'string' || typeof selection === 'function')) {
       kwargs = selection as FieldOptions;
       selection = kwargs.selection;
     }
     return new _Reference(selection, kwargs);
   }
-  static Many2one(comodelName: string | FieldOptions, kwargs: string | FieldOptions = {}) {
-    if (typeof (comodelName) === 'string') {
-      if (typeof (kwargs) === 'string') {
-        kwargs = { string: kwargs }
+  static Many2one(comodelName: string | FieldOptions, string: string | FieldOptions = {}, kwargs: FieldOptions = {}) {
+    if (typeof comodelName === 'string') {
+      if (typeof string === 'string') {
+        kwargs = Object.assign(kwargs, { comodelName, string });
+      } else {
+        kwargs = Object.assign(string, { comodelName });
       }
-      kwargs = Object.assign(kwargs, { comodelName });
     } else {
       kwargs = comodelName;
     }
@@ -198,7 +194,7 @@ export class Fields {
       if (typeof relationField === 'string') {
         kwargs = Object.assign(kwargs, { comodelName, relationField });
       } else {
-        kwargs = Object.assign(relationField, { comodelName, relationField: pop(relationField, 'relationField') });
+        kwargs = Object.assign(relationField, { comodelName });
       }
     } else {
       kwargs = comodelName;
@@ -210,7 +206,7 @@ export class Fields {
       if (typeof relation === 'string') {
         kwargs = Object.assign(kwargs, { comodelName, relation });
       } else {
-        kwargs = Object.assign(relation, { comodelName, relation: pop(relation, 'relation') });
+        kwargs = Object.assign(relation, { comodelName });
       }
     } else {
       kwargs = comodelName;
@@ -376,11 +372,22 @@ export class Field {
     } else {
       setOptions(kwargs, args);
     }
+    // Normalize
     if (kwargs['ondelete']) {
-      kwargs['ondelete'] = typeof (kwargs['ondelete']) === 'string' ? kwargs['ondelete'].toUpperCase() : kwargs['ondelete'];
+      if (typeof kwargs['ondelete'] === 'string') {
+        kwargs['ondelete'] = kwargs['ondelete'].toUpperCase();
+      }
+      if (typeof kwargs['ondelete'] === 'object') {
+        Object.entries(kwargs['ondelete']).forEach(([k, v]) => {if (typeof v === 'string') kwargs['ondelete'][k] = v.toUpperCase()});
+      }
     }
     if (kwargs['onupdate']) {
-      kwargs['onupdate'] = typeof (kwargs['onupdate']) === 'string' ? kwargs['onupdate'].toUpperCase() : kwargs['onupdate'];
+      if (typeof kwargs['onupdate'] === 'string') {
+        kwargs['onupdate'] = kwargs['onupdate'].toUpperCase();
+      }
+      if (typeof kwargs['onupdate'] === 'object') {
+        Object.entries(kwargs['onupdate']).forEach(([k, v]) => {if (typeof v === 'string') kwargs['onupdate'][k] = v.toUpperCase()});
+      }
     }
     // Update owner properties
     setOptions(this, kwargs);
@@ -3391,10 +3398,7 @@ class _RelationalMulti extends _Relational {
 
   async convertToWrite(value: any, record: ModelRecords) {
     if (Array.isArray(value)) {
-      if (value.some(id => typeof id !== 'number')) {
-        return value;
-      }
-      else {
+      if (value.every(id => id instanceof Number)) {
         value = record.env.items(this.comodelName).browse(value);
       }
     }
@@ -3439,6 +3443,10 @@ class _RelationalMulti extends _Relational {
 
     if (value === false || value == null) {
       return [Command.clear()];
+    }
+
+    if (Array.isArray(value)) {
+      return value;
     }
 
     throw new ValueError("Wrong value for %s: %s", this, value);

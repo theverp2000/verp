@@ -1,5 +1,4 @@
-import { Fields } from "../../../fields";
-import { MetaModel, Model } from "../../../models";
+import { Fields, MetaModel, Model } from "../../..";
 
 @MetaModel.define()
 class IrExports extends Model {

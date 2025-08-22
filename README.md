@@ -53,7 +53,7 @@ Verp is inspired by Odoo/OpenErp.
   "smtpUser": "???@ethereal.email",\
   "smtpPassword": "???",\
 
-7) Isntall
+7) Install
 
   > npm i
 

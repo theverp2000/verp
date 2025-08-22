@@ -1,9 +1,8 @@
 import fsPro from 'fs/promises';
 import path from 'path';
 import temp from 'temp';
-import { Fields } from "../../../fields";
+import { Fields, MetaModel, TransientModel } from "../../..";
 import { UserError } from "../../../helper";
-import { MetaModel, TransientModel } from "../../../models";
 import { dbConnect } from "../../../sql_db";
 import { b64decode, bool, isInstance, transLoadData } from "../../../tools";
 

@@ -1,32 +1,23 @@
 import assert from 'assert';
 import fs from 'fs/promises';
 import _ from 'lodash';
+import { DateTime } from 'luxon';
 import { format } from 'util';
 import { v4 as uuid4 } from 'uuid';
 import xpath, { select, select1 } from 'xpath/xpath';
-import { api, tools } from '../../..';
+import { Fields, MetaModel, Model, ModelRecords, TransientModel, _Datetime, _super, api, checkMethodName, tools } from '../../..';
 import { getattr, hasattr, setattr, setdefault } from '../../../api';
-import { _Datetime, Fields } from "../../../fields";
-import { Map2, DefaultDict, Dict } from '../../../helper/collections';
-import { AccessError, ValidationError, ValueError, XmlError } from '../../../helper/errors';
+import { AccessError, Dict, Map2, ValidationError, ValueError, XmlError } from '../../../helper';
 import { WebRequest } from '../../../http';
-import { MetaModel, Model, ModelRecords, TransientModel, _super, checkMethodName } from "../../../models";
-import { getResourceFromPath, getResourcePath } from '../../../modules/modules';
+import { getResourceFromPath, getResourcePath } from '../../../modules';
+import { Query } from '../../../osv';
 import { Expression } from '../../../osv/expression';
 import { urlEncode, urlQuotePlus } from '../../../service/middleware/utils';
-import { ACTION_TYPES, _f, _fixMultipleRoots, _format, bool, constantMapping, enumerate, extend, f, imageDataUri, isDigit, isInstance, len, parseInt, quoteList, rstringPart, stringBase64, toText } from '../../../tools';
+import * as lazy from '../../../tools';
+import { ACTION_TYPES, E, TRANSLATED_ATTRS, _f, _fixMultipleRoots, _format, _t, bool, childNodes, constantMapping, enumerate, extend, f, getAttribute, getAttributes, getDictAsts, getDiff, getDomainIdentifiers, getVariableNames, getpath, getrootXml, imageDataUri, isDigit, isElement, isInstance, isProcessingInstruction, isText, iterancestors, iterchildren, iterdescendants, len, parseInt, parseXml, popAttribute, quoteList, rstringPart, serializeHtml, serializeXml, stringBase64, stringify, toText, validView, xmlTranslate } from '../../../tools';
 import { fnfilter } from '../../../tools/fnmatch';
-import { getDiff } from '../../../tools/html';
-import * as lazy from '../../../tools/lazy';
 import { safeEval } from '../../../tools/save_eval';
 import { applyInheritanceSpecs, locateNode } from '../../../tools/template_inheritance';
-import { TRANSLATED_ATTRS, _t, xmlTranslate } from '../../../tools/translate';
-import { getDictAsts, getDomainIdentifiers, getVariableNames, validView } from '../../../tools/view_validation';
-import { childNodes, E, getAttribute, getAttributes, getpath, getrootXml, isElement, isProcessingInstruction, isText, iterancestors, iterchildren, iterdescendants, parseXml, popAttribute, serializeHtml, serializeXml } from '../../../tools/xml';
-import { DateTime } from 'luxon';
-import { stringify } from '../../../tools/json';
-import { Query } from '../../../osv';
-import { templateEnvGlobals } from '../../../tools/rendering_tools';
 
 const MOVABLE_BRANDING = ['data-oe-model', 'data-oe-id', 'data-oe-field', 'data-oe-xpath', 'data-oe-source-id'];
 const TRANSLATED_ATTRS_RE = new RegExp(`@(${TRANSLATED_ATTRS.keys().join('|')})\\b`);
@@ -119,7 +110,7 @@ async function getViewArchFromFile(filepath: string, xmlid: string) {
 }
 
 /**
- * Functionally identical to safe_eval(), but optimized with special-casing.
+ * Functionally identical to safeEval(), but optimized with special-casing.
  * @param expr 
  * @param globalsDict 
  * @returns 
@@ -128,11 +119,11 @@ function quickEval(expr, globalsDict) {
   // most (~95%) elements are 1/true/0/false
   if (expr === '1')
     return 1;
-  if (expr === 'true' || expr === 'true')
+  if (expr === 'true' || expr === 'True')
     return true;
   if (expr === '0')
     return 0;
-  if (expr === 'false' || expr === 'false')
+  if (expr === 'false' || expr === 'False')
     return false;
   return safeEval(expr, globalsDict);
 }
@@ -272,7 +263,7 @@ class View extends Model {
             arch = await getViewArchFromFile(fullpath, xmlid);
             if (arch) {
               // replace %(xmlid)s, %(xmlid)d, %%(xmlid)s, %%(xmlid)d by the resId
-              arch = (await resolveExternalIds(arch, xmlid)).replace('%%', '%');
+              arch = (await resolveExternalIds(arch, xmlid)).replaceAll('%%', '%');
               if (this.env.context['lang']) {
                 const tr = await this._fields['archDb'].getTransFunc(view);
                 arch = await tr(view.id, arch);
@@ -1224,7 +1215,7 @@ class View extends Model {
     }
     const nameManager = await this._postprocessView(node, model || await this['model']);
 
-    const arch = serializeXml(node).replace('\t', '');
+    const arch = serializeXml(node).replaceAll('\t', '');
     return [node, arch, Dict.from(nameManager.availableFields)];
   }
 
@@ -1401,7 +1392,7 @@ class View extends Model {
             node.removeChild(child);
             const subNameManager = await (await this.withContext({ baseModelName: nameManager.model._name }))
               ._postprocessView(child, field.comodelName, nodeInfo['editable']);
-            const xarch = serializeXml(child).replace('\t', '');
+            const xarch = serializeXml(child).replaceAll('\t', '');
             views[child.tagName] = {
               'arch': xarch,
               'fields': Dict.from(subNameManager.availableFields),
@@ -1450,7 +1441,7 @@ class View extends Model {
     const subNameManager = await (await this.withContext(
       { baseModelName: nameManager.model._name },
     ))._postprocessView(groupbyNode, field.comodelName, false);
-    const xarch = serializeXml(groupbyNode).replace('\t', '');
+    const xarch = serializeXml(groupbyNode).replaceAll('\t', '');
     nameManager.addField(name, {
       'views': {
         'groupby': {
@@ -1698,10 +1689,11 @@ class View extends Model {
         const value = node.getAttribute(attribute);
         if (value) {
           const result = quickEval(value, { 'context': this._context });
-          if (![1, 0, true, false, null].includes(result)) {
+          if (![1, 0, true, false, null, undefined].includes(result)) {
+            console.log(`Attribute "${attribute}" evaluation expects a boolean, got "${value}"="${result}" \nwith cxt=${stringify(this._context)}`);
             const msg = _format(
               await this._t('Attribute "{attribute}" evaluation expects a boolean, got "{value}"="{result}".\n'),
-              { attribute: attribute, value: value, result: result },
+              { 'attribute': attribute, 'value': value, 'result': result },
             );
             await this._raiseViewError(msg, node);
           }
@@ -2053,7 +2045,7 @@ class View extends Model {
         }
       }
       else if (attr === 'groups') {
-        for (const group of expr.replace('!', '').split(',')) {
+        for (const group of expr.replaceAll('!', '').split(',')) {
           // further improvement: add all groups to nameManager in
           // order to batch check them at the end
           if (! await this.env.items('ir.model.data')._xmlidToResId(group.trim(), false)) {

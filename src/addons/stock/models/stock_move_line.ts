@@ -1,15 +1,7 @@
 import _ from "lodash";
-import { api, tools } from "../../../core";
-import { Fields, _Datetime } from "../../../core/fields";
-import { DefaultDict, Dict, OrderedSet, OrderedSet2 } from "../../../core/helper/collections";
-import { UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { floatCompare, floatIsZero, floatRound } from "../../../core/tools/float_utils";
-import { len, sortedAsync, sum } from "../../../core/tools/iterable";
-import { groupbyAsync, pop, setOptions } from "../../../core/tools/misc";
-import { _f } from "../../../core/tools/string";
-import { isInstance } from "../../../core/tools";
+import { Fields, MetaModel, Model, _Datetime, _super, api, tools } from "../../../core";
+import { DefaultDict, Dict, OrderedSet, OrderedSet2, UserError, ValidationError } from "../../../core/helper";
+import { _f, bool, floatCompare, floatIsZero, floatRound, groupbyAsync, isInstance, len, pop, setOptions, sortedAsync, sum } from "../../../core/tools";
 
 function Counter(word) {
     const counter = new Dict<any>();

@@ -1,8 +1,7 @@
-import { _Datetime, api, Fields } from "../../../core";
+import { _Datetime, _super, AbstractModel, api, Fields, MetaModel } from "../../../core";
 import { Dict } from "../../../core/helper";
-import { _super, AbstractModel, MetaModel } from "../../../core/models"
 import { expression } from "../../../core/osv";
-import { doWith, f, parseFloat, plaintext2html, range, setOptions, subDate, sum } from "../../../core/tools";
+import { f, parseFloat, plaintext2html, range, setOptions, subDate, sum } from "../../../core/tools";
 import { RATING_LIMIT_MIN, RATING_LIMIT_OK, RATING_LIMIT_SATISFIED } from "./rating";
 
 @MetaModel.define()

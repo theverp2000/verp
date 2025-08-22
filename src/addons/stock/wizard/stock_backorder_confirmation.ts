@@ -1,9 +1,6 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
-import { floatCompare } from "../../../core/tools/float_utils";
-import { bool } from "../../../core/tools/bool";
+import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
 import { MapKey } from "../../../core/helper";
+import { bool, floatCompare } from "../../../core/tools";
 
 @MetaModel.define()
 class StockBackorderConfirmationLine extends TransientModel {

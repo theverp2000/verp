@@ -1,7 +1,5 @@
-import { Command, Fields, api } from "../../../core";
-import { Environment } from "../../../core/api";
+import { Command, Fields, MetaModel, Model, _super, api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { bool, doWith } from "../../../core/tools";
 
 @MetaModel.define()
@@ -86,7 +84,7 @@ class ResUsers extends Model {
     if (uid) {
       const cr = (this as any).pool.cursor();
       await doWith(cr, async () => {
-        const env = await Environment.new(cr, uid, {}, null, req);
+        const env = await api.Environment.new(cr, uid, {}, null, req);
         const visitorSudo = await env.items('website.visitor')._getVisitorFromRequest();
         if (bool(visitorSudo)) {
           const userPartner = await (await env.user()).partnerId;

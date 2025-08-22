@@ -1,12 +1,8 @@
-import { Fields, _Datetime, api } from "../../../core";
+import { Fields, MetaModel, Model, _Datetime, _super, api } from "../../../core";
 import { getattr } from "../../../core/api";
 import { Dict, UserError, ValidationError, ValueError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { _f, bool, choices, f, floatCompare, floatRound, len, next, parseInt, update } from "../../../core/tools";
-import { literalEval } from '../../../core/tools/save_eval';
-import { subDate } from "../../../core/tools/date_utils";
-import { safeEval } from "../../../core/tools/save_eval";
+import { _f, bool, choices, f, floatCompare, floatRound, len, literalEval, next, parseInt, safeEval, subDate, update } from "../../../core/tools";
 
 @MetaModel.define()
 class Team extends Model {

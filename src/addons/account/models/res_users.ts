@@ -1,7 +1,6 @@
-import { api } from "../../../core";
-import { ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
+import { MetaModel, Model, _super, api } from "../../../core";
+import { ValidationError } from "../../../core/helper";
+import { bool } from "../../../core/tools";
 
 @MetaModel.define()
 class Users extends Model {

@@ -1,6 +1,5 @@
-import _ from "lodash";
-import { DefaultDict, Dict } from "../../../core/helper/collections";
-import { MetaModel, Model, TransientModel, _super } from "../../../core/models";
+import { MetaModel, Model, TransientModel, _super } from "../../../core";
+import { DefaultDict, Dict } from "../../../core/helper";
 import { bool, stringPart } from "../../../core/tools";
 
 @MetaModel.define()

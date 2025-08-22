@@ -69,7 +69,7 @@ export function getResourceFromPath(p: any) {
     // force trailing separator
     adpath = path.join(adpath, "");
     if (commonPrefix([adpath, p]) === adpath) {
-      resource = p.replace(new RegExp(adpath), '');
+      resource = p.replaceAll(new RegExp(adpath, 'g'), '');
       break;
     }
   }
@@ -221,6 +221,9 @@ export function loadInformationFromDescriptionFile(modName: string, modPath?: st
       return new Dict();
     }
     
+    if (!info['description'] && Array.isArray(info['descriptions'])) {
+      info['description'] = info['descriptions'].join('\n');
+    }
     if (!info['description']) {
       const readmePath = README.filter((x) => {
         const p = path.join(modPath, x);

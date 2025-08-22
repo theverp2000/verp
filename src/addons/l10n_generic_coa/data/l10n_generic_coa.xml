@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <!-- Account Tax Group -->
+    <record id="configurableChartTemplate" model="account.chart.template">
+        <field name="label">Configurable Account Chart Template</field>
+        <field name="codeDigits">6</field>
+        <field name="bankAccountCodePrefix">1014</field>
+        <field name="cashAccountCodePrefix">1015</field>
+        <field name="transferAccountCodePrefix">1017</field>
+        <field name="currencyId" ref="base.USD"/>
+        <field name="countryId" eval="false"/>
+    </record>
+</verp>

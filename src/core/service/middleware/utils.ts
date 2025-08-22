@@ -8,15 +8,14 @@ import { FrozenSet } from '../../helper';
 import { iterMultiItems } from "../../helper/datastructures";
 import { UnicodeError, ValueError } from "../../helper/errors";
 import { WebResponse } from '../../http';
-import { md5, setOptions } from '../../tools';
+import { md5 } from '../../tools';
 import { bool } from '../../tools/bool';
 import { isInstance } from "../../tools/func";
+import { iter, len, next, sorted } from "../../tools/iterable";
 import { split } from "../../tools/string";
-import { iter, len, next, range, sorted } from "../../tools/iterable";
 import { URI } from '../../tools/uri';
 import { ETags, IfRange } from './datastructures';
 import { parseDateTz } from './email';
-import { format } from 'node:util';
 
 const _schemeRe = /^[a-zA-Z0-9+-.]+$/g;
 
@@ -113,7 +112,7 @@ export function urlQuote(str, options?: { charset?: string, errors?: string, saf
  */
 export function urlQuotePlus(str, safe = "", opts: { charset?: string, errors?: string } = {}) {
   const { charset="utf-8", errors="strict" } = opts;
-  return urlQuote(str, { charset, errors, safe: safe + " ", unsafe: "+" }).replace(" ", "+")
+  return urlQuote(str, { charset, errors, safe: safe + " ", unsafe: "+" }).replaceAll(" ", "+")
 }
 
 const _hexdigits = "0123456789ABCDEFabcdef";
@@ -203,10 +202,10 @@ export function urlUnquote(str, charset: any = "utf-8", errors = "replace", unsa
  */
 export function urlUnquotePlus(str, charset = "utf-8", errors = "replace") {
   if (isInstance(str, Uint8Array) || typeof (str) === 'string') {
-    str = str.replace("+", " ");
+    str = str.replaceAll("+", " ");
   }
   else {
-    str = str.replace("+", " ");
+    str = str.replaceAll("+", " ");
   }
   return urlUnquote(str, charset, errors);
 }

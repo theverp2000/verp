@@ -1,14 +1,10 @@
-import sharp from "sharp";
-import { api, tools } from "../../..";
-import { Fields } from "../../../fields";
-import { CompileError } from "../../../helper/errors";
-import { MetaModel, TransientModel } from "../../../models";
-import { getResourcePath } from "../../../modules/modules";
-import { bool, isInstance } from "../../../tools";
-import { _f } from "../../../tools/string";
-import { nl2br } from "../../base/models/ir_qweb_fields";
-import { markup } from "../../../tools/xml";
 import libsass from 'node-sass';
+import sharp from "sharp";
+import { api, Fields, MetaModel, tools, TransientModel } from "../../..";
+import { CompileError } from "../../../helper";
+import { getResourcePath } from "../../../modules";
+import { _f, bool, isInstance, markup } from "../../../tools";
+import { nl2br } from "../../base/models/ir_qweb_fields";
 
 const DEFAULT_PRIMARY = '#000000';
 const DEFAULT_SECONDARY = '#000000';
@@ -22,7 +18,7 @@ class BaseDocumentLayout extends TransientModel {
     static _name = 'base.document.layout';
     static _description = 'Company Document Layout';
 
-    static companyId = Fields.Many2one('res.company', {string: 'Company', default: async (self) => self.env.company(), required: true });
+    static companyId = Fields.Many2one('res.company', { string: 'Company', default: self => self.env.company(), required: true });
 
     static logo = Fields.Binary({ related: 'companyId.logo', readonly: false });
     static previewLogo = Fields.Binary({ related: 'logo', string: "Preview logo" });
@@ -46,7 +42,7 @@ class BaseDocumentLayout extends TransientModel {
     static layoutBackground = Fields.Selection({ related: 'companyId.layoutBackground', readonly: false });
     static layoutBackgroundImage = Fields.Binary({ related: 'companyId.layoutBackgroundImage', readonly: false });
 
-    static reportLayoutId = Fields.Many2one('report.layout', {string: 'Report layout'});
+    static reportLayoutId = Fields.Many2one('report.layout', { string: 'Report layout' });
 
     // All the sanitization get disabled as we want true raw html to be passed to an iframe.
     static preview = Fields.Html({ compute: '_computePreview', sanitize: false });
@@ -93,7 +89,7 @@ class BaseDocumentLayout extends TransientModel {
     @api.depends('logoPrimaryColor', 'logoSecondaryColor', 'primaryColor', 'secondaryColor',)
     async _computeCustomColors() {
         for (const wizard of this) {
-            const logoPrimary = await wizard.logoPrimaryColor || '';       
+            const logoPrimary = await wizard.logoPrimaryColor || '';
             const logoSecondary = await wizard.logoSecondaryColor || '';
             // Force lower case on color to ensure that FF01AA == ff01aa
             const primaryColor = await wizard.primaryColor;
@@ -113,7 +109,7 @@ class BaseDocumentLayout extends TransientModel {
         for (const wizard of this) {
             let wizardForImage;
             if (wizard._context['binSize']) {
-                wizardForImage = await wizard.withContext({binSize: false});
+                wizardForImage = await wizard.withContext({ binSize: false });
             }
             else {
                 wizardForImage = wizard;
@@ -137,14 +133,14 @@ class BaseDocumentLayout extends TransientModel {
                 // so the logo always contains the bin data instead of the binary size
                 let wizardWithLogo;
                 if (wizard.env.context['binSize']) {
-                    wizardWithLogo = await wizard.withContext({binSize : false});
+                    wizardWithLogo = await wizard.withContext({ binSize: false });
                 }
                 else {
                     wizardWithLogo = wizard;
                 }
                 const previewCss = markup(this._getCssForPreview(styles, wizardWithLogo.id));
                 const irUiView = wizardWithLogo.env.items('ir.ui.view');
-                await wizard.set('preview', await irUiView._renderTemplate('web.reportInvoiceWizardPreview', {'company': wizardWithLogo, 'previewCss': previewCss}));
+                await wizard.set('preview', await irUiView._renderTemplate('web.reportInvoiceWizardPreview', { 'company': wizardWithLogo, 'previewCss': previewCss }));
             }
             else {
                 await wizard.set('preview', false);
@@ -157,19 +153,19 @@ class BaseDocumentLayout extends TransientModel {
         for (const wizard of this) {
             const company = await wizard.companyId;
             await wizard.set('logo', await company.logo),
-            await wizard.set('reportHeader', await company.reportHeader),
-            // companyDetails and reportFooter can store empty strings(set by the user) or false(meaning the user didn't set a value). Since both are falsy values, we use isinstance of string to differentiate them
-            await wizard.set('reportFooter', typeof(await company.reportFooter) === 'string' ? await company.reportFooter : await wizard.reportFooter),
-            await wizard.set('companyDetails', typeof(await company.companyDetails) === 'string' ? await company.companyDetails : await wizard.companyDetails),
-            await wizard.set('paperformatId', await company.paperformatId),
-            await wizard.set('externalReportLayoutId', await company.externalReportLayoutId),
-            await wizard.set('font', await company.font),
-            await wizard.set('primaryColor', await company.primaryColor),
-            await wizard.set('secondaryColor', await company.secondaryColor)
+                await wizard.set('reportHeader', await company.reportHeader),
+                // companyDetails and reportFooter can store empty strings(set by the user) or false(meaning the user didn't set a value). Since both are falsy values, we use isinstance of string to differentiate them
+                await wizard.set('reportFooter', typeof (await company.reportFooter) === 'string' ? await company.reportFooter : await wizard.reportFooter),
+                await wizard.set('companyDetails', typeof (await company.companyDetails) === 'string' ? await company.companyDetails : await wizard.companyDetails),
+                await wizard.set('paperformatId', await company.paperformatId),
+                await wizard.set('externalReportLayoutId', await company.externalReportLayoutId),
+                await wizard.set('font', await company.font),
+                await wizard.set('primaryColor', await company.primaryColor),
+                await wizard.set('secondaryColor', await company.secondaryColor)
             const wizardLayout = await wizard.env.items("report.layout").search([
                 ['viewId.key', '=', await (await company.externalReportLayoutId).key]
             ]);
-            await wizard.set('reportLayoutId', bool(wizardLayout) ? wizardLayout : await wizardLayout.search([], {limit: 1}));
+            await wizard.set('reportLayoutId', bool(wizardLayout) ? wizardLayout : await wizardLayout.search([], { limit: 1 }));
 
             if (! await wizard.primaryColor) {
                 await wizard.set('primaryColor', await wizard.logoPrimaryColor || DEFAULT_PRIMARY);
@@ -185,7 +181,7 @@ class BaseDocumentLayout extends TransientModel {
         for (const wizard of this) {
             if (await wizard.logo && ! await wizard.customColors) {
                 await wizard.set('primaryColor', await wizard.logoPrimaryColor || DEFAULT_PRIMARY),
-                await wizard.set('secondaryColor', await wizard.logoSecondaryColor || DEFAULT_SECONDARY)
+                    await wizard.set('secondaryColor', await wizard.logoSecondaryColor || DEFAULT_SECONDARY)
             }
         }
     }
@@ -231,7 +227,7 @@ class BaseDocumentLayout extends TransientModel {
      */
     @api.model()
     async extractImagePrimarySecondaryColors(logo, whiteThreshold = 225, mitigate = 175) {
-        if (! logo) {
+        if (!logo) {
             return [false, false];
         }
         if (isInstance(logo, Uint8Array)) {
@@ -243,7 +239,7 @@ class BaseDocumentLayout extends TransientModel {
         try {
             // Catches exceptions caused by logo not being an image
             image = await tools.imageFixOrientation(sharp(Buffer.from(logo, 'base64')));
-        } catch(e) {
+        } catch (e) {
             return [false, false];
         }
         const metadata = await image.metadata();
@@ -253,18 +249,20 @@ class BaseDocumentLayout extends TransientModel {
 
         // Converts to RGBA(if already RGBA, this is a noop)
         const imageConverted = image.pipelineColourspace('rgb');
-        const imageResized: any = imageConverted.resize(w, h);//, Resampling.NEAREST);
+        const { data, info } = await imageConverted.resize(w, h, { fit: 'contain', position: 'center', kernel: 'lanczos2' })
+            .raw() // Get raw pixel data
+            .toBuffer({ resolveWithObject: true });
 
         const colors = [];
-        for (const color of imageResized.getcolors(w * h)) {
-            if (!(color[1][0] > whiteThreshold &&
-                color[1][1] > whiteThreshold &&
-                color[1][2] > whiteThreshold) && color[1][3] > 0) {
+        for (const color of data) {
+            if (!(color[0] > whiteThreshold &&
+                color[1] > whiteThreshold &&
+                color[2] > whiteThreshold) && color[3] > 0) {
                 colors.push(color);
             }
         }
 
-        if (! bool(colors)) { // May happen when the whole image is white
+        if (!bool(colors)) { // May happen when the whole image is white
             return [false, false];
         }
         let [primary, remaining] = tools.averageDominantColor(colors, mitigate);
@@ -290,7 +288,7 @@ class BaseDocumentLayout extends TransientModel {
 
     @api.model()
     async actionOpenBaseDocumentLayout(actionRef) {
-        if (typeof(actionRef) != 'string') {
+        if (typeof (actionRef) != 'string') {
             actionRef = 'web.actionBaseDocumentLayoutConfigurator';
         }
         const res = await this.env.items("ir.actions.actions")._forXmlid(actionRef);
@@ -300,7 +298,7 @@ class BaseDocumentLayout extends TransientModel {
 
     documentLayoutSave() {
         // meant to be overridden
-        return this.env.context['reportAction'] || {'type': 'ir.actions.actwindow.close' }
+        return this.env.context['reportAction'] || { 'type': 'ir.actions.actwindow.close' }
     }
 
     /**
@@ -310,7 +308,7 @@ class BaseDocumentLayout extends TransientModel {
      */
     async _getAssetStyle() {
         const templateStyle = await this.env.ref('web.stylesCompanyReport', false);
-        if (! templateStyle.ok) {
+        if (!templateStyle.ok) {
             return '';
         }
 
@@ -335,7 +333,7 @@ class BaseDocumentLayout extends TransientModel {
     @api.model()
     _compileScss(scssSource) {
         // No scss ? still valid, returns empty css
-        if (! scssSource.trim()) {
+        if (!scssSource.trim()) {
             return "";
         }
 
@@ -344,16 +342,16 @@ class BaseDocumentLayout extends TransientModel {
         const bootstrapPath = getResourcePath('web', 'static', 'lib', 'bootstrap', 'scss')
 
         try {
-            return  libsass.renderSync({
+            return libsass.renderSync({
                 silenceDeprecations: ['legacy-js-api'],
                 data: scssSource,
                 includePaths: [
-                  bootstrapPath,
+                    bootstrapPath,
                 ],
                 outputStyle: outputStyle,
                 precision: precision
             }).css.toString();
-        } catch(e) {
+        } catch (e) {
             throw new CompileError(e)
         }
     }

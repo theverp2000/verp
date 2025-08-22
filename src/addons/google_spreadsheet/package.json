@@ -2,7 +2,9 @@
     "label": "Google Spreadsheet",
     "version": "1.0",
     "category": "Hidden/Tools",
-    "description": "The module adds the possibility to display data from Verp in Google Spreadsheets in real time.\n=================================================================================================",
+    "descriptions": [
+        "The module adds the possibility to display data from Verp in Google Spreadsheets in real time.","================================================================================================="
+    ],
     "depends": ["google_drive"],
     "data": [
         "data/google_spreadsheet_data.xml",

@@ -1,8 +1,6 @@
 import _ from "lodash";
-import { api, tools } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { UserError, ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model, ModelRecords, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, ModelRecords, _super, api, tools } from "../../../core";
+import { UserError, ValidationError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
 import { bool, copysign, extend, f, floatRound, len, setOptions, sum } from "../../../core/tools";
 

@@ -1,6 +1,5 @@
-import { ServerResponse } from "http";
+import { AbstractModel, MetaModel, _super } from "../../../core";
 import { WebRequest, WebResponse } from "../../../core/http";
-import { AbstractModel, MetaModel, _super } from "../../../core/models"
 import { isInstance } from "../../../core/tools";
 
 @MetaModel.define()

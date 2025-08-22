@@ -331,7 +331,7 @@ export function getArgumentNames(func) {
 	// removing '=>' if func is arrow function 
 	str = str.replace(/\/\*[\s\S]*?\*\//g, '')
 		.replace(/\/\/(.)*/g, '')
-		.replace(/{[\s\S]*}/, '')
+		.replace(/{[\s\S]*}/g, '')
 		.replace(/=>/g, '')
 		.trim();
 

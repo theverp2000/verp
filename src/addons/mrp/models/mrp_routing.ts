@@ -1,5 +1,4 @@
-import { api, Fields } from "../../../core";
-import { MetaModel, Model } from "../../../core/models"
+import { api, Fields, MetaModel, Model } from "../../../core";
 import { floatRound } from "../../../core/tools";
 
 @MetaModel.define()

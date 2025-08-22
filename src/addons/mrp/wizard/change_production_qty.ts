@@ -1,6 +1,5 @@
-import { api, Fields } from "../../../core";
+import { _super, api, Fields, MetaModel, TransientModel } from "../../../core";
 import { MapKey, UserError } from "../../../core/helper";
-import { _super, MetaModel, TransientModel } from "../../../core/models"
 import { _format2, bool, floatIsZero, sum } from "../../../core/tools";
 
 @MetaModel.define()

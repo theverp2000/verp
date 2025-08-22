@@ -1,8 +1,5 @@
-import { Command, Fields, _Date } from "../../../core/fields";
-import { MetaModel, TransientModel } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { addDate, subDate, toFormat } from "../../../core/tools/date_utils";
-import { f } from "../../../core/tools/string";
+import { Command, Fields, MetaModel, TransientModel, _Date } from "../../../core";
+import { addDate, bool, f, subDate, toFormat } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountTourUploadBill extends TransientModel {

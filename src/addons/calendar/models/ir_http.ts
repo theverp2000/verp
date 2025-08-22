@@ -1,5 +1,5 @@
+import { AbstractModel, MetaModel } from "../../../core";
 import { WebRequest } from "../../../core/http";
-import { AbstractModel, MetaModel } from "../../../core/models";
 import { BadRequest } from "../../../core/service";
 import { bool, f } from "../../../core/tools";
 

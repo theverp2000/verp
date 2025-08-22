@@ -1,5 +1,5 @@
 import { MetaModel, Model } from "../../../models";
-import { bool } from "../../../tools/bool";
+import { bool } from "../../../tools";
 
 @MetaModel.define()
 class IrUiMenu extends Model {

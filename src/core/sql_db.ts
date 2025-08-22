@@ -195,7 +195,7 @@ export class Cursor extends BaseCursor {
   }
 
   _log(msg) {
-    console.log(msg, 'on', getattr(this._objTransaction, 'id', ''));
+    global.logDebug && console.debug(msg, 'on', getattr(this._objTransaction, 'id', ''));
   }
 
   get hasTransaction() {
@@ -408,7 +408,7 @@ export class Cursor extends BaseCursor {
       return res;
     } catch (e) {
       const str = bool(options.bind || params) ? String(options.bind || params).slice(0, 200).trim() : '';
-      console.debug(_f('Bad SQL: {message}{query}{params}{cause}', {
+      console.debug(_f('Error SQL: {message}{query}{params}{cause}', {
         message: e.name + ' ' + e.message,
         query: '\n\t' + sql,
         params: str ? '\n\tparams: ' + str : '',
@@ -486,7 +486,7 @@ export class DatabasePool {
           idle: config.get('dbIdleTimeOut')
         },
         showWarnings: false,
-        logging: global.logSql,
+        logging: global.logSql, // `false` or `console.log`
         native: false,
       }));
     }

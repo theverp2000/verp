@@ -1,12 +1,9 @@
 import assert from "assert";
 import { randomInt } from "crypto";
-import { Fields, _Date, api } from "../../../core";
+import { Fields, MetaModel, Model, _Date, api } from "../../../core";
 import { MissingError, OrderedDict, ValidationError } from "../../../core/helper";
-import { MetaModel, Model } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { bool, f, isInstance, len, partition, range, stringPart } from "../../../core/tools";
-import { literalEval } from '../../../core/tools/save_eval';
-import { iterchildren, parseXml } from "../../../core/tools/xml";
+import { bool, f, isInstance, iterchildren, len, literalEval, parseXml, range, stringPart } from "../../../core/tools";
 
 @MetaModel.define()
 class WebsiteSnippetFilter extends Model {
@@ -89,7 +86,7 @@ class WebsiteSnippetFilter extends Model {
             return '';
         }
 
-        if (templateKey.includes(modelName.replace('.', '_'))) {
+        if (templateKey.includes(modelName.replaceAll('.', '_'))) {
             return '';
         }
 

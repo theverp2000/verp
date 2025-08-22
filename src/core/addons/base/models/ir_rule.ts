@@ -1,15 +1,9 @@
 import { DateTime } from "luxon";
-import { Fields, api, tools } from "../../..";
-import { MetaModel, Model, _super } from "../../../models";
+import { Fields, MetaModel, Model, ModelRecords, _super, api, tools } from "../../..";
 import { expression } from "../../../osv";
-import { bool } from '../../../tools/bool';
-import { len } from "../../../tools/iterable";
+import { UpCamelCase, _f, bool, f, len } from '../../../tools';
 import { unsafeAsync } from "../../../tools/save_eval";
-import { f } from "../../../tools/string";
-import { _f } from "../../../tools/string";
-import { UpCamelCase } from "../../../tools/string";
-import { AccessError, ValidationError, ValueError } from './../../../helper/errors';
-import { ModelRecords } from './../../../models';
+import { AccessError, ValidationError, ValueError } from './../../../helper';
 
 @MetaModel.define()
 class IrRule extends Model {

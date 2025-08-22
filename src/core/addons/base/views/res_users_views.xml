@@ -194,7 +194,7 @@
                                 <field string="Record Rules" name="rulesCount" widget="statinfo"/>
                             </button>
                         </div>
-                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                         <field name="activePartner" required="0" readonly="1" invisible="1"/>
                         <div class="alert alert-info text-center o-form-header"
                             attrs="{'invisible': [

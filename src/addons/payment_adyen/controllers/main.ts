@@ -1,5 +1,3 @@
-// // Part of Verp. See LICENSE file for full copyright and licensing details.
-
 import { http } from "../../../core";
 import { ValidationError } from "../../../core/helper";
 import { WebRequest } from "../../../core/http";
@@ -61,7 +59,7 @@ class AdyenController extends http.Controller {
         // Adyen only supports a limited set of languages but, instead of looking for the closest
         // match in https://docs.adyen.com/checkout/components-web/localization-components, we simply
         // provide the lang string as is (after adapting the format) and let Adyen find the best fit.
-        const langCode = (req.context['lang'] || 'en-US').replace('-', '_');
+        const langCode = (req.context['lang'] || 'en-US').replaceAll('-', '_');
         const shopperReference = partnerSudo && `VERP_PARTNER_${partnerSudo.id}`;
         const data = {
             'merchantAccount': await acquirerSudo.adyenMerchantAccount,
@@ -365,7 +363,7 @@ class AdyenController extends http.Controller {
          */
         function _toEscapedString(value) {
             if (typeof value === 'string') {
-                return value.replace('\\', '\\\\').replace(':', '\\:');
+                return value.replaceAll('\\', '\\\\').replaceAll(':', '\\:');
             }
             else if (value == null) {
                 return '';

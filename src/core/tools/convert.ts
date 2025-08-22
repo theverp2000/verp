@@ -139,9 +139,9 @@ async function _evalXml(self: XmlImport, node: Element, env: any): Promise<any> 
         if (resModel in ACTION_TYPES) {
           resId = (await self.env.items(resModel).browse(resId).actionId).id; // get baseActionId
         }
-        str = str.replace(new RegExp(escapeRegExp(found), 'g'), String(resId));
+        str = str.replaceAll(new RegExp(escapeRegExp(found), 'g'), String(resId));
       }
-      str = str.replace('%%', '%');
+      str = str.replaceAll('%%', '%');
       return str;
     }
 
@@ -229,7 +229,7 @@ async function _evalXml(self: XmlImport, node: Element, env: any): Promise<any> 
     let args = [];
     const kwargs = {};
     let aEval = node.getAttribute('eval');
-    console.log(`\tcalling ${modelStr}.${methodName}()`);
+    global.logXml && console.debug(`\tcalling ${modelStr}.${methodName}()`);
     if (aEval) {
       const idref2 = _getIdref(self, env, modelStr, self.idref);
       try {

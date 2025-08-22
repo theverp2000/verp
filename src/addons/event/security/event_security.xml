@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data noupdate="0">
+        <record model="ir.module.category" id="base.category_marketingEvents">
+            <field name="description">Helps you manage your Events.</field>
+            <field name="sequence">18</field>
+        </record>
+
+        <record id="groupEventRegistrationDesk" model="res.groups">
+            <field name="label">Registration Desk</field>
+            <field name="impliedIds" eval="[[4, refId('base.groupUser')]]"/>
+            <field name="categoryId" ref="base.category_marketingEvents"/>
+        </record>
+
+        <record id="groupEventUser" model="res.groups">
+            <field name="label">User</field>
+            <field name="impliedIds" eval="[[4, refId('groupEventRegistrationDesk')]]"/>
+            <field name="categoryId" ref="base.category_marketingEvents"/>
+        </record>
+
+        <record id="groupEventManager" model="res.groups">
+            <field name="label">Administrator</field>
+            <field name="categoryId" ref="base.category_marketingEvents"/>
+            <field name="impliedIds" eval="[[4, refId('groupEventUser')]]"/>
+            <field name="users" eval="[[4, refId('base.userRoot')], [4, refId('base.userAdmin')]]"/>
+        </record>
+    </data>
+
+    <data noupdate="1">
+        <record id="base.defaultUser" model="res.users">
+            <field name="groupsId" eval="[[4, refId('event.groupEventManager')]]"/>
+        </record>
+
+        <!-- Multi - Company Rules -->
+        <record model="ir.rule" id="eventEventCompanyRule">
+            <field name="label">Event: multi-company</field>
+            <field name="modelId" ref="model_eventEvent"/>
+            <field name="domainForce">['|', ['companyId', '=', false], ['companyId', 'in', companyIds]]</field>
+        </record>
+        <record model="ir.rule" id="eventRegistrationCompanyRule">
+            <field name="label">Event/Registration: multi-company</field>
+            <field name="modelId" ref="model_eventRegistration"/>
+            <field name="domainForce">['|', ['companyId', '=', false], ['companyId', 'in', companyIds]]</field>
+        </record>
+        <record id="irRuleEventEventTicketCompany" model="ir.rule">
+            <field name="label">Event/Ticket: multi-company</field>
+            <field name="modelId" ref="model_eventEventTicket"/>
+            <field name="domainForce">['|', ['eventId.companyId', '=', false], ['eventId.companyId', 'in', companyIds]]</field>
+        </record>
+
+    </data>
+</verp>

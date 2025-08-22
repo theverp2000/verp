@@ -1,0 +1,803 @@
+<?xml version="1.0"?>
+<verp>
+    <data>
+
+        <!-- EVENT.TYPE VIEWS -->
+        <record model="ir.ui.view" id="viewEventTypeForm">
+            <field name="label">event.type.form</field>
+            <field name="model">event.type</field>
+            <field name="arch" type="xml">
+                <form string="Event Category">
+                   <sheet>
+                        <div class="oe-title" name="eventTypeTitle">
+                            <label for="label" string="Event Template"/>
+                            <h1><field name="label" placeholder="e.g. Online Conferences" class="mb-2"/></h1>
+                        </div>
+                       <group>
+                           <group>
+                               <div colspan="2" class="o-checkbox-optional-field">
+                                   <label for="defaultTimezone"/>
+                                   <field name="defaultTimezone" class="w-100"/>
+                               </div>
+                               <div colspan="2" class="o-checkbox-optional-field">
+                                   <label for="tagIds"/>
+                                   <field name="tagIds" widget="many2manyTags" options="{'colorField': 'color', 'noQuickCreate': true}"/>
+                               </div>
+                           </group>
+                           <group>
+                               <div colspan="2" class="o-checkbox-optional-field">
+                                   <label for="hasSeatsLimitation" string="Limit Registrations"/>
+                                   <field name="hasSeatsLimitation"/>
+                                   <span attrs="{'invisible': [['hasSeatsLimitation', '=', false]], 'required': [['hasSeatsLimitation', '=', false]]}">
+                                       to <field name="seatsMax" class="oe-inline"/>
+                                       Attendees
+                                   </span>
+                               </div>
+                               <div colspan="2" class="o-checkbox-optional-field">
+                                   <label for="autoConfirm" string="Autoconfirmation"/>
+                                   <field name="autoConfirm"/>
+                               </div>
+                           </group>
+                       </group>
+
+                       <notebook>
+                           <page string="Tickets">
+                               <field name="eventTypeTicketIds"
+                                      class="w-100"
+                                      context="{
+                                         'treeViewRef': 'event.eventTypeTicketViewTreeFromType',
+                                         'formViewRef': 'event.eventTypeTicketViewFormFromType'
+                                      }"
+                               />
+                           </page>
+                           <page string="Communication" name="eventTypeCommunication">
+                               <field name="eventTypeMailIds" class="w-100">
+                                   <tree string="Communication" editable="bottom">
+                                       <field name="notificationType"/>
+                                       <field name="templateModelId" invisible="1"/>
+                                       <field name="templateRef" options="{'modelField': 'templateModelId', 'noQuickCreate': true}" context="{'filterTemplateOnEvent': true, 'default_model': 'event.registration'}"/>
+                                       <field name="intervalNbr" attrs="{'readonly':[['intervalUnit', '=', 'now']]}"/>
+                                       <field name="intervalUnit"/>
+                                        <field name="intervalType"/>
+                                   </tree>
+                               </field>
+                           </page>
+                           <page string="Notes">
+                               <field name="note"/>
+                                <label for="ticketInstructions" string="Ticket Extra Instructions"></label>
+                                <br/>
+                                <field name="ticketInstructions" nolabel="1" class="pt-2"/>
+                           </page>
+                       </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventTypeTree">
+            <field name="label">event.type.tree</field>
+            <field name="model">event.type</field>
+            <field name="arch" type="xml">
+                <tree string="Event Template">
+                    <field name="sequence" widget="handle"/>
+                    <field name="label"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="eventTypeViewSearch" model="ir.ui.view">
+            <field name="label">event.type.search</field>
+            <field name="model">event.type</field>
+            <field name="arch" type="xml">
+                <search string="Event Templates">
+                    <field name="label"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.actwindow" id="actionEventType">
+            <field name="label">Event Templates</field>
+            <field name="resModel">event.type</field>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    Create an Event Template
+                </p><p>
+                    Event Templates combine configurations you use often and are
+                    usually based on the types of events you organize (e.g. "Workshop",
+                    "Roadshow", "Online Webinar", etc).
+                </p>
+            </field>
+        </record>
+
+        <record id="menuEventType" model="ir.ui.menu">
+            <field name="action" ref="event.actionEventType"/>
+        </record>
+
+        <!-- EVENT.REGISTRATION ACTIONS -->
+        <record id="actEventRegistrationFromEvent" model="ir.actions.actwindow">
+            <field name="resModel">event.registration</field>
+            <field name="label">Attendees</field>
+            <field name="viewMode">kanban,tree,form,calendar,graph</field>
+            <field name="domain">[['eventId', '=', activeId]]</field>
+            <field name="context">{'default_eventId': activeId}</field>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    No Attendees yet!
+                </p><p>
+                    Wait until Attendees register to your Event or create their registrations manually.
+                </p>
+            </field>
+        </record>
+
+        <record id="eventRegistrationAction" model="ir.actions.actwindow">
+            <field name="resModel">event.registration</field>
+            <field name="label">Attendees</field>
+            <field name="viewMode">kanban,tree,form,calendar,graph</field>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    No Attendees expected yet!
+                </p><p>
+                    Wait until Attendees register to your Event or create their registrations manually.
+                </p>
+            </field>
+        </record>
+
+        <record id="eventRegistrationActionTree" model="ir.actions.actwindow">
+           <field name="label">Event registrations</field>
+           <field name="type">ir.actions.actwindow</field>
+           <field name="resModel">event.registration</field>
+           <field name="viewMode">tree,kanban,form,calendar,graph</field>
+        </record>
+
+        <!-- EVENT.EVENT VIEWS -->
+        <record id="eventEventActionPivot" model="ir.actions.actwindow" >
+            <field name="label">Events Analysis</field>
+            <field name="resModel">event.event</field>
+            <field name="viewMode">pivot,graph</field>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    No Event data yet!
+                </p><p>
+                    Use this report to compare or aggregate event performances.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventForm">
+            <field name="label">event.event.form</field>
+            <field name="model">event.event</field>
+            <field name="arch" type="xml">
+                <form string="Events" class="o-event-form-view">
+                    <header>
+                        <field name="stageId" widget="statusbar" options="{'clickable': '1'}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe-button-box" name="buttonBox" groups="base.groupUser">
+                            <button name="%(event.actEventRegistrationFromEvent)d"
+                                    type="action"
+                                    context="{'searchDefault_expected': true}"
+                                    class="oe-stat-button"
+                                    icon="fa-users"
+                                    help="Total Registrations for this Event">
+                                <field name="seatsExpected" widget="statinfo" string="Attendees"/>
+                            </button>
+                        </div>
+                        <field name="legendBlocked" invisible="1"/>
+                        <field name="legendNormal" invisible="1"/>
+                        <field name="legendDone" invisible="1"/>
+                        <widget name="webRibbon" text="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <field name="kanbanState" widget="stateSelection" class="ml-auto float-right"/>
+                        <div class="oe-title">
+                            <label for="label" string="Event Name"/>
+                            <h1><field class="text-break" name="label" placeholder="e.g. Conference for Architects"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="active" invisible="1"/>
+                                <label for="dateBegin" string="Date"/>
+                                <div class="o-row">
+                                    <field name="dateBegin" widget="daterange" nolabel="1" class="oe-inline" options="{'relatedEndDate': 'dateEnd'}"/>
+                                    <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon" title="Arrow"/>
+                                    <field name="dateEnd" widget="daterange" nolabel="1" class="oe-inline" options="{'relatedStartDate': 'dateBegin'}"/>
+                                </div>
+                                <field name="dateTz"/>
+                                <field name="eventTypeId" string="Template" options="{'noCreate':True}"/>
+                                <field name="tagIds" widget="many2manyTags" options="{'colorField': 'color', 'noQuickCreate': true}"/>
+                            </group>
+                            <group>
+                                <field name="organizerId"/>
+                                <field name="userId" domain="[['share', '=', false]]"/>
+                                <field name="companyId" groups="base.groupMultiCompany"/>
+                                <field name="addressId"
+                                    context="{'showAddress': 1}"
+                                    options='{"alwaysReload": true}'/>
+                                <div colspan="2" class="o-checkbox-optional-field">
+                                    <label for="seatsLimited" string="Limit Registrations"/>
+                                    <field name="seatsLimited"/>
+                                    <span attrs="{'invisible': [['seatsLimited', '=', false]], 'required': [['seatsLimited', '=', false]]}">to <field name="seatsMax" class="oe-inline"/> Attendees</span>
+                                </div>
+                                <field name="autoConfirm"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Tickets" name="tickets">
+                                <field name="eventTicketIds" context="{
+                                    'default_eventName': label,
+                                    'treeViewRef': 'event.eventEventTicketViewTreeFromEvent',
+                                    'formViewRef': 'event.eventEventTicketViewFormFromEvent',
+                                    'kanbanViewRef': 'event.eventEventTicketViewKanbanFromEvent'}" mode="tree,kanban"/>
+                            </page>
+                            <page string="Communication" name="eventCommunication">
+                                <field name="eventMailIds">
+                                    <tree string="Communication" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="notificationType"/>
+                                        <field name="templateModelId" invisible="1"/>
+                                        <field name="templateRef" options="{'hideModel': true, 'noQuickCreate': true}" context="{'filterTemplateOnEvent': true, 'default_model': 'event.registration'}"/>
+                                        <field name="intervalNbr" attrs="{'readonly':[['intervalUnit','=','now']]}"/>
+                                        <field name="intervalUnit"/>
+                                        <field name="intervalType"/>
+                                        <field name="scheduledDate" groups="base.groupNoOne"/>
+                                        <field name="mailCountDone"/>
+                                        <field name="mailState" widget="iconSelection" string=" "
+                                            options="{'sent': 'fa fa-check', 'scheduled': 'fa fa-hourglass-half', 'running': 'fa fa-cogs'}"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Notes" name="eventNotes">
+                                <group>
+                                    <label for="note" string="Note"/><br/>
+                                    <field nolabel="1" colspan="2" name="note" placeholder="Add a note..."/>
+                                    <label for="ticketInstructions" string="Ticket Instructions"/><br/>
+                                    <field nolabel="1" colspan="2" name="ticketInstructions"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe-chatter">
+                        <field name="messageFollowerIds" groups="base.groupUser"/>
+                        <field name="activityIds"/>
+                        <field name="messageIds"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventTree">
+            <field name="label">event.event.tree</field>
+            <field name="model">event.event</field>
+            <field name="arch" type="xml">
+                <tree string="Events"
+                    decoration-danger="(seatsMax &amp;&amp; seatsMax&lt;seatsReserved)"
+                    multiEdit="1"
+                    sample="1">
+                    <field name="label"/>
+                    <field name="addressId" readonly="1"/>
+                    <field name="organizerId" readonly="1" optional="hide"/>
+                    <field name="userId" readonly="1" widget="many2oneAvatarUser"/>
+                    <field name="companyId" groups="base.groupMultiCompany" readonly="1" optional="show"/>
+                    <field name="dateBegin" readonly="1" widget="date"/>
+                    <field name="dateEnd" readonly="1" widget="date"/>
+                    <field name="stageId" readonly="1"/>
+                    <field name="seatsExpected" string="Expected Attendees" sum="Total" readonly="1"/>
+                    <field name="seatsUsed" sum="Total" readonly="1"/>
+                    <field name="seatsMax" string="Maximum Seats" sum="Total" readonly="1" optional="hide"/>
+                    <field name="seatsReserved" sum="Total" readonly="1" optional="hide"/>
+                    <field name="seatsUnconfirmed" string="Unconfirmed Seats" sum="Total" readonly="1" optional="hide"/>
+                    <field name="messageNeedaction" invisible="1" readonly="1"/>
+                    <field name="activityExceptionDecoration" widget="activityException" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="eventEventViewFormQuickCreate" model="ir.ui.view">
+            <field name="label">event.event.form.quickCreate</field>
+            <field name="model">event.event</field>
+            <field name="priority">1000</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="label" placeholder="e.g. Conference for Architects"/>
+                        <label for="dateBegin" string="Date"/>
+                        <div class="o-row">
+                            <field name="dateBegin" widget="daterange" options="{'relatedEndDate': 'dateEnd'}"/>
+                            <i class="fa fa-long-arrow-right mx-2" aria-label="Arrow icon" title="Arrow"/>
+                            <field name="dateEnd" widget="daterange" options="{'relatedStartDate': 'dateBegin'}"/>
+                        </div>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventKanban">
+            <field name="label">event.event.kanban</field>
+            <field name="model">event.event</field>
+            <field name="arch" type="xml">
+                <kanban class="o-event-kanban-view" defaultGroupby="stageId" quickCreateView="event.eventEventViewFormQuickCreate" sample="1">
+                    <field name="userId"/>
+                    <field name="label"/>
+                    <field name="stageId" options='{"groupby_tooltip": {"description": "Description"}}'/>
+                    <field name="addressId"/>
+                    <field name="dateBegin"/>
+                    <field name="dateEnd"/>
+                    <field name="autoConfirm"/>
+                    <field name="seatsUnconfirmed"/>
+                    <field name="seatsReserved"/>
+                    <field name="seatsUsed"/>
+                    <field name="seatsExpected"/>
+                    <field name="legendBlocked"/>
+                    <field name="legendNormal"/>
+                    <field name="legendDone"/>
+                    <field name="activityIds"/>
+                    <field name="activityState"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="d-flex flex-column p-0 oe-kanban-card oe-kanban-global-click">
+                                <div class="o-kanban-content p-0 m-0 position-relative row d-flex flex-fill">
+                                    <div class="col-3 bg-primary p-2 text-center d-flex flex-column justify-content-center">
+                                        <div t-esc="record.dateBegin.rawValue.getDate()" class="o-event-fontsize-20"/>
+                                        <div>
+                                            <t t-esc="moment(record.dateBegin.rawValue).format('MMM')"/>
+                                            <t t-esc="record.dateBegin.rawValue.getFullYear()"/>
+                                        </div>
+                                        <div><t t-esc="moment(record.dateBegin.rawValue).format('LT')"/></div>
+                                        <div t-if="moment(record.dateBegin.rawValue).dayOfYear() !== moment(record.dateEnd.rawValue).dayOfYear()">
+                                            <i class="fa fa-arrow-right o-event-fontsize-09" title="End date"/>
+                                            <t t-esc="moment(record.dateEnd.rawValue).format('D MMM')"/>
+                                         </div>
+                                    </div>
+                                    <div class="col-9 py-2 px-3 d-flex flex-column justify-content-between pt-3">
+                                        <div>
+                                            <div class="o-kanban-record-title o-text-overflow" t-att-title="record.name.value">
+                                                <field name="label"/>
+                                            </div>
+                                            <div t-if="record.addressId.value"><i class="fa fa-map-marker" title="Location"/> <span class="o-text-overflow o-event-kanban-location" t-esc="record.addressId.value"/></div>
+                                        </div>
+                                        <h5 class="o-event-fontsize-11 p-0">
+                                            <a name="%(actEventRegistrationFromEvent)d" type="action" context="{'searchDefault_expected': true}">
+                                                <t t-esc="record.seatsExpected.rawValue"/> Expected attendees
+                                            </a>
+                                            <t t-set="totalSeats" t-value="record.seatsReserved.rawValue + record.seatsUsed.rawValue"/>
+                                            <div  class="pt-2 pt-md-0" t-if="totalSeats > 0 &amp;&amp; ! record.autoConfirm.rawValue"><br/>
+                                                <a class="pl-2" name="%(actEventRegistrationFromEvent)d" type="action" context="{'searchDefault_confirmed': true}">
+                                                    <i class="fa fa-level-up fa-rotate-90" title="Confirmed"/><span class="pl-2"><t t-esc="totalSeats"/> Confirmed</span>
+                                                </a>
+                                            </div>
+                                        </h5>
+                                        <div class="o-kanban-record-bottom">
+                                            <div class="oe-kanban-bottom-left">
+                                                <field name="activityIds" widget="kanbanActivity"/>
+                                            </div>
+                                            <div class="oe-kanban-bottom-right">
+                                                <field name="kanbanState" widget="stateSelection"/>
+                                                <field name="userId" widget="many2oneAvatarUser"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventCalendar">
+            <field name="label">event.event.calendar</field>
+            <field name="model">event.event</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar dateStart="dateBegin" dateStop="dateEnd" string="Event Organization" mode="month" color="eventTypeId" eventLimit="5">
+                    <field name="userId" avatarField="avatar128"/>
+                    <field name="seatsExpected"/>
+                    <field name="seatsReserved"/>
+                    <field name="seatsUsed"/>
+                    <field name="seatsUnconfirmed"/>
+                    <field name="eventTypeId" filters="1" invisible="1"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventSearch">
+            <field name="label">event.event.search</field>
+            <field name="model">event.event</field>
+            <field name="arch" type="xml">
+                <search string="Events">
+                    <field name="label" string="Event"/>
+                    <field name="eventTypeId"/>
+                    <field name="userId"/>
+                    <field name="stageId"/>
+                    <filter string="My Events" name="myevents" help="My Events" domain="[['userId', '=', uid]]"/>
+                    <filter string="Unread Messages" name="messageNeedaction" domain="[['messageNeedaction', '=', true]]"/>
+                    <separator/>
+                    <separator/>
+                    <filter string="Upcoming/Running" name="upcoming"
+                        domain="[['dateEnd', '&gt;=', contextToday().combine('min')]]" help="Upcoming events from today" />
+                    <separator/>
+                    <filter string="Start Date" name="startDate" date="dateBegin"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[['active', '=', false]]"/>
+                    <separator/>
+                    <filter invisible="1" string="Late Activities" name="activitiesOverdue"
+                        domain="[['myActivityDateDeadline', '&lt;', contextToday().toFormat('yyyy-MM-dd')]]"
+                        help="Show all records which has next action date is before today"/>
+                    <filter invisible="1" string="Today Activities" name="activitiesToday"
+                        domain="[['myActivityDateDeadline', '=', contextToday().toFormat('yyyy-MM-dd')]]"/>
+                    <filter invisible="1" string="Future Activities" name="activitiesUpcomingAll"
+                        domain="[['myActivityDateDeadline', '&gt;', contextToday().toFormat('yyyy-MM-dd')]]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Responsible" name="responsible" context="{'groupby': 'userId'}"/>
+                        <filter string="Template" name="eventTypeId" context="{'groupby': 'eventTypeId'}"/>
+                        <filter string="Stage" name="stageId" context="{'groupby': 'stageId'}"/>
+                        <filter string="Start Date" name="dateBegin" domain="[]" context="{'groupby': 'dateBegin'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="eventEventViewPivot" model="ir.ui.view" >
+            <field name="label">event.event.view.pivot</field>
+            <field name="model">event.event</field>
+            <field name="arch" type="xml">
+                <pivot string="Event" sample="1">
+                    <field name="label" type="row"/>
+                    <field name="seatsReserved" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="eventEventViewGraph" model="ir.ui.view" >
+            <field name="label">event.event.view.graph</field>
+            <field name="model">event.event</field>
+            <field name="arch" type="xml">
+                <graph string="Events" sample="1">
+                    <field name="label"/>
+                    <field name="seatsAvailable" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record model="ir.actions.actwindow" id="actionEventView">
+           <field name="label">Events</field>
+           <field name="type">ir.actions.actwindow</field>
+           <field name="resModel">event.event</field>
+           <field name="viewMode">kanban,calendar,tree,form,pivot,graph</field>
+           <field name="searchViewId" ref="viewEventSearch"/>
+           <field name="help" type="html">
+              <p class="o-view-nocontent-smiling-face">
+                Create an Event
+              </p><p>
+                Schedule and organize your events: handle registrations, send automated confirmation emails, sell tickets, etc.
+              </p>
+            </field>
+        </record>
+
+        <record id="event.menuEventEvent" model="ir.ui.menu">
+            <field name="action" ref="event.actionEventView"/>
+        </record>
+        <menuitem name="Events"
+            id="eventEventMenuPivotReport"
+            action="eventEventActionPivot"
+            sequence="3"
+            parent="event.menuReportingEvents"
+            groups="event.groupEventUser"/>
+
+        <!-- EVENT.REGISTRATION VIEWS -->
+        <record model="ir.ui.view" id="viewEventRegistrationTree">
+            <field name="label">event.registration.tree</field>
+            <field name="model">event.registration</field>
+            <field name="arch" type="xml">
+                <tree string="Registration" multiEdit="1" sample="1">
+                    <field name="createdAt" optional="show" string="Registration Date"/>
+                    <field name="dateOpen" optional="hide"/>
+                    <field name="label"/>
+                    <field name="partnerId" optional="hide"/>
+                    <field name="email" optional="show"/>
+                    <field name="phone" optional="show"/>
+                    <field name="mobile" optional="hide"/>
+                    <field name="eventId" invisible="context['default_eventId'] || false"/>
+                    <field name="eventTicketId" domain="[['eventId', '=', eventId]]"/>
+                    <field name="state" readonly="0"/>
+                    <field name="companyId" groups="base.groupMultiCompany" optional="hide"/>
+                    <field name="messageNeedaction" invisible="1"/>
+                    <button name="actionConfirm" string="Confirm" states="draft" type="object" icon="fa-check"/>
+                    <button name="actionSetDone" string="Mark as Attending" states="open" type="object" icon="fa-level-down"/>
+                    <button name="actionCancel" string="Cancel" states="draft,open" type="object" icon="fa-times"/>
+                    <field name="activityExceptionDecoration" widget="activityException"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventRegistrationForm">
+            <field name="label">event.registration.form</field>
+            <field name="model">event.registration</field>
+            <field name="arch" type="xml">
+                <form string="Event Registration">
+                    <header>
+                        <button name="actionSendBadgeEmail" string="Send by Email" type="object" states="open,done" class="oe-highlight"/>
+                        <button name="actionConfirm" string="Confirm" states="draft" type="object" class="oe-highlight"/>
+                        <button name="actionSetDone" string="Attended" states="open" type="object" class="oe-highlight"/>
+                        <button name="actionSetDraft" string="Set To Unconfirmed" states="cancel,done" type="object" />
+                        <button name="actionCancel" string="Cancel Registration" states="draft,open" type="object"/>
+                        <field name="state" nolabel="1" colspan="2" widget="statusbar" statusbarVisible="draft,open,done"/>
+                    </header>
+                    <sheet string="Registration">
+                        <div class="oe-button-box" name="buttonBox"/>
+                        <group>
+                            <group string="Attendee" name="attendee">
+                                <field name="partnerId" attrs="{'readonly':[['state', '!=', 'draft']]}"/>
+                                <field class="o-text-overflow" name="label"/>
+                                <field name="email"/>
+                                <field name="phone" class="o-force-ltr"/>
+                                <field name="mobile" class="o-force-ltr"/>
+                            </group>
+                            <group string="Event Information" name="event">
+                                <field class="text-break" name="eventId" attrs="{'readonly': [['state', '!=', 'draft']]}" options="{'noCreate': true}"/>
+                                <field name="eventTicketId"
+                                    domain="[
+                                        ['eventId', '=', eventId],
+                                        '|', ['seatsLimited', '=', false], ['seatsAvailable', '>', 0]
+                                    ]"
+                                    attrs="{'invisible': [['eventId', '=', false]]}"
+                                    options="{'noOpen': true, 'noCreate': true}"/>
+                                <field name="dateOpen" groups="base.groupNoOne"/>
+                                <field name="dateClosed" groups="base.groupNoOne"/>
+                            </group>
+                            <group string="Marketing" name="utmLink" groups="base.groupNoOne">
+                                <field name="utmCampaignId"/>
+                                <field name="utmMediumId"/>
+                                <field name="utmSourceId"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe-chatter">
+                        <field name="messageFollowerIds"/>
+                        <field name="activityIds"/>
+                        <field name="messageIds" options="{'postRefresh': 'recipients'}"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="eventRegistrationViewKanban" model="ir.ui.view">
+            <field name="label">event.registration.kanban</field>
+            <field name="model">event.registration</field>
+            <field name="priority">10</field>
+            <field name="arch" type="xml">
+                <kanban class="o-event-attendee-kanban-view" defaultOrder="label, createdAt desc" sample="1">
+                    <field name="label"/>
+                    <field name="partnerId"/>
+                    <field name="state"/>
+                    <field name="email"/>
+                    <field name="eventTicketId"/>
+                    <templates>
+                        <t t-name="eventAttendeesKanbanIconsDesktop">
+                            <div class="d-none d-md-block h-100">
+                                <div id="eventAttendeesKanbanIconsDesktop" class="h-100 float-right p-2 d-flex align-items-end flex-column">
+                                    <a class="btn btn-md btn-primary" string="Confirm Registration" name="actionConfirm" type="object" states="draft" role="button">
+                                        <i class="fa fa-check" role="img" aria-label="Confirm button" title="Confirm Registration"/>
+                                    </a>
+                                    <a class="btn btn-md btn-primary" string="Confirm Attendance" name="actionSetDone" type="object" states="open" role="button">
+                                        <i class="fa fa-user-plus" role="img" aria-label="Attended button" title="Confirm Attendance"/>
+                                    </a>
+                                    <span class="text-muted" states="done">Attended</span>
+                                    <span class="text-muted" states="cancel">Canceled</span>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="eventAttendeesKanbanIconsMobile">
+                            <div id="eventAttendeesKanbanIconsMobile" class="d-md-none h-100 pl-4">
+                                <a class="btn btn-primary d-flex justify-content-center align-items-center h-100 w-100"
+                                    string="Confirm Registration" name="actionConfirm" type="object" states="draft" role="button">
+                                    <i class="fa fa-check fa-3x" role="img" aria-label="Confirm button" title="Confirm Registration"/>
+                                </a>
+                                <a class="btn btn-primary d-flex justify-content-center align-items-center h-100 w-100"
+                                    string="Confirm Attendance" name="actionSetDone" type="object" states="open" role="button">
+                                    <i class="fa fa-user-plus fa-3x" role="img" aria-label="Attended button" title="Confirm Attendance"/>
+                                </a>
+                                <div class="d-flex justify-content-center align-items-center h-100 w-100">
+                                    <span class="text-muted" states="done" >Attended</span>
+                                    <span class="text-muted" states="cancel" >Canceled</span>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-name="kanban-box">
+                            <div class="oe-kanban-global-click o-event-registration-kanban container-fluid p-0">
+                                <div class="row h-100">
+                                    <div class="col-9 pr-0">
+                                        <div class="oe-kanban-content h-100">
+                                            <div class="o-kanban-record-body pt-1 pl-2 h-100 d-flex flex-column">
+                                                <b class="o-kanban-record-title"><field name="label"/></b>
+                                                <field class="o-text-overflow" name="eventId" invisible="context['default_eventId']" />
+                                                <span class="o-text-overflow" attrs="{'invisible': [['partnerId', '=', false]]}">Booked by <field name="partnerId" /></span>
+                                                <div id="eventTicketId" class="o-field-many2manytags o-field-widget d-flex mt-auto">
+                                                    <t t-if="record.eventTicketId.rawValue">
+                                                        <div t-attf-class="badge badge-pill o-tag-color-#{(record.eventTicketId.rawValue % 11) + 1}" >
+                                                            <b><span class="o-badge-text o-text-overflow"><t t-esc="record.eventTicketId.value"/></span></b>
+                                                        </div>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="eventAttendeesKanbanIcons" class="col-3 pl-0">
+                                        <t t-call="eventAttendeesKanbanIconsDesktop"/>
+                                        <t t-call="eventAttendeesKanbanIconsMobile"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="viewEventRegistrationCalendar" model="ir.ui.view">
+            <field name="label">event.registration.calendar</field>
+            <field name="model">event.registration</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <calendar dateStart="eventBeginDate" dateStop="eventEndDate" string="Event Registration" color="eventId" eventLimit="5">
+                    <field name="eventId" filters="1"/>
+                    <field name="label"/>
+                </calendar>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventRegistrationPivot">
+            <field name="label">event.registration.pivot</field>
+            <field name="model">event.registration</field>
+            <field name="arch" type="xml">
+                <pivot string="Registration" displayQuantity="1" sample="1">
+                    <field name="eventId" type="row"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventRegistrationGraph">
+            <field name="label">event.registration.graph</field>
+            <field name="model">event.registration</field>
+            <field name="arch" type="xml">
+                <graph string="Registration" sample="1">
+                    <field name="eventId"/>
+                </graph>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewRegistrationSearch">
+            <field name="label">event.registration.search</field>
+            <field name="model">event.registration</field>
+            <field name="arch" type="xml">
+                <search string="Event Registration">
+                    <field name="id" string="Registration ID"/>
+                    <field name="label" string="Participant" filterDomain="['|', ['label', 'ilike', self], ['email', 'ilike', self]]"/>
+                    <filter string="Ongoing Events" name="filterIsOngoing" domain="[['eventId.isOngoing', '=', true]]"/>
+                    <separator/>
+                    <filter string="Unread Messages" name="messageNeedaction" domain="[['messageNeedaction','=',true]]"/>
+                    <filter string="Expected" name="expected" domain="[['state', 'in', ['draft', 'open', 'done']]]"/>
+                    <separator/>
+                    <filter string="Unconfirmed" name="unconfirmed" domain="[['state', '=', 'draft']]"/>
+                    <filter string="Confirmed" name="confirmed" domain="[['state', '=', 'open']]"/>
+                    <filter string="Attended" name="attended" domain="[['state', '=', 'done']]"/>
+                    <separator/>
+                    <filter string="Registration Date" name="filterDateOpen" date="dateOpen"/>
+                    <filter string="Event Start Date" name="filterEventBeginDate" date="eventBeginDate"/>
+                    <filter string="Attended Date" name="filterDateClosed" date="dateClosed"/>
+                    <field name="eventId"/>
+                    <field name="partnerId"/>
+                    <field name="companyId"/>
+                    <filter invisible="1" string="Late Activities" name="activitiesOverdue"
+                        domain="[['myActivityDateDeadline', '&lt;', contextToday().toFormat('yyyy-MM-dd')]]"
+                        help="Show all records which has next action date is before today"/>
+                    <filter invisible="1" string="Today Activities" name="activitiesToday"
+                        domain="[['myActivityDateDeadline', '=', contextToday().toFormat('yyyy-MM-dd')]]"/>
+                    <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
+                        domain="[['myActivityDateDeadline', '&gt;', contextToday().toFormat('yyyy-MM-dd')]]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Partner" name="partner" domain="[]" context="{'groupby': 'partnerId'}"/>
+                        <filter string="Event" name="groupEvent" domain="[]" context="{'groupby': 'eventId'}"/>
+                        <filter string="Ticket Type" name ="groupEventTicketId" domain="[]" context="{'groupby': 'eventTicketId'}"/>
+                        <filter string="Status" name="status" domain="[]" context="{'groupby': 'state'}"/>
+                        <filter string="Registration Date" name="createmonth" domain="[]" context="{'groupby': 'createdAt:month'}"/>
+                   </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="actionRegistration" model="ir.actions.actwindow">
+            <field name="label">Attendees</field>
+            <field name="resModel">event.registration</field>
+            <field name="domain"></field>
+            <field name="viewMode">pivot,graph,kanban,tree,form</field>
+            <field name="context">{}</field>
+            <field name="searchViewId" ref="viewRegistrationSearch"/>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    No Attendees yet!
+                </p><p>
+                    From this dashboard you can report, analyze and detect trends regarding your event registrations.
+                </p>
+            </field>
+        </record>
+
+        <menuitem name="Attendees"
+            id="menuActionRegistration"
+            parent="event.menuReportingEvents"
+            sequence="4"
+            action="actionRegistration"
+            groups="event.groupEventUser"/>
+
+        <!-- EVENT.MAIL VIEWS -->
+        <record model="ir.ui.view" id="viewEventMailForm">
+            <field name="label">event.mail.form</field>
+            <field name="model">event.mail</field>
+            <field name="arch" type="xml">
+                <form string="Event Mail Scheduler">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="eventId"/>
+                                <field name="notificationType"/>
+                                <field name="templateRef" options="{'hideModel': true, 'noQuickCreate': true}" context="{'filterTemplateOnEvent': true, 'default_model': 'event.registration'}"/>
+                                <field name="mailState"/>
+                            </group>
+                            <group>
+                                <label for="intervalNbr"/>
+                                <div class="o-row">
+                                    <field name="intervalNbr" attrs="{'invisible': [['intervalUnit', '=', 'now']], 'readonly': [['intervalUnit', '=', 'now']]}"/>
+                                    <field name="intervalUnit"/>
+                                </div>
+                                <field name="intervalType"/>
+                                <field name="scheduledDate"/>
+                            </group>
+                        </group>
+                        <notebook groups="base.groupNoOne">
+                            <page string="Registration Mails" name="registrationMails">
+                                <field name="mailRegistrationIds">
+                                    <tree string="Registration mail" editable="bottom">
+                                        <field name="registrationId"/>
+                                        <field name="scheduledDate"/>
+                                        <field name="mailSent" string="Sent"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="viewEventMailTree">
+            <field name="label">event.mail.tree</field>
+            <field name="model">event.mail</field>
+            <field name="arch" type="xml">
+                <tree string="Event Mail Schedulers">
+                    <field name="eventId"/>
+                    <field name="notificationType"/>
+                    <field name="templateRef" options="{'hideModel': true, 'noQuickCreate': true}" context="{'filterTemplateOnEvent': true, 'default_model': 'event.registration'}"/>
+                    <field name="scheduledDate"/>
+                    <field name="mailCountDone"/>
+                    <field name="mailState" widget="iconSelection" string=" "
+                        options="{'sent': 'fa fa-check', 'scheduled': 'fa fa-hourglass-half', 'running': 'fa fa-cogs'}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.actwindow" id="actionEventMail">
+            <field name="label">Events Mail Schedulers</field>
+            <field name="resModel">event.mail</field>
+            <field name="context">{'create': false}</field>
+            <field name="help" type="html">
+                <p class="o-view-nocontent-smiling-face">
+                    Nothing Scheduled yet!
+                </p><p>
+                    Under this technical menu you will find all scheduled communication related to your events.
+                </p>
+            </field>
+        </record>
+
+        <record id="menuEventMailSchedulers" model="ir.ui.menu">
+            <field name="action" ref="event.actionEventMail"/>
+        </record>
+    </data>
+</verp>

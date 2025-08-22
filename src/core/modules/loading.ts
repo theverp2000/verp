@@ -146,7 +146,7 @@ async function loadModuleGraph(env: Environment, graph: Graph, options: { status
       // await cr.commit();
       // await cr.reset();
       // For debug
-      console.log('%s: start loading data', pack.name);
+      console.log('%s: loading data', pack.name);
       await loadData(env, idref, mode, 'data', pack);
       pack.dbdemo = await loadDemo(env, pack, idref, mode);
       const demoLoaded = pack.dbdemo;
@@ -191,7 +191,7 @@ async function loadModuleGraph(env: Environment, graph: Graph, options: { status
             `id,label,modelId:id,groupId:id,permRead,permWrite,permCreate,permUnlink`
           ]
           for (const model of models) {
-            const xmlid = model['model'].replace('.', '_');
+            const xmlid = model['model'].replaceAll('.', '_');
             lines.push(`${moduleName}.access_${xmlid},access_${xmlid},${moduleName}.model_${xmlid},base.groupUser,1,0,0,0`)
           }
         }
@@ -526,9 +526,8 @@ async function loadMarkedModules(env: Environment, graph: Graph, options: { stat
   }
 
   let processedModules = [];
-  const _true = true;
   const cr = env.cr;
-  while (_true) {
+  while (true) {
     const res = await cr.execute(`SELECT label from "irModuleModule" WHERE state IN (${quoteList(options.states)})`);
     const moduleList = res.filter((x) => !graph.has(x['label'])).map((x) => x['label']);
     if (!moduleList.length) {
@@ -570,7 +569,7 @@ async function loadDemo(env: Environment, pack: Node, idref: {}, mode: string) {
   }
   try {
     if (len(pack.info['demo'])) {
-      console.log('%s: start loading demo', pack.name);
+      console.log('%s: loading demo', pack.name);
       await env.cr.savepoint(false, async () => {
         await loadData(env, idref, mode, 'demo', pack);
       });

@@ -1,8 +1,6 @@
-import _ from "lodash"
-import { Fields, api } from "../../../core"
-import { MetaModel, TransientModel, _super } from "../../../core/models"
-import { f } from "../../../core/tools/string"
-import { bool } from "../../../core/tools/bool"
+import _ from "lodash";
+import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
+import { bool, f } from "../../../core/tools";
 
 @MetaModel.define()
 class MailTemplatePreview extends TransientModel {

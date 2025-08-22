@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+
+    <record id="paperformatEventFoldableBadge" model="report.paperformat">
+        <field name="label">Custom Paperformat for the Event Foldable Badge report</field>
+        <field name="default" eval="false"/>
+        <field name="disableShrinking" eval="true"/>
+        <field name="format">A4</field>
+        <field name="pageHeight">0</field>
+        <field name="pageWidth">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="marginTop">0</field>
+        <field name="marginBottom">0</field>
+        <field name="marginLeft">0</field>
+        <field name="marginRight">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="paperformatEventFullPageTicket" model="report.paperformat">
+        <field name="label">Custom Paperformat for the Event Full Page Ticket report</field>
+        <field name="default" eval="false"/>
+        <field name="disableShrinking" eval="true"/>
+        <field name="format">A4</field>
+        <field name="pageHeight">0</field>
+        <field name="pageWidth">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="marginTop">0</field>
+        <field name="marginBottom">8</field>
+        <field name="marginLeft">0</field>
+        <field name="marginRight">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <!-- The "Full Page Ticket", as opposed to the foldable badge that is meant to be folded and
+    only contains the bare minimum (attendee label + barcode), gives all the information of the
+    ticket in a portrait A4 format.
+    It allows to add some information in the ticketInstructions field and, when printed, functions
+    as an "official" ticket that the attendee can show to the registration desk where all
+    the information are available (event name, organizer, SO reference, barcode, footer with
+    sponsors, ...). -->
+    <record id="actionReportEventRegistrationFullPageTicket" model="ir.actions.report">
+        <field name="label">Full Page Ticket</field>
+        <field name="model">event.registration</field>
+        <field name="reportType">qweb-pdf</field>
+        <field name="reportName">event.eventRegistrationReportTemplateFullPageTicket</field>
+        <field name="reportFile">event.event_registration_report_template_full_page_ticket</field>
+        <field name="printReportName">format('Full Page Ticket - %s - %s', (await (await object.eventId).label || 'Event').replace(/\//g',''), (await object.label).replace(/\//g,''))</field>
+        <field name="bindingModelId" ref="model_eventRegistration"/>
+        <field name="bindingType">report</field>
+        <field name="paperformatId" ref="paperformatEventFullPageTicket"/>
+    </record>
+
+    <record id="actionReportEventEventFullPageTicket" model="ir.actions.report">
+        <field name="label">Full Page Ticket Example</field>
+        <field name="model">event.event</field>
+        <field name="reportType">qweb-pdf</field>
+        <field name="reportName">event.eventEventReportTemplateFullPageTicket</field>
+        <field name="reportFile">event.event_event_report_template_full_page_ticket</field>
+        <field name="printReportName">format('Full Page Ticket - %s', await object.label || 'Event').replace(/\//g,'')</field>
+        <field name="bindingModelId" ref="model_eventEvent"/>
+        <field name="bindingType">report</field>
+        <field name="paperformatId" ref="paperformatEventFullPageTicket"/>
+    </record>
+
+    <record id="actionReportEventRegistrationFoldableBadge" model="ir.actions.report">
+        <field name="label">Foldable Badge</field>
+        <field name="model">event.registration</field>
+        <field name="reportType">qweb-pdf</field>
+        <field name="reportName">event.eventRegistrationReportTemplateFoldableBadge</field>
+        <field name="reportFile">event.event_registration_report_template_foldable_badge</field>
+        <field name="printReportName">format('Foldable Badge - %s - %s', (await (await object.eventId).label || 'Event').replace(/\//g,''), object.name.replace('/',''))</field>
+        <field name="bindingModelId" ref="model_eventRegistration"/>
+        <field name="bindingType">report</field>
+        <field name="paperformatId" ref="paperformatEventFoldableBadge"/>
+    </record>
+
+    <record id="actionReportEventEventFoldableBadge" model="ir.actions.report">
+        <field name="label">Foldable Badge Example</field>
+        <field name="model">event.event</field>
+        <field name="reportType">qweb-pdf</field>
+        <field name="reportName">event.eventEventReportTemplateFoldableBadge</field>
+        <field name="reportFile">event.event_event_report_template_foldable_badge</field>
+        <field name="printReportName">format('Foldable Badge - %s', await object.label || 'Event').replace(/\//g,'')</field>
+        <field name="bindingModelId" ref="model_eventEvent"/>
+        <field name="bindingType">report</field>
+        <field name="paperformatId" ref="paperformatEventFoldableBadge"/>
+    </record>
+
+</verp>

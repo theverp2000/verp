@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
-import { Fields, api } from "../../../core";
+import { Fields, MetaModel, Model, api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
-import { MetaModel, Model } from "../../../core/models";
 import { getResourcePath } from "../../../core/modules";
 import { bool, f } from "../../../core/tools";
 
@@ -62,8 +61,8 @@ class WebsiteConfiguratorFeature extends Model {
       return subber;
     }
 
-    svg = svg.replace(colorRegex, subberMaker(colorMapping));
-    svg = svg.replace(imageRegex, subberMaker(imageMapping));
+    svg = svg.replaceAll(colorRegex, subberMaker(colorMapping));
+    svg = svg.replaceAll(imageRegex, subberMaker(imageMapping));
     return svg;
   }
 }

@@ -1807,12 +1807,14 @@ export class BaseModel extends Function {
 
     const cls = this.constructor;
     const records = new cls();
-    records._name = cls._name;
+
+    records._name = cls._name; // firstly assign for easy debuging
     records._ids = ids;
     records._prefetchIds = prefetchIds;
-    records.cls = cls;
     records.env = env;
     records.pool = cls.pool;
+    records.cls = cls;
+
     return records;
   }
 
@@ -1825,7 +1827,7 @@ export class BaseModel extends Function {
       ids = List.from([ids]);
     } else if (typeof ids === 'string') {
       ids = List.from([Number(ids)]);
-    } else { // Iterables: List / Array / Set / Generator...
+    } else { // Iterables: List / Array / Set / Generator
       ids = List.from(ids);
     }
     return this._browse(this.env, ids, ids);
@@ -3050,9 +3052,18 @@ export class BaseModel extends Function {
       WHERE c.relname='${this.cls._table}'
         AND c.oid=a.attrelid
         AND a.attisdropped=false
-        AND pg_catalog.format_type(a.atttypid, a.atttypmod) NOT IN ('cid', 'tid', 'oid', 'xid')
+        AND format_type(a.atttypid, a.atttypmod) NOT IN ('cid', 'tid', 'oid', 'xid')
         AND a.attname NOT IN (${quoteList(cols)})
     `;
+    /*const sql = `
+      SELECT a.attname, a.attnotnull
+      FROM pg_attribute a
+      WHERE
+          attrelid = '"${this.cls._table}"'::regclass
+          AND attisdropped = FALSE
+          AND format_type(atttypid, atttypmod) NOT IN ('cid', 'tid', 'oid', 'xid')
+          AND attname NOT IN (${quoteList(cols)});
+    `;*/
     const res = await cr.execute(sql);
 
     for (const row of res) {

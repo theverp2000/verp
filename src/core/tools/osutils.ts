@@ -41,7 +41,7 @@ export function cleanFilename(name, replacement = '') {
   if (WINDOWS_RESERVED.test(name)) {
     return "Untitled";
   }
-  return lstrip(name.replace(/[^\w_.\(\)\[\] -]+/, replacement, name), '.-') || "Untitled";
+  return lstrip(name.replace(/[^\w_.\(\)\[\] -]+/g, replacement, name), '.-') || "Untitled";
 }
 
 export function zipDir(dumpDir, stream, opts: {includeDir?: boolean, fnctSort?: Function}={}) {

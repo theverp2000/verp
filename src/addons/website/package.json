@@ -136,7 +136,7 @@
             "website/static/src/js/content/auto_hide_menu.js"
         ],
         "web.assetsFrontendLazy": [
-            "# Remove assets_frontend_minimal",
+            "# Remove assetsFrontendMinimal",
             ["remove", "website/static/src/js/content/inject_dom.js"],
             ["remove", "website/static/src/js/content/auto_hide_menu.js"]
         ],

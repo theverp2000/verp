@@ -1,9 +1,6 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { extend, f } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { UserError } from "../../../core/helper";
+import { bool, extend, f } from "../../../core/tools";
 
 @MetaModel.define()
 class ResCurrency extends Model {

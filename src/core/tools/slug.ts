@@ -138,7 +138,7 @@ export async function urlLang(req, pathOrUri, langCode?: any) {
   if (url && !url.protocol && !url.auth && (url.pathname || forceLang)) {
     location = urlJoin(req.httpRequest.pathname, location);
     const langUrlCodes = (await Lang.getAvailable()).map(item => item[1]);
-    langCode = toText(langCode || req.context['lang']);//.replace('_', '-');
+    langCode = toText(langCode || req.context['lang']);//.replaceAll('_', '-');
     let langUrlCode = await Lang._langCodeToUrlcode(langCode);
     langUrlCode = langUrlCodes.includes(langUrlCode) ? langUrlCode : langCode;
     if ((langUrlCodes.length > 1 || forceLang) && await isMultilangUrl(req, location, langUrlCodes)) {

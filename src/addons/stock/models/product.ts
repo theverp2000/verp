@@ -1,15 +1,9 @@
 import _ from "lodash";
-import { api } from "../../../core";
-import { Fields, _Datetime } from "../../../core/fields";
-import { DefaultDict, Dict, MapKey } from "../../../core/helper/collections";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
+import { Fields, MetaModel, Model, _Datetime, _super, api } from "../../../core";
+import { DefaultDict, Dict, MapKey, UserError } from "../../../core/helper";
 import { expression } from "../../../core/osv";
 import { FALSE_LEAF } from "../../../core/osv/expression";
-import { _f, bool, floatIsZero, floatRound, len, sum } from "../../../core/tools";
-import { literalEval } from '../../../core/tools/save_eval';
-import { subDate } from "../../../core/tools/date_utils";
-import { pop, update } from "../../../core/tools/misc";
+import { _f, bool, floatIsZero, floatRound, len, literalEval, pop, subDate, sum, update } from "../../../core/tools";
 
 const OPERATORS = {
   '<': _.lt,

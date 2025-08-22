@@ -1,27 +1,15 @@
 import fs from "fs/promises";
 import _ from "lodash";
 import assert from "node:assert";
-import { format } from "node:util";
-import { api, modules, tools } from "../../..";
-import { getattr, setattr } from "../../../api/func";
-import { Fields } from "../../../fields";
-import { Dict, OrderedDict } from "../../../helper/collections";
-import { AccessDenied, RuntimeError, UserError } from "../../../helper/errors";
+import { Fields, MetaModel, Model, _super, api, modules, tools } from "../../..";
+import { getattr, setattr } from "../../../api";
+import { AccessDenied, Dict, OrderedDict, RuntimeError, UserError } from "../../../helper";
 import { WebRequest } from "../../../http";
-import { MetaModel, Model, _super } from "../../../models";
 import { getModuleIcon, getResourcePath } from "../../../modules";
 import { expression } from "../../../osv";
-import { b64encode, filePath } from "../../../tools";
-import { bool } from "../../../tools/bool";
-import { documentFromString } from "../../../tools/html";
-import { extend, len } from "../../../tools/iterable";
-import { publishString } from "../../../tools/mail";
-import { setOptions, topologicalSort } from "../../../tools/misc";
+import { UpCamelCase, b64encode, bool, documentFromString, extend, f, filePath, iterlinks, len, parseHtml, publishString, serializeHtml, setOptions, topologicalSort } from "../../../tools";
 import { parseVersion } from "../../../tools/parse_version";
 import { quoteList } from "../../../tools/sql";
-import { f } from "../../../tools/string";
-import { UpCamelCase } from "../../../tools/string";
-import { iterlinks, parseHtml, serializeHtml } from "../../../tools/xml";
 import { MODULE_UNINSTALL_FLAG } from "./ir_model";
 
 const ACTION_DICT = {
@@ -572,17 +560,18 @@ class Module extends Model {
   @assertLogAdminAccess()
   async buttonInstall() {
     const autoDomain = [['state', '=', 'uninstalled'], ['autoInstall', '=', true]];
+    const installStates = ['installed', 'to install', 'to upgrade'];
 
-    const installStates = new Set(['installed', 'to install', 'to upgrade']);
     async function mustInstall(module) {
-      const dependenciesId = await module.dependenciesId;
-      const states = new Set<any>();
-      for (const dep of dependenciesId) {
+      const dependencies = await module.dependenciesId;
+      const states = [];
+      for (const dep of dependencies) {
         if (await dep.autoInstallRequired) {
-          states.add(await dep.state);
+          const state = await dep.state;
+          if (!states.includes(state)) states.push(state);
         }
       }
-      return _.lte(states, installStates) && states.has('to install');
+      return _.difference(installStates, states).length && states.includes('to install');
     }
 
     let modules: any = this;
@@ -591,7 +580,7 @@ class Module extends Model {
       modules = await (await this.search(autoDomain)).filtered(mustInstall);
     }
 
-    const installMods = await this.search([['state', 'in', Array.from(installStates)]]);
+    const installMods = await this.search([['state', 'in', installStates]]);
 
     const installNames = new Set<any>();
     for (const modul of installMods) {
@@ -623,19 +612,14 @@ class Module extends Model {
       const modules = await installMods.filtered(async (mod) => await categories.constains(await mod.categoryId));
       // the installation is valid if all installed modules in categories
       // belong to the transitive dependencies of one of them
-      if (modules.ok) {
+      if (modules.ok && !await modules.some(async (modul) => modules.lt(await closure(modul)))) {
+        const labels = Object.fromEntries((await this.fieldsGet(['state']))['state']['selection']);
+        const msg = await this._t('You are trying to install incompatible modules in category "%s":', await category.label);
+        const msgs = [];
         for (const modul of modules) {
-          if (modules.lt(await closure(modul))) {
-            let msg = await this._t('You are trying to install incompatible modules in category "%s":');
-            const labels = Dict.from((await this.fieldsGet(['state']))['state']['selection']);
-            msg = format(msg, await category.label);
-            const msgs = [];
-            for (const mod of modules) {
-              msgs.push(msg + `- ${await modul.shortdesc} (${labels[await modul.state]})`);
-            }
-            throw new UserError(msgs.join('\n'));
-          }
+          msgs.push(msg + `- ${await modul.shortdesc} (${labels[await modul.state]})`);
         }
+        throw new UserError(msgs.join('\n'));
       }
     }
 

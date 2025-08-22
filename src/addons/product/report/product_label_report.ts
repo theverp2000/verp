@@ -1,8 +1,6 @@
-import { Map2 } from "../../../core/helper/collections";
-import { UserError } from "../../../core/helper/errors";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { sum } from "../../../core/tools/iterable";
+import { AbstractModel, MetaModel } from "../../../core";
+import { Map2, UserError } from "../../../core/helper";
+import { bool, sum } from "../../../core/tools";
 
 async function _prepareData(env, data) {
   // change product ids by actual product object to get access to fields in xml template

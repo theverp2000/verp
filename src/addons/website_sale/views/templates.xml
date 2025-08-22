@@ -188,10 +188,10 @@
                 </div>
                 <div class="o-wsale-product-btn pl-2"/>
             </div>
-            <t t-set="bgcolor" t-value="await tdProduct['ribbon']['bgcolor'] || ''"/>
+            <t t-set="bgColor" t-value="await tdProduct['ribbon']['bgColor'] || ''"/>
             <t t-set="textColor" t-value="await tdProduct['ribbon']['textColor']"/>
             <t t-set="bgclass" t-value="await tdProduct['ribbon']['htmlClass']"/>
-            <span t-attf-class="o-ribbon #{bgclass}" t-attf-style="#{textColor &amp;&amp; format('color: %s; ', textColor)}#{bgcolor &amp;&amp; 'background-color:' + bgcolor}" t-out="await tdProduct['ribbon']['html'] || ''"/>
+            <span t-attf-class="o-ribbon #{bgclass}" t-attf-style="#{textColor &amp;&amp; format('color: %s; ', textColor)}#{bgColor &amp;&amp; 'background-color:' + bgColor}" t-out="await tdProduct['ribbon']['html'] || ''"/>
         </form>
     </template>
 
@@ -899,9 +899,9 @@
                             <section class="s-website-form" data-vcss="001" data-snippet="sWebsiteForm">
                                 <div class="container">
                                     <form action="/website/form/" method="post" enctype="multipart/form-data" class="o-mark-required s-website-form-no-recaptcha" data-mark="*" data-force-action="shop.sale.order" data-model-name="sale.order" data-success-mode="redirect" data-success-page="/shop/payment" hide-change-model="true">
-                                        <div class="s-website-form-rows row s-col-no-bgcolor">
+                                        <div class="s-website-form-rows row s-col-no-bgColor">
                                             <div class="form-group col-12 s-website-form-field" data-type="char" data-name="Field">
-                                                <div class="row s-col-no-resize s-col-no-bgcolor">
+                                                <div class="row s-col-no-resize s-col-no-bgColor">
                                                     <label class="col-form-label col-sm-auto s-website-form-label" style="width: 200px" for="sale1">
                                                         <span class="s-website-form-label-content">Your Reference</span>
                                                     </label>
@@ -911,7 +911,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group col-12 s-website-form-field s-website-form-custom" data-type="text" data-name="Field">
-                                                <div class="row s-col-no-resize s-col-no-bgcolor">
+                                                <div class="row s-col-no-resize s-col-no-bgColor">
                                                     <label class="col-form-label col-sm-auto s-website-form-label" style="width: 200px" for="sale2">
                                                         <span class="s-website-form-label-content">Give us your feedback</span>
                                                     </label>
@@ -921,7 +921,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group col-12 s-website-form-field s-website-form-custom" data-type="binary" data-name="Field">
-                                                <div class="row s-col-no-resize s-col-no-bgcolor">
+                                                <div class="row s-col-no-resize s-col-no-bgColor">
                                                     <label class="col-form-label col-sm-auto s-website-form-label" style="width: 200px" for="sale3">
                                                         <span class="s-website-form-label-content">Upload a document</span>
                                                     </label>

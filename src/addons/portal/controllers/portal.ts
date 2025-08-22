@@ -1,14 +1,11 @@
 import fs from 'fs/promises';
 import { ServerResponse } from "http";
 import _ from "lodash";
-import { http } from "../../../core";
-import { Dict } from "../../../core/helper/collections";
-import { AccessDenied, AccessError, MissingError, UserError, ValidationError } from "../../../core/helper/errors";
+import { http, isSubclass } from "../../../core";
+import { AccessDenied, AccessError, MissingError, UserError, ValidationError } from "../../../core/helper";
 import { WebRequest, contentDisposition } from "../../../core/http";
-import { isSubclass } from "../../../core/models";
 import { urlEncode, urlParse } from "../../../core/service/middleware/utils";
-import { b64encode, bool, consteq, f, isDigit, isInstance, len, parseFloat, parseInt, pop, range, singleEmailRe, update } from "../../../core/tools";
-import { stringify } from '../../../core/tools/json';
+import { b64encode, bool, consteq, f, isDigit, isInstance, len, parseFloat, parseInt, pop, range, singleEmailRe, stringify, update } from "../../../core/tools";
 
 /**
  * Generate a dict with required value to render `website.pager` template. This method compute url, page range to display, ... in the pager.
@@ -523,7 +520,7 @@ export class CustomerPortal extends http.Controller {
       ['Content-Length', String(len(report))],
     ];
     if (reportType === 'pdf' && download) {
-      const filename = f("%s.pdf", (await model._getReportBaseFilename()).replace(/\W+/, '-'));
+      const filename = f("%s.pdf", (await model._getReportBaseFilename()).replace(/\W+/g, '-'));
       reporthttpheaders.push(['Content-Disposition', contentDisposition(filename)]);
     }
     return req.makeResponse(res, report, reporthttpheaders);

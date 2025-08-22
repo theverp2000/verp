@@ -1,9 +1,7 @@
 import uuid from 'uuid';
-import { Fields, api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models"
-import { update } from '../../../core/tools/misc';
-import { f } from "../../../core/tools/string";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { urlEncode } from '../../../core/service/middleware/utils';
+import { f, update } from '../../../core/tools';
 import { iapGetEndpoint, iapJsonrpc } from '../tools/iap_tools';
 
 const DEFAULT_ENDPOINT = 'https://iap.theverp.com'

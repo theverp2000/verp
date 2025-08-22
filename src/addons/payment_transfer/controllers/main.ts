@@ -1,5 +1,5 @@
-import { http } from "../../../core"
-import { stringify } from "../../../core/tools/json";
+import { http } from "../../../core";
+import { stringify } from "../../../core/tools";
 
 @http.define()
 export class TransferController extends http.Controller {

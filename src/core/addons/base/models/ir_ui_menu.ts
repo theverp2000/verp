@@ -1,14 +1,9 @@
 import fs from "fs/promises";
-import { api, tools } from "../../..";
-import { setdefault } from "../../../api/func";
-import { Fields } from "../../../fields";
-import { MetaModel, Model, _super } from "../../../models";
-import { getResourcePath } from "../../../modules/modules";
+import { Fields, MetaModel, Model, _super, api, tools } from "../../..";
+import { setdefault } from "../../../api";
+import { getResourcePath } from "../../../modules";
 import { expression } from "../../../osv";
-import { b64encode, filePath } from "../../../tools";
-import { bool } from "../../../tools/bool";
-import { extend, len, sorted } from "../../../tools/iterable";
-import { f } from "../../../tools/string";
+import { b64encode, bool, extend, f, filePath, len, sorted } from "../../../tools";
 
 const NUMBER_PARENS = /\(([0-9]+)\)/g;
 const MENU_ITEM_SEPARATOR = "/"

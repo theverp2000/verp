@@ -1,6 +1,4 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { MetaModel, Model } from "../../../core/models"
+import { api, Fields, MetaModel, Model } from "../../../core";
 
 @MetaModel.define()
 class AccountAccountTag extends Model {
@@ -24,7 +22,7 @@ class AccountAccountTag extends Model {
    */
   @api.model()
   async _getTaxTags(tagName: string, countryId) {
-    const escapedTagName = tagName.replace('\\', '\\\\').replace('%', '\%').replace('_', '\_');
+    const escapedTagName = tagName.replaceAll('\\', '\\\\').replaceAll('%', '\%').replaceAll('_', '\_');
     return this.env.items('account.account.tag').search([['label', '=like', '_' + escapedTagName], ['countryId', '=', countryId], ['applicability', '=', 'taxes']]);
   }
 }

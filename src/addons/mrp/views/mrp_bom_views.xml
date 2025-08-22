@@ -47,7 +47,7 @@
                             <button name="%(actionReportMrpBom)d" type="action"
                                 class="oe-stat-button" icon="fa-bars" string="Structure &amp; Cost"/>
                         </div>
-                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <group>
                         <group>
                             <field name="active" invisible="1"/>

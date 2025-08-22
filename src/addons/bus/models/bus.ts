@@ -1,15 +1,12 @@
 import { ServerResponse } from "http";
 import { Client } from 'pg';
 import * as core from "../../../core";
-import { api } from "../../../core";
-import { setdefault } from "../../../core/api/func";
-import { Fields } from "../../../core/fields";
-import { Dict } from "../../../core/helper/collections";
+import { _Datetime, api, Fields, MetaModel, Model } from "../../../core";
+import { setdefault } from "../../../core/api";
+import { Dict } from "../../../core/helper";
 import { WebRequest } from "../../../core/http";
-import { MetaModel, Model } from "../../../core/models";
 import { dbConnect } from "../../../core/sql_db";
-import { addDate, config, extend, jsonParse, pop, stringify } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
+import { addDate, bool, config, extend, jsonParse, pop, stringify } from "../../../core/tools";
 
 export const TIMEOUT = 50;
 
@@ -55,7 +52,7 @@ class ImBus extends Model {
 
   @api.autovacuum()
   async _gcMessages() {
-    const timeoutAgo = addDate(core._Datetime.now(), { seconds: TIMEOUT * 2 });
+    const timeoutAgo = addDate(_Datetime.now(), { seconds: TIMEOUT * 2 });
     const domain = [['createdAt', '<', timeoutAgo]];
     return (await (await this.sudo()).search(domain)).unlink();
   }
@@ -102,7 +99,7 @@ class ImBus extends Model {
     let domain;
     // first poll return the notification in the 'buffer'
     if (last == 0) {
-      const timeoutAgo = addDate(core._Datetime.now(), { seconds: TIMEOUT });
+      const timeoutAgo = addDate(_Datetime.now(), { seconds: TIMEOUT });
       domain = [['createdAt', '>', timeoutAgo]];
     }
     else {  // else returns the unread notifications

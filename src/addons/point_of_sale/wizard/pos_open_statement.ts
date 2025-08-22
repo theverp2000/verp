@@ -1,5 +1,5 @@
+import { MetaModel, TransientModel } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { MetaModel, TransientModel } from "../../../core/models"
 
 @MetaModel.define()
 class PosOpenStatement extends TransientModel {

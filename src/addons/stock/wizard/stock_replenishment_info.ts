@@ -1,10 +1,6 @@
-import { Fields, _Date, _Datetime, api } from "../../../core";
-import { MetaModel, TransientModel } from "../../../core/models"
-import { formatDate } from "../../../core/tools/models";
-import { combine, getMonth, subDate } from "../../../core/tools/date_utils";
+import { Fields, MetaModel, TransientModel, _Date, _Datetime, api } from "../../../core";
 import { expression } from "../../../core/osv";
-import { bool } from "../../../core/tools/bool";
-import { stringify } from "../../../core/tools/json";
+import { bool, combine, formatDate, getMonth, stringify, subDate } from "../../../core/tools";
 
 @MetaModel.define()
 class StockReplenishmentInfo extends TransientModel {

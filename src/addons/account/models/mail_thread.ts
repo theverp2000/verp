@@ -1,6 +1,5 @@
-import { AbstractModel } from "../../../core/models";
-import { MetaModel, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
+import { AbstractModel, MetaModel, _super } from "../../../core";
+import { bool } from "../../../core/tools";
 
 @MetaModel.define()
 class MailThread extends AbstractModel {

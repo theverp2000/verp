@@ -1,6 +1,5 @@
-import { api, Fields } from "../../../core";
+import { _super, api, Fields, MetaModel, Model } from "../../../core";
 import { MapKey } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models"
 import { AND } from "../../../core/osv/expression";
 import { bool, floatIsZero } from "../../../core/tools";
 

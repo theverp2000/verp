@@ -1,6 +1,5 @@
-import { Fields } from "../../../core";
+import { Fields, MetaModel, Model } from "../../../core";
 import { Dict } from "../../../core/helper";
-import { MetaModel, Model } from "../../../core/models";
 
 @MetaModel.define()
 class LostReason extends Model {

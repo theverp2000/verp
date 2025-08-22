@@ -1,5 +1,4 @@
-import { Fields, api } from "../../../core";
-import { AbstractModel, MetaModel } from "../../../core/models";
+import { AbstractModel, Fields, MetaModel, api } from "../../../core";
 
 @MetaModel.define()
 class MailActivityMixin extends AbstractModel {

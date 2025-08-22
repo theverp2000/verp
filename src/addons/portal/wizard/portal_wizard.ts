@@ -1,10 +1,7 @@
 import _ from "lodash";
-import { api } from "../../../core";
-import { Command, Fields } from "../../../core/fields";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, TransientModel } from "../../../core/models";
-import { len } from "../../../core/tools/iterable";
-import { emailNormalize } from "../../../core/tools/mail";
+import { api, Command, Fields, MetaModel, TransientModel } from "../../../core";
+import { UserError } from "../../../core/helper";
+import { emailNormalize, len } from "../../../core/tools";
 
 @MetaModel.define()
 class PortalWizard extends TransientModel {

@@ -1,6 +1,5 @@
-import { _Datetime, Fields } from "../../../core";
+import { _Datetime, _super, Fields, MetaModel, Model } from "../../../core";
 import { DefaultDict, MapKey } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models"
 import { bool, floatIsZero, floatRound, len, pop, subDate, sum, update } from "../../../core/tools";
 
 const OPERATORS = {

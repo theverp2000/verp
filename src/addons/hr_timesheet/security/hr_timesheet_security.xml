@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<verp>
+    <data noupdate="1">
+        <record model="ir.module.category" id="base.module_category_services_timesheets">
+            <field name="description">Helps you manage the timesheets.</field>
+            <field name="sequence">13</field>
+        </record>
+
+        <record id="group_hr_timesheet_user" model="res.groups">
+            <field name="label">User: own timesheets only</field>
+            <field name="categoryId" ref="base.module_category_services_timesheets"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+
+        <record id="group_hr_timesheet_approver" model="res.groups">
+            <field name="label">User: all timesheets</field>
+            <field name="categoryId" ref="base.module_category_services_timesheets"/>
+            <field name="implied_ids" eval="[(4, ref('hr_timesheet.group_hr_timesheet_user'))]"/>
+        </record>
+
+        <record id="group_timesheet_manager" model="res.groups">
+            <field name="label">Administrator</field>
+            <field name="categoryId" ref="base.module_category_services_timesheets"/>
+            <field name="implied_ids" eval="[(4, ref('hr_timesheet.group_hr_timesheet_approver')), (4, ref('hr.group_hr_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+
+        <record id="base.default_user" model="res.users">
+            <field name="groups_id" eval="[(4,ref('group_timesheet_manager'))]"/>
+        </record>
+
+        <record id="timesheet_line_rule_portal_user" model="ir.rule">
+            <field name="label">account.analytic.line.timesheet.portal.user</field>
+            <field name="modelId" ref="analytic.model_account_analytic_line"/>
+            <field name="active">0</field>
+            <field name="domain_force">[
+                ('projectId', '!=', False),
+                '|',
+                    ('projectId.message_partner_ids', 'child_of', [user.partnerId.commercial_partner_id.id]),
+                    ('taskId.message_partner_ids', 'child_of', [user.partnerId.commercial_partner_id.id]),
+                ('projectId.privacyVisibility', '=', 'portal'),
+                ('projectId.collaborator_ids.partnerId', 'in', [user.partnerId.id]),
+            ]</field>
+            <field name="perm_read" eval="true"/>
+            <field name="perm_write" eval="true"/>
+            <field name="perm_create" eval="true"/>
+            <field name="perm_unlink" eval="true"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <record id="timesheet_line_rule_user" model="ir.rule">
+            <field name="label">account.analytic.line.timesheet.user</field>
+            <field name="modelId" ref="analytic.model_account_analytic_line"/>
+            <field name="domain_force">[
+                ('userId', '=', user.id),
+                ('projectId', '!=', False),
+                '|', '|',
+                    ('projectId.privacyVisibility', '!=', 'followers'),
+                    ('projectId.message_partner_ids', 'in', [user.partnerId.id]),
+                    ('taskId.message_partner_ids', 'in', [user.partnerId.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('group_hr_timesheet_user'))]"/>
+        </record>
+
+        <record id="timesheet_line_rule_approver" model="ir.rule">
+            <field name="label">account.analytic.line.timesheet.approver</field>
+            <field name="modelId" ref="analytic.model_account_analytic_line" />
+            <field name="domain_force">[
+                ('projectId', '!=', False),
+                '|',
+                    ('projectId.privacyVisibility', '!=', 'followers'),
+                    ('projectId.message_partner_ids', 'in', [user.partnerId.id])
+            ]</field>
+            <field name="groups" eval="[(4, ref('hr_timesheet.group_hr_timesheet_approver'))]" />
+        </record>
+
+        <record id="timesheet_line_rule_manager" model="ir.rule">
+            <field name="label">account.analytic.line.timesheet.manager</field>
+            <field name="modelId" ref="analytic.model_account_analytic_line"/>
+            <field name="domain_force">[('projectId', '!=', False)]</field>
+            <field name="groups" eval="[(4, ref('group_timesheet_manager')), (4, ref('project.group_project_manager'))]"/>
+        </record>
+
+        <record id="project.group_project_manager" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('hr_timesheet.group_hr_timesheet_approver'))]"/>
+        </record>
+
+    </data>
+</verp>

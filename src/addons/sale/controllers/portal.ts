@@ -1,8 +1,8 @@
-import { _Date, _Datetime, Command, http } from "../../../core"
+import { _Date, _Datetime, Command, http } from "../../../core";
 import { AccessError, MapKey, MissingError, ValidationError } from "../../../core/helper";
 import { bool, f, isInstance, pop, update } from "../../../core/tools";
 import { checkAccessToken } from "../../payment";
-import * as paymentPortal from '../../payment/controllers/portal'; 
+import * as paymentPortal from '../../payment/controllers';
 import * as portal from '../../portal/controllers';
 import { pager as portalPager } from '../../portal/controllers';
 

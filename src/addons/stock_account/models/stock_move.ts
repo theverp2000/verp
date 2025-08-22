@@ -1,7 +1,6 @@
 import _ from "lodash";
-import { Fields, _Date, api } from "../../../core";
+import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
 import { DefaultDict, OrderedSet, UserError, ValueError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models"
 import { UpCamelCase, bool, f, floatCompare, floatIsZero, isInstance, pop, sum, update } from "../../../core/tools";
 
 @MetaModel.define()

@@ -106,7 +106,8 @@ export class GettextAlias extends Function {
     // assert(!(args && kwargs));
     if (len(args)) {
       try {
-        return format(translation, ...args);
+        const res = format(translation, ...args);
+        return res;
       } catch (e) {
         if (isInstance(e, TypeError, ValueError, KeyError)) {
           const bad = translation;
@@ -324,7 +325,7 @@ export function translateXmlNode(node: Element, callback: Function, parser: (tex
         const original = content.trim();
         const tranlated = callback(original);
         if (bool(tranlated)) {
-          const result = content.replace(original, tranlated);
+          const result = content.replaceAll(original, tranlated);
           const div = doc.createElement('div');
           div.innerHTML = result;
           if (pos) {

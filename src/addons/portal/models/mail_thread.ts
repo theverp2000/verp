@@ -1,8 +1,6 @@
-import { Fields } from "../../../core";
-import { NotImplementedError } from "../../../core/helper/errors";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { hash, repr } from "../../../core/tools";
-import { _f } from "../../../core/tools/string";
+import { AbstractModel, Fields, MetaModel } from "../../../core";
+import { NotImplementedError } from "../../../core/helper";
+import { _f, hash, repr } from "../../../core/tools";
 
 @MetaModel.define()
 class MailThread extends AbstractModel {

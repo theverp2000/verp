@@ -134,8 +134,8 @@ class Channel extends Model {
       return false;
     }
     let avatar = channelType === 'group' ? groupAvatar : channelAvatar;
-    const bgcolor = getHslFromSeed(await this['uuid']);
-    avatar = avatar.replace('fill="#875a7b"', `fill="${bgcolor}"`);
+    const bgColor = getHslFromSeed(await this['uuid']);
+    avatar = avatar.replaceAll('fill="#875a7b"', `fill="${bgColor}"`);
     return b64encode(stringBase64(avatar));
   }
 

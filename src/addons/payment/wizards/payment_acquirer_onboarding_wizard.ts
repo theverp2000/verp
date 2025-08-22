@@ -1,7 +1,5 @@
-import { Fields, api } from "../../../core";
-import { Environment } from "../../../core/api";
+import { Fields, MetaModel, TransientModel, api } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { MetaModel, TransientModel } from "../../../core/models"
 import { bool } from "../../../core/tools";
 
 @MetaModel.define()
@@ -132,7 +130,7 @@ class PaymentWizard extends TransientModel {
 
             // create a new env including the freshly installed module(s)
 
-            const newEnv = await Environment.new(this.env.cr, this.env.uid, this.env.context);
+            const newEnv = await api.Environment.new(this.env.cr, this.env.uid, this.env.context);
             if (paymentMethod === 'paypal') {
                 const acquirer = await newEnv.items('payment.acquirer').search(
                     [['label', '=', 'PayPal'], ['companyId', '=', company.id]], {limit: 1}

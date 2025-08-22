@@ -1,21 +1,17 @@
 import _ from "lodash";
 import luxon, { DateTime, Duration } from "luxon";
-import { _Datetime, http } from "../../../core";
+import path from "node:path";
+import { BaseModel, _Datetime, http } from "../../../core";
 import { Home } from "../../../core/addons/web";
 import { setdefault } from "../../../core/api";
 import { Dict, ValueError } from "../../../core/helper";
 import { WebRequest, httpGet } from "../../../core/http";
-import { BaseModel } from "../../../core/models";
+import { expression } from "../../../core/osv";
 import { Forbidden, NotFound } from "../../../core/service";
 import { expVersion } from "../../../core/service/common";
-import { urlEncode, urlJoin, urlParse } from "../../../core/service/middleware/utils";
-import { URI, b64decode, bool, ellipsis, escapePsql, escapeRegExp, extend, f, isInstance, isList, islice, len, lstrip, parseInt, pop, range, setOptions, slugify, someAsync, sorted, stringPart, update } from "../../../core/tools";
-import { iterchildren, parseXml } from "../../../core/tools/xml";
-
-import path from "node:path";
-import { expression } from "../../../core/osv";
 import { BaseResponse } from "../../../core/service/middleware/base_response";
-import { stringify } from "../../../core/tools/json";
+import { urlEncode, urlJoin, urlParse } from "../../../core/service/middleware/utils";
+import { URI, b64decode, bool, ellipsis, escapePsql, escapeRegExp, extend, f, isInstance, isList, islice, iterchildren, len, lstrip, parseInt, parseXml, pop, range, setOptions, slugify, someAsync, sorted, stringPart, stringify } from "../../../core/tools";
 import { _guessMimetype } from '../../http_routing/models/ir_http';
 import { pager as portalPager } from '../../portal/controllers/portal';
 
@@ -277,7 +273,7 @@ export class Website extends Home {
                 content = b64decode(await sitemap.datas);
             }
         }
-        if (!content) {
+        if (!bool(content)) {
             // Remove all sitemaps in ir.attachments as we're going to regenerated them
             dom = [['type', '=', 'binary'], '|', ['url', '=like', f('/sitemap-%s-%%.xml', currentWebsite.id)],
             ['url', '=', f('/sitemap-%s.xml', currentWebsite.id)]]
@@ -561,7 +557,7 @@ export class Website extends Home {
                     value = ellipsis(value, maxNbChars, '...');
                 }
                 if (fieldMeta['match'] && value && bool(term)) {
-                    const pattern = term.replace('  ', ' ').split(' ').map(e => escapeRegExp(e)).join('|');
+                    const pattern = term.replaceAll('  ', ' ').split(' ').map(e => escapeRegExp(e)).join('|');
                     if (pattern) {
                         const parts = value.split(`(${pattern})`);//, flags=re.IGNORECASE)
                         if (len(parts) > 1) {

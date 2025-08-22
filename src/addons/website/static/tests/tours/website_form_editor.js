@@ -382,7 +382,7 @@ verp.define('website.tour.form_editor', function (require) {
             extraTrigger:  "form[data-modelName='mail.mail']" +
                             "[data-success-page='/contactus-thank-you']" +
                             ":has(.s-website-form-field:has(label:contains('Your Name')):has(input[type='text'][name='name'][required]))" +
-                            ":has(.s-website-form-field:has(label:contains('Your Email')):has(input[type='email'][name='email_from'][required]))" +
+                            ":has(.s-website-form-field:has(label:contains('Your Email')):has(input[type='email'][name='emailFrom'][required]))" +
                             ":has(.s-website-form-field:has(label:contains('Your Question')):has(textarea[name='description'][required]))" +
                             ":has(.s-website-form-field:has(label:contains('Subject')):has(input[type='text'][name='subject'][required]))" +
                             ":has(.s-website-form-field:has(label:contains('Test Date')):has(input[type='text'][name='date'][required]))" +
@@ -477,7 +477,7 @@ verp.define('website.tour.form_editor', function (require) {
         },
         {
             content:  "Complete Email field",
-            trigger:  "input[name=email_from]",
+            trigger:  "input[name=emailFrom]",
             run:      "text test@mail.com"
         },
         {

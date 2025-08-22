@@ -1,13 +1,10 @@
 import assert from 'assert';
 import _ from 'lodash';
 import { format } from 'util';
-import { api } from '../../..';
+import { AbstractModel, MetaModel, _super, api } from '../../..';
 import { OrderedDict } from '../../../helper';
-import { AbstractModel, MetaModel, _super } from '../../../models';
 import { urlQuote } from '../../../service/middleware/utils';
-import { sha512 } from '../../../tools';
-import { toText } from "../../../tools/string";
-import { markup } from '../../../tools/xml';
+import { markup, sha512, toText } from '../../../tools';
 
 /**
  * Widget options:
@@ -74,7 +71,7 @@ class Image extends AbstractModel {
             return _super(Image, this).recordToHtml(record, fieldName, options);
         }
         let aclasses = options['qwebImgResponsive'] ?? true ? ['img', 'img-fluid'] : ['img']
-        aclasses = aclasses.concat((options['class'] || '').replace('  ', ' ').split(' '))
+        aclasses = aclasses.concat((options['class'] || '').replaceAll('  ', ' ').split(' '))
         const classes = aclasses.map(e => _.escape(e)).join(' ')
 
         const [src, srcZoom] = await this._getSrcUrls(record, fieldName, options);

@@ -1,9 +1,6 @@
-import { getHeapCodeStatistics } from "node:v8";
-import { Fields, api, tools } from "../../..";
-import { UserError, ValidationError } from '../../../helper/errors';
-import { MetaModel, Model } from "../../../models";
+import { Fields, MetaModel, Model, _super, api, tools } from "../../..";
+import { UserError, ValidationError } from '../../../helper';
 import { isList, itemgetter, rsplit, sorted } from "../../../tools";
-import { _super } from './../../../models';
 
 const DEFAULT_DATE_FORMAT = '%m/%d/%Y'
 const DEFAULT_TIME_FORMAT = '%H:%M:%S'
@@ -159,7 +156,7 @@ class Lang extends Model {
 
     function fixDatetimeFormat(form: string) {
       // unsupported '%-' patterns, e.g. for cs_CZ
-      form = form.replace('%-', '%');
+      form = form.replaceAll('%-', '%');
       for (const [pattern, replacement] of Object.entries(tools.DATETIME_FORMATS_MAP)) {
         form = form.replace(pattern, replacement);
       }

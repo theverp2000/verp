@@ -7,8 +7,7 @@ import { hasattr } from "../../../core/api";
 import { UserError, ValidationError, ValueError } from "../../../core/helper";
 import { WebRequest } from "../../../core/http";
 import { BadRequest } from "../../../core/service";
-import { _lt, b64encode, bool, encodebytes, f, isInstance, parseFloat, parseInt, plaintext2html, pop, update } from "../../../core/tools";
-import { stringify } from "../../../core/tools/json";
+import { _lt, b64encode, bool, encodebytes, f, isInstance, parseFloat, parseInt, plaintext2html, pop, stringify, update } from "../../../core/tools";
 
 @http.define()
 export class WebsiteForm extends http.Controller {
@@ -209,7 +208,7 @@ export class WebsiteForm extends http.Controller {
                     }
                 }
                 if (destModel._name === 'mail.mail' && fieldName === 'emailFrom') {
-                    // As the "email_from" is used to populate the email_from of the
+                    // As the "emailFrom" is used to populate the emailFrom of the
                     // sent mail.mail, it could be filtered out at sending time if no
                     // outgoing mail server "from_filter" match the sender email.
                     // To make sure the email contains that (important) information

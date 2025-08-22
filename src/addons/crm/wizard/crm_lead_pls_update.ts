@@ -1,5 +1,4 @@
-import { Fields, _Date } from "../../../core";
-import { MetaModel, TransientModel } from "../../../core/models"
+import { Fields, MetaModel, TransientModel, _Date } from "../../../core";
 
 @MetaModel.define()
 class CrmUpdateProbabilities extends TransientModel {

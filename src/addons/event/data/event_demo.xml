@@ -1,0 +1,264 @@
+<?xml version="1.0"?>
+<verp><data>
+
+    <!-- Event -->
+    <record id="event.event_0" model="event.event">
+        <field name="label">Design Fair Los Angeles</field>
+        <field name="userId" ref="base.userDemo"/>
+        <field name="dateBegin" eval="toFormat(addDate(now(), {days: 10}), 'yyyy-MM-dd 08:00:00')"/>
+        <field name="dateEnd" eval="toFormat(addDate(now(), {days: 14}), 'yyyy-MM-dd 18:00:00')"/>
+        <field name="seatsLimited">True</field>
+        <field name="seatsMax">50</field>
+        <field name="addressId" ref="event.resPartnerLocation2"/>
+        <field name="dateTz">US/Pacific</field>
+        <field name="eventTypeId" ref="eventType0"/>
+        <field name="stageId" ref="eventStageBooked"/>
+        <field name="tagIds" eval="[[4, refId('event.eventTagCategory1Tag1')], [4, refId('event.eventTagCategory2Tag1')]]"/>
+        <field name="ticketInstructions" type="html">
+<div class="text-center font-weight-bold py-3">Important ticket information</div>
+<ul>
+    <li>Please come <b>at least</b> 30 minutes before the beginning of the event.</li>
+    <li>Tickets can be printed or scanned directly from your phone.</li>
+    <li>If you don't have this ticket, you will <b>not</b> be allowed entry!</li>
+</ul>
+        </field>
+    </record>
+    <record id="event_0_ticket_0" model="event.event.ticket">
+        <field name="label">Free</field>
+        <field name="description">Free entrance, no food !</field>
+        <field name="eventId" ref="event.event_0"/>
+        <field name="startSaleDatetime" eval="toFormat(addDate(today(), {days: 5}), 'yyyy-MM-dd 00:00:00')"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(today(), {days: 10}), 'yyyy-MM-dd 23:00:00')"/>
+        <field name="seatsMax">0</field>
+    </record>
+    <record id="event_0_ticket_1" model="event.event.ticket">
+        <field name="label">Standard</field>
+        <field name="description">For only 10, you gain access to catering. Yum yum.</field>
+        <field name="eventId" ref="event.event_0"/>
+        <field name="startSaleDatetime" eval="toFormat(addDate(today(), {days: 5}), 'yyyy-MM-dd 00:00:00')"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(today(), {days: 10}), 'yyyy-MM-dd 23:00:00')"/>
+        <field name="seatsMax">50</field>
+    </record>
+    <record id="event_0_ticket_2" model="event.event.ticket">
+        <field name="label">VIP</field>
+        <field name="description">You are truly among the best.</field>
+        <field name="eventId" ref="event.event_0"/>
+        <field name="startSaleDatetime" eval="toFormat(addDate(today(), {days: 5}), 'yyyy-MM-dd 00:00:00')"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(today(), {days: 10}), 'yyyy-MM-dd 23:00:00')"/>
+        <field name="seatsMax">10</field>
+    </record>
+
+    <record id="event.event_1" model="event.event">
+        <field name="label">Great Reno Ballon Race</field>
+        <field name="userId" ref="base.userAdmin"/>
+        <field eval="toFormat(addDate(today(), {days: 100}), 'yyyy-MM-dd 20:15:00')" name="dateBegin"/>
+        <field eval="toFormat(addDate(today(), {days: 101}), 'yyyy-MM-dd 00:30:00')" name="dateEnd"/>
+        <field name="eventTypeId" ref="eventType2"/>
+        <field name="addressId" ref="event.resPartnerLocation0"/>
+        <field name="stageId" ref="eventStageBooked"/>
+        <field name="kanbanState">blocked</field>
+        <field name="tagIds" eval="[[4, refId('event.eventTagCategory1Tag4')], [4, refId('event.eventTagCategory2Tag3')]]"/>
+    </record>
+
+    <record id="messageEvent_1_0" model="mail.message">
+        <field name="model">event.event</field>
+        <field name="resId" ref="event.event_1"/>
+        <field name="body" type="html"><p>Hello Marc Demo,<br/>
+            Our flight authorizations have been revoked due to insurance issues.<br/>
+            Could you take care of it as soon as possible ?</p>
+        </field>
+        <field name="messageType">comment</field>
+        <field name="subtypeId" ref="mail.mtComment"/>
+        <field name="authorId" ref="base.partnerAdmin"/>
+    </record>
+    <record id="messageEvent_1_1" model="mail.message">
+        <field name="model">event.event</field>
+        <field name="resId" ref="event.event_1"/>
+        <field name="parentId" ref="messageEvent_1_0"/>
+        <field name="body" type="html"><p>Hi Mitchell Admin,<br/>I will take care of it today !</p></field>
+        <field name="messageType">comment</field>
+        <field name="subtypeId" ref="mail.mtComment"/>
+        <field name="authorId" ref="base.partnerDemo"/>
+    </record>
+    <record id="messageEvent_1_2" model="mail.message">
+        <field name="model">event.event</field>
+        <field name="resId" ref="event.event_1"/>
+        <field name="parentId" ref="messageEvent_1_1"/>
+        <field name="body" type="html"><p>Great ! This event will stay "blocked" until it is fixed.<br/>
+        Feel free to green it once everything is in order.</p>
+        </field>
+        <field name="messageType">comment</field>
+        <field name="subtypeId" ref="mail.mtComment"/>
+        <field name="authorId" ref="base.partnerAdmin"/>
+    </record>
+    <record id="activityEvent_1_0" model="mail.activity">
+        <field name="resId" ref="event.event_1" />
+        <field name="resModelId" ref="event.model_eventEvent"/>
+        <field name="activityTypeId" ref="mail.mailActivityDataCall"/>
+        <field name="summary">Call the local state house.</field>
+        <field name="dateDeadline" eval="today()"/>
+        <field name="createdUid" ref="base.userDemo"/>
+        <field name="userId" ref="base.userDemo"/>
+    </record>
+
+    <record id="event_2" model="event.event">
+        <field name="label">Conference for Architects</field>
+        <field name="userId" ref="base.userAdmin"/>
+        <field eval="toFormat(addDate(today(), {days: 5}), 'yyyy-MM-dd 07:00:00')" name="dateBegin"/>
+        <field eval="toFormat(addDate(today(), {days: 5}), 'yyyy-MM-dd 16:30:00')" name="dateEnd"/>
+        <field name="eventTypeId" ref="eventTypeDataConference"/>
+        <field name="addressId" ref="event.resPartnerLocation2"/>
+        <field name="seatsLimited">True</field>
+        <field name="seatsMax">200</field>
+        <field name="stageId" ref="eventStageBooked"/>
+        <field name="tagIds" eval="[[4, refId('event.eventTagCategory1Tag4')], [4, refId('event.eventTagCategory2Tag1')]]"/>
+    </record>
+    <record id="event_2_ticket_1" model="event.event.ticket">
+        <field name="label">Standard</field>
+        <field name="eventId" ref="event.event_2"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(today(), {days: 90}), 'yyyy-MM-dd 23:00:00')"/>
+        <field name="seatsMax">50</field>
+    </record>
+    <record id="event_2_ticket_2" model="event.event.ticket">
+        <field name="label">VIP</field>
+        <field name="eventId" ref="event.event_2"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(today(), {days: 60}), 'yyyy-MM-dd 23:00:00')"/>
+        <field name="seatsMax">5</field>
+    </record>
+    <record id="activity_event_2_0" model="mail.activity">
+        <field name="resId" ref="event.event_2" />
+        <field name="resModelId" ref="event.model_eventEvent"/>
+        <field name="activityTypeId" ref="mail.mailActivityDataCall"/>
+        <field name="summary">Call the caterer.</field>
+        <field name="dateDeadline" eval="toFormat(addDate(today(), {days: 3}), 'yyyy-MM-dd HH:mm')"/>
+        <field name="createdUid" ref="base.userAdmin"/>
+        <field name="userId" ref="base.userAdmin"/>
+    </record>
+    <record id="event_2_mail_0" model="event.mail">
+        <field name="eventId" ref="event.event_2"/>
+        <field name="templateRef" eval="format('mail.template,%s', refId('event.eventSubscription'))"/>
+    </record>
+
+    <record id="event.event_3" model="event.event">
+        <field name="label">Live Music Festival</field>
+        <field name="userId" ref="base.userDemo"/>
+        <field name="dateBegin" eval="toFormat(addDate(today(), {days: 130}), 'yyyy-MM-dd 20:15:00')"/>
+        <field name="dateEnd" eval="toFormat(addDate(today(), {days: 133}), 'yyyy-MM-dd 00:30:00')"/>
+        <field name="eventTypeId" ref="eventType0"/>
+        <field name="addressId" ref="event.resPartnerLocation1"/>
+        <field name="stageId" ref="eventStageAnnounced"/>
+        <field name="tagIds" eval="[[4, refId('event.eventTagCategory1Tag3')], [4, refId('event.eventTagCategory2Tag2')]]"/>
+    </record>
+    <record id="event_3_ticket_0" model="event.event.ticket">
+        <field name="label">Standard</field>
+        <field name="eventId" ref="event.event_3"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(today(), {days: 20}), 'yyyy-MM-dd 23:00:00')"/>
+        <field name="seatsMax">1200</field>
+    </record>
+    <record id="event_3_ticket_1" model="event.event.ticket">
+        <field name="label">VIP</field>
+        <field name="eventId" ref="event.event_3"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(today(), {days: 20}), 'yyyy-MM-dd 23:00:00')"/>
+        <field name="seatsMax">50</field>
+    </record>
+    <record id="activityEvent_3_0" model="mail.activity">
+        <field name="resId" ref="event.event_3" />
+        <field name="resModelId" ref="event.model_eventEvent"/>
+        <field name="activityTypeId" ref="mail.mailActivityDataCall"/>
+        <field name="summary">Prepare interview with local media.</field>
+        <field name="date_deadline" eval="toFormat(today(), 'yyyy-MM-dd HH:mm')"/>
+        <field name="createdUid" ref="base.userAdmin"/>
+        <field name="userId" ref="base.userAdmin"/>
+    </record>
+    <record id="event_3_mail_0" model="event.mail">
+        <field name="eventId" ref="event.event_3"/>
+        <field name="templateRef" eval="format('mail.template,%s', refId('event.eventSubscription'))"/>
+    </record>
+
+    <!-- EVENT_4: very limited, intended to test seats reservation -->
+    <record id="event.event_4" model="event.event">
+        <field name="label">Business workshops</field>
+        <field name="userId" ref="base.userAdmin"/>
+        <field name="dateBegin" eval="toFormat(subDate(today(), {days: 5}), 'yyyy-MM-dd 18:00:00')"/>
+        <field name="dateEnd" eval="toFormat(subDate(today(), {days: 5}), 'yyyy-MM-dd 22:30:00')"/>
+        <field name="seatsLimited">true</field>
+        <field name="seatsMax">4</field>
+        <field name="addressId" ref="event.resPartnerLocation2"/>
+        <field name="dateTz">US/Pacific</field>
+        <field name="eventTypeId" ref="eventType1"/>
+        <field name="stageId" ref="eventStageDone"/>
+        <field name="kanbanState">done</field>
+        <field name="tagIds" eval="[[4, refId('event.eventTagCategory1Tag4')], [4, refId('event.eventTagCategory2Tag1')]]"/>
+    </record>
+    <record id="event_4_ticket_0" model="event.event.ticket">
+        <field name="label">General Admission</field>
+        <field name="eventId" ref="event.event_4"/>
+        <field name="endSaleDatetime" eval="toFormat(subDate(today(), {days: 30}), 'yyyy-MM-dd 23:00:00')"/>
+        <field name="seatsMax">4</field>
+    </record>
+    <record id="activityEvent_4_0" model="mail.activity">
+        <field name="resId" ref="event.event_4" />
+        <field name="resModelId" ref="event.model_eventEvent"/>
+        <field name="activityTypeId" ref="mail.mailActivityDataCall"/>
+        <field name="summary">Prepare after movie.</field>
+        <field name="dateDeadline" eval="toFormat(addDate(today(), {days: 3}), 'yyyy-MM-dd HH:mm')"/>
+        <field name="createdUid" ref="base.userAdmin"/>
+        <field name="userId" ref="base.userAdmin"/>
+    </record>
+
+    <record id="event.event_5" model="event.event">
+        <field name="label">Hockey Tournament</field>
+        <field name="userId" ref="base.userDemo"/>
+        <field eval="toFormat(addDate(today(), {days: 370}), 'yyyy-MM-dd 09:00:00')" name="dateBegin"/>
+        <field eval="toFormat(addDate(today(), {days: 371}), 'yyyy-MM-dd 17:00:00')" name="dateEnd"/>
+        <field name="eventTypeId" ref="eventType2"/>
+        <field name="addressId" ref="event.resPartnerLocation1"/>
+        <field name="tagIds" eval="[[6, 0, [refId('event.eventTagCategory1Tag2'), refId('event.eventTagCategory2Tag3')]]]"/>
+    </record>
+
+    <record id="event.event_6" model="event.event">
+        <field name="label">An unpublished event</field>
+        <field name="userId" ref="base.userAdmin"/>
+        <field eval="toFormat(addDate(today(), {days: 30}), 'yyyy-MM-dd 09:30:00')" name="dateBegin"/>
+        <field eval="toFormat(addDate(today(), {days: 30}), 'yyyy-MM-dd 17:30:00')" name="dateEnd"/>
+        <field name="eventTypeId" ref="eventType0"/>
+        <field name="addressId" ref="event.resPartnerLocation1"/>
+    </record>
+
+    <record id="event.event_7" model="event.event">
+        <field name="label">OpenWood Collection Online Reveal</field>
+        <field name="dateTz">Europe/Brussels</field>
+        <field name="eventTypeId" ref="eventType0"/>
+        <field name="stageId" ref="event.eventStageBooked"/>
+        <field name="userId" ref="base.userDemo"/>
+        <field name="autoConfirm" eval="true"/>
+        <field name="dateBegin" eval="toFormat(subDate(now(), {days: 1}), 'yyyy-MM-dd 05:00:00')"/>
+        <field name="dateEnd" eval="toFormat(addDate(now(), {days: 1}), 'yyyy-MM-dd 15:00:00')"/>
+        <field name="addressId" eval="false"/>
+        <field name="tagIds" eval="[[4, refId('event.eventTagCategory3Tag1')]]"/>
+        <field name="description" type="html">
+<div class="oe-structure">
+    <h5>The finest OpenWood furnitures are coming to your house in a brand new collection</h5>
+    <p>And this time, we go fully ONLINE! Meet us in our live streams from the comfort of your house.<br/>
+    Special discount codes will be handed out during the various streams, make sure to be there on time.</p>
+    <p class="mb-3">For any additional information, please contact us at <a href="mailto:events@idea.com">events@idea.com</a>.</p>
+    <div class="bg-light rounded-right border-left border-secondary p-3 mb-5" style="border-left-width: 3px !important;">
+        <p class="mb-1">This event is fully online and FREE, if you have paid for tickets, you should get a refund.<br/>
+        It will require a good Internet connection to get the best video quality.</p>
+    </div>
+</div>
+        </field>
+    </record>
+    <record id="event_7_ticket_1" model="event.event.ticket">
+        <field name="label">Standard</field>
+        <field name="eventId" ref="event.event_7"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(now(), {days: 2}), 'yyyy-MM-dd 15:00:00')"/>
+    </record>
+    <record id="event_7_ticket_2" model="event.event.ticket">
+        <field name="label">VIP</field>
+        <field name="eventId" ref="event.event_7"/>
+        <field name="endSaleDatetime" eval="toFormat(addDate(now(), {days: 2}), 'yyyy-MM-dd 15:00:00')"/>
+        <field name="seatsMax">10</field>
+    </record>
+
+</data></verp>

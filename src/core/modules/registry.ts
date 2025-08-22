@@ -145,7 +145,6 @@ export class Registry {
     let registry: Registry;
 
     {
-      global.logDebug = false;
       const t0 = new Date();
 
       registry = new Registry();
@@ -180,7 +179,6 @@ export class Registry {
       registry.init = null;
       const t = ((new Date()).getTime() - t0.getTime()) / 1000;
       console.info(`Registry loaded in ${t}ms`);
-      // global.logDebug = true;
     }
     return registry;
   }

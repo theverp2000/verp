@@ -1,8 +1,7 @@
-import { ServerResponse } from "http"
-import { http } from "../../../core"
-import { WebRequest, serializeException } from "../../../core/http"
-import { escapeHtml } from "../../../core/tools/xml";
-import { stringify } from "../../../core/tools/json";
+import { ServerResponse } from "http";
+import { http } from "../../../core";
+import { WebRequest, serializeException } from "../../../core/http";
+import { escapeHtml, stringify } from "../../../core/tools";
 
 @http.define()
 class StockReportController extends http.Controller {

@@ -1,9 +1,6 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { floatCompare } from "../../../core/tools/float_utils";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { UserError } from "../../../core/helper";
+import { bool, floatCompare } from "../../../core/tools";
 
 @MetaModel.define()
 class RemovalStrategy extends Model {

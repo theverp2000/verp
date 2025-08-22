@@ -1,8 +1,6 @@
-import { Fields, _Date } from "../../../core";
+import { Fields, MetaModel, TransientModel, _Date } from "../../../core";
 import { Dict } from "../../../core/helper";
-import { MetaModel, TransientModel } from "../../../core/models";
-import { bool, f, len, parseInt, update } from "../../../core/tools";
-import { fromFormat, subDate, toFormat } from "../../../core/tools/date_utils";
+import { bool, f, fromFormat, len, parseInt, subDate, toFormat, update } from "../../../core/tools";
 
 @MetaModel.define()
 class FollowupPrint extends TransientModel {

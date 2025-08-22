@@ -1488,7 +1488,7 @@
         <div t-foreach="widget.m2mValues" t-as="m2mValue">
             <t t-set="idForLabel" t-value="'oMany2manyCheckbox_' + _.uniqueId()"/>
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" t-att-id="idForLabel" class="custom-control-input" t-att-data-record-id="escape(JSON.stringify(m2mValue[0]))"/>
+                <input type="checkbox" t-att-id="idForLabel" class="custom-control-input" t-att-data-record-id="_.escape(JSON.stringify(m2mValue[0]))"/>
                 <label t-att-for="idForLabel" class="custom-control-label o-form-label"><t t-esc="m2mValue[1]"/></label>
             </div>
         </div>

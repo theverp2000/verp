@@ -1,8 +1,5 @@
-import { api } from "../../..";
-import { Fields } from "../../../fields";
-import { MetaModel, TransientModel } from "../../../models";
-import { bool, f, getIsoCodes, len, sortedAsync } from "../../../tools";
-import { transExport } from "../../../tools/translate";
+import { api, Fields, MetaModel, TransientModel } from "../../..";
+import { bool, f, getIsoCodes, len, sortedAsync, transExport } from "../../../tools";
 
 const NEW_LANG_KEY = '__new__';
 

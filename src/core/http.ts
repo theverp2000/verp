@@ -1857,7 +1857,7 @@ export function dbFilter(req, dbs: any[]) {
   }
   if (core.tools.config.get('dbFilter')) {
     [d, h] = [escapeRegExp(d), escapeRegExp(h)];
-    r = core.tools.config.options['dbFilter'].replace('%h', h).replace('%d', d);
+    r = core.tools.config.options['dbFilter'].replaceAll('%h', h).replaceAll('%d', d);
     dbs = dbs.filter(i => i.match(r));
   }
   else if (core.tools.config.get('dbName')) {
@@ -2013,7 +2013,7 @@ export function parseHeader(line): [string, {}] {
       let value = p.slice(i + 1).trim();
       if (value.length >= 2 && value[0] === '"' && value[value.length - 1] === '"') {
         value = value.slice(1, -1);
-        value = value.replace('\\\\', '\\').replace('\\"', '"')
+        value = value.replaceAll('\\\\', '\\').replaceAll('\\"', '"')
       }
       pdict[name] = value;
     }
@@ -2162,7 +2162,7 @@ export function setSafeImageHeaders(headers, content) {
     headers['content-type'] = contentType;
   }
   headers['x-content-type-options'] = 'nosniff';
-  headers['content-length'] = content.length;
+  headers['content-length'] = `'${content.length}'`;
   return Array.from<any[]>(headers);
 }
 

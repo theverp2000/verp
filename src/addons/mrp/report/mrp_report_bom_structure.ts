@@ -1,5 +1,4 @@
-import { api } from "../../../core";
-import { AbstractModel, MetaModel } from "../../../core/models"
+import { AbstractModel, api, MetaModel } from "../../../core";
 import { bool, extend, floatRound, jsonParse, len, parseFloat, parseInt, sum } from "../../../core/tools";
 
 @MetaModel.define()

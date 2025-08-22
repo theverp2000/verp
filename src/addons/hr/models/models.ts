@@ -1,4 +1,4 @@
-import { AbstractModel, MetaModel, _super } from "../../../core/models";
+import { AbstractModel, MetaModel, _super } from "../../../core";
 import { decodeMessageHeader, emailSplit } from "../../../core/tools";
 
 @MetaModel.define()

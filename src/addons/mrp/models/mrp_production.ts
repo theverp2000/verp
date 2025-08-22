@@ -1,9 +1,8 @@
 import _ from "lodash";
-import { PROCUREMENT_PRIORITIES } from "../../stock";
-import { _Date, _Datetime, api, Fields } from "../../../core";
+import { _Date, _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
 import { DefaultDict, MapKey, OrderedSet2, UserError, ValidationError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models";
 import { _f2, addDate, bool, dateMax, enumerate, f, floatCompare, floatIsZero, floatRound, formatDate, formatDatetime, groupbyAsync, isInstance, len, map, parseInt, stringify, sum, update } from "../../../core/tools";
+import { PROCUREMENT_PRIORITIES } from "../../stock";
 
 const SIZE_BACK_ORDER_NUMERING = 3;
 
@@ -1259,7 +1258,7 @@ class MrpProduction extends Model {
         const [sourceLocation, label] = await this('locationSrcId', 'label');
         let origin = label;
         if (bool(await this['orderpointId']) && await this['origin']) {
-            origin = (await this['origin']).replace(f('%s - ', await (await this['orderpointId']).displayName), '');
+            origin = (await this['origin']).replaceAll(f('%s - ', await (await this['orderpointId']).displayName), '');
             origin = f('%s,%s', origin, label);
         }
         const data = {
@@ -1869,7 +1868,7 @@ class MrpProduction extends Model {
         const seqBack = "-" + "0".repeat(SIZE_BACK_ORDER_NUMERING - 1 - parseInt(Math.log10(sequence))) + String(sequence);
         const regex = /-\d+$/;
         if (regex.test(name) && sequence > 1) {
-            return name.replace(regex, seqBack);
+            return name.replaceAll(regex, seqBack);
         }
         return name + seqBack;
     }

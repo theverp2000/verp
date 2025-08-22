@@ -1,24 +1,10 @@
 import _ from "lodash";
 import { DateTime } from "luxon";
 import { format } from "util";
-import * as api from "../../../api";
-import { _Date, _Datetime } from "../../../fields";
-import { Dict } from "../../../helper/collections";
-import { ValueError } from "../../../helper/errors";
-import { AbstractModel, MetaModel, ModelRecords, _super } from "../../../models";
-import { formatDate, formatDuration, getLang, getTimezoneInfo, posixToLdml, update } from "../../../tools";
-import { bool } from "../../../tools/bool";
-import { toText } from "../../../tools/string";
-import { TIMEDELTA_UNITS } from "../../../tools/date_utils";
-import { divmod, floatRound } from "../../../tools/float_utils";
-import { b64encode, base64ToImage, imageDataUri } from "../../../tools/image";
-import { parseLocale } from "../../../tools/locale";
-import { safeAttrs } from "../../../tools/mail";
-import { _lt } from "../../../tools/translate";
-import { f } from "../../../tools/string";
-import { _f } from "../../../tools/string";
-import * as xml from "../../../tools/xml";
-import { E, markup, serializeXml } from "../../../tools/xml";
+import { AbstractModel, MetaModel, ModelRecords, _Date, _Datetime, _super, api } from "../../..";
+import { Dict, ValueError } from "../../../helper";
+import * as xml from "../../../tools";
+import { E, TIMEDELTA_UNITS, _f, _lt, b64encode, base64ToImage, bool, divmod, f, floatRound, formatDate, formatDuration, getLang, getTimezoneInfo, imageDataUri, markup, parseLocale, posixToLdml, safeAttrs, serializeXml, toText, update } from "../../../tools";
 
 /**
  * Converts newlines to HTML linebreaks in ``string``. returns
@@ -27,7 +13,7 @@ import { E, markup, serializeXml } from "../../../tools/xml";
   @param string
  */
 export function nl2br(string) {
-  return toText(string).replace('\n', markup('<br>\n'))
+  return toText(string).replaceAll('\n', markup('<br>\n'))
 }
 
 /*--------------------------------------------------------------------
@@ -158,7 +144,7 @@ class IntegerConverter extends AbstractModel {
 
   @api.model()
   async valueToHtml(value, options: {} = {}) {
-    return toText(await (this as any).userLang().format('%d', value, true).replace(/-/, '-\uFEFF')); //'-\N{ZERO WIDTH NO-BREAK SPACE}'))
+    return toText(await (this as any).userLang().format('%d', value, true).replace(/-/g, '-\uFEFF')); //'-\N{ZERO WIDTH NO-BREAK SPACE}'))
   }
 }
 
@@ -197,14 +183,14 @@ class FloatConverter extends AbstractModel {
       fmt = value.toFixed(precision);
     }
 
-    let formatted: string = (await (await (this as any).userLang()).format(fmt, value, true)).replace(/-/, '-\uFEFF');
+    let formatted: string = (await (await (this as any).userLang()).format(fmt, value, true)).replace(/-/g, '-\uFEFF');
 
     // %f does not strip trailing zeroes. %g does but its precision causes
     // it to switch to scientific notation starting at a million *and* to
     // strip decimals. So use %f and if no precision was specified manually
     // strip trailing 0.
     if (precision == null) {
-      formatted = formatted.replace(/(?:(0|\d+?)0+)$/, '0');
+      formatted = formatted.replace(/(?:(0|\d+?)0+)$/g, '0');
     }
 
     return toText(formatted);
@@ -303,7 +289,7 @@ class DateTimeConverter extends AbstractModel {
       pattern = posixToLdml(strftimePattern, locale);
     }
     if (options['hideSeconds']) {
-      pattern = pattern.replace(":ss", "").replace(":s", "");
+      pattern = pattern.replaceAll(":ss", "").replaceAll(":s", "");
     }
 
     if (options['timeOnly']) {
@@ -516,7 +502,7 @@ class MonetaryConverter extends AbstractModel {
     value = await displayCurrency.round(value);
     const fmt = `%${value.toFixed(await displayCurrency.decimalPlaces)}f`;
     let formattedAmount = await lang.format(fmt, value, true, true);
-    formattedAmount = formattedAmount.replace(new RegExp(' '), '\u00A0').replace(/-/, '-\uFEFF');
+    formattedAmount = formattedAmount.replace(/ /g, '\u00A0').replace(/-/g, '-\uFEFF');
 
     let pre = '';
     let post = '';

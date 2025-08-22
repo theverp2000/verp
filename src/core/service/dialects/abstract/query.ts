@@ -40,7 +40,7 @@ export class AbstractQueryGenerator {
     if (typeof name !== 'string') {
       throw new Error(`qname received a non-string name: ${typeof name}`);
     }
-    return char + name.replace(char, char + char) + char;
+    return char + name.replaceAll(char, char + char) + char;
   }
 
   quotes(names: any, char: string=this.QUOTE_NAME) {

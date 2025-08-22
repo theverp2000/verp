@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+
+<!-- EVENT FOLDABLE BADGE -->
+
+<template id="eventReportTemplateFoldableBadge">
+    <div class="o-event-foldable-badge-container">
+        <div class="row">
+            <!-- Front -->
+            <div class="page p-1 col-6 o-event-foldable-badge-top">
+                <div class="oe-structure"/>
+            </div>
+            <!-- Back -->
+            <div class="page col-6 o-event-foldable-badge-top o-event-foldable-badge-ticket pt-4">
+                <div class="oe-structure"/>
+                <div class="o-event-foldable-badge-ticket-wrapper p-2">
+                    <div class="o-event-foldable-badge-ticket-wrapper-top page">
+                        <h5 class="o-event-foldable-badge-event-name font-weight-bold text-center" t-field="event.label"/>
+                        <div class="text-center o-event-foldable-badge-font-small">
+                            <span itemprop="startDate" t-field="event.dateBegin" t-options='{"widget": "datetime", "dateOnly": true}'
+                                class="font-weight-bold"/>
+                            <span itemprop="startDateTime" t-field="event.dateBegin"
+                                class="font-weight-bold"
+                                t-options='{"widget": "datetime", "timeOnly": true, "hideSeconds": true}'/>
+                            <span class="fa fa-arrow-right o-event-foldable-badge-font-faded"/>
+                            <span t-if="!await event.isOneDay"
+                                itemprop="endDate" t-field="event.dateEnd" t-options='{"widget": "datetime", "dateOnly": true}'
+                                class="font-weight-bold"/>
+                            <span itemprop="endDateTime" t-field="event.dateEnd"
+                                class="font-weight-bold"
+                                t-options='{"widget": "datetime", "timeOnly": true, "hideSeconds": true}'/>
+                        </div>
+                        <div t-if="(await event.addressId).ok" class="o-event-foldable-badge-font-faded o-event-foldable-badge-font-small text-center">
+                            <t t-call="event.eventReportTemplateFormattedEventAddress"/>
+                        </div>
+                        <div class="text-center mt-5 pt-2">
+                            <h2 t-if="bool(attendee)" t-field="attendee.label"/>
+                            <h2 t-elif="!bool(attendee)"><span>John Doe</span></h2>
+                            <t t-set="firstTicket" t-value="(await event.eventTicketIds).ok ? (await event.eventTicketIds)[0] : null"/>
+                            <div t-if="bool(attendee)" class="o-event-foldable-badge-font-faded" t-field="attendee.eventTicketId"/>
+                            <div t-elif="bool(firstTicket)" t-esc="await firstTicket.label"
+                                class="o-event-foldable-badge-font-faded"/>
+                        </div>
+                    </div>
+                    <div class="o-event-foldable-badge-barcode mt-2">
+                        <div class="o-event-foldable-badge-barcode-container">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Inner left -->
+            <div class="page o-event-foldable-badge-bottom o-event-foldable-badge-left p-1 px-2 col-6 overflow-hidden">
+                <div class="oe-structure"/>
+                <div t-field="event.ticketInstructions" class="p-4"></div>
+            </div>
+            <!-- Inner right -->
+            <div class="page o-event-foldable-badge-bottom o-event-foldable-badge-right col-6 text-center">
+                <div class="oe-structure"/>
+                <div class="h-50 col-12 row m-0">
+                    <div class="col-6 h-100 p-0">
+                        <div class="o-event-foldable-badge-step font-weight-bold">1</div>
+                        <img src="/event/static/src/img/how_to_fold_1.png" class="w-100 h-100" alt="How to Fold (1)"/>
+                    </div>
+                    <div class="col-6 h-100 p-0">
+                        <div class="o-event-foldable-badge-step font-weight-bold">2</div>
+                        <img src="/event/static/src/img/how_to_fold_2.png" class="w-100 h-100" alt="How to Fold (2)"/>
+                    </div>
+                </div>
+                <div class="h-50 col-12 row m-0">
+                    <div class="col-6 h-100 p-0">
+                        <div class="o-event-foldable-badge-step font-weight-bold">3</div>
+                        <img src="/event/static/src/img/how_to_fold_3.png" class="w-100 h-100" alt="How to Fold (3)"/>
+                    </div>
+                    <div class="col-6 h-100 p-0">
+                        <div class="o-event-foldable-badge-step font-weight-bold">4</div>
+                        <img src="/event/static/src/img/how_to_fold_4.png" class="w-100 h-100" alt="How to Fold (4)"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="eventRegistrationReportTemplateFoldableBadge">
+    <t t-call="web.basicLayout">
+        <t t-foreach="docs" t-as="attendee">
+            <t t-set="event" t-value="await (await attendee.eventId).withContext({tz: await (await attendee.eventId).dateTz})"/>
+            <t t-call="event.eventReportTemplateFoldableBadge"/>
+        </t>
+    </t>
+</template>
+
+<template id="eventEventReportTemplateFoldableBadge">
+    <t t-call="web.basicLayout">
+        <t t-foreach="docs" t-as="event">
+            <t t-set="event" t-value="await event.withContext({tz: event.dateTz})"/>
+            <t t-call="event.eventReportTemplateFoldableBadge"/>
+        </t>
+    </t>
+</template>
+
+<!-- EVENT FULL PAGE TICKET -->
+
+<template id="eventReportTemplateFullPageTicket">
+    <div class="row page">
+        <div class="o-event-full-page-ticket-container page w-100">
+            <div class="o-event-full-page-ticket-wrapper">
+                <div class="o-event-full-page-ticket-details row">
+                    <div class="col-10">
+                        <div class="row">
+                            <div class="col-8 page">
+                                <div class="o-event-full-page-ticket-font-faded">
+                                    Event Ticket For
+                                </div>
+                                <h5 class="o-event-full-page-ticket-event-name font-weight-bold py-0 my-0" t-field="event.label"/>
+                                <span itemprop="startDate" t-field="event.dateBegin" t-options='{"widget": "datetime", "dateOnly": true}'
+                                    class="font-weight-bold"/>
+                                <span itemprop="startDateTime" t-field="event.dateBegin"
+                                    class="font-weight-bold"
+                                    t-options='{"widget": "datetime", "timeOnly": true, "hideSeconds": true}'/>
+                                <span class="fa fa-arrow-right o-event-full-page-ticket-font-faded"/>
+                                <span t-if="!await event.isOneDay"
+                                    itemprop="endDate" t-field="event.dateEnd" t-options='{"widget": "datetime", "dateOnly": true}'
+                                    class="font-weight-bold"/>
+                                <span itemprop="endDateTime" t-field="event.dateEnd"
+                                    class="font-weight-bold"
+                                    t-options='{"widget": "datetime", "timeOnly": true, "hideSeconds": true}'/>
+                                <div t-if="(await event.addressId).ok" class="o-event-full-page-ticket-font-faded">
+                                    <t t-call="event.eventReportTemplateFormattedEventAddress"/>
+                                </div>
+                                <br/>
+                                <h5 t-if="bool(attendee)" t-field="attendee.label"></h5>
+                                <h5 t-elif="!bool(attendee)"><span>John Doe</span></h5>
+                                <t t-set="firstTicket" t-value="(await event.eventTicketIds).ok ? (await event.eventTicketIds)[0] : null"/>
+                                <div t-if="bool(attendee)" class="o-event-full-page-ticket-font-faded" t-field="attendee.eventTicketId"/>
+                                <div t-elif="bool(firstTicket)" t-esc="await firstTicket.label"
+                                    class="o-event-full-page-ticket-font-faded"/>
+                            </div>
+                            <div class="col-4 o-event-full-page-ticket-side-info page">
+                                <span t-if="await (await event.organizerId).image128">
+                                    <img t-att-src="imageDataUri(await (await event.organizerId).image128)" class="o-event-full-page-ticket-event-logo mb-2"/>
+                                </span>
+                                <div t-if="bool(attendee) &amp;&amp; bool(await attendee.partnerId)" class="mb-2 o-event-full-page-ticket-side-info-booked-by">
+                                    <div class="o-event-full-page-ticket-font-faded o-event-full-page-ticket-small-caps font-weight-bold">Booked By</div>
+                                    <div class="o-event-full-page-ticket-small" t-field="attendee.partnerId"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="o-event-full-page-ticket-barcode col-2">
+                        <div class="o-event-full-page-ticket-barcode-container">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="page oe-structure"/>
+            <div t-field="event.ticketInstructions" class="o-event-full-page-extra-instructions px-2 pt-3"></div>
+        </div>
+    </div>
+</template>
+
+<template id="eventReportFullPageTicketLayout">
+    <!-- Inspired from "externalLayoutStandard" to get a repeated footer element. -->
+    <div class="article"
+        t-att-data-oe-model="bool(mainObject) &amp;&amp; mainObject._name"
+        t-att-data-oe-id="bool(mainObject) &amp;&amp; mainObject.id"
+        t-att-data-oe-lang="bool(mainObject) &amp;&amp; mainObject.env.context['lang']">
+        <main>
+            <t t-out="0"/>
+        </main>
+    </div>
+
+    <div class="row footer o-event-full-page-ticket-footer d-block">
+        <div class="o-event-full-page-ticket-powered-by text-white text-center p-2 w-100">
+            <t t-set="organizer" t-value="await event.organizerId" />
+            <t t-if="organizer.ok">
+                <span class="font-weight-bold" t-field="organizer.label"></span>
+                <span t-if="await organizer.phone" class="pl-3 fa fa-phone"/>
+                <span t-if="await organizer.phone" t-field="organizer.phone"/>
+                <span t-if="await organizer.emailNormalized" class="pl-3 fa fa-envelope"/>
+                <span t-if="await organizer.emailNormalized" t-field="organizer.emailNormalized"/>
+                <span t-if="await organizer.website" class="pl-3 fa fa-globe"/>
+                <span t-if="await organizer.website" t-field="organizer.website"/>
+            </t>
+            <t t-else="">
+                <span t-esc="await event.label"/> <!-- Force some content to avoid messing the layout -->
+            </t>
+        </div>
+    </div>
+</template>
+
+<template id="eventRegistrationReportTemplateFullPageTicket">
+    <t t-foreach="docs" t-as="attendee">
+        <t t-call="web.htmlContainer">
+            <t t-set="event" t-value="await (await attendee.eventId)._setTzContext()"/>
+            <t t-set="mainObject" t-value="attendee"/>
+            <t t-call="event.eventReportFullPageTicketLayout">
+                <t t-call="event.eventReportTemplateFullPageTicket"/>
+            </t>
+        </t>
+    </t>
+</template>
+
+<template id="eventEventReportTemplateFullPageTicket">
+    <t t-foreach="docs" t-as="event">
+        <t t-call="web.htmlContainer">
+            <t t-set="event" t-value="await event._setTzContext()"/>
+            <t t-set="mainObject" t-value="event"/>
+            <t t-call="event.eventReportFullPageTicketLayout">
+                <t t-call="event.eventReportTemplateFullPageTicket"/>
+            </t>
+        </t>
+    </t>
+</template>
+
+<!-- MISC -->
+
+<template id="eventReportTemplateFormattedEventAddress">
+    <!-- Small utility template to display "Venue" as:
+    fa-map-marker PartnerName
+    RestOfAddress -->
+    <span class="fa fa-map-marker"/>
+    <t t-if="(await (await event.addressId).contactAddress).trim()">
+        <t t-set="addressBits" t-value="(await (await event.addressId).contactAddress).split('\n')"/>
+        <t t-if="bool(addressBits)">
+            <t t-set="partnerName" t-value="addressBits[0]"/>
+            <span t-esc="partnerName"/>
+        </t>
+        <t t-if="len(addressBits) > 1">
+            <br/>
+        </t>
+        <t t-set="remainingBits" t-value="addressBits.slice(1)"/>
+        <t t-foreach="remainingBits" t-as="addressBit">
+            <t t-if="addressBit &amp;&amp; addressBit.trim()">
+                <span t-esc="addressBit"/>
+            </t>
+        </t>
+    </t>
+    <t t-else="" t-esc="await (await event.addressId).label"/>
+</template>
+
+</verp>

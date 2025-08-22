@@ -1,7 +1,5 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, TransientModel } from "../../../core/models";
+import { api, Fields, MetaModel, TransientModel } from "../../../core";
+import { UserError } from "../../../core/helper";
 
 @MetaModel.define()
 class ProductChangeQuantity extends TransientModel {

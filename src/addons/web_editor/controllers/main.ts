@@ -8,11 +8,7 @@ import { STATIC_CACHE_LONG, WebRequest, WebResponse, httpGet, httpPost } from ".
 import { getResourcePath } from "../../../core/modules";
 import { BadRequest, NotFound } from "../../../core/service";
 import { urlEncode } from "../../../core/service/middleware/utils";
-import { _t, b64decode, b64encode, base64ToImage, bool, f, fileClose, fileOpen, fileRead, imageDataUri, imageProcess, isInstance, parseInt, pop, setOptions, slug, unslug, update } from "../../../core/tools";
-import { addDate } from "../../../core/tools/date_utils";
-import { len, range } from "../../../core/tools/iterable";
-import { guessMimetype } from "../../../core/tools/mimetypes";
-import { childNodes, escapeHtml, getAttribute, isElement, parseXml, serializeXml } from "../../../core/tools/xml";
+import { _t, addDate, b64decode, b64encode, base64ToImage, bool, childNodes, escapeHtml, f, fileClose, fileOpen, fileRead, getAttribute, guessMimetype, imageDataUri, imageProcess, isElement, isInstance, len, parseInt, parseXml, pop, range, serializeXml, setOptions, unslug, update } from "../../../core/tools";
 import { SUPPORTED_IMAGE_EXTENSIONS, SUPPORTED_IMAGE_MIMETYPES } from "../models";
 
 const DEFAULT_LIBRARY_ENDPOINT = 'https://media-api.theverp.com'
@@ -111,7 +107,7 @@ class WebEditor extends http.Controller {
 
         # Background standardization
         if bg is not None and bg.startsWith('rgba'):
-            bg = bg.replace('rgba', 'rgb')
+            bg = bg.replaceAll('rgba', 'rgb')
             bg = ','.join(bg.split(',')[:-1])+')'
 
         # Convert the opacity value compatible with PIL Image color (0 to 255)
@@ -136,7 +132,7 @@ class WebEditor extends http.Controller {
 
         # Create a solid color image and apply the mask
         if color.startsWith('rgba'):
-            color = color.replace('rgba', 'rgb')
+            color = color.replaceAll('rgba', 'rgb')
             color = ','.join(color.split(',')[:-1])+')'
         iconimage = Image.new("RGBA", (boxw, boxh), color)
         iconimage.putalpha(imagemask)
@@ -197,7 +193,7 @@ class WebEditor extends http.Controller {
             classname = f('%s o-checked', classname);
         }
         else {
-            classname = classname.replace(/\s?o-checked\s?/, '');
+            classname = classname.replace(/\s?o-checked\s?/g, '');
         }
         li.setAttrbute('class', classname);
 
@@ -727,7 +723,7 @@ class WebEditor extends http.Controller {
             if (colorMatch) {
                 let cssColorValue = value;
                 // Check that color is hex or rgb(a) to prevent arbitrary injection
-                if (!new RegExp(f('(?i)^%s$|^%s$', regexHex.source, regexRgba.source)).test(cssColorValue.replace(' ', ''))) {
+                if (!new RegExp(f('(?i)^%s$|^%s$', regexHex.source, regexRgba.source)).test(cssColorValue.replaceAll(' ', ''))) {
                     if (/^o-color-([1-5])$/.test(cssColorValue)) {
                         if (!bundleCss) {
                             const bundle = 'web.assetsFrontend';
@@ -760,7 +756,7 @@ class WebEditor extends http.Controller {
             const key = match.toUpperCase();
             return key in colorMapping ? colorMapping[key] : key;
         }
-        return [svg.replace(regex, subber), svgOptions];
+        return [svg.replaceAll(regex, subber), svgOptions];
     }
 
     /**
@@ -788,13 +784,13 @@ class WebEditor extends http.Controller {
         [svg, options] = await this._updateSvgColors(req, opts, svg);
         const flipValue = options.get('flip', false);
         if (flipValue === 'x') {
-            svg = svg.replace('<svg ', '<svg style="transform: scaleX(-1);" ');
+            svg = svg.replaceAll('<svg ', '<svg style="transform: scaleX(-1);" ');
         }
         else if (flipValue === 'y') {
-            svg = svg.replace('<svg ', '<svg style="transform: scaleY(-1)" ');
+            svg = svg.replaceAll('<svg ', '<svg style="transform: scaleY(-1)" ');
         }
         else if (flipValue === 'xy') {
-            svg = svg.replace('<svg ', '<svg style="transform: scale(-1)" ');
+            svg = svg.replaceAll('<svg ', '<svg style="transform: scale(-1)" ');
         }
 
         return req.makeResponse(res, svg, [
@@ -823,7 +819,7 @@ class WebEditor extends http.Controller {
         [svg,] = await this._updateSvgColors(req, opts, Buffer.from(serializeXml(root, 'utf-8', true)).toString('utf-8'));
         // Add image in base64 inside the shape.
         const uri = imageDataUri(imageBase64);
-        svg = svg.replace('<image xlink:href="', f('<image xlink:href="%s', uri));
+        svg = svg.replaceAll('<image xlink:href="', f('<image xlink:href="%s', uri));
 
         return req.makeResponse(res, svg, [
             ['Content-type', 'image/svg+xml'],

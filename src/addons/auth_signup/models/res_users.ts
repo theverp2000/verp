@@ -1,17 +1,11 @@
 import assert from "assert";
 import _ from "lodash";
 import { DateTime } from "luxon";
+import { Fields, MetaModel, Model, ModelRecords, _super, api } from "../../../core";
 import { MailDeliveryException } from "../../../core/addons/base/models/ir_mail_server";
-import * as api from "../../../core/api";
-import { Fields } from "../../../core/fields";
-import { Map2 } from "../../../core/helper/collections";
-import { UserError, ValueError } from "../../../core/helper/errors";
-import { MetaModel, Model, ModelRecords, _super } from "../../../core/models";
+import { Map2, UserError, ValueError } from "../../../core/helper";
 import { FALSE_DOMAIN, NEGATIVE_TERM_OPERATORS, TERM_OPERATORS_NEGATION, TRUE_DOMAIN } from "../../../core/osv/expression";
-import { isInstance, pop, update } from "../../../core/tools";
-import { literalEval } from '../../../core/tools/save_eval';
-import { bool } from "../../../core/tools/bool";
-import { len } from "../../../core/tools/iterable";
+import { bool, isInstance, len, literalEval, pop, update } from "../../../core/tools";
 import { SignupError } from "./res_partner";
 
 @MetaModel.define()

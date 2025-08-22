@@ -1,9 +1,6 @@
-import { OrderedDict } from "../../../core/helper";
-import { UserError, ValueError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { PdfReadError, PdfStreamError, addBanner, isInstance, zlibError } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { update } from "../../../core/tools/misc";
+import { MetaModel, Model, _super } from "../../../core";
+import { OrderedDict, UserError, ValueError } from "../../../core/helper";
+import { PdfReadError, PdfStreamError, addBanner, bool, isInstance, update, zlibError } from "../../../core/tools";
 
 @MetaModel.define()
 class IrActionsReport extends Model {

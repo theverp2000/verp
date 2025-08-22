@@ -1,6 +1,5 @@
-import { Fields, api } from "../../../core"
-import { NotImplementedError } from "../../../core/helper/errors"
-import { AbstractModel, MetaModel } from "../../../core/models"
+import { AbstractModel, Fields, MetaModel, api } from "../../../core";
+import { NotImplementedError } from "../../../core/helper";
 
 /**
  * Mixin class for objects reacting when a barcode is scanned in their form views which contains `<field name="_barcodeScanned" widget="barcodeHandler"/>`.

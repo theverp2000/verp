@@ -1,20 +1,13 @@
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import assert from 'node:assert';
-import { api, models, tools } from '../../..';
+import { BaseModel, Command, Field, Fields, LOG_ACCESS_COLUMNS, MAGIC_COLUMNS, MetaModel, Model, ModelRecords, TransientModel, _super, api, checkObjectName, checkTableName, fieldXmlid, isDefinitionClass, modelXmlid, selectionXmlid, tools } from '../../..';
 import { getattr, hasattr } from '../../../api';
-import { AccessError, Dict, KeyError, UserError, ValidationError, ValueError } from '../../../helper';
-import { BaseModel, LOG_ACCESS_COLUMNS, MAGIC_COLUMNS, MetaModel, Model, TransientModel, checkTableName } from '../../../models';
-import { expression } from '../../../osv';
-import { Query } from '../../../osv/query';
+import { AccessError, Dict, KeyError, Map2, OrderedSet2, UserError, ValidationError, ValueError } from '../../../helper';
+import { Query, expression } from '../../../osv';
 import { Cursor } from '../../../sql_db';
-import { _convert$, _f, _format, bool, enumerate, extend, f, isInstance, itemgetter, len, quote, quoteDouble, quoteList, sorted, split, tableExists, tableKind, toText } from '../../../tools';
-import { literalEval } from '../../../tools/save_eval';
-import { groupby, unique } from "../../../tools/misc";
-import { Command, Field, Fields } from './../../../fields';
-import { Map2, OrderedSet2 } from './../../../helper/collections';
-import { ModelRecords, _super, fieldXmlid, isDefinitionClass, modelXmlid, selectionXmlid } from './../../../models';
-import { safeEval } from './../../../tools/save_eval';
+import { _convert$, _f, _format, bool, enumerate, extend, f, groupby, isInstance, itemgetter, len, quote, quoteDouble, quoteList, sorted, split, tableExists, tableKind, toText, unique } from '../../../tools';
+import { literalEval, safeEval } from '../../../tools/save_eval';
 
 export const MODULE_UNINSTALL_FLAG = '_forceUnlink';
 
@@ -76,7 +69,7 @@ class IrModel extends Model {
           throw new ValidationError(await this._t("The model name must start with 'x'."));
         }
       }
-      if (!models.checkObjectName(await model.model)) {
+      if (!checkObjectName(await model.model)) {
         throw new ValidationError(await this._t("The model name can only contain lowercase characters, digits, underscores and dots."))
       }
     }
@@ -262,7 +255,7 @@ class IrModel extends Model {
   async nameCreate(name: string): Promise<any> {
     const vals = {
       'label': name,
-      'model': 'x' + _.capitalize(name).replace(' ', '')
+      'model': 'x' + _.capitalize(name).replaceAll(' ', '')
     }
     return (await (await this.create(vals)).nameGet())[0];
   }
@@ -356,7 +349,7 @@ class IrModel extends Model {
 
   _instanciate(modelData) {
     @MetaModel.define()
-    class CustomModel extends models.Model {
+    class CustomModel extends Model {
       static _module = module;
       static _name = toText(modelData['model']);
       static _description = modelData['label'];
@@ -390,7 +383,7 @@ class IrModel extends Model {
         model._auto = false;
         const result = await cr._obj.getQueryInterface().describeTable(model._table) ?? {};
         const columns = Object.keys(result);
-        model._logAccess = models.LOG_ACCESS_COLUMNS.filter(e => columns.indexOf(e) < 0).length == 0;
+        model._logAccess = LOG_ACCESS_COLUMNS.filter(e => columns.indexOf(e) < 0).length == 0;
       }
     }
   }
@@ -1207,7 +1200,7 @@ class IrModelFields extends Model {
     const tablesToDrop = new Set<any>();
     for (const field of this) {
       const [label, model, store, ttype, state, relationTable, translate] = await field(['label', 'model', 'store', 'ttype', 'state', 'relationTable', 'translate']);
-      if (models.MAGIC_COLUMNS.includes(label)) {
+      if (MAGIC_COLUMNS.includes(label)) {
         continue;
       }
       const obj = this.env.items(model);
@@ -1650,7 +1643,7 @@ class IrModelConstraint extends Model {
         table = this.env.models[model]._table;
       }
       else {
-        table = _.camelCase(model.replace('.', '_'));
+        table = _.camelCase(model.replaceAll('.', '_'));
       }
       const typ = await data.type;
 

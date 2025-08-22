@@ -1,9 +1,6 @@
-import { api } from "../../../core";
-import { MetaModel, Model } from "../../../core/models";
+import { api, MetaModel, Model } from "../../../core";
 import { Query } from "../../../core/osv";
-import { quoteDouble, quoteList } from "../../../core/tools";
-import { extend } from "../../../core/tools/iterable";
-import { f } from "../../../core/tools/string";
+import { extend, f, quoteDouble, quoteList } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountMoveLine extends Model {

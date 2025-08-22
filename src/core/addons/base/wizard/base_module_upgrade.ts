@@ -1,11 +1,7 @@
-import { api } from "../../..";
-import { Fields } from "../../../fields";
-import { UserError } from "../../../helper/errors";
-import { MetaModel, TransientModel, _super } from "../../../models";
+import { Fields, MetaModel, TransientModel, _super, api } from "../../..";
+import { UserError } from "../../../helper";
 import { Registry } from "../../../modules/registry";
-import { quoteList } from "../../../tools";
-import { bool } from "../../../tools/bool";
-import { getrootXml, parseXml } from "../../../tools/xml";
+import { bool, getrootXml, parseXml, quoteList } from "../../../tools";
 
 @MetaModel.define()
 class BaseModuleUpgrade extends TransientModel {

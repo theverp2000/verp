@@ -157,15 +157,13 @@ export function modelCreateMulti() {
 }
 
 async function _modelCreateMulti(create, self, args) {
-  if (Array.isArray(args)) {
-    if (args.length) {
-      return create.call(self, args);
-    }
-    else {
-      return self.browse();
-    }
+  if (!Array.isArray(args)) {
+    args = [args];
   }
-  return create.call(self, [args]);
+  if (args.length) {
+    return create.call(self, args);
+  }
+  return self.browse();
 }
 
 export function decorate(method: Function, caller: Function) {

@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="Payment Methods">
                 <sheet>
-                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <field name="active" invisible="1"/>
                     <field name="type" invisible="1" />
                     <div class="oe-title">

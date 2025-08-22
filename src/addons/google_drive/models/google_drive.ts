@@ -1,12 +1,10 @@
 // Google is depreciating their OOB Auth Flow on 3rd October 2022, the Google Drive
 // integration thus become irrelevant after that date.
 
-import { _Date, api, Fields } from "../../../core";
+import { _Date, api, Fields, MetaModel, Model } from "../../../core";
 import { RedirectWarning, UserError, ValidationError } from "../../../core/helper";
 import { httpGet, httpPost } from "../../../core/http";
-import { MetaModel, Model } from "../../../core/models";
-import { _f, bool, f, jsonParse, stringify, update } from "../../../core/tools";
-import { literalEval } from '../../../core/tools/save_eval';
+import { _f, bool, f, jsonParse, literalEval, stringify, update } from "../../../core/tools";
 import { GOOGLE_TOKEN_ENDPOINT, TIMEOUT } from "../../google_account";
 
 // https://developers.googleblog.com/2022/02/making-oauth-flows-safer.html#disallowed-oob

@@ -25,7 +25,7 @@ export class ExportXlsxWriter {
     this.workbook = new ExcelJS.Workbook();//this.output, {'inMemory': true});
     this.baseStyle = this.workbook.addFormat({ 'textWrap': true });
     this.headerStyle = this.workbook.addFormat({ 'bold': true })
-    this.headerBoldStyle = this.workbook.addFormat({ 'text_wrap': true, 'bold': true, 'bg_color': '#e9ecef' })
+    this.headerBoldStyle = this.workbook.addFormat({ 'text_wrap': true, 'bold': true, 'bgColor': '#e9ecef' })
     this.dateStyle = this.workbook.addFormat({ 'text_wrap': true, 'num_format': 'yyyy-mm-dd' })
     this.datetimeStyle = this.workbook.addFormat({ 'text_wrap': true, 'num_format': 'yyyy-mm-dd hh:mm:ss' })
     this.worksheet = this.workbook.addWorksheet()
@@ -93,7 +93,7 @@ export class ExportXlsxWriter {
         cellValue = f("The content of this cell is too long for an XLSX file (more than %s characters). Please use the CSV format for this export.", this.worksheet.xlsStrmax);
       }
       else {
-        cellValue = cellValue.replace("\r", " ");
+        cellValue = cellValue.replaceAll("\r", " ");
       }
     }
     else if (isInstance(cellValue, Date)) {

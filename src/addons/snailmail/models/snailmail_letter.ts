@@ -1,13 +1,8 @@
 import { decode } from "utf8";
-import { Fields, api } from "../../../core";
-import { AccessError, UserError } from "../../../core/helper/errors";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { b64encode, isInstance, len, parseInt } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
-import { update } from "../../../core/tools/misc";
-import { safeEval } from "../../../core/tools/save_eval";
-import { f } from "../../../core/tools/string";
-import { iapJsonrpc } from "../../iap/tools/iap_tools";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { AccessError, UserError } from "../../../core/helper";
+import { b64encode, bool, f, isInstance, len, parseInt, safeEval, update } from "../../../core/tools";
+import { iapJsonrpc } from "../../iap/tools";
 
 const inch = 72.0;
 const cm = inch / 2.54;

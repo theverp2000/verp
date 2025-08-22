@@ -1,10 +1,6 @@
-import { api } from "../../../core";
-import { Fields } from "../../../core/fields";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
 import { Map2 } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { itemgetter, sortedAsync, sum } from "../../../core/tools/iterable";
-import { groupbyAsync } from "../../../core/tools/misc";
+import { bool, groupbyAsync, itemgetter, sortedAsync, sum } from "../../../core/tools";
 
 @MetaModel.define()
 class StockPackageLevel extends Model {

@@ -1,5 +1,5 @@
+import { MetaModel, Model, _super } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { series } from "../../../core/release";
 import { parseVersion } from "../../../core/tools/parse_version";
 

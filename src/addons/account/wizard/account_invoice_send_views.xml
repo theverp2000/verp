@@ -64,13 +64,13 @@
                     <footer>
                         <button string="Send &amp; Print"
                             attrs="{'invisible': ['|', ['isEmail', '=', false], ['isPrint', '=', false]]}" data-hotkey="q"
-                            name="sendAndPrintAction" type="object" class="send_and_print btn-primary o_mail_send"/>
+                            name="sendAndPrintAction" type="object" class="send-and-print btn-primary o-mail-send"/>
                         <button string="Send" data-hotkey="q"
                             attrs="{'invisible': ['|', ['isPrint', '=', true], ['isEmail', '=', false]]}"
-                            name="sendAndPrintAction" type="object" class="send btn-primary o_mail_send"/>
+                            name="sendAndPrintAction" type="object" class="send btn-primary o-mail-send"/>
                         <button string="Print" data-hotkey="q"
                             attrs="{'invisible': ['|', ['isPrint', '=', false], ['isEmail', '=', true]]}"
-                            name="sendAndPrintAction" type="object" class="print btn-primary o_mail_send"/>
+                            name="sendAndPrintAction" type="object" class="print btn-primary o-mail-send"/>
                         <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z" />
                         <button icon="fa-lg fa-save" type="object" name="saveAsTemplate" string="Save as new template"
                             attrs="{'invisible': ['|', ['compositionMode', '=', 'massMail'], ['isEmail', '=', false]]}"

@@ -1,7 +1,5 @@
-import { api } from "../../../core";
-import { Fields, _Date } from "../../../core/fields";
-import { ValidationError } from "../../../core/helper/errors";
-import { MetaModel, Model } from "../../../core/models";
+import { Fields, MetaModel, Model, _Date, api } from "../../../core";
+import { ValidationError } from "../../../core/helper";
 
 @MetaModel.define()
 class AccountTaxCarryoverLine extends Model {

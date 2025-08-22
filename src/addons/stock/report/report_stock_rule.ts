@@ -1,4 +1,4 @@
-import { MetaModel, AbstractModel } from "../../../core/models"
+import { MetaModel, AbstractModel } from "../../../core";
 
 @MetaModel.define()
 class ReportStockRule extends AbstractModel {

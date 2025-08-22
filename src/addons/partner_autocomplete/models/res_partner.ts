@@ -1,12 +1,6 @@
 import https from 'https';
-import { Fields, api } from "../../../core";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool } from "../../../core/tools/bool";
-import { b64encode, base64ToImage } from "../../../core/tools/image";
-import { len } from "../../../core/tools/iterable";
-import { stringify } from "../../../core/tools/json";
-import { pop, update } from "../../../core/tools/misc";
-import { URI } from "../../../core/tools/uri";
+import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { URI, b64encode, base64ToImage, bool, len, pop, stringify, update } from "../../../core/tools";
 
 const PARTNER_AC_TIMEOUT = 5;
 

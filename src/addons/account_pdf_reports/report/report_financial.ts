@@ -1,9 +1,6 @@
-import _ from "lodash";
-import { api } from "../../../core";
+import { AbstractModel, api, MetaModel } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { _convert$, parseFloat, parseValues, sorted } from "../../../core/tools";
-import { bool } from "../../../core/tools/bool";
+import { _convert$, bool, parseFloat, parseValues, sorted } from "../../../core/tools";
 
 @MetaModel.define()
 class ReportFinancial extends AbstractModel {

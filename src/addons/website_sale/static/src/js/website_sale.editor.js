@@ -111,7 +111,7 @@ Wysiwyg.include({
             ribbons = await this._rpc({
                 model: 'product.ribbon',
                 method: 'searchRead',
-                fields: ['id', 'html', 'bgcolor', 'textColor', 'htmlClass'],
+                fields: ['id', 'html', 'bgColor', 'textColor', 'htmlClass'],
             });
         }
         this.ribbons = Object.fromEntries(ribbons.map(ribbon => {
@@ -439,7 +439,7 @@ options.registry.WebsiteSaleProductsItem = options.Class.extend({
             templateId: this.productTemplateID,
             ribbonId: widgetValue || false,
         });
-        const ribbon = this.ribbons[widgetValue] || {html: '', bgcolor: '', textColor: '', htmlClass: ''};
+        const ribbon = this.ribbons[widgetValue] || {html: '', bgColor: '', textColor: '', htmlClass: ''};
         const $ribbons = $(`[data-ribbon-id="${widgetValue}"] .o-ribbon:not(.o-wsale-ribbon-dummy)`);
         $ribbons.html(ribbon.html);
         let htmlClasses;
@@ -448,7 +448,7 @@ options.registry.WebsiteSaleProductsItem = options.Class.extend({
 
         $ribbons.addClass(ribbon.htmlClass || '');
         $ribbons.css('color', ribbon.textColor || '');
-        $ribbons.css('background-color', ribbon.bgcolor || '');
+        $ribbons.css('background-color', ribbon.bgColor || '');
 
         if (!this.ribbons[widgetValue]) {
             $(`[data-ribbon-id="${widgetValue}"]`).each((index, product) => delete product.dataset.ribbonId);
@@ -500,7 +500,7 @@ options.registry.WebsiteSaleProductsItem = options.Class.extend({
         }
         const ribbon = {
             'html': text,
-            'bgcolor': this.$ribbon[0].style.backgroundColor,
+            'bgColor': this.$ribbon[0].style.backgroundColor,
             'textColor': this.$ribbon[0].style.color,
             'htmlClass': this.$ribbon.attr('class').split(' ')
                 .filter(c => !['d-none', 'o-wsale-ribbon-dummy', 'o-ribbon'].includes(c))

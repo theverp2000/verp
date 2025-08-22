@@ -1,11 +1,8 @@
 import { DateTime } from "luxon";
 import { format } from "node:util";
-import { _Date, api, Fields } from "../../../core";
+import { _Date, _super, api, Fields, MetaModel, Model } from "../../../core";
 import { Dict, KeyError, MapKey, UserError } from "../../../core/helper";
-import { _super, MetaModel, Model } from "../../../core/models";
-import { _f2, bool, floatRound, isInstance, len, subDate, today, update } from "../../../core/tools";
-import { literalEval } from '../../../core/tools/save_eval';
-import { unsafeAsync, unsafeEval } from "../../../core/tools/save_eval";
+import { _f2, bool, floatRound, isInstance, len, literalEval, subDate, today, unsafeAsync, unsafeEval, update } from "../../../core/tools";
 
 const DOMAIN_TEMPLATE = "[['store', '=', true], '|', ['modelId', '=', modelId], ['modelId', 'in', modelInheritedIds]%s]"
 
@@ -65,7 +62,7 @@ class GoalDefinition extends Model {
     });
 
     static batchMode = Fields.Boolean("Batch Mode", { help: "Evaluate the expression in batch instead of once for each user" });
-    static batchDistinctiveField = Fields.Many2one('ir.model.fields', { string: "Distinctive field for batch user", help: "In batch mode, this indicates which field distinguishes one user from the other, e.g. userId, partner_id..." });
+    static batchDistinctiveField = Fields.Many2one('ir.model.fields', { string: "Distinctive field for batch user", help: "In batch mode, this indicates which field distinguishes one user from the other, e.g. userId, partnerId..." });
     static batchUserExpression = Fields.Char("Evaluated expression for batch mode", { help: "The value to compare with the distinctive field. The expression can contain reference to 'user' which is a browse record of the current user, e.g. user.id, user.partnerId.id..." });
     static computeCode = Fields.Text("Javascript Code", { help: "Javascript code to be executed for each user. 'result' should contains the new current value. Evaluated user can be access through object.userId." });
     static condition = Fields.Selection([
@@ -414,7 +411,7 @@ class Goal extends Model {
                             }
                         }
 
-                        // user_values has format of read_group: [{'partner_id': 42, 'partner_id_count': 3},...]
+                        // userValues has format of readGroup: [{'partnerId': 42, 'partnerId_count': 3},...]
                         for (const goal of await goals.filter(g => g.id in queryGoals)) {
                             for (const userValue of userValues) {
                                 let queriedValue = fieldName in userValue && userValue[fieldName] || false;

@@ -1,5 +1,4 @@
-import { Fields, api } from "../../../core";
-import { MAGIC_COLUMNS, MetaModel, Model } from "../../../core/models";
+import { Fields, MAGIC_COLUMNS, MetaModel, Model, api } from "../../../core";
 import { bool, quoteList } from "../../../core/tools";
 
 @MetaModel.define()

@@ -366,15 +366,15 @@ MockServer.include({
             userId = this.currentUserId;
         }
         let authorId;
-        let email_from;
+        let emailFrom;
         if (userId) {
             const author = this._getRecords('res.users', [['id', '=', userId]])[0];
             authorId = author.partnerId;
-            email_from = `${author.displayName} <${author.email}>`;
+            emailFrom = `${author.displayName} <${author.email}>`;
         } else {
             authorId = false;
             // simpler fallback than catchall_formatted
-            email_from = mailChannel.anonymous_name || "catchall@example.com";
+            emailFrom = mailChannel.anonymous_name || "catchall@example.com";
         }
         // supposedly should convert plain text to html
         const body = message_content;
@@ -383,7 +383,7 @@ MockServer.include({
             mailChannel.id,
             {
                 authorId,
-                email_from,
+                emailFrom,
                 body,
                 messageType: 'comment',
                 subtype_xmlid: 'mail.mtComment',
@@ -1395,7 +1395,7 @@ MockServer.include({
                 )[0];
                 formattedAuthor = [author.id, author.displayName];
             } else {
-                formattedAuthor = [0, message.email_from];
+                formattedAuthor = [0, message.emailFrom];
             }
             const attachments = this._getRecords('ir.attachment', [
                 ['id', 'in', message.attachmentIds],
@@ -1616,9 +1616,9 @@ MockServer.include({
      * @param {Object} [context={}]
      * @returns {Array}
      */
-    _MockMailThread_MessageComputeAuthor(model, ids, authorId, email_from, context = {}) {
+    _MockMailThread_MessageComputeAuthor(model, ids, authorId, emailFrom, context = {}) {
         if (authorId === undefined) {
-            // For simplicity partner is not guessed from email_from here, but
+            // For simplicity partner is not guessed from emailFrom here, but
             // that would be the first step on the server.
             let userId;
             if ('mockedUserId' in context) {
@@ -1640,25 +1640,25 @@ MockServer.include({
                 { activeTest: false },
             )[0];
             authorId = author.id;
-            email_from = `${author.displayName} <${author.email}>`;
+            emailFrom = `${author.displayName} <${author.email}>`;
         }
 
-        if (email_from === undefined) {
+        if (emailFrom === undefined) {
             if (authorId) {
                 const author = this._getRecords(
                     'res.partner',
                     [['id', '=', authorId]],
                     { activeTest: false },
                 )[0];
-                email_from = `${author.displayName} <${author.email}>`;
+                emailFrom = `${author.displayName} <${author.email}>`;
             }
         }
 
-        if (!email_from) {
+        if (!emailFrom) {
             throw Error("Unable to log message due to missing author email.");
         }
 
-        return [authorId, email_from];
+        return [authorId, emailFrom];
     },
     /**
      * Simulates `_message_add_suggested_recipient` on `mail.thread`.
@@ -1768,15 +1768,15 @@ MockServer.include({
             kwargs.attachmentIds = attachmentIds.map(attachmentId => [4, attachmentId]);
         }
         const subtype_xmlid = kwargs.subtype_xmlid || 'mail.mt_note';
-        const [authorId, email_from] = this._MockMailThread_MessageComputeAuthor(
+        const [authorId, emailFrom] = this._MockMailThread_MessageComputeAuthor(
             model,
             ids,
             kwargs.authorId,
-            kwargs.email_from, context,
+            kwargs.emailFrom, context,
         );
         const values = Object.assign({}, kwargs, {
             authorId,
-            email_from,
+            emailFrom,
             isDiscussion: subtype_xmlid === 'mail.mtComment',
             isNote: subtype_xmlid === 'mail.mt_note',
             model,

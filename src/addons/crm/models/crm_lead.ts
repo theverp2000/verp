@@ -1,12 +1,10 @@
 import _ from "lodash";
 import { DateTime } from "luxon";
-import { Fields, _Date, _Datetime, api, models } from "../../../core";
+import { BaseModel, Fields, MetaModel, Model, NewId, _Date, _Datetime, _super, api } from "../../../core";
 import { getattr, hasattr, setdefault } from "../../../core/api";
 import { AccessError, DefaultDict, Dict, OrderedDict, UserError } from "../../../core/helper";
-import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { _f, allTimezones, bool, createIndex, emailNormalize, emailNormalizeAll, emailSplit, emailSplitTuples, extend, f, floatCompare, floatRound, formataddr, isCallable, isHtmlEmpty, isInstance, islice, len, next, parseInt, pop, range, remove, rsplit, setOptions, someAsync, sorted, splitEvery, update } from "../../../core/tools";
-import { addDate, dateMax, dateMin, dateSetTz, dateWithoutTz, diffDate } from "../../../core/tools/date_utils";
+import { _f, addDate, allTimezones, bool, createIndex, dateMax, dateMin, dateSetTz, dateWithoutTz, diffDate, emailNormalize, emailNormalizeAll, emailSplit, emailSplitTuples, extend, f, floatCompare, floatRound, formataddr, isCallable, isHtmlEmpty, isInstance, islice, len, next, parseInt, pop, range, remove, rsplit, setOptions, someAsync, sorted, splitEvery, update } from "../../../core/tools";
 import { _MAIL_DOMAIN_BLACKLIST } from "../../iap";
 import { phoneParse } from "../../phone_validation";
 import { AVAILABLE_PRIORITIES } from "./crm_stage";
@@ -747,7 +745,7 @@ class Lead extends Model {
         }
 
         for (const lead of this) {
-            const leadId = isInstance(lead.id, models.NewId) ? lead._origin.id : lead.id;
+            const leadId = isInstance(lead.id, NewId) ? lead._origin.id : lead.id;
             const commonLeadDomain = [
                 ['id', '!=', leadId]
             ];
@@ -1654,7 +1652,7 @@ class Lead extends Model {
             for (const opp of opportunities) {
                 const oppAttr = await opp[attr]
                 if (bool(oppAttr)) {
-                    value = isInstance(oppAttr, models.BaseModel) ? oppAttr.id : oppAttr;
+                    value = isInstance(oppAttr, BaseModel) ? oppAttr.id : oppAttr;
                     break;
                 }
             }
@@ -3172,7 +3170,7 @@ class Lead extends Model {
                     if (field === 'teamId') {  // ignore teamId as stored separately in leadsValuesDict[leadId][teamId]
                         continue;
                     }
-                    const value = isInstance(lead[field], models.BaseModel) ? lead[field].id : lead[field];
+                    const value = isInstance(lead[field], BaseModel) ? lead[field].id : lead[field];
                     if (bool(value) || ['emailState', 'phoneState'].includes(field)) {
                         leadValues.push([field, value]);
                     }

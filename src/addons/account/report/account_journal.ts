@@ -1,8 +1,6 @@
-import { DateTime } from "luxon";
-import { api } from "../../../core";
+import { AbstractModel, api, MetaModel } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { parseFloat, quoteList, toFormat } from "../../../core/tools";
+import { parseFloat, quoteList } from "../../../core/tools";
 
 @MetaModel.define()
 class ReportJournal extends AbstractModel {

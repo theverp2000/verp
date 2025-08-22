@@ -1,8 +1,7 @@
+import { AbstractModel, MetaModel, _super } from "../../../core";
 import { httpGet } from "../../../core/http";
-import { AbstractModel, MetaModel, _super } from "../../../core/models";
 import { urlParse } from "../../../core/service/middleware/utils";
-import { bool, encodebytes, f, lstrip, parseInt, pop, replaceAsync } from "../../../core/tools";
-import { stringify } from "../../../core/tools/json";
+import { bool, encodebytes, f, lstrip, parseInt, pop, replaceAsync, stringify } from "../../../core/tools";
 
 @MetaModel.define()
 class Assets extends AbstractModel {
@@ -75,7 +74,7 @@ class Assets extends AbstractModel {
             const content = await httpGet(url, { timeout: 5, headers: headersWoff2 });
             // https://fonts.gstatic.com/s/modak/v18/EJRYQgs1XtIEskMB-hRp7w.woff2
             // -> s-modak-v18-EJRYQgs1XtIEskMB-hRp7w.woff2
-            const name = lstrip(urlParse(url).pathname, '/').replace('/', '-');
+            const name = lstrip(urlParse(url).pathname, '/').replaceAll('/', '-');
             const attachment = await irAttachment.create({
               'label': `google-font-${name}`,
               'type': 'binary',
@@ -125,7 +124,7 @@ class Assets extends AbstractModel {
       const regex = new RegExp(f(pattern, ".+"));
       const replacement = f(pattern, value);
       if (regex.test(updatedFileContent)) {
-        updatedFileContent = updatedFileContent.replace(regex, replacement);
+        updatedFileContent = updatedFileContent.replaceAll(regex, replacement);
       }
       else {
         updatedFileContent = updatedFileContent.replace(/( *)(.*hook.*)/g, f('$1%s$1$2', replacement));

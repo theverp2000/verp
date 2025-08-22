@@ -1,9 +1,6 @@
-import { Fields, _Date, api } from "../../../core";
-import { Map2 } from "../../../core/helper/collections";
-import { ValidationError } from "../../../core/helper/errors";
-import { AbstractModel, MetaModel } from "../../../core/models";
-import { _f, bool, formatDate, len, pop } from "../../../core/tools";
-import { stringify } from "../../../core/tools/json";
+import { AbstractModel, Fields, MetaModel, _Date, api } from "../../../core";
+import { Map2, ValidationError } from "../../../core/helper";
+import { _f, bool, formatDate, len, pop, stringify } from "../../../core/tools";
 
 function _format(format: string, formatValues: {} = {}) {
   return _f(format, formatValues);
@@ -87,7 +84,7 @@ class SequenceMixin extends AbstractModel {
   async _computeSplitSequence() {
     for (const record of this) {
       const sequence = String(await record[record._sequenceField] || '');
-      const regex = new RegExp((await record._sequenceFixedRegex()).source.replace("?<seq>", "").replace("\?<\w+>", "?:"), 'g');  // make the seq the only matching group
+      const regex = new RegExp((await record._sequenceFixedRegex()).source.replaceAll("?<seq>", "").replaceAll("\?<\w+>", "?:"), 'g');  // make the seq the only matching group
       const matching = sequence.matchAll(regex).next().value;
       await record.set('sequencePrefix', sequence.slice(0, matching && matching[1].length));
       await record.set('sequenceNumber', parseInt(matching && matching[2] || '0'));

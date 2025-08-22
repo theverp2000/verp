@@ -1,25 +1,11 @@
 import _, { capitalize, difference, intersection, isEqual, range, zip } from "lodash";
 import assert from "node:assert";
-import { Command, Field, _Many2one, _Number, _One2many, api, tools } from "../../..";
-import { Environment } from "../../../api";
+import { AbstractModel, BaseModel, Command, Field, LOG_ACCESS_COLUMNS, MAGIC_COLUMNS, MetaModel, NewId, VALID_AGGREGATE_FUNCTIONS, _Many2one, _Number, _One2many, api, checkObjectName, tools } from "../../..";
 import { attrgetter, setdefault } from "../../../api/func";
-import { Dict, Map2, OrderedDict, OrderedSet2 } from "../../../helper/collections";
-import { AccessError, MissingError, UserError, ValueError } from "../../../helper/errors";
-import { LRU } from "../../../helper/lru";
-import { AbstractModel, BaseModel, LOG_ACCESS_COLUMNS, MAGIC_COLUMNS, MetaModel, NewId, VALID_AGGREGATE_FUNCTIONS, checkObjectName } from "../../../models";
-import { expression } from "../../../osv";
-import { Query } from "../../../osv/query";
+import { AccessError, Dict, LRU, Map2, MissingError, OrderedDict, OrderedSet2, UserError, ValueError } from "../../../helper";
+import { Query, expression } from "../../../osv";
 import { Cursor } from "../../../sql_db";
-import { bool } from "../../../tools/bool";
-import { equal, isCallable, isInstance, partial } from "../../../tools/func";
-import { CountingStream, chain, enumerate, extend, islice, itemgetter, len, map, next, sorted, takewhile } from "../../../tools/iterable";
-import { stringify } from "../../../tools/json";
-import { cleanContext, groupby, partition, pop, unique, update } from "../../../tools/misc";
-import { repr } from '../../../tools/string';
-import { f } from "../../../tools/string";
-import { _f } from "../../../tools/string";
-import { UpCamelCase } from "../../../tools/string";
-import { E, getrootXml, parseXml, serializeXml } from "../../../tools/xml";
+import { CountingStream, E, UpCamelCase, _f, bool, chain, cleanContext, enumerate, equal, extend, f, getrootXml, groupby, isCallable, isInstance, islice, itemgetter, len, map, next, parseXml, partial, partition, pop, repr, serializeXml, sorted, stringify, takewhile, unique, update } from "../../../tools";
 import { MODULE_UNINSTALL_FLAG } from "./ir_model";
 
 function raiseOnInvalidObjectName(name) {
@@ -36,7 +22,7 @@ function raiseOnInvalidObjectName(name) {
  * @returns split field name
  */
 function fixImportExportIdPaths(fieldname: string) {
-  const fixedDbId = fieldname.replace(/([^/])\.id/g, '$1/id')
+  const fixedDbId = fieldname.replace(/([^/])\.id/g, '$1/id');
   const fixedExternalId = fixedDbId.replace(/([^/]):id/g, '$1/id');
   return fixedExternalId.split('/')
 }
@@ -1053,7 +1039,7 @@ class IrFactory extends AbstractModel {
       const res = await this._cr.execute(tools._convert$(sql), { bind: params });
       return tools.parseInt(res[0]['count']);
     }
-    query.order = (await this._generateOrderBy(options.order, query)).replace('ORDER BY ', '');
+    query.order = (await this._generateOrderBy(options.order, query)).replaceAll('ORDER BY ', '');
     query.limit = options.limit;
     query.offset = options.offset;
 
@@ -1460,7 +1446,7 @@ class IrFactory extends AbstractModel {
       query.addWhere(`"${cls._table}".id IN (%%s)`);
       let [queryStr, params] = query.select(...qualNames);
       for (const subIds of cr.splitForInConditions(this.ids)) {
-        let str = queryStr.replace('%%s', subIds.toString());
+        let str = queryStr.replaceAll('%%s', subIds.toString());
         str = tools._convert$(str);
         const res = await cr.execute(str, { bind: params });
         for (const r of res) {
@@ -1900,6 +1886,9 @@ class IrFactory extends AbstractModel {
       if (bool(attributes)) {
         description = Object.fromEntries(Object.entries(description).filter(([key, val]) => attributes.includes(key)));
       }
+      if (description['name']) {
+        description['label'] = fname; // Tony added
+      }
       res[fname] = description;
     }
     return res;
@@ -2111,7 +2100,7 @@ class IrFactory extends AbstractModel {
         for (const [parentModel, parentField] of Object.entries<string>(self.cls._inherits)) {
           if (!data['values'][parentField]) {
             imdDataList.push({
-              'xmlid': `${data['xmlid']}_${_.camelCase(parentModel.replace('.', '_'))}`,
+              'xmlid': `${data['xmlid']}_${_.camelCase(parentModel.replaceAll('.', '_'))}`,
               'record': await record[parentField],
               'noupdate': data['noupdate'] ?? false,
             });
@@ -2835,7 +2824,7 @@ class IrFactory extends AbstractModel {
     // this is for tests using `Form`
     await this.flush();
 
-    const env: Environment = this.env;
+    const env: api.Environment = this.env;
     let names: string[];
     if (Array.isArray(fieldName)) {
       names = fieldName;

@@ -1,5 +1,4 @@
-import { api } from "../../../core";
-import { MetaModel, Model } from "../../../core/models"
+import { api, MetaModel, Model } from "../../../core";
 import { bool } from "../../../core/tools";
 import * as phoneValidation from '../tools';
 

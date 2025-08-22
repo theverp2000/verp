@@ -1,8 +1,6 @@
-import { api } from "../../..";
-import { Fields } from "../../../fields";
-import { MetaModel, Model, _super } from "../../../models";
+import { Fields, MetaModel, Model, _super, api } from "../../..";
 import { NEGATIVE_TERM_OPERATORS } from "../../../osv/expression";
-import { isIterable, len } from "../../../tools/iterable";
+import { isIterable, len } from "../../../tools";
 
 export function sanitizeAccountNumber(accNumber: string) {
   if (accNumber) {

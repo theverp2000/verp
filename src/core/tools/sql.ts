@@ -259,7 +259,7 @@ export async function createUniqueIndex(cr: Cursor, indexname: string, tablename
 }
 
 export function escapePsql(toEscape: string) {
-  return toEscape.replace(/\\/, '\\\\').replace('%', '\%').replace('_', '\_');
+  return toEscape.replace(/\\/g, '\\\\').replace(/%/g, '\%').replace(/_/g, '\_');
 }
 
 /**

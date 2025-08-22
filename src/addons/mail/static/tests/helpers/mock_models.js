@@ -118,7 +118,7 @@ export class MockModels {
                     authorId: { string: "Author", type: 'many2one', relation: 'res.partner', default() { return this.currentPartnerId; } },
                     body: { string: "Contents", type: 'html', default: "<p></p>" },
                     date: { string: "Date", type: 'datetime', default() { return moment.utc().format("YYYY-MM-DD HH:mm:ss"); } },
-                    email_from: { string: "From", type: 'char' },
+                    emailFrom: { string: "From", type: 'char' },
                     history_partner_ids: { string: "Partners with History", type: 'many2many', relation: 'res.partner' },
                     id: { string: "Id", type: 'integer' },
                     isDiscussion: { string: "Discussion", type: 'boolean' },

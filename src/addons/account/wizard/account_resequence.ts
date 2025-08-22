@@ -1,11 +1,7 @@
 import _ from "lodash";
-import { Fields, api } from "../../../core";
-import { DefaultDict } from "../../../core/helper/collections";
-import { UserError } from "../../../core/helper/errors";
-import { MetaModel, TransientModel, _super } from "../../../core/models";
-import { _f, formatDate, sorted, sortedAsync } from "../../../core/tools";
-import { enumerate, len, range } from "../../../core/tools/iterable";
-import { stringify } from "../../../core/tools/json";
+import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
+import { DefaultDict, UserError } from "../../../core/helper";
+import { _f, enumerate, formatDate, len, range, sorted, sortedAsync, stringify } from "../../../core/tools";
 
 @MetaModel.define()
 class ReSequenceWizard extends TransientModel {

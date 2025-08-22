@@ -1,6 +1,5 @@
-import { Fields, api } from "../../../core";
-import { MetaModel, Model } from "../../../core/models";
-import { addDate } from "../../../core/tools/date_utils";
+import { Fields, MetaModel, Model, api } from "../../../core";
+import { addDate } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountRecurringTemplate extends Model {

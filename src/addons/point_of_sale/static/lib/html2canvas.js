@@ -1071,9 +1071,9 @@
         return (isNaN(val)) ? 0 : val; // borders in old IE are throwing 'medium' for demo.html
       }
     
-      function renderRect (ctx, x, y, w, h, bgcolor) {
-        if (bgcolor !== "transparent"){
-          ctx.setVariable("fillStyle", bgcolor);
+      function renderRect (ctx, x, y, w, h, bgColor) {
+        if (bgColor !== "transparent"){
+          ctx.setVariable("fillStyle", bgColor);
           ctx.fillRect(x, y, w, h);
           numDraws+=1;
         }
@@ -1888,14 +1888,14 @@
         ctx.restore();
       }
     
-      function renderBackgroundColor(ctx, backgroundBounds, bgcolor) {
+      function renderBackgroundColor(ctx, backgroundBounds, bgColor) {
         renderRect(
           ctx,
           backgroundBounds.left,
           backgroundBounds.top,
           backgroundBounds.width,
           backgroundBounds.height,
-          bgcolor
+          bgColor
           );
       }
     

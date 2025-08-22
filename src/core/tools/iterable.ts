@@ -219,6 +219,10 @@ export class CountingStream implements Generator {
     this.index = start;
   }
 
+  [Symbol.dispose](): Generator<unknown, any, any>  {
+    throw new Error("Method not implemented.");
+  }
+
   next(...args: [] | [any]): IteratorResult<any, any> {
     this.index += 1;
     const _next = this.stream.next();
@@ -263,43 +267,41 @@ export class CountingStream implements Generator {
   }
 }
 
-export function some(list: Iterable<any> | Generator<any>, func: Function = (e) => bool(e)) {
+export function some(list: Iterable<any> | Generator<any>, func?: Function) {
   for (const rec of list) {
-    if (func(rec)) {
+    if (bool(func ? func(rec) : rec )) {
       return true;
     }
   }
   return false;
 }
 
-export async function someAsync(list: Iterable<any> | Generator<any>, func: Function = (e) => bool(e)) {
+export async function someAsync(list: Iterable<any> | Generator<any>, func?: Function) {
   for (const rec of list) {
-    if (await func(rec)) {
+    if (bool(func ? await func(rec) : rec)) {
       return true;
     }
   }
   return false;
 }
 
-export function* map(list: Iterable<any> | Generator<any>, func: Function = (e) => e) {
+export function* map(list: Iterable<any> | Generator<any>, func?: Function) {
   for (const rec of list) {
-    yield func(rec);
+    yield func ? func(rec) : rec;
   }
 }
 
-export function* filter(list: Iterable<any> | Generator<any>, func: Function = (e) => e) {
+export function* filter(list: Iterable<any> | Generator<any>, func?: Function) {
   for (const rec of list) {
-    const res = func(rec);
-    if (res) {
+    if (bool(func ? func(rec) : rec)) {
       yield rec;
     }
   }
 }
 
-export function all(list: Iterable<any> | Generator<any>, func: Function = (e) => bool(e)) {
+export function all(list: Iterable<any> | Generator<any>, func?: Function) {
   for (const rec of list) {
-    const res = func(rec);
-    if (res) {
+    if (bool(func ? func(rec) : rec)) {
       return false;
     }
   }
