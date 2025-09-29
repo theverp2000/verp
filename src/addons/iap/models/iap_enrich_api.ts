@@ -1,5 +1,6 @@
-import { AbstractModel, api, MetaModel } from "../../../core";
-import { iapJsonrpc } from "../tools";
+import { api } from "../../../core";
+import { AbstractModel, MetaModel } from "../../../core/models"
+import { iapJsonrpc } from "../tools/iap_tools";
 
 @MetaModel.define()
 class IapEnrichAPI extends AbstractModel {

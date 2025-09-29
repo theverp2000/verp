@@ -19,14 +19,14 @@ tour.register('crm_forecast', {
         content: 'Open Forecast menu',
         run: 'click',
     }, {
-        trigger: '.o_column_quick_create:contains(Add next month)',
+        trigger: '.o-column-quick-create:contains(Add next month)',
         content: 'Wait page loading'
     }, {
         trigger: ".o-kanban-button-new",
         content: "click create",
         run: 'click',
     }, {
-        trigger: "input[name=name]",
+        trigger: "input[name=label]",
         content: "complete name",
         run: "text Test Opportunity 1",
     }, {
@@ -49,7 +49,7 @@ tour.register('crm_forecast', {
         content: "wait for date_picker to disappear",
         run: function () {},
     }, {
-        trigger: '.o_back_button',
+        trigger: '.o-back-button',
         content: 'navigate back to the kanban view',
         position: "bottom",
         run: "click"
@@ -82,7 +82,7 @@ tour.register('crm_forecast', {
         content: "max out probability",
         run: "text 100"
     }, {
-        trigger: '.o_back_button',
+        trigger: '.o-back-button',
         content: 'navigate back to the kanban view',
         position: "bottom",
         run: "click"

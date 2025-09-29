@@ -1,4 +1,5 @@
-import { Fields, MetaModel, Model, api } from "../../../core";
+import { Fields, api } from "../../../core";
+import { MetaModel, Model } from "../../../core/models"
 import { bool } from "../../../core/tools";
 
 @MetaModel.define()
@@ -30,11 +31,11 @@ class ResUsers extends Model {
     @api.depends('crmTeamMemberIds.crmTeamId', 'crmTeamMemberIds.createdAt', 'crmTeamMemberIds.active')
     async _computeSaleTeamId() {
         for (const user of this) {
-            if (! bool((await user.crmTeamMemberIds).ids)) {
+            const sortedMemberships = await user.crmTeamMemberIds;
+            if (!bool(sortedMemberships.ids)) {
                 await user.set('saleTeamId', false);
             }
             else {
-                const sortedMemberships = await user.crmTeamMemberIds;  // sorted by create date
                 await user.set('saleTeamId', bool(sortedMemberships) ? await sortedMemberships(0).crmTeamId : false);
             }
         }

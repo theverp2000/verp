@@ -1,4 +1,4 @@
-import { AbstractModel, MetaModel, _super } from "../../../core";
+import { AbstractModel, MetaModel, _super } from "../../../core/models"
 import { bool, f, floatIsZero, floatRepr, sum } from "../../../core/tools";
 
 @MetaModel.define()
@@ -26,7 +26,7 @@ class ReplenishmentReport extends AbstractModel {
             ['locationId', 'in', whLocationIds]
         ];
         if (bool(productTemplateIds)) {
-            domainQuants = domainQuants.concat([['productId.productTemplateId', 'in', productTemplateIds]]);
+            domainQuants = domainQuants.concat([['productId.productTmplId', 'in', productTemplateIds]]);
         }
         else {
             domainQuants = domainQuants.concat([['productId', 'in', productVariantIds]]);

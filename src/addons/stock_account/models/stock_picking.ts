@@ -1,5 +1,7 @@
-import { Fields, MetaModel, Model } from "../../../core";
-import { literalEval, update } from "../../../core/tools";
+import { Fields } from "../../../core";
+import { MetaModel, Model } from "../../../core/models"
+import { update } from "../../../core/tools";
+import { literalEval } from "../../../core/tools/ast";
 
 @MetaModel.define()
 class StockPicking extends Model {

@@ -1,12 +1,13 @@
-import * as fsPro from "fs/promises";
 import _ from "lodash";
+import * as fsPro from "fs/promises";
+import * as XLSX from 'xlsx';
+import { _Date, _Datetime, Fields } from "../../../core";
+import { Dict, UserError, ValidationError } from "../../../core/helper";
+import { MetaModel, Model, TransientModel } from "../../../core/models";
+import { b64decode, b64encode, bool, extend, isInstance, len, parseFloat, pop, processBufferCsv, processFileCsv, range, today, update } from "../../../core/tools";
 import temp from 'temp';
 import { encode } from "utf8";
-import * as XLSX from 'xlsx';
-import { _Date, Fields, MetaModel, Model, TransientModel } from "../../../core";
 import { sanitizeAccountNumber } from "../../../core/addons/base";
-import { Dict, UserError, ValidationError } from "../../../core/helper";
-import { b64decode, b64encode, bool, extend, isInstance, len, parseFloat, pop, processBufferCsv, range, today, update } from "../../../core/tools";
 
 @MetaModel.define()
 class AccountBankStatementLine extends Model {
@@ -155,7 +156,7 @@ class AccountBankStatementImport extends TransientModel {
             } catch(e) {
                 throw new ValidationError(await this._t("Please upload in specified format ! \n \
                                         date, payment reference, reference, partner, amount, currency ! \n \
-                                        Date Format: yyyy-MM-dd"));
+                                        Date Format: %Y-%m-%d"));
             }
         }
     }

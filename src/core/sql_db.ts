@@ -5,11 +5,14 @@ import { Transaction } from './api/api';
 import { getattr, setattr } from './api/func';
 import { OperationalError, SQLError } from './helper';
 import { Dict } from './helper/collections';
-import { dbFactory } from './service/db';
 import * as sequelize from './service/sequelize';
-import { _f, _format, bool, Callbacks, equal, isCallable, pop, split, splitEvery, URI, validateUri } from './tools';
+import { _f, _format, bool, splitEvery } from './tools';
 import { config } from './tools/config';
 import { contextmanager } from './tools/context';
+import { equal, isCallable, split } from './tools/func';
+import { Callbacks, pop } from './tools/misc';
+import { URI, validateUri } from './tools/uri';
+import { dbFactory } from './service/db';
 
 global.sqlCounter = 0;
 
@@ -408,7 +411,7 @@ export class Cursor extends BaseCursor {
       return res;
     } catch (e) {
       const str = bool(options.bind || params) ? String(options.bind || params).slice(0, 200).trim() : '';
-      console.debug(_f('Error SQL: {message}{query}{params}{cause}', {
+      console.debug(_f('Bad SQL: {message}{query}{params}{cause}', {
         message: e.name + ' ' + e.message,
         query: '\n\t' + sql,
         params: str ? '\n\tparams: ' + str : '',
@@ -487,7 +490,13 @@ export class DatabasePool {
         },
         showWarnings: false,
         logging: global.logSql, // `false` or `console.log`
-        native: false,
+        // The retry config if Deadlock Happened
+        retry: {
+          match: [/Deadlock/i],
+          max: 3, // Maximum rety 3 times
+          backoffBase: 1000, // Initial backoff duration in ms. Default: 100,
+          backoffExponent: 1.5, // Exponent to increase backoff each try. Default: 1.1
+        },
       }));
     }
     if (!this._connections.get(dsn.database)) {

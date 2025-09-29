@@ -1,4 +1,5 @@
-import { _super, api, MetaModel, Model } from "../../../core";
+import { api } from "../../../core";
+import { _super, MetaModel, Model } from "../../../core/models"
 
 @MetaModel.define()
 class PaymentAcquirer extends Model {

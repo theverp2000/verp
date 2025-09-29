@@ -1,8 +1,9 @@
 import { randomInt } from "crypto";
-import { _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
-import { UserError, ValidationError } from "../../../core/helper";
-import { addDate, bool, diffDate, floatCompare, floatRound, partial2, range, subDate, sum, timezone, toFormat } from "../../../core/tools";
 import { Intervals, makeAware } from "../../resource";
+import { _Datetime, api, Fields } from "../../../core";
+import { UserError, ValidationError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models";
+import { addDate, bool, diffDate, floatCompare, floatRound, partial2, range, subDate, sum, timezone, toFormat } from "../../../core/tools";
 
 @MetaModel.define()
 class MrpWorkcenter extends Model {

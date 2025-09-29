@@ -1,5 +1,6 @@
-import { AbstractModel, api, MetaModel } from "../../../core";
-import { update } from "../../../core/tools";
+import { api } from "../../../core";
+import { AbstractModel, MetaModel } from "../../../core/models"
+import { update } from "../../../core/tools/misc";
 
 @MetaModel.define()
 class ReportAccountHashIntegrity extends AbstractModel {

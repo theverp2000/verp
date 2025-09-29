@@ -2371,9 +2371,9 @@ QUnit.module('fields', {}, function () {
                 item: 'Create "abcd"',
             });
             assert.containsOnce(document.body, '.modal .o-form-view');
-            assert.strictEqual($('.o-field-widget[name=name]').val(), 'abcd');
+            assert.strictEqual($('.o-field-widget[name=label]').val(), 'abcd');
 
-            await testUtils.fields.editInput($('.modal .o-field-widget[name=name]'), 'xyz');
+            await testUtils.fields.editInput($('.modal .o-field-widget[name=label]'), 'xyz');
             await testUtils.dom.click($('.modal .modal-footer .btn-primary'));
             assert.strictEqual(form.$('.o-field-widget[name=productId] input').val(), 'xyz');
 
@@ -2409,9 +2409,9 @@ QUnit.module('fields', {}, function () {
                 item: 'Create "abcd"',
             });
             assert.containsOnce(document.body, '.modal .o-form-view');
-            assert.strictEqual($('.o-field-widget[name=name]').val(), 'abcd');
+            assert.strictEqual($('.o-field-widget[name=label]').val(), 'abcd');
 
-            await testUtils.fields.editInput($('.modal .o-field-widget[name=name]'), 'xyz');
+            await testUtils.fields.editInput($('.modal .o-field-widget[name=label]'), 'xyz');
             await testUtils.dom.click($('.modal .modal-footer .btn-primary'));
             assert.strictEqual(form.$('.o-field-widget[name=productId] input').val(), 'xyz');
 

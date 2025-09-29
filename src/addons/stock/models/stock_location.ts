@@ -1,10 +1,16 @@
 import _ from "lodash";
 import { DateTime } from "luxon";
 import * as calendar from "node-calendar";
-import { Fields, MetaModel, Model, _Date, _super, api, tools } from "../../../core";
-import { DefaultDict, OrderedDict, UserError } from "../../../core/helper";
+import { Fields, _Date, api, tools } from "../../../core";
+import { DefaultDict, Dict, OrderedDict } from "../../../core/helper/collections";
+import { UserError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { bool, f, floatCompare, len, parseFloat, sum } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { floatCompare } from "../../../core/tools/float_utils";
+import { len, sum } from "../../../core/tools/iterable";
+import { f } from "../../../core/tools/utils";
+import { parseFloat } from "../../../core/tools";
 
 @MetaModel.define()
 class Location extends Model {

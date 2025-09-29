@@ -1,7 +1,8 @@
-import { _Date, _super, api, Fields, MetaModel, Model } from "../../../core";
+import { _Date, api, Fields } from "../../../core";
 import { WARNING_HELP, WARNING_MESSAGE } from "../../../core/addons/base";
 import { ValidationError } from "../../../core/helper";
-import { bool, f, floatRound, nextAsync, sum } from "../../../core/tools";
+import { _super, MetaModel, Model } from "../../../core/models"
+import { bool, f, floatRound, nextAsync, setOptions, sum } from "../../../core/tools";
 
 @MetaModel.define()
 class ProductTemplate extends Model {

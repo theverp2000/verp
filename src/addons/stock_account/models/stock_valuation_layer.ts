@@ -1,5 +1,6 @@
-import { Fields, MetaModel, Model } from "../../../core";
-import { createIndex, extend, floatCompare, floatIsZero, sum } from "../../../core/tools";
+import { Fields } from "../../../core";
+import { MetaModel, Model } from "../../../core/models"
+import { bool, createIndex, extend, floatCompare, floatIsZero, sum } from "../../../core/tools";
 
 /**
  * Stock Valuation Layer

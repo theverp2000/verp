@@ -1,7 +1,8 @@
 import _ from "lodash";
-import { _super, api, Fields, MetaModel, Model } from "../../../core";
+import { api, Fields } from "../../../core";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { expression } from "../../../core/osv";
-import { bool, enumerate, f, htmlTranslate, len, unslug, update } from "../../../core/tools";
+import { bool, enumerate, f, htmlTranslate, len, map, setOptions, slug, unslug, update } from "../../../core/tools";
 
 @MetaModel.define()
 class ProductTemplate extends Model {
@@ -297,7 +298,7 @@ class ProductTemplate extends Model {
         // to avoid generating a single default websiteSequence when installing the module,
         // we need to set the default row by row for this column
         if (columnName === "websiteSequence") {
-            global.logSql && console.debug("Table '%s': setting default value of new column %s to unique values for each row", this.cls._table, columnName);
+            console.debug("Table '%s': setting default value of new column %s to unique values for each row", this.cls._table, columnName);
             const prodTmplIds: any[] = await this.env.cr.execute(`SELECT id FROM "%s" WHERE "websiteSequence" IS NULL`, [this.cls._table]);
             const maxSeq = await this._defaultWebsiteSequence();
             const query = `

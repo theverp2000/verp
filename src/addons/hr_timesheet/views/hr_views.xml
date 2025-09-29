@@ -4,8 +4,8 @@
     <record id="timesheet_action_from_employee" model="ir.actions.actwindow">
         <field name="label">Timesheets</field>
         <field name="resModel">account.analytic.line</field>
-        <field name="search_view_id" ref="hr_timesheet_line_search"/>
-        <field name="domain">[('projectId', '!=', False)]</field>
+        <field name="searchViewId" ref="hr_timesheet_line_search"/>
+        <field name="domain">[('projectId', '!=', false)]</field>
         <field name="context">{
             'search_default_month':1,
             'search_default_employee_id': [activeId],
@@ -16,21 +16,21 @@
     <record id="timesheet_action_view_from_employee_list" model="ir.actions.actwindow.view">
         <field name="sequence" eval="5"/>
         <field name="viewMode">tree</field>
-        <field name="view_id" ref="hr_timesheet_line_tree"/>
-        <field name="act_window_id" ref="timesheet_action_from_employee"/>
+        <field name="viewId" ref="hr_timesheet_line_tree"/>
+        <field name="actwindowId" ref="timesheet_action_from_employee"/>
     </record>
 
     <record id="timesheet_action_view_from_employee_form" model="ir.actions.actwindow.view">
         <field name="sequence" eval="10"/>
         <field name="viewMode">form</field>
-        <field name="view_id" ref="hr_timesheet_line_form"/>
-        <field name="act_window_id" ref="timesheet_action_from_employee"/>
+        <field name="viewId" ref="hr_timesheet_line_form"/>
+        <field name="actwindowId" ref="timesheet_action_from_employee"/>
     </record>
 
     <record id="hr_employee_view_form_inherit_timesheet" model="ir.ui.view">
         <field name="label">hr.employee.form.timesheet</field>
         <field name="model">hr.employee</field>
-        <field name="inheritId" ref="hr.view_employee_form"/>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
         <field name="arch" type="xml">
             <group name="application_group" position="attributes">
                 <attribute name="string">Application Settings</attribute>
@@ -39,7 +39,7 @@
                 <label for="timesheet_cost" groups="hr_timesheet.group_timesheet_manager"/>
                 <div name="timesheet" groups="hr_timesheet.group_timesheet_manager">
                     <field name="timesheet_cost" class="oe-inline"/> per hour
-                    <field name="currency_id" invisible="1"/>
+                    <field name="currencyId" invisible="1"/>
                 </div>
             </group>
             <div name="button_box" position="inside">
@@ -55,11 +55,11 @@
     <record id="hr_department_view_kanban" model="ir.ui.view">
         <field name="label">hr.department.kanban.inherit</field>
         <field name="model">hr.department</field>
-        <field name="inheritId" ref="hr.hr_department_view_kanban"/>
-        <field name="groups_id" eval="[(4,ref('hr_timesheet.group_timesheet_manager'))]"/>
+        <field name="inherit_id" ref="hr.hr_department_view_kanban"/>
+        <field name="groupsId" eval="[(4,refId('hr_timesheet.group_timesheet_manager'))]"/>
         <field name="arch" type="xml">
             <data>
-                <xpath expr="//div[hasclass('o_kanban_manage_reports')]" position="inside">
+                <xpath expr="//div[contains(@class, 'o_kanban_manage_reports')]" position="inside">
                     <a name="%(act_hr_timesheet_report)d" type="action" context="{ 'search_default_department_id': [activeId], 'default_department_id': activeId}">
                         Timesheets
                     </a>

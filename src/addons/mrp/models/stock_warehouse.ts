@@ -1,7 +1,8 @@
-import { _super, api, Fields, MetaModel, Model } from "../../../core";
-import { UserError, ValidationError } from "../../../core/helper";
-import { bool, update } from "../../../core/tools";
 import { Routing } from "../../stock";
+import { api, Fields } from "../../../core";
+import { UserError, ValidationError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models"
+import { bool, update } from "../../../core/tools";
 
 @MetaModel.define()
 class StockWarehouse extends Model {

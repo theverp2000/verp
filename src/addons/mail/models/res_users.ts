@@ -7,8 +7,7 @@ import { MetaModel, Model, _super } from "../../../core/models"
 import { getModuleIcon } from "../../../core/modules/modules"
 import { bool } from "../../../core/tools/bool"
 import { extend, len } from "../../../core/tools/iterable"
-import { f } from "../../../core/tools/string"
-import { _f } from "../../../core/tools/string"
+import { _f, f } from "../../../core/tools/utils"
 
 /**
  * Update of res.users class
@@ -173,7 +172,7 @@ class Users extends Model {
       'menuId': await self.env.items('ir.model.data')._xmlidToResId('mail.menuRootDiscuss'),
       'needactionInboxCounter': await partnerId._getNeedactionCount(),
       'partnerRoot': (await (await partnerRoot.sudo()).mailPartnerFormat()).get(partnerRoot.id),
-      'publicPartners': (await (await (await (await (await (await self.env.ref('base.groupPublic')).sudo()).withContext({ activeTest: false })).users).partnerId).mailPartnerFormat()).values(),
+      'publicPartners': Array.from((await (await (await (await (await (await self.env.ref('base.groupPublic')).sudo()).withContext({ activeTest: false })).users).partnerId).mailPartnerFormat()).values()),
       'shortcodes': await (await self.env.items('mail.shortcode').sudo()).searchRead([],  ['source', 'substitution', 'description']),
       'starredCounter': await self.env.items('mail.message').searchCount([['starredPartnerIds', 'in', partnerId.ids]]),
     }
@@ -210,7 +209,7 @@ class Users extends Model {
     }
     const userActivities = {};
     for (const [modelId, modelDic] of Object.entries(recordsByStateByModel)) {
-      const model = await (await this.env.items("ir.model").sudo()).browse(modelId).withPrefetch(Object.keys(recordsByStateByModel).map(id => Number(id)));
+      const model = (await this.env.items("ir.model").sudo()).browse(modelId).withPrefetch(Object.keys(recordsByStateByModel).map(id => Number(id)));
       const modelName = await model.model;
       const allowedRecords = await this.env.items(modelName).search([["id", "in", Array.from(modelDic["all"])]]);
       if (!bool(allowedRecords)) {

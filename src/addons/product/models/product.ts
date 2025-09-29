@@ -1,8 +1,15 @@
-import { Fields, MetaModel, Model, _Date, _Datetime, _super, api } from "../../../core";
-import { setdefault } from "../../../core/api";
-import { Dict, UserError, ValidationError } from "../../../core/helper";
+import _ from "lodash";
+import { api } from "../../../core";
+import { setdefault } from "../../../core/api/func";
+import { Fields, _Date, _Datetime } from "../../../core/fields";
+import { Dict } from "../../../core/helper/collections";
+import { UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { _f, bool, dateMax, extend, f, floatCompare, floatRound, isImageSizeAbove, isList, len, sum } from "../../../core/tools";
+import { extend, floatCompare, floatRound, isImageSizeAbove, isList, len, sum } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { dateMax } from "../../../core/tools/date_utils";
+import { _f, f } from "../../../core/tools/utils";
 
 @MetaModel.define()
 class ProductCategory extends Model {
@@ -22,7 +29,7 @@ class ProductCategory extends Model {
   static childId = Fields.One2many('product.category', 'parentId', { string: 'Child Categories' });
   static productCount = Fields.Integer(
     '# Products', {
-    compute: '_computeProductCount',
+      compute: '_computeProductCount',
     help: "The number of products under this category (Does not consider the children categories)"
   });
 
@@ -99,20 +106,20 @@ class ProductProduct extends Model {
   // price: total price, context dependent (partner, pricelist, quantity)
   static price = Fields.Float(
     'Price', {
-    compute: '_computeProductPrice',
+      compute: '_computeProductPrice',
     digits: 'Product Price', inverse: '_setProductPrice'
   });
   // priceExtra: catalog extra value only, sum of variant extra attributes
   static priceExtra = Fields.Float(
     'Variant Price Extra', {
-    compute: '_computeProductPriceExtra',
+      compute: '_computeProductPriceExtra',
     digits: 'Product Price',
     help: "This is the sum of the extra price of all attributes"
   });
   // lstPrice: catalog value + extra, context dependent (uom)
   static lstPrice = Fields.Float(
     'Sales Price', {
-    compute: '_computeProductLstPrice',
+      compute: '_computeProductLstPrice',
     digits: 'Product Price', inverse: '_setProductLstPrice',
     help: "The sale price is managed from the product template. Click on the 'Configure Variants' button to set the extra attribute prices."
   });
@@ -123,17 +130,17 @@ class ProductProduct extends Model {
 
   static active = Fields.Boolean(
     'Active', {
-    default: true,
+      default: true,
     help: "If unchecked, it will allow you to hide the product without removing it."
   });
   static productTemplateId = Fields.Many2one(
     'product.template', {
-    string: 'Product Template',
+      string: 'Product Template',
     autojoin: true, index: true, ondelete: "CASCADE", required: true
   });
   static barcode = Fields.Char(
     'Barcode', {
-    copy: false,
+      copy: false,
     help: "International Article Number used for product identification."
   });
   static productTemplateAttributeValueIds = Fields.Many2many('product.template.attribute.value', { relation: 'productVariantCombination', string: "Attribute Values", ondelete: 'RESTRICT' });
@@ -143,7 +150,7 @@ class ProductProduct extends Model {
 
   static standardPrice = Fields.Float(
     'Cost', {
-    companyDependent: true,
+      companyDependent: true,
     digits: 'Product Price',
     groups: "base.groupUser",
     help: `In Standard Price & AVCO: value of the product (automatically computed in AVCO).
@@ -155,8 +162,7 @@ class ProductProduct extends Model {
 
   static pricelistItemCount = Fields.Integer("Number of price rules", { compute: "_computeVariantItemCount" })
 
-  static packagingIds = Fields.One2many('product.packaging', 'productId', {
-    string: 'Product Packages',
+  static packagingIds = Fields.One2many('product.packaging', 'productId', { string: 'Product Packages',
     help: "Gives the different ways to package the same product."
   });
 
@@ -211,7 +217,7 @@ class ProductProduct extends Model {
         ]) <= 1)
       ) {
         // await Promise.all([
-        await record.set(variantField, false),
+          await record.set(variantField, false),
           await productTemplateId.set(templateField, recordTemplateField)
         // ]);
       }
@@ -336,8 +342,8 @@ class ProductProduct extends Model {
       }
 
       if (bool(pricelist)) {
-        const quantities = Array(this._length).fill(quantity);
-        const partners = Array(this._length).fill(partner);
+        const quantities = _.fill(Array(this._length), quantity);
+        const partners = _.fill(Array(this._length), partner);
         prices = await pricelist.getProductsPrice(this, quantities, partners);
       }
     }
@@ -559,11 +565,11 @@ class ProductProduct extends Model {
     if (checkAccess) {
 
       await self.checkAccessRights('unlink'),
-        await self.checkAccessRule('unlink'),
-        await self.checkAccessRights('write'),
-        await self.checkAccessRule('write'),
+      await self.checkAccessRule('unlink'),
+      await self.checkAccessRights('write'),
+      await self.checkAccessRule('write'),
 
-        self = await self.sudo();
+      self = await self.sudo();
       const toUnlink = await self._filterToUnlink();
       const toArchive = self.sub(toUnlink);
       await toArchive.write({ 'active': false });
@@ -578,7 +584,7 @@ class ProductProduct extends Model {
       // doesn't fail.
       if (len(self) > 1) {
         await self([0, Math.round(len(self) / 2)])._unlinkOrArchive(false),
-          await self([Math.round(len(self) / 2)])._unlinkOrArchive(false)
+        await self([Math.round(len(self) / 2)])._unlinkOrArchive(false)
       }
       else {
         if (await self.active) {
@@ -649,7 +655,7 @@ class ProductProduct extends Model {
     // check access and use superuser
 
     await self.checkAccessRights("read"),
-      await self.checkAccessRule("read")
+    await self.checkAccessRule("read")
 
     const result = [];
 
@@ -737,7 +743,7 @@ class ProductProduct extends Model {
 
   @api.model()
   async _nameSearch(name: string, args?: any, operator = 'ilike', opts: { limit?: number, nameGetUid?: any } = {}) {
-    let { limit = 100, nameGetUid = false } = opts;
+    let {limit=100, nameGetUid=false} = opts;
     if (args) {
       args = []
     }
@@ -746,9 +752,9 @@ class ProductProduct extends Model {
       const positiveOperators = ['=', 'ilike', '=ilike', 'like', '=like'];
       productIds = [];
       if (positiveOperators.includes(operator)) {
-        productIds = await this._search([['defaultCode', '=', name]].concat(args), { limit, accessRightsUid: nameGetUid });
+        productIds = await this._search([['defaultCode', '=', name]].concat(args), {limit, accessRightsUid: nameGetUid});
         if (!bool(productIds)) {
-          productIds = await this._search([['barcode', '=', name]].concat(args), { limit, accessRightsUid: nameGetUid });
+          productIds = await this._search([['barcode', '=', name]].concat(args), {limit, accessRightsUid: nameGetUid});
         }
       }
       if (!bool(productIds) && !expression.NEGATIVE_TERM_OPERATORS.includes(operator)) {
@@ -770,13 +776,13 @@ class ProductProduct extends Model {
           ['&', ['defaultCode', '=', false], ['label', operator, name]],
         ]);
         domain = expression.AND([args, domain]);
-        productIds = await this._search(domain, { limit, accessRightsUid: nameGetUid });
+        productIds = await this._search(domain, {limit, accessRightsUid: nameGetUid});
       }
       if (!bool(productIds) && positiveOperators.includes(operator)) {
         const ptrn = /(\[(.*?)\])/;
         const res = name.match(ptrn);
         if (res) {
-          productIds = await this._search([['defaultCode', '=', res[2]]].concat(args), { limit, accessRightsUid: nameGetUid });
+          productIds = await this._search([['defaultCode', '=', res[2]]].concat(args), {limit, accessRightsUid: nameGetUid});
         }
       }
       // still no results, partner in context: search on supplier info as last hope to find something
@@ -787,12 +793,12 @@ class ProductProduct extends Model {
           ['productCode', operator, name],
           ['productName', operator, name]], { accessRightsUid: nameGetUid });
         if (bool(suppliersIds)) {
-          productIds = await this._search([['productTemplateId.sellerIds', 'in', suppliersIds]], { limit, accessRightsUid: nameGetUid });
+          productIds = await this._search([['productTemplateId.sellerIds', 'in', suppliersIds]], {limit, accessRightsUid: nameGetUid});
         }
       }
     }
     else {
-      productIds = await this._search(args, { limit, accessRightsUid: nameGetUid });
+      productIds = await this._search(args, {limit, accessRightsUid: nameGetUid});
     }
     return productIds;
   }
@@ -945,7 +951,7 @@ class ProductProduct extends Model {
 
       // Convert from current user company currency to asked one
       // This is right cause a field cannot be in more than one currency
-      if (currency) {
+      if (bool(currency)) {
         prices[product.id] = await (await product.currencyId)._convert(prices[product.id], currency, await product.companyId, _Date.today());
       }
     }
@@ -1088,7 +1094,7 @@ class SupplierInfo extends Model {
 
   static label = Fields.Many2one(
     'res.partner', {
-    string: 'Vendor',
+      string: 'Vendor',
     ondelete: 'CASCADE', required: true,
     help: "Vendor of this product", checkCompany: true
   });
@@ -1102,28 +1108,28 @@ class SupplierInfo extends Model {
     'Sequence', { default: 1, help: "Assigns the priority to the list of product vendor." });
   static productUom = Fields.Many2one(
     'uom.uom', {
-    string: 'Unit of Measure',
+      string: 'Unit of Measure',
     related: 'productTemplateId.uomPoId',
     help: "This comes from the product form."
   })
   static minQty = Fields.Float(
     'Quantity', {
-    default: 0.0, required: true, digits: "Product Unit Of Measure",
+      default: 0.0, required: true, digits: "Product Unit Of Measure",
     help: "The quantity to purchase from this vendor to benefit from the price, expressed in the vendor Product Unit of Measure if not any, in the default unit of measure of the product otherwise."
   });
   static price = Fields.Float(
     'Price', {
-    default: 0.0, digits: 'Product Price',
+      default: 0.0, digits: 'Product Price',
     required: true, help: "The price to purchase a product"
   });
   static companyId = Fields.Many2one(
     'res.company', {
-    string: 'Company',
+      string: 'Company',
     default: async (self) => (await self.env.company()).id, index: 1
   });
   static currencyId = Fields.Many2one(
     'res.currency', {
-    string: 'Currency',
+      string: 'Currency',
     default: async (self) => (await (await self.env.company()).currencyId).id,
     required: true
   })
@@ -1131,18 +1137,18 @@ class SupplierInfo extends Model {
   static dateEnd = Fields.Date('End Date', { help: "End date for this vendor price" });
   static productId = Fields.Many2one(
     'product.product', {
-    string: 'Product Variant', checkCompany: true,
+      string: 'Product Variant', checkCompany: true,
     help: "If not set, the vendor price will apply to all variants of this product."
   });
   static productTemplateId = Fields.Many2one(
     'product.template', {
-    string: 'Product Template', checkCompany: true,
+      string: 'Product Template', checkCompany: true,
     index: true, ondelete: 'CASCADE'
   });
   static productVariantCount = Fields.Integer('Variant Count', { related: 'productTemplateId.productVariantCount' });
   static delay = Fields.Integer(
     'Delivery Lead Time', {
-    default: 1, required: true,
+      default: 1, required: true,
     help: "Lead time in days between the confirmation of the purchase order and the receipt of the products in your warehouse. Used by the scheduler for automatic computation of the purchase order planning."
   });
 

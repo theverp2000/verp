@@ -1,4 +1,7 @@
-import { Model, MetaModel, Fields, api, _super, tools } from "../../../../core";
+import { tools } from "../../..";
+import * as api from "../../../api";
+import { Fields } from "../../../fields"
+import { Model, MetaModel, _super } from "../../../models"
 
 @MetaModel.define()
 class DecimalPrecision extends Model {

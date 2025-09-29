@@ -1,5 +1,6 @@
-import { AbstractModel, api, MetaModel } from "../../../core";
+import { api } from "../../../core";
 import { UserError } from "../../../core/helper";
+import { AbstractModel, MetaModel } from "../../../core/models";
 import { _convert$, parseFloat, quoteList } from "../../../core/tools";
 
 @MetaModel.define()

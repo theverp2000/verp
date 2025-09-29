@@ -1,6 +1,7 @@
 import _ from "lodash";
-import { _super, api, Fields, MetaModel, Model } from "../../../core";
+import { api, Fields } from "../../../core";
 import { Counter } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { expression } from "../../../core/osv";
 import { bool, extend, f, len, parseInt, range, sorted, UpCamelCase, update } from "../../../core/tools";
 
@@ -79,7 +80,7 @@ class WebsiteSnippetFilter extends Model {
         const {dynamicFilter, searchDomain, limit} = context;
         const domain = expression.AND([
             [['websitePublished', '=', true]],
-            website.websiteDomain(),
+            await website.websiteDomain(),
             [['companyId', 'in', [false, (await website.companyId).id]]],
             searchDomain || [],
         ])

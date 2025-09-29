@@ -3,9 +3,11 @@ import { DateTime } from 'luxon';
 import { PDFCatalog, PDFDict, PDFDocument, PDFName } from "pdf-lib";
 import puppeteer from 'puppeteer';
 import xpath from "xpath";
-import { MetaModel, Model, _super, api, tools, Fields, _Datetime } from "../../..";
+import { api, models, tools } from "../../..";
 import { setdefault } from '../../../api';
+import { Fields, _Datetime } from "../../../fields";
 import { AccessError, OrderedDict, UserError, ValueError } from '../../../helper';
+import { MetaModel, Model, _super } from "../../../models";
 import { FALSE_DOMAIN, NEGATIVE_TERM_OPERATORS } from "../../../osv/expression";
 import { UpCamelCase, _f, b64decode, base64ToImage, bool, camelCaseToDot, config, enumerate, equal, extend, f, isHtmlEmpty, isInstance, isIterable, len, parseInt, pop, range, toFormat, update } from "../../../tools";
 import { unsafeAsync } from '../../../tools/save_eval';
@@ -463,7 +465,7 @@ class IrActionsReport extends Model {
                 args: ["--fast-start", "--disable-extensions", "--no-sandbox"],
             });
             const page = await browser.newPage();
-            await page.setContent(bodies[0]);
+            await page.setContent(bodies[0]); // Tony must check multi articles/bodies
             pdfContent = await page.pdf({
                 format: 'A4',
                 displayHeaderFooter: true,
@@ -1048,7 +1050,7 @@ class IrActionsReport extends Model {
         let context = this.env.context;
         let activeIds;
         if (docIds) {
-            if (isInstance(docIds, Model)) {
+            if (isInstance(docIds, models.Model)) {
                 activeIds = docIds.ids;
             }
             else if (typeof (docIds) === 'number') {

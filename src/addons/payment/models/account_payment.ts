@@ -1,5 +1,6 @@
-import { Command, Fields, MetaModel, Model, _super, api } from "../../../core";
+import { Command, Fields, api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models"
 import { bool, sum } from "../../../core/tools";
 
 @MetaModel.define()

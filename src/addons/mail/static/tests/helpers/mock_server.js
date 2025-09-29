@@ -366,15 +366,15 @@ MockServer.include({
             userId = this.currentUserId;
         }
         let authorId;
-        let emailFrom;
+        let email_from;
         if (userId) {
             const author = this._getRecords('res.users', [['id', '=', userId]])[0];
             authorId = author.partnerId;
-            emailFrom = `${author.displayName} <${author.email}>`;
+            email_from = `${author.displayName} <${author.email}>`;
         } else {
             authorId = false;
             // simpler fallback than catchall_formatted
-            emailFrom = mailChannel.anonymous_name || "catchall@example.com";
+            email_from = mailChannel.anonymous_name || "catchall@example.com";
         }
         // supposedly should convert plain text to html
         const body = message_content;
@@ -383,7 +383,7 @@ MockServer.include({
             mailChannel.id,
             {
                 authorId,
-                emailFrom,
+                email_from,
                 body,
                 messageType: 'comment',
                 subtype_xmlid: 'mail.mtComment',
@@ -928,7 +928,7 @@ MockServer.include({
             const messageNeedactionCounter = this._getRecords('mail.notification', [
                 ['resPartnerId', '=', this.currentPartnerId],
                 ['is_read', '=', false],
-                ['mail_message_id', 'in', messages.map(message => message.id)],
+                ['mailMessageId', 'in', messages.map(message => message.id)],
             ]).length;
             const res = Object.assign({}, channel, {
                 last_message_id: lastMessageId,
@@ -1316,8 +1316,8 @@ MockServer.include({
         ]);
         const messageIds = [];
         for (const notification of notifications) {
-            if (!messageIds.includes(notification.mail_message_id)) {
-                messageIds.push(notification.mail_message_id);
+            if (!messageIds.includes(notification.mailMessageId)) {
+                messageIds.push(notification.mailMessageId);
             }
         }
         const messages = this._getRecords('mail.message', [['id', 'in', messageIds]]);
@@ -1395,7 +1395,7 @@ MockServer.include({
                 )[0];
                 formattedAuthor = [author.id, author.displayName];
             } else {
-                formattedAuthor = [0, message.emailFrom];
+                formattedAuthor = [0, message.email_from];
             }
             const attachments = this._getRecords('ir.attachment', [
                 ['id', 'in', message.attachmentIds],
@@ -1413,7 +1413,7 @@ MockServer.include({
                 });
             });
             const allNotifications = this._getRecords('mail.notification', [
-                ['mail_message_id', '=', message.id],
+                ['mailMessageId', '=', message.id],
             ]);
             const historyPartnerIds = allNotifications
                 .filter(notification => notification.is_read)
@@ -1463,7 +1463,7 @@ MockServer.include({
         const messages = this._getRecords('mail.message', [['id', 'in', ids]]);
         return messages.map(message => {
             let notifications = this._getRecords('mail.notification', [
-                ['mail_message_id', '=', message.id],
+                ['mailMessageId', '=', message.id],
             ]);
             notifications = this._mockMailNotification_FilteredForWebClient(
                 notifications.map(notification => notification.id)
@@ -1497,7 +1497,7 @@ MockServer.include({
         const notifications = this._getRecords('mail.notification', [
             ['resPartnerId', '=', this.currentPartnerId],
             ['is_read', '=', false],
-            ['mail_message_id', 'in', messages.map(messages => messages.id)]
+            ['mailMessageId', 'in', messages.map(messages => messages.id)]
         ]);
         this._mockWrite('mail.notification', [
             notifications.map(notification => notification.id),
@@ -1616,9 +1616,9 @@ MockServer.include({
      * @param {Object} [context={}]
      * @returns {Array}
      */
-    _MockMailThread_MessageComputeAuthor(model, ids, authorId, emailFrom, context = {}) {
+    _MockMailThread_MessageComputeAuthor(model, ids, authorId, email_from, context = {}) {
         if (authorId === undefined) {
-            // For simplicity partner is not guessed from emailFrom here, but
+            // For simplicity partner is not guessed from email_from here, but
             // that would be the first step on the server.
             let userId;
             if ('mockedUserId' in context) {
@@ -1640,25 +1640,25 @@ MockServer.include({
                 { activeTest: false },
             )[0];
             authorId = author.id;
-            emailFrom = `${author.displayName} <${author.email}>`;
+            email_from = `${author.displayName} <${author.email}>`;
         }
 
-        if (emailFrom === undefined) {
+        if (email_from === undefined) {
             if (authorId) {
                 const author = this._getRecords(
                     'res.partner',
                     [['id', '=', authorId]],
                     { activeTest: false },
                 )[0];
-                emailFrom = `${author.displayName} <${author.email}>`;
+                email_from = `${author.displayName} <${author.email}>`;
             }
         }
 
-        if (!emailFrom) {
+        if (!email_from) {
             throw Error("Unable to log message due to missing author email.");
         }
 
-        return [authorId, emailFrom];
+        return [authorId, email_from];
     },
     /**
      * Simulates `_message_add_suggested_recipient` on `mail.thread`.
@@ -1768,15 +1768,15 @@ MockServer.include({
             kwargs.attachmentIds = attachmentIds.map(attachmentId => [4, attachmentId]);
         }
         const subtype_xmlid = kwargs.subtype_xmlid || 'mail.mt_note';
-        const [authorId, emailFrom] = this._MockMailThread_MessageComputeAuthor(
+        const [authorId, email_from] = this._MockMailThread_MessageComputeAuthor(
             model,
             ids,
             kwargs.authorId,
-            kwargs.emailFrom, context,
+            kwargs.email_from, context,
         );
         const values = Object.assign({}, kwargs, {
             authorId,
-            emailFrom,
+            email_from,
             isDiscussion: subtype_xmlid === 'mail.mtComment',
             isNote: subtype_xmlid === 'mail.mt_note',
             model,
@@ -2150,7 +2150,7 @@ MockServer.include({
             // ['notification_ids.notification_status', 'in', ['bounce', 'exception']],
             // But it's not supported by _getRecords domain to follow a relation.
             const notifications = this._getRecords('mail.notification', [
-                ['mail_message_id', '=', message.id],
+                ['mailMessageId', '=', message.id],
                 ['notification_status', 'in', ['bounce', 'exception']],
             ]);
             return notifications.length > 0;

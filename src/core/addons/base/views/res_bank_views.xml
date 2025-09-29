@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
                 <form string="Bank">
                     <sheet>
-                        <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                         <group name="bankDetails" col="4">
                             <field name="label"/>
                             <field name="bic"/>
@@ -81,7 +81,7 @@
             <field name="arch" type="xml">
                 <form string="Bank account">
                 <sheet>
-                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <group>
                         <group>
                             <field name="sequence" invisible="1"/>

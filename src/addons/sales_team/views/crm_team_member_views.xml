@@ -60,7 +60,7 @@
                             </div>
                             <div class="o-kanban-card-content d-flex">
                                 <div>
-                                    <img t-att-src="kanbanImage('res.users', 'avatar128', record.userId.rawValue)" class="o-kanban-image o-image-64-cover" alt="Avatar"/>
+                                    <img t-att-src="kanbanImage('res.users', 'avatar128', record.userId.rawValue)" class="o-kanban-image o-image-64_cover" alt="Avatar"/>
                                 </div>
                                 <div class="oe-kanban-details d-flex flex-column ml-3">
                                     <strong class="o-kanban-record-title oe-partner-heading"><field name="userId"/></strong>
@@ -104,7 +104,7 @@
                         attrs="{'invisible': [['memberWarning', '=', false]]}">
                         <field name="memberWarning"/>
                     </div>
-                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <field name="image1920" widget='image' class="oe-avatar"
                         attrs="{'invisible': [['userId', '=', false]]}"
                         options='{"previewImage": "image128"}'/>

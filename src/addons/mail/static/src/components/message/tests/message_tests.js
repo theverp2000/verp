@@ -124,7 +124,7 @@ QUnit.test('Notification Sent', async function (assert) {
     });
     this.data['mail.notification'].records.push({
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'sent',
         notificationType: 'email',
         resPartnerId: 12,
@@ -223,7 +223,7 @@ QUnit.test('Notification Error', async function (assert) {
     });
     this.data['mail.notification'].records.push({
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'exception',
         notificationType: 'email',
         resPartnerId: 12,
@@ -959,7 +959,7 @@ QUnit.test('basic rendering of tracking value (float type)', async function (ass
         id: 11,
         trackingValueIds: [{
             changed_field: "Total",
-            field_type: "float",
+            fieldType: "float",
             id: 6,
             new_value: 45.67,
             old_value: 12.3,
@@ -1016,7 +1016,7 @@ QUnit.test('rendering of tracked field of type integer: from non-0 to 0', async 
         id: 11,
         trackingValueIds: [{
             changed_field: "Total",
-            field_type: "integer",
+            fieldType: "integer",
             id: 6,
             new_value: 0,
             old_value: 1,
@@ -1038,7 +1038,7 @@ QUnit.test('rendering of tracked field of type integer: from 0 to non-0', async 
         id: 11,
         trackingValueIds: [{
             changed_field: "Total",
-            field_type: "integer",
+            fieldType: "integer",
             id: 6,
             new_value: 1,
             old_value: 0,
@@ -1060,7 +1060,7 @@ QUnit.test('rendering of tracked field of type float: from non-0 to 0', async fu
         id: 11,
         trackingValueIds: [{
             changed_field: "Total",
-            field_type: "float",
+            fieldType: "float",
             id: 6,
             new_value: 0,
             old_value: 1,
@@ -1082,7 +1082,7 @@ QUnit.test('rendering of tracked field of type float: from 0 to non-0', async fu
         id: 11,
         trackingValueIds: [{
             changed_field: "Total",
-            field_type: "float",
+            fieldType: "float",
             id: 6,
             new_value: 1,
             old_value: 0,
@@ -1104,7 +1104,7 @@ QUnit.test('rendering of tracked field of type monetary: from non-0 to 0', async
         id: 11,
         trackingValueIds: [{
             changed_field: "Total",
-            field_type: "monetary",
+            fieldType: "monetary",
             id: 6,
             new_value: 0,
             old_value: 1,
@@ -1126,7 +1126,7 @@ QUnit.test('rendering of tracked field of type monetary: from 0 to non-0', async
         id: 11,
         trackingValueIds: [{
             changed_field: "Total",
-            field_type: "monetary",
+            fieldType: "monetary",
             id: 6,
             new_value: 1,
             old_value: 0,
@@ -1148,7 +1148,7 @@ QUnit.test('rendering of tracked field of type boolean: from true to false', asy
         id: 11,
         trackingValueIds: [{
             changed_field: "Is Ready",
-            field_type: "boolean",
+            fieldType: "boolean",
             id: 6,
             new_value: false,
             old_value: true,
@@ -1170,7 +1170,7 @@ QUnit.test('rendering of tracked field of type boolean: from false to true', asy
         id: 11,
         trackingValueIds: [{
             changed_field: "Is Ready",
-            field_type: "boolean",
+            fieldType: "boolean",
             id: 6,
             new_value: true,
             old_value: false,
@@ -1192,7 +1192,7 @@ QUnit.test('rendering of tracked field of type char: from a string to empty stri
         id: 11,
         trackingValueIds: [{
             changed_field: "Name",
-            field_type: "char",
+            fieldType: "char",
             id: 6,
             new_value: "",
             old_value: "Marc",
@@ -1214,7 +1214,7 @@ QUnit.test('rendering of tracked field of type char: from empty string to a stri
         id: 11,
         trackingValueIds: [{
             changed_field: "Name",
-            field_type: "char",
+            fieldType: "char",
             id: 6,
             new_value: "Marc",
             old_value: "",
@@ -1236,7 +1236,7 @@ QUnit.test('rendering of tracked field of type date: from no date to a set date'
         id: 11,
         trackingValueIds: [{
             changed_field: "Deadline",
-            field_type: "date",
+            fieldType: "date",
             id: 6,
             new_value: "2018-12-14",
             old_value: false,
@@ -1258,7 +1258,7 @@ QUnit.test('rendering of tracked field of type date: from a set date to no date'
         id: 11,
         trackingValueIds: [{
             changed_field: "Deadline",
-            field_type: "date",
+            fieldType: "date",
             id: 6,
             new_value: false,
             old_value: "2018-12-14",
@@ -1280,7 +1280,7 @@ QUnit.test('rendering of tracked field of type datetime: from no date and time t
         id: 11,
         trackingValueIds: [{
             changed_field: "Deadline",
-            field_type: "datetime",
+            fieldType: "datetime",
             id: 6,
             new_value: "2018-12-14 13:42:28",
             old_value: false,
@@ -1302,7 +1302,7 @@ QUnit.test('rendering of tracked field of type datetime: from a set date and tim
         id: 11,
         trackingValueIds: [{
             changed_field: "Deadline",
-            field_type: "datetime",
+            fieldType: "datetime",
             id: 6,
             new_value: false,
             old_value: "2018-12-14 13:42:28",
@@ -1324,7 +1324,7 @@ QUnit.test('rendering of tracked field of type text: from some text to empty', a
         id: 11,
         trackingValueIds: [{
             changed_field: "Name",
-            field_type: "text",
+            fieldType: "text",
             id: 6,
             new_value: "",
             old_value: "Marc",
@@ -1346,7 +1346,7 @@ QUnit.test('rendering of tracked field of type text: from empty to some text', a
         id: 11,
         trackingValueIds: [{
             changed_field: "Name",
-            field_type: "text",
+            fieldType: "text",
             id: 6,
             new_value: "Marc",
             old_value: "",
@@ -1368,7 +1368,7 @@ QUnit.test('rendering of tracked field of type selection: from a selection to no
         id: 11,
         trackingValueIds: [{
             changed_field: "State",
-            field_type: "selection",
+            fieldType: "selection",
             id: 6,
             new_value: "",
             old_value: "ok",
@@ -1390,7 +1390,7 @@ QUnit.test('rendering of tracked field of type selection: from no selection to a
         id: 11,
         trackingValueIds: [{
             changed_field: "State",
-            field_type: "selection",
+            fieldType: "selection",
             id: 6,
             new_value: "ok",
             old_value: "",
@@ -1412,7 +1412,7 @@ QUnit.test('rendering of tracked field of type many2one: from having a related r
         id: 11,
         trackingValueIds: [{
             changed_field: "Author",
-            field_type: "many2one",
+            fieldType: "many2one",
             id: 6,
             new_value: "",
             old_value: "Marc",
@@ -1434,7 +1434,7 @@ QUnit.test('rendering of tracked field of type many2one: from no related record 
         id: 11,
         trackingValueIds: [{
             changed_field: "Author",
-            field_type: "many2one",
+            fieldType: "many2one",
             id: 6,
             new_value: "Marc",
             old_value: "",
@@ -1463,7 +1463,7 @@ QUnit.test('basic rendering of tracking value (monetary type)', async function (
         trackingValueIds: [{
             changed_field: "Revenue",
             currencyId: 1,
-            field_type: "monetary",
+            fieldType: "monetary",
             id: 6,
             new_value: 500,
             old_value: 1000,
@@ -1563,7 +1563,7 @@ QUnit.test('message should not be considered as "clicked" after clicking on noti
     });
     this.data['mail.notification'].records.push({
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'exception',
         notificationType: 'email',
     });

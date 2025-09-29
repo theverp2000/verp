@@ -1,4 +1,4 @@
-import { _super, AbstractModel, MetaModel } from "../../../core";
+import { _super, AbstractModel, MetaModel } from "../../../core/models"
 import { sum } from "../../../core/tools";
 
 @MetaModel.define()

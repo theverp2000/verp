@@ -1,7 +1,9 @@
 import xpath from 'xpath';
-import { _Date, _super, Fields, MetaModel, Model } from '../../../core';
+import { _Date, Fields } from '../../../core';
 import { ValidationError } from '../../../core/helper';
-import { _t, bool, f, formatLang, serializeXml } from '../../../core/tools';
+import { _super, MetaModel, Model } from "../../../core/models";
+import { _t, bool, f, formatLang } from '../../../core/tools';
+import { serializeXml } from "../../../core/tools/xml";
 
 @MetaModel.define()
 class ResPartner extends Model {

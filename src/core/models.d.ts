@@ -217,6 +217,12 @@ declare class BaseModel extends Function {
    */
   static get _mro(): Function[];
 
+  env: Environment;
+  pool: Registry;
+  _ids: number[];
+  _prefetchIds: number[];
+  _name: string;
+
   /**
    * Method Resolution Order filtered by type
    */
@@ -317,9 +323,10 @@ declare class BaseModel extends Function {
 
   /**
    * Verifies that the operation given by ``operation`` is allowed for the current user according to ir.rules.
-    @param operation one of ``write``, ``unlink``
-    @throw UserError * if current ir.rules do not permit this operation.
-    @returns null if the operation is allowed
+    @param operation: one of ``write``, ``unlink``
+    @throw UserError: * if current ir.rules do not permit this operation.
+    @returns None if the operation is allowed
+   * @param operation 
    */
   checkAccessRule(operation: string): Promise<void>;
 
@@ -1177,19 +1184,14 @@ declare class BaseModel extends Function {
    */
   _flushSearch(domain: any[], options?: { fields?: any, order?: string, seen?: Set<string> }): Promise<void>;
 
-  _name: string; // assign for easy debuging
-  _ids: number[];
-  _prefetchIds: number[];
-  env: Environment;
-  pool: Registry;
-  cls: any;
-
   /**
    * Return the list of actual record ids corresponding to ``this``. 
    */
   get ids(): any[];
 
   get id(): any;
+
+  get cls(): any;
 
   get _cr(): Cursor;
 
@@ -1351,7 +1353,7 @@ declare class BaseModel extends Function {
    */
   withContext(args?: {}, kwargs?: {}): Promise<any>;
 
-  withPrefetch(prefetchIds?: number[]): Promise<any>;
+  withPrefetch(prefetchIds?: number[]): any;
 
   _updateCache(values: {}, validate: boolean): Promise<void>;
 
@@ -1462,7 +1464,7 @@ declare class BaseModel extends Function {
     @param func a function or a dot-separated sequence of field names
     @returns recordset of records satisfying func, may be empty.
 
-    .. code-block:: javascript
+    .. code-block:: python3
 
         // only keep records whose company is the current user's
         records.filtered((r => r.companyId == user.companyId)
@@ -1504,12 +1506,14 @@ declare class BaseModel extends Function {
           * 'large' : 1000
    * @returns 
    */
-  _populateSizes: {};
+  get _populateSizes(): {};
 
   /**
    * Return the list of models which have to be populated before the current one.
    */
-  _populateDependencies: [];
+  get _populateDependencies(): string[];
+
+  _populateFactories(): Promise<any>;
 
   /**
    * Create records to populate this model.

@@ -91,7 +91,7 @@ class AccountAnalyticLine extends Model {
 
     def _compute_encoding_uom_id(self):
         for analytic_line in self:
-            analytic_line.encoding_uom_id = analytic_line.companyId.timesheet_encode_uom_id
+            analytic_line.encoding_uom_id = analytic_line.company_id.timesheet_encode_uom_id
 
     @api.depends('taskId.partnerId', 'projectId.partnerId')
     def _compute_partner_id(self):
@@ -140,12 +140,12 @@ class AccountAnalyticLine extends Model {
                 vals['name'] = '/'
             vals.update(self._timesheet_preprocess(vals))
 
-        # Although this make a second loop on the vals, we need to wait the preprocess as it could change the companyId in the vals
+        # Although this make a second loop on the vals, we need to wait the preprocess as it could change the company_id in the vals
         # TODO To be refactored in master
         employees = self.env['hr.employee'].sudo().search([('userId', 'in', user_ids)])
         employee_for_user_company = defaultdict(dict)
         for employee in employees:
-            employee_for_user_company[employee.userId.id][employee.companyId.id] = employee.id
+            employee_for_user_company[employee.userId.id][employee.company_id.id] = employee.id
 
         employee_ids = set()
         for vals in vals_list:
@@ -154,8 +154,8 @@ class AccountAnalyticLine extends Model {
                 employee_for_company = employee_for_user_company.get(vals.get('userId', default_user_id), False)
                 if not employee_for_company:
                     continue
-                companyId = list(employee_for_company)[0] if len(employee_for_company) == 1 else vals.get('companyId', self.env.company.id)
-                vals['employee_id'] = employee_for_company.get(companyId, False)
+                company_id = list(employee_for_company)[0] if len(employee_for_company) == 1 else vals.get('company_id', self.env.company.id)
+                vals['employee_id'] = employee_for_company.get(company_id, False)
             elif vals.get('employee_id'):
                 employee_ids.add(vals['employee_id'])
         if any(not emp.active for emp in self.env['hr.employee'].browse(list(employee_ids))):
@@ -207,7 +207,7 @@ class AccountAnalyticLine extends Model {
         doc = etree.XML(view_arch)
         Model = self.env[related_model]
         # Just fetch the name of the uom in `timesheet_encode_uom_id` of the current company
-        encoding_uom_name = self.env.company.timesheet_encode_uom_id.withContext(prefetch_fields: false).sudo().name
+        encoding_uom_name = self.env.company.timesheet_encode_uom_id.with_context(prefetch_fields: false).sudo().name
         for node in doc.xpath("//field[@widget='timesheet_uom'][not(@string)] | //field[@widget='timesheet_uom_no_toggle'][not(@string)]"):
             name_with_uom = re.sub(_('Hours') + "|Hours", encoding_uom_name or '', Model._fields[node.get('name')]._description_string(self.env), flags=re.IGNORECASE)
             node.set('string', name_with_uom)
@@ -222,13 +222,13 @@ class AccountAnalyticLine extends Model {
             '|',
                 '&',
                     '|',
-                        ('taskId.projectId.message_partner_ids', 'child_of', [self.env.user.partnerId.commercial_partner_id.id]),
-                        ('taskId.message_partner_ids', 'child_of', [self.env.user.partnerId.commercial_partner_id.id]),
+                        ('taskId.projectId.message_partner_ids', 'childOf', [self.env.user.partnerId.commercial_partner_id.id]),
+                        ('taskId.message_partner_ids', 'childOf', [self.env.user.partnerId.commercial_partner_id.id]),
                     ('taskId.projectId.privacyVisibility', '=', 'portal'),
                 '&',
                     ('taskId', '=', False),
                     '&',
-                        ('projectId.message_partner_ids', 'child_of', [self.env.user.partnerId.commercial_partner_id.id]),
+                        ('projectId.message_partner_ids', 'childOf', [self.env.user.partnerId.commercial_partner_id.id]),
                         ('projectId.privacyVisibility', '=', 'portal')
         ]
 
@@ -242,19 +242,19 @@ class AccountAnalyticLine extends Model {
             task = self.env['project.task'].browse(vals.get('taskId'))
             task_analytic_account_id = task._get_task_analytic_account_id()
             vals['account_id'] = task_analytic_account_id.id
-            vals['companyId'] = task_analytic_account_id.companyId.id or task.companyId.id
-            if vals.get('tagIds'):
-                vals['tagIds'] += [Command.link(tag_id.id) for tag_id in task.analytic_tag_ids]
+            vals['company_id'] = task_analytic_account_id.company_id.id or task.company_id.id
+            if vals.get('tag_ids'):
+                vals['tag_ids'] += [Command.link(tag_id.id) for tag_id in task.analytic_tag_ids]
             else:
-                vals['tagIds'] = [Command.set(task.analytic_tag_ids.ids)]
+                vals['tag_ids'] = [Command.set(task.analytic_tag_ids.ids)]
             if not task_analytic_account_id.active:
                 raise UserError(_('You cannot add timesheets to a project or a task linked to an inactive analytic account.'))
         # project implies analytic account
         if vals.get('projectId') and not vals.get('account_id'):
             project = self.env['project.project'].browse(vals.get('projectId'))
-            vals['account_id'] = project.analytic_account_id.id
-            vals['companyId'] = project.analytic_account_id.companyId.id or project.companyId.id
-            if not project.analytic_account_id.active:
+            vals['account_id'] = project.analyticAccountId.id
+            vals['company_id'] = project.analyticAccountId.company_id.id or project.company_id.id
+            if not project.analyticAccountId.active:
                 raise UserError(_('You cannot add timesheets to a project linked to an inactive analytic account.'))
         # employee implies user
         if vals.get('employee_id') and not vals.get('userId'):
@@ -272,13 +272,13 @@ class AccountAnalyticLine extends Model {
         # set timesheet UoM from the AA company (AA implies uom)
         if not vals.get('product_uom_id') and all(v in vals for v in ['account_id', 'projectId']):  # projectId required to check this is timesheet flow
             analytic_account = self.env['account.analytic.account'].sudo().browse(vals['account_id'])
-            uom_id = analytic_account.companyId.project_time_mode_id.id
+            uom_id = analytic_account.company_id.project_time_mode_id.id
             if not uom_id:
-                companyId = vals.get('companyId', False)
-                if not companyId:
+                company_id = vals.get('company_id', False)
+                if not company_id:
                     project = self.env['project.project'].browse(vals.get('projectId'))
-                    companyId = project.analytic_account_id.companyId.id or project.companyId.id
-                uom_id = self.env['res.company'].browse(companyId).project_time_mode_id.id
+                    company_id = project.analyticAccountId.company_id.id or project.company_id.id
+                uom_id = self.env['res.company'].browse(company_id).project_time_mode_id.id
             vals['product_uom_id'] = uom_id
         return vals
 
@@ -305,8 +305,8 @@ class AccountAnalyticLine extends Model {
             for timesheet in sudo_self:
                 cost = timesheet._employee_timesheet_cost()
                 amount = -timesheet.unit_amount * cost
-                amount_converted = timesheet.employee_id.currency_id._convert(
-                    amount, timesheet.account_id.currency_id or timesheet.currency_id, self.env.company, timesheet.date)
+                amount_converted = timesheet.employee_id.currencyId._convert(
+                    amount, timesheet.account_id.currencyId or timesheet.currencyId, self.env.company, timesheet.date)
                 result[timesheet.id].update({
                     'amount': amount_converted,
                 })

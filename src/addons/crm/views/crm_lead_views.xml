@@ -45,7 +45,7 @@
                                 </div>
                             </button>
                         </div>
-                        <widget name="webRibbon" title="Lost" bgColor="bg-danger" attrs="{'invisible': ['|', ['probability', '&gt;', 0], ['active', '=', true]]}"/>
+                        <widget name="webRibbon" title="Lost" bgcolor="bg-danger" attrs="{'invisible': ['|', ['probability', '&gt;', 0], ['active', '=', true]]}"/>
                         <widget name="webRibbon" title="Won" attrs="{'invisible': [['probability', '&lt;', 100]]}" />
                         <div class="oe-title">
                             <label for="label" string="Lead" attrs="{'invisible': [['type', '=', 'opportunity']]}"/>

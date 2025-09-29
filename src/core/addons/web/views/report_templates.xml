@@ -473,6 +473,7 @@
 
     <template id="externalLayout">
         <t t-if="!bool(o)" t-set="o" t-value="doc"/>
+
         <t t-set="reportHeaderStyle">margin-left:10px; margin-top:-10px</t> <!-- Tony modified -->
         <t t-if="!bool(company)">
             <!-- Multicompany -->

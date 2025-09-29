@@ -52,7 +52,7 @@ QUnit.test('mark as read', async function (assert) {
     });
     // failure that is expected to be used in the test
     this.data['mail.notification'].records.push({
-        mail_message_id: 11, // id of the related message
+        mailMessageId: 11, // id of the related message
         notification_status: 'exception', // necessary value to have a failure
         notification_type: 'snail', // expected failure type for snailmail message
     });
@@ -115,13 +115,13 @@ QUnit.test('notifications grouped by notification_type', async function (assert)
     this.data['mail.notification'].records.push(
         // first failure that is expected to be used in the test
         {
-            mail_message_id: 11, // id of the related first message
+            mailMessageId: 11, // id of the related first message
             notification_status: 'exception', // necessary value to have a failure
             notification_type: 'snail', // different type from second failure
         },
         // second failure that is expected to be used in the test
         {
-            mail_message_id: 12, // id of the related second message
+            mailMessageId: 12, // id of the related second message
             notification_status: 'exception', // necessary value to have a failure
             notification_type: 'email', // different type from first failure
         }
@@ -215,13 +215,13 @@ QUnit.test('grouped notifications by document model', async function (assert) {
     this.data['mail.notification'].records.push(
         // first failure that is expected to be used in the test
         {
-            mail_message_id: 11, // id of the related first message
+            mailMessageId: 11, // id of the related first message
             notification_status: 'exception', // necessary value to have a failure
             notification_type: 'snail', // expected failure type for snailmail message
         },
         // second failure that is expected to be used in the test
         {
-            mail_message_id: 12, // id of the related second message
+            mailMessageId: 12, // id of the related second message
             notification_status: 'exception', // necessary value to have a failure
             notification_type: 'snail', // expected failure type for snailmail message
         }
@@ -261,7 +261,7 @@ QUnit.test('grouped notifications by document model', async function (assert) {
         );
         assert.strictEqual(
             JSON.stringify(payload.action.domain),
-            JSON.stringify([['message_ids.snailmail_error', '=', true]]),
+            JSON.stringify([['messageIds.snailmail_error', '=', true]]),
             "action should have 'message_has_sms_error' as domain"
         );
     });

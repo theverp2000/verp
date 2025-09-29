@@ -5,10 +5,12 @@ import { format as f } from "util";
 import { Dict, FrozenDict, MultiDict } from "../../helper";
 import { RuntimeError } from "../../helper/errors";
 import { WebRequest } from "../../http";
-import { bool, doWithSync, isInstance, iter, len, lstrip, sorted, update } from "../../tools";
+import { bool, doWithSync, len, lstrip, sorted, update } from "../../tools";
+import { isInstance } from "../../tools/func";
+import { iter } from "../../tools/iterable";
+import { _encodeIdna } from "./idna";
 import * as converter from './converter';
 import { BadHost, BuildError, MethodNotAllowed, NotFound, RequestAliasRedirect, RequestRedirect, RequestSlash } from "./exceptions";
-import { _encodeIdna } from "./idna";
 import { Rule } from "./rule";
 import { _fastUrlQuote, toUnicode, urlEncode } from "./utils";
 import { getHost } from "./wsgi";
@@ -23,7 +25,7 @@ const DEFAULT_CONVERTERS = {
   "uuid": converter.UUIDConverter,
 }
 
-const _simpleRuleRe = /<([^>]+)>/;
+const _simpleRuleRe = /<([^>]+)>/g;
 
 interface RouteOptions {
   rules?: [],

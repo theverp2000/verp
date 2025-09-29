@@ -2,21 +2,31 @@ import * as crypto from 'crypto';
 import _ from 'lodash';
 import { DateTime, Duration } from 'luxon';
 import assert from 'node:assert';
-import { _super, AbstractModel, api, Command, Fields, MetaModel, Model, ModelRecords, NO_ACCESS, tools, TransientModel } from '../../..';
-import { Environment, getattr, hasattr } from '../../../api';
-import { AccessDenied, AccessError, Dict, FrozenDict, Map2, UserError, ValidationError } from "../../../helper";
+import { api, tools } from '../../..';
+import { Environment } from '../../../api/api';
+import { getattr, hasattr } from '../../../api/func';
+import { Map2, Dict, FrozenDict } from "../../../helper/collections";
+import { AccessDenied, AccessError, UserError, ValidationError } from '../../../helper/errors';
 import { WebRequest } from '../../../http';
+import { MetaModel, Model } from "../../../models";
 import { expression, Query } from '../../../osv';
-import { MetaDatebase } from '../../../service/db';
 import * as ipaddress from '../../../service/middleware/ipaddress';
-import { _f, allTimezones, bool, chain, doWith, E, extend, f, isCallable, isInstance, len, partition, pop, quoteList, repeat, serializeXml, setOptions, sha256, singleEmailRe, sorted, sortedAsync, stringify, update, urandom } from '../../../tools';
+import { bool, doWith, isCallable, isInstance, quoteList, singleEmailRe } from '../../../tools';
 import * as context from '../../../tools/context';
+import { chain, extend, len, repeat, sorted, sortedAsync } from '../../../tools/iterable';
+import { stringify } from '../../../tools/json';
 import * as lazy from '../../../tools/lazy';
+import { allTimezones, partition, pop, setOptions, sha256, update } from "../../../tools/misc";
+import { _f, f, urandom } from '../../../tools/utils';
+import { E, serializeXml } from "../../../tools/xml";
+import { Command, Fields, NO_ACCESS } from './../../../fields';
+import { AbstractModel, ModelRecords, TransientModel, _super } from './../../../models';
 import { MODULE_UNINSTALL_FLAG } from './ir_model';
+import { MetaDatebase } from '../../../service/db';
 
 const USER_PRIVATE_FIELDS = []
 
-const LIFE_TIME = 30 * 24 * 60 * 60 * 60; // 1 month
+const LIFE_TIME = 30*24*60*60*60; // 1 month
 
 function nameSelectionGroups(ids: any[]) {
   return 'selGroups_' + sorted(ids).map(id => String(id)).join('_');
@@ -927,7 +937,7 @@ class Users extends Model {
 
   @api.model()
   async _nameSearch(name: string = '', args?: any, operator: string = 'ilike', opts: { limit?: number, nameGetUid?: any } = {}): Promise<number | any[] | Query> {
-    let { limit = 100, nameGetUid = false } = opts;
+    let {limit=100, nameGetUid=false} = opts;
     args = args || [];
     let userIds = [];
     let domain;
@@ -1063,8 +1073,8 @@ class Users extends Model {
     for (const user of this) {
       const groups = await user.groupsId;
       await user.set('accessesCount', len(await groups.modelAccess)),
-        await user.set('rulesCount', len(await groups.ruleGroups)),
-        await user.set('groupsCount', len(groups))
+      await user.set('rulesCount', len(await groups.ruleGroups)),
+      await user.set('groupsCount', len(groups))
     }
   }
 
@@ -2160,7 +2170,7 @@ class APIKeys extends Model {
         VALUES ($1, $2, $3, $4, $5)
         RETURNING id
         `, { table: this.cls._table }),
-      [name, (await this.env.user()).id, scope, crypto.createDecipheriv('pbkdf2_sha512', Buffer.from(k), iv), k.slice(0, INDEX_SIZE)]);
+      [name, (await this.env.user()).id, scope, crypto.createDecipheriv('pbkdf2_sha512', Buffer.from(k) as any, iv as any), k.slice(0, INDEX_SIZE)]);
 
     const ip = this.env.req ? this.env.req.socket.remoteAddress : 'n/a';
     console.info("%s generated: scope: <%s> for '%s' (#%s) from %s", this.cls._description, scope, await (await this.env.user()).login, this.env.uid, ip);

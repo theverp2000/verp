@@ -4,12 +4,7 @@
     "category": "Productivity",
     "sequence": 225,
     "summary": "Build your own dashboards",
-    "descriptions": [
-        "Lets the user create a custom dashboard.",
-        "========================================",
-        "",
-        "Allows users to create custom dashboard."
-    ],
+    "description": "Lets the user create a custom dashboard.\n========================================\n\nAllows users to create custom dashboard.",
     "depends": ["base", "web"],
     "data": [
         "security/ir.model.access.csv",

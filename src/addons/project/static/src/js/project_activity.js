@@ -2,7 +2,7 @@
 
 import ActivityView from '@mail/js/views/activity/activity_view';
 import { ProjectControlPanel } from '@project/js/project_control_panel';
-import viewRegistry from 'web.view_registry';
+import viewRegistry from 'web.viewRegistry';
 
 const ProjectActivityView = ActivityView.extend({
     config: Object.assign({}, ActivityView.prototype.config, {
@@ -10,4 +10,4 @@ const ProjectActivityView = ActivityView.extend({
     }),
 });
 
-viewRegistry.add('project_activity', ProjectActivityView);
+viewRegistry.add('projectActivity', ProjectActivityView);

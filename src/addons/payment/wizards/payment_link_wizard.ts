@@ -1,9 +1,11 @@
 import xpath from "xpath";
-import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
+import { Fields, api } from "../../../core";
+import { MetaModel, TransientModel, _super } from "../../../core/models"
+import { bool, extend, floatCompare, len, update } from "../../../core/tools";
+import { getrootXml, parseXml } from "../../../core/tools/xml";
 import { ValidationError } from "../../../core/helper";
-import { urlQuote } from "../../../core/service/middleware/utils";
-import { bool, extend, floatCompare, getrootXml, len, parseXml, update } from "../../../core/tools";
 import { generateAccessToken } from "../utils";
+import { urlQuote } from "../../../core/service/middleware/utils";
 
 @MetaModel.define()
 class PaymentLinkWizard extends TransientModel {

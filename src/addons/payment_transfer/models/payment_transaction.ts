@@ -1,5 +1,6 @@
-import { _super, api, MetaModel, Model } from "../../../core";
+import { api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { _f, bool } from "../../../core/tools";
 import { TransferController } from "../controllers/main";
 

@@ -1,6 +1,8 @@
-import { _super, api, MetaModel, Model } from "../../../core";
+import { api } from "../../../core";
 import { UserError, ValidationError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { bool } from "../../../core/tools";
+import { stringify } from "../../../core/tools/json";
 import { buildTokenName, generateAccessToken, getCustomerIpAddress, toMajorCurrencyUnits, toMinorCurrencyUnits } from "../../payment/utils";
 import { CURRENCY_DECIMALS, RESULT_CODES_MAPPING } from "../const";
 import { formatPartnerName, includePartnerAddresses } from "../utils";

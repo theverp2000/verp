@@ -1,5 +1,6 @@
-import { MetaModel, Model } from "../../../core";
 import { RedirectWarning, ValidationError } from "../../../core/helper";
+import { MetaModel, Model } from "../../../core/models";
+import { bool } from "../../../core/tools";
 
 @MetaModel.define()
 class ResCompany extends Model {
@@ -13,7 +14,7 @@ class ResCompany extends Model {
                 ['companyId', 'in', this.ids],
                 ['state', '=', 'draft'],
                 ['date', '<=', values['fiscalyearLockDate']]]);
-            if (draftEntries.ok) {
+            if (bool(draftEntries)) {
                 const errorMsg = await this._t(
                     'There are still unposted entries in the period you want to lock. You should either post or delete them.');
                 const actionError = {
@@ -35,7 +36,7 @@ class ResCompany extends Model {
                 ['date', '<=', values['fiscalyearLockDate']],
                 ['moveId.state', 'in', ['draft', 'posted']],
             ])
-            if (unreconciledStatementLines.ok) {
+            if (bool(unreconciledStatementLines)) {
                 const errorMsg = await this._t("There are still unreconciled bank statement lines in the period you want to lock. You should either reconcile or delete them.");
                 throw new ValidationError(errorMsg);
             }

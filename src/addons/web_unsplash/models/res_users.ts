@@ -1,5 +1,5 @@
 import assert from "assert";
-import { MetaModel, Model } from "../../../core";
+import { MetaModel, Model } from "../../../core/models"
 
 @MetaModel.define()
 class ResUsers extends Model {

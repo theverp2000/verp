@@ -1,7 +1,7 @@
 import { Fields, api } from "../../../core";
-import { UserError } from "../../../core/helper";
-import { MetaModel, TransientModel, _super } from "../../../core";
-import * as xml from '../../../core/tools';
+import { UserError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
+import * as xml from '../../../core/tools/xml';
 
 /**
  * Wizard to invite partners (or channels) and make them followers. 

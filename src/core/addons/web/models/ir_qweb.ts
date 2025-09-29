@@ -1,10 +1,13 @@
 import assert from 'assert';
 import _ from 'lodash';
 import { format } from 'util';
-import { AbstractModel, MetaModel, _super, api } from '../../..';
+import { api } from '../../..';
 import { OrderedDict } from '../../../helper';
+import { AbstractModel, MetaModel, _super } from '../../../models';
 import { urlQuote } from '../../../service/middleware/utils';
-import { markup, sha512, toText } from '../../../tools';
+import { sha512 } from '../../../tools';
+import { toText } from '../../../tools/compat';
+import { markup } from '../../../tools/xml';
 
 /**
  * Widget options:

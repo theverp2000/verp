@@ -1,8 +1,9 @@
 import { randomInt } from "crypto";
 import { addDate, diffDate } from "./date_utils";
-import { parseInt } from "./func";
-import { enumerate, next } from "./iterable";
-import { _f, f } from "./string";
+import { isInstance, parseInt } from "./func";
+import { enumerateAsync, next, nextAsync } from "./iterable";
+import { _f, choices, f, SeedRandom } from "./utils";
+import { StopIteration } from "../helper";
 
 export class Populate {
 
@@ -27,9 +28,9 @@ export class Populate {
   * @param formatter 
   * @returns Function(iterator, string, string) -> dict: function of the form (iterator, fieldName, modelName) -> values
   */
-  static constant(val, formatter: Function = this.formatStr) {
-    function* generate(iterator, fieldName) {
-      for (const [counter, values] of enumerate(iterator)) {
+  static constant(val, formatter: Function = Populate.formatStr) {
+    async function* generate(iterator, fieldName) {
+      for await (const [counter, values] of enumerateAsync(iterator)) {
         values[fieldName] = formatter(val, counter, values)
         yield values;
       }
@@ -43,9 +44,7 @@ export class Populate {
    * @returns 
    */
   static random(seed) {
-    // r = random.Random()
-    // r.seed(seed, version=2)
-    return randomInt(10);
+    return new SeedRandom(seed);
   }
 
   /**
@@ -55,7 +54,7 @@ export class Populate {
    * @returns 
    */
   static chainFactories(fieldFactories, modelName) {
-    let generator = this.rootFactory();
+    let generator = Populate.rootFactory();
     for (const [fname, fieldFactory] of fieldFactories) {
       generator = fieldFactory(generator, fname, modelName);
     }
@@ -82,13 +81,13 @@ export class Populate {
     @param seed optional initialization of the random number generator
     @param formatter (val, counter, values) --> formattedValue
     @param counterOffset
-    @returns function of the form (iterator, field_name, model_name) -> values
+    @returns function of the form (iterator, fieldName, modelName) -> values
    */
-  static randomize(vals, weights?: any, seed?: boolean, formatter = this.formatStr, counterOffset = 0) {
-    function* generate(iterator, fieldName, modelName) {
-      const r = this.random(f('%s+field+%s', modelName, seed || fieldName));
-      for (const [counter, values] of enumerate(iterator)) {
-        const val = r.choices(vals, weights)[0];
+  static randomize(vals, weights?: any, seed?: boolean, formatter = Populate.formatStr, counterOffset = 0) {
+    async function* generate(iterator, fieldName, modelName) {
+      const r = Populate.random(f('%s+field+%s', modelName, seed || fieldName));
+      for await (const [counter, values] of enumerateAsync(iterator)) {
+        const val = Array.from(choices(vals, weights))[0];
         values[fieldName] = formatter(val, counter + counterOffset, values);
         yield values;
       }
@@ -107,21 +106,21 @@ export class Populate {
       @param then if defined, factory used when vals has been consumed.
       @returns function of the form (iterator, fieldName, modelName) -> values
    */
-    static cartesian(vals, weights?: any, seed = false, formatter = this.formatStr, then?: any) {
-    const self = this;
-    function* generate(iterator, fieldName, modelName) {
+  static cartesian(vals, weights?: any, seed = false, formatter = Populate.formatStr, func?: any) {
+    async function* generate(iterator, fieldName, modelName) {
       let counter = 0;
-      for (const values of iterator) {
+      // for (const values of iterator) {
+      for await (const [_counter, values] of enumerateAsync(iterator)) {
         if (values['__complete']) {
           break  // will consume and lose an element, (complete so a filling element). If it is a problem, use peekable instead.
         }
         for (const val of vals) {
-          yield { ...values, fieldName: formatter(val, counter, values) }
+          yield { ...values, [fieldName]: formatter(val, counter+1, values) }
         }
         counter += 1;
       }
-      const factory = then || self.randomize(vals, weights, seed, formatter, counter);
-      for (const val of factory(iterator, fieldName, modelName)) {
+      const factory = func || Populate.randomize(vals, weights, seed, formatter, counter);
+      for await (const val of factory(iterator, fieldName, modelName)) {
         yield val;
       }
     }
@@ -140,18 +139,26 @@ export class Populate {
       @param then if defined, factory used when vals has been consumed.
       @returns function of the form (iterator, fieldName, modelName) -> values
    */
-  static iterate(vals, weights?: any, seed = false, formatter = this.formatStr, func?: any) {
-    function* generate(iterator, fieldName, modelName) {
+  static iterate(vals, weights?: any, seed: any = false, formatter = Populate.formatStr, func?: any) {
+    async function* generate(iterator, fieldName, modelName) {
       let counter = 0;
       for (const val of vals) { // iteratable order is important, shortest first
-        const values = next(iterator);
+        let values;
+        try {
+          values = await nextAsync(iterator);
+        } catch(e) {
+          if (isInstance(e, StopIteration)) {
+            break;
+          }
+          throw e;
+        }
         values[fieldName] = formatter(val, counter, values);
         values['__complete'] = false;
         yield values;
         counter += 1;
       }
-      const factory = func || this.randomize(vals, weights, seed, formatter, counter);
-      for (const val of factory(iterator, fieldName, modelName)) {
+      const factory = func || Populate.randomize(vals, weights, seed, formatter, counter);
+      for await (const val of factory(iterator, fieldName, modelName)) {
         yield val;
       }
     }
@@ -168,10 +175,10 @@ export class Populate {
       @returns function of the form (iterator, fieldName, modelName) -> values
    */
   static compute(func, seed?: any) {
-    function* generate(iterator, fieldName, modelName) {
-      const r = this.random(f('%s+field+%s', modelName, seed || fieldName));
-      for (const [counter, values] of enumerate(iterator)) {
-        const val = func({ values: values, counter: counter, random: r });
+    async function* generate(iterator, fieldName, modelName) {
+      const random = Populate.random(f('%s+field+%s', modelName, seed || fieldName));
+      for await (const [counter, values] of enumerateAsync(iterator)) {
+        const val = await func({values, counter: counter+1, random });
         values[fieldName] = val;
         yield values;
       }
@@ -188,10 +195,10 @@ export class Populate {
       @returns function of the form (iterator, fieldName, modelName) -> values
    */
   static randint(a, b, seed?: any) {
-    function* getRandInt(random?: any, kwargs: {} = {}) {
-      return random.randint(a, b);
+    function* getRandInt(opts: {random?: any} = {}) {
+      return opts.random.randint(a, b);
     }
-    return this.compute(getRandInt, seed);
+    return Populate.compute(getRandInt, seed);
   }
 
   /**
@@ -203,10 +210,10 @@ export class Populate {
    * @returns 
    */
   static randfloat(a, b, seed?: any) {
-    function* getRandFloat(random?: any, kwargs: {} = {}) {
-      return random.uniform(a, b);
+    function* getRandFloat(opts: {random?: any} = {}) {
+      return opts.random.uniform(a, b);
     }
-    return this.compute(getRandFloat, seed);
+    return Populate.compute(getRandFloat, seed);
   }
 
   /**
@@ -229,6 +236,6 @@ export class Populate {
     function _getRandDatetime(opts: { random?: any } = {}) {
       return addDate(baseDate, { seconds: randomInt(parseInt(secondsBefore), parseInt(secondsAfter)) });
     }
-    return this.compute(_getRandDatetime, opts.seed);
+    return Populate.compute(_getRandDatetime, opts.seed);
   }
 }

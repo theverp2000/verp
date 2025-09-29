@@ -1,9 +1,6 @@
 {
   "label": "Snail Mail",
-  "descriptions": [
-    "Allows users to send documents by post",
-    "======================================="
-  ],
+  "description": "Allows users to send documents by post\n=====================================================",
   "category": "Hidden/Tools",
   "version": "0.3",
   "depends": [

@@ -1,12 +1,16 @@
 import _ from "lodash";
 import assert from "node:assert";
 import { format } from "util";
-import { Field, Fields, MetaModel, Model, ModelRecords, _super, api, tools } from "../../..";
-import { setdefault } from "../../../api";
+import { api, tools } from "../../..";
+import { setdefault } from "../../../api/func";
+import { Field, Fields } from "../../../fields";
 import { AccessError, DefaultDict, Dict, UserError, ValidationError } from "../../../helper";
-import { getModulePath, getResourcePath } from "../../../modules";
+import { MetaModel, Model, ModelRecords, _super } from "../../../models";
+import { getModulePath, getResourcePath } from "../../../modules/modules";
 import { Cursor } from "../../../sql_db";
-import { _convert$, _f, bool, equal, extend, f, getIsoCodes, groupby, isCallable, isInstance, itemgetter, len, quoteList, sha1, stringify, transLoad } from "../../../tools";
+import { _convert$, _f, bool, equal, extend, f, getIsoCodes, groupby, isCallable, isInstance, itemgetter, len, quoteList, sha1 } from "../../../tools";
+import { stringify } from "../../../tools/json";
+import { transLoad } from "../../../tools/translate";
 
 const TRANSLATION_TYPE = [
   ['model', 'Model Field'],
@@ -87,7 +91,7 @@ class IrTranslationImport {
                     VALUES `;
     const rowValue = '(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)';
     for (const rows of cr.splitForInConditions(this._rows)) {
-      let str = _convert$(Array(len(rows)).fill(rowValue).join(','));
+      let str = _convert$(_.fill(Array(len(rows)), rowValue).join(','));
       await cr.execute(query + str, { bind: rows.flat() });
     }
 
@@ -830,7 +834,7 @@ class IrTranslation extends Model {
             COALESCE(EXCLUDED."state", "irTranslation"."state"),
             COALESCE(EXCLUDED."comments", "irTranslation"."comments"))
         WHERE EXCLUDED."value" IS NOT NULL AND EXCLUDED."value" != '';
-      `, Array(len(rowsByType['model'])).fill('%s').join(', '));
+      `, _.fill(Array(len(rowsByType['model'])), '%s').join(', '));
       await this.env.cr.execute(query, { params: rowsByType['model'] });
     }
 
@@ -844,7 +848,7 @@ class IrTranslation extends Model {
               (EXCLUDED.label, EXCLUDED.lang, EXCLUDED."resId", EXCLUDED.src, EXCLUDED.type,
                 EXCLUDED.value, EXCLUDED.module, EXCLUDED.state, EXCLUDED.comments)
           WHERE EXCLUDED.value IS NOT NULL AND EXCLUDED.value != '';
-      `, Array(len(rowsByType['modelTerms'])).fill('%s').join(', '));
+      `, _.fill(Array(len(rowsByType['modelTerms'])), '%s').join(', '));
       await this.env.cr.execute(query, { params: rowsByType['modelTerms'] });
     }
   }

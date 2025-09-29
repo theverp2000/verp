@@ -1,6 +1,7 @@
 import _ from "lodash";
-import { _super, api, Fields, MetaModel, Model } from "../../../core";
+import { api, Fields } from "../../../core";
 import { DefaultDict, DefaultMapKey, MapKey, UserError, ValidationError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models";
 import { Query } from "../../../core/osv";
 import { AND, NEGATIVE_TERM_OPERATORS, OR } from "../../../core/osv/expression";
 import { _format2, bool, equal, extend, f, floatRound, len, sum, update } from "../../../core/tools";

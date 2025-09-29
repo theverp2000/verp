@@ -71,9 +71,9 @@
                                         <t t-esc="messageView.message.guestAuthor.label"/>
                                     </div>
                                 </t>
-                                <t t-elif="messageView.message.emailFrom">
-                                    <a class="o_Message_authorName text-truncate" t-attf-href="mailto:{{ messageView.message.emailFrom }}?subject=Re: {{ messageView.message.subject ? messageView.message.subject : '' }}">
-                                        <t t-esc="messageView.message.emailFrom"/>
+                                <t t-elif="messageView.message.email_from">
+                                    <a class="o_Message_authorName text-truncate" t-attf-href="mailto:{{ messageView.message.email_from }}?subject=Re: {{ messageView.message.subject ? messageView.message.subject : '' }}">
+                                        <t t-esc="messageView.message.email_from"/>
                                     </a>
                                 </t>
                                 <t t-else="">

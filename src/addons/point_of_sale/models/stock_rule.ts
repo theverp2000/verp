@@ -1,4 +1,4 @@
-import { MetaModel, Model, _super } from "../../../core";
+import { MetaModel, Model, _super } from "../../../core/models"
 import { bool } from "../../../core/tools";
 
 @MetaModel.define()

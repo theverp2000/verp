@@ -4,10 +4,7 @@
     "lib": [
       "es2021",
       "es2021.string",
-      "esnext.asynciterable",
-      "es2015.iterable", 
-      "dom", 
-      "es2015.collection" 
+      "esnext.asynciterable"
     ],
     "typeRoots": [
       "./node_modules/@types",
@@ -36,8 +33,6 @@
     "node_modules",
     "./src/test",
     "./src/test.ts",
-    "./src/draft",
-    "./src/**/*.py"
   ],
   "resolveSourceMapLocations": [
     "${workspaceFolder}/**",

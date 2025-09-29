@@ -1,36 +1,36 @@
-.o_form_project_tasks div.o_field_many2many[name=dependOnIds] tr.o_selected_row td.o_list_button {
+.o-form-project-tasks div.o-field-many2many[name=dependOnIds] tr.o-selected-row td.o-list-button {
     background-color: $table-border-color !important;
 }
 
-.o_form_project_project, .o_form_project_tasks {
+.o-form-project-project, .o-form-project-tasks {
     .note-editable {
         border: 0;
         padding: 0;
     }
 }
 
-.o_form_view.o_form_project_tasks .o_notebook > .tab-content > .tab-pane > :first-child.oe_form_field_html .o_readonly {
+.o-form-view.o-form-project-tasks .o-notebook > .tab-content > .tab-pane > :first-child.oe-form-field-html .o-readonly {
     padding: $o-horizontal-padding $o-horizontal-padding;
 }
 
-.o_form_view.o_form_project_update:not(.o_form_readonly), .o_form_view.o_form_project_update:not(.o_form_readonly) .o_form_sheet {
+.o-form-view.o-form-project-update:not(.o-form-readonly), .o-form-view.o-form-project-update:not(.o-form-readonly) .o-form-sheet {
     padding-bottom: 0;
     margin-bottom: 0;
 }
 
-.o_project_update_description {
-    .note-editable, .o_wysiwyg_resizer {
+.o-project-update-description {
+    .note-editable, .o-wysiwyg-resizer {
         border: 0;
     }
-    &.oe_form_field_html, .o_wysiwyg_wrapper {
+    &.oe-form-field-html, .o-wysiwyg-wrapper {
         margin-bottom: 0;
     }
-    &.oe_form_field_html .o_readonly {
+    &.oe-form-field-html .o-readonly {
         padding: $o-horizontal-padding $o-horizontal-padding;
     }
 }
 
-.o_form_view .btn.oe_stat_button.o_project_not_clickable {
+.o-form-view .btn.oe-stat-button.o-project-not-clickable {
     &:hover, &:focus {
         background-color: transparent;
         opacity: 0.8;
@@ -38,7 +38,7 @@
     }
 }
 
-.o_form_project_tasks .o_project_task_project_field input::placeholder {
+.o-form-project-tasks .o-project-task-project-field input::placeholder {
     color: darkred;
     font-style: italic;
 }

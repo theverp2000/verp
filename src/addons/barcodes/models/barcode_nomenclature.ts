@@ -1,5 +1,8 @@
-import { api, Fields, MetaModel, Model } from "../../../core";
-import { len } from "../../../core/tools";
+import _ from "lodash"
+import { api } from "../../../core"
+import { Fields } from "../../../core/fields"
+import { MetaModel, Model } from "../../../core/models"
+import { len } from "../../../core/tools"
 
 const UPC_EAN_CONVERSIONS = [
   ['none', 'Never'],
@@ -14,13 +17,11 @@ class BarcodeNomenclature extends Model {
   static _name = 'barcode.nomenclature'
   static _description = 'Barcode Nomenclature'
 
-  static label = Fields.Char({ string: 'Barcode Nomenclature', size: 32, required: true, help: 'An internal identification of the barcode nomenclature' });
-  static ruleIds = Fields.One2many('barcode.rule', 'barcodeNomenclatureId', { string: 'Rules', help: 'The list of barcode rules' });
+  static label = Fields.Char({string: 'Barcode Nomenclature', size: 32, required: true, help: 'An internal identification of the barcode nomenclature'});
+  static ruleIds = Fields.One2many('barcode.rule', 'barcodeNomenclatureId', { string: 'Rules', help: 'The list of barcode rules'});
   static upcEanConv = Fields.Selection(
-    UPC_EAN_CONVERSIONS, {
-      string: 'UPC/EAN Conversion', required: true, default: 'always',
-    help: "UPC Codes can be converted to EAN by prefixing them with a zero. This setting determines if a UPC/EAN barcode should be automatically converted in one way or another when trying to match a rule with the other encoding."
-  });
+    UPC_EAN_CONVERSIONS, {string: 'UPC/EAN Conversion', required: true, default: 'always',
+    help: "UPC Codes can be converted to EAN by prefixing them with a zero. This setting determines if a UPC/EAN barcode should be automatically converted in one way or another when trying to match a rule with the other encoding."});
 
   @api.model()
   async getBarcodeCheckDigit(numericBarcode) {
@@ -86,23 +87,23 @@ class BarcodeNomenclature extends Model {
     if (numericalContent) {  // the pattern encodes a numerical content
       const numStart = numericalContent.index  // start index of numerical content
       const numEnd = numericalContent.length  // end index of numerical content
-      const valueString = barcode.slice(numStart, numStart + numEnd - 2)  // numerical content in barcode
+      const valueString = barcode.slice(numStart, numStart+numEnd - 2)  // numerical content in barcode
       const content = numericalContent.toString();
       const wholePartMatch = content.match(/[{][N]*[D}]/);  // looks for whole part of numerical content
       const decimalPartMatch = content.match(/[{N][D]*[}]/);  // looks for decimal part
-      let wholePart = valueString.slice(0, wholePartMatch.index + wholePartMatch.length - 2)  // retrieve whole part of numerical content in barcode
-      const decimalPart = "0." + valueString.slice(decimalPartMatch.index, decimalPartMatch.index + decimalPartMatch.length - 1)  // retrieve decimal part
+      let wholePart = valueString.slice(0, wholePartMatch.index+wholePartMatch.length - 2)  // retrieve whole part of numerical content in barcode
+      const decimalPart = "0." + valueString.slice(decimalPartMatch.index, decimalPartMatch.index+decimalPartMatch.length - 1)  // retrieve decimal part
       if (wholePart == '') {
         wholePart = '0';
       }
       match['value'] = parseInt(wholePart) + parseFloat(decimalPart)
 
-      match['baseCode'] = barcode.slice(0, numStart) + Array(numEnd - numStart - 2).fill("0") + barcode.slice(numEnd - 2)  // replace numerical content by 0's in barcode
+      match['baseCode'] = barcode.slice(0,numStart) + _.fill(Array(numEnd - numStart - 2), "0") + barcode.slice(numEnd - 2)  // replace numerical content by 0's in barcode
       match['baseCode'] = match['baseCode'].replaceAll("\\\\", "\\").replaceAll("\\{", "{").replaceAll("\\}", "}").replaceAll("\\.", ".")
-      pattern = pattern.slice(0, numStart) + Array(numEnd - numStart - 2).fill("0") + pattern.slice(numEnd)  // replace numerical content by 0's in pattern to match
+      pattern = pattern.slice(0,numStart) + _.fill(Array(numEnd - numStart - 2), "0") + pattern.slice(numEnd)  // replace numerical content by 0's in pattern to match
     }
 
-    match['match'] = new RegExp(pattern).test(match['baseCode'].slice(0, len(pattern)));
+    match['match'] = new RegExp(pattern).test(match['baseCode'].slice(0,len(pattern)));
 
     return match;
   }
@@ -142,7 +143,7 @@ class BarcodeNomenclature extends Model {
         curBarcode = curBarcode.sclie(1);
       }
 
-      if (!this.checkEncoding(barcode, encoding)) {
+      if (! this.checkEncoding(barcode, encoding)) {
         continue;
       }
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <verp>
 
-    <record id="project_sharing_quick_create_task_form" model="ir.ui.view">
-        <field name="label">project.task.form.quick_create</field>
+    <record id="projectSharingQuickCreateTaskForm" model="ir.ui.view">
+        <field name="label">project.task.form.quickCreate</field>
         <field name="model">project.task</field>
         <field name="priority">999</field>
-        <field name="groups_id" eval="[(4, ref('base.group_portal')), (4, ref('base.group_user'))]"/>
+        <field name="groupsId" eval="[[4, refId('base.groupPortal')], [4, refId('base.groupUser')]]"/>
         <field name="arch" type="xml">
             <form>
                 <group>
@@ -15,53 +15,53 @@
         </field>
     </record>
 
-    <record id="project_sharing_project_task_view_kanban" model="ir.ui.view">
+    <record id="projectSharingProjectTaskViewKanban" model="ir.ui.view">
         <field name="label">project.sharing.project.task.view.kanban</field>
         <field name="model">project.task</field>
         <field name="priority">999</field>
-        <field name="groups_id" eval="[(4, ref('base.group_portal')), (4, ref('base.group_user'))]"/>
+        <field name="groupsId" eval="[[4, refId('base.groupPortal')], [4, refId('base.groupUser')]]"/>
         <field name="arch" type="xml">
             <kanban
-                class="o_kanban_small_column o_kanban_project_tasks"
-                default_group_by="stageId"
-                on_create="quick_create"
-                quick_create_view="project.project_sharing_quick_create_task_form"
+                class="o-kanban-small-column o-kanban-project-tasks"
+                defaultGroupby="stageId"
+                onCreate="quickCreate"
+                quickCreateView="project.projectSharingQuickCreateTaskForm"
                 archivable="0"
                 import="0"
             >
                 <field name="color"/>
                 <field name="priority"/>
-                <field name="stageId" options='{"group_by_tooltip": {"description": "Description"}}'/>
+                <field name="stageId" options='{"groupby_tooltip": {"description": "Description"}}'/>
                 <!-- TODO: [XBO] remove me in master -->
-                <field name="user_ids" invisible="1"/>
-                <field name="portal_user_names"/>
+                <field name="userIds" invisible="1"/>
+                <field name="portalUserNames"/>
                 <field name="partnerId"/>
                 <field name="sequence"/>
-                <field name="is_closed"/>
-                <field name="partner_is_company"/>
-                <field name="displayed_image_id"/>
+                <field name="isClosed"/>
+                <field name="partnerIsCompany"/>
+                <field name="displayedImageId"/>
                 <field name="active"/>
-                <field name="allow_subtasks"/>
-                <field name="child_text"/>
+                <field name="allowSubtasks"/>
+                <field name="childText"/>
                 <field name="legendBlocked" invisible="1"/>
-                <field name="legend_normal" invisible="1"/>
-                <field name="legend_done" invisible="1"/>
-                <progressbar field="kanban_state" colors='{"done": "success", "blocked": "danger", "normal": "muted"}'/>
+                <field name="legendNormal" invisible="1"/>
+                <field name="legendDone" invisible="1"/>
+                <progressbar field="kanbanState" colors='{"done": "success", "blocked": "danger", "normal": "muted"}'/>
                 <templates>
                 <t t-name="kanban-box">
-                    <div t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + kanban_getcolor(record.color.rawValue) : ''}} oe_kanban_card oe_kanban_global_click">
-                        <div class="oe_kanban_content">
-                            <div class="o_kanban_record_top">
-                                <div class="o_kanban_record_headings">
-                                    <strong class="o_kanban_record_title">
-                                        <s t-if="!record.active.rawValue"><field name="label" widget="name_with_subtask_count"/></s>
-                                        <t t-else=""><field name="label" widget="name_with_subtask_count"/></t>
+                    <div t-attf-class="{{!selectionMode ? 'oe-kanban-color-' + kanbanGetcolor(record.color.rawValue) : ''}} oe-kanban-card oe-kanban-global-click">
+                        <div class="oe-kanban-content">
+                            <div class="o-kanban-record-top">
+                                <div class="o-kanban-record-headings">
+                                    <strong class="o-kanban-record-title">
+                                        <s t-if="!record.active.rawValue"><field name="label" widget="nameWithSubtaskCount"/></s>
+                                        <t t-else=""><field name="label" widget="nameWithSubtaskCount"/></t>
                                     </strong>
-                                    <span invisible="context.get('default_project_id', False)"><br/><field name="projectId" required="1"/></span>
+                                    <span invisible="(context['default_projectId'] ?? false)"><br/><field name="projectId" required="1"/></span>
                                     <br />
                                     <t t-if="record.partnerId.value">
-                                        <span t-if="!record.partner_is_company.rawValue">
-                                            <field name="commercial_partner_id"/>
+                                        <span t-if="!record.partnerIsCompany.rawValue">
+                                            <field name="commercialPartnerId"/>
                                         </span>
                                         <span t-else="">
                                             <field name="partnerId"/>
@@ -69,48 +69,48 @@
                                     </t>
                                     <t t-else="record.emailFrom.rawValue"><span><field name="emailFrom"/></span></t>
                                 </div>
-                                <div class="o_dropdown_kanban dropdown" t-if="!selection_mode">
+                                <div class="o-dropdown-kanban dropdown" t-if="!selectionMode">
                                     <a role="button" class="dropdown-toggle o-no-caret btn" data-toggle="dropdown" data-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
                                         <span class="fa fa-ellipsis-v"/>
                                     </a>
                                     <div class="dropdown-menu" role="menu">
                                         <!-- [XBO] TODO: remove me in master -->
-                                        <a t-if="widget.editable" role="menuitem" type="set_cover" class="dropdown-item d-none" data-field="displayed_image_id">Set Cover Image</a>
+                                        <a t-if="widget.editable" role="menuitem" type="setCover" class="dropdown-item d-none" data-field="displayedImageId">Set Cover Image</a>
                                         <a t-if="widget.editable" role="menuitem" type="edit" class="dropdown-item">Edit</a>
                                         <div role="separator" class="dropdown-divider"></div>
-                                        <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                        <ul class="oe-kanban-colorpicker" data-field="color"/>
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_record_body">
-                                <field name="tagIds" widget="many2many_tags" options="{'color_field': 'color'}"/>
-                                <div t-if="record.date_deadline.rawValue" name="date_deadline" attrs="{'invisible': [('is_closed', '=', True)]}">
-                                    <field name="date_deadline" widget="remaining_days"/>
+                            <div class="o-kanban-record-body">
+                                <field name="tagIds" widget="many2manyTags" options="{'colorField': 'color'}"/>
+                                <div t-if="record.dateDeadline.rawValue" name="dateDeadline" attrs="{'invisible': [['isClosed', '=', true]]}">
+                                    <field name="dateDeadline" widget="remainingDays"/>
                                 </div>
-                                <div t-if="record.displayed_image_id.value">
-                                    <field name="displayed_image_id" widget="attachment_image"/>
+                                <div t-if="record.displayedImageId.value">
+                                    <field name="displayedImageId" widget="attachmentImage"/>
                                 </div>
                             </div>
-                            <div class="o-kanban-record-bottom" t-if="!selection_mode">
+                            <div class="o-kanban-record-bottom" t-if="!selectionMode">
                                 <div class="oe-kanban-bottom-left">
                                     <field name="priority" widget="priority"/>
                                 </div>
-                                <div class="oe-kanban-bottom-right" t-if="!selection_mode">
-                                    <span t-if="record.portal_user_names.rawValue.length > 0" class="pr-2" t-att-title="record.portal_user_names.rawValue">
-                                        <t t-set="user_count" t-value="record.portal_user_names.rawValue.split(',').length"/>
-                                        <t t-out="user_count"/>
-                                        <t t-if="user_count > 1"> assignees</t>
+                                <div class="oe-kanban-bottom-right" t-if="!selectionMode">
+                                    <span t-if="record.portalUserNames.rawValue.length > 0" class="pr-2" t-att-title="record.portalUserNames.rawValue">
+                                        <t t-set="userCount" t-value="record.portalUserNames.rawValue.split(',').length"/>
+                                        <t t-out="userCount"/>
+                                        <t t-if="userCount > 1"> assignees</t>
                                         <t t-else=""> assignee</t>
-                                        <t t-if="1 == 0" t-set="display_nb_assignees" t-value="user_count + ' assignee' + (user_count > 1 ? 's' : '')"/>
-                                        <t t-if="1 == 0" t-out="display_nb_assignees"/>
+                                        <t t-if="1 == 0" t-set="displayNbAssignees" t-value="userCount + ' assignee' + (userCount > 1 ? 's' : '')"/>
+                                        <t t-if="1 == 0" t-out="displayNbAssignees"/>
                                     </span>
-                                    <field name="kanban_state" widget="state_selection"/>
+                                    <field name="kanbanState" widget="stateSelection"/>
                                     <!-- TODO: [XBO] remove me in master -->
-                                    <field name="user_ids" string="Assignees" widget="many2many_avatar_user" options="{'no_open_chat': True}" invisible="1"/>
+                                    <field name="userIds" string="Assignees" widget="many2manyAvatarUser" options="{'noOpenChat': true}" invisible="1"/>
                                 </div>
                             </div>
                         </div>
-                        <div class="oe_clear"></div>
+                        <div class="oe-clear"></div>
                     </div>
                 </t>
                 </templates>
@@ -118,118 +118,118 @@
         </field>
     </record>
 
-    <record id="project_sharing_project_task_view_tree" model="ir.ui.view">
+    <record id="projectSharingProjectTaskViewTree" model="ir.ui.view">
         <field name="label">project.sharing.project.task.tree</field>
         <field name="model">project.task</field>
         <field name="priority">999</field>
         <field name="arch" type="xml">
             <tree string="Tasks" sample="1" delete="0" import="0">
-                <field name="is_closed" invisible="1" />
-                <field name="allow_subtasks" invisible="1" />
+                <field name="isClosed" invisible="1" />
+                <field name="allowSubtasks" invisible="1" />
                 <field name="sequence" invisible="1" readonly="1"/>
                 <field name="priority" widget="priority" optional="show" nolabel="1"/>
-                <field name="label" widget="name_with_subtask_count"/>
-                <field name="child_text" invisible="1"/>
+                <field name="label" widget="nameWithSubtaskCount"/>
+                <field name="childText" invisible="1"/>
                 <field name="companyId" invisible="1"/>
                 <field name="partnerId" optional="hide"/>
-                <field name="portal_user_names" string="Assignees" optional="show"/>
+                <field name="portalUserNames" string="Assignees" optional="show"/>
                 <!-- TODO: [XBO] remove me in master -->
-                <field name="user_ids" invisible="1" />
-                <field name="date_deadline" optional="hide" widget="remaining_days" attrs="{'invisible': [('is_closed', '=', True)]}"/>
-                <field name="tagIds" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
-                <field name="kanban_state" widget="state_selection" optional="hide"/>
+                <field name="userIds" invisible="1" />
+                <field name="dateDeadline" optional="hide" widget="remainingDays" attrs="{'invisible': [['isClosed', '=', true]]}"/>
+                <field name="tagIds" widget="many2manyTags" options="{'colorField': 'color'}" optional="show"/>
+                <field name="kanbanState" widget="stateSelection" optional="hide"/>
                 <field name="legendBlocked" invisible="1"/>
-                <field name="legend_normal" invisible="1"/>
-                <field name="legend_done" invisible="1"/>
-                <field name="stageId" invisible="context.get('set_visible',False)" optional="show"/>
+                <field name="legendNormal" invisible="1"/>
+                <field name="legendDone" invisible="1"/>
+                <field name="stageId" invisible="(context['setVisible'] ?? false)" optional="show"/>
             </tree>
         </field>
     </record>
 
-    <record id="project_sharing_project_task_view_form" model="ir.ui.view">
+    <record id="projectSharingProjectTaskViewForm" model="ir.ui.view">
         <field name="label">project.sharing.project.task.view.form</field>
         <field name="model">project.task</field>
         <field name="priority">999</field>
-        <field name="groups_id" eval="[(4, ref('base.group_portal')), (4, ref('base.group_user'))]"/>
+        <field name="groupsId" eval="[[4, refId('base.groupPortal')], [4, refId('base.groupUser')]]"/>
         <field name="arch" type="xml">
-            <form string="Project Sharing: Task" class="o_form_project_tasks">
+            <form string="Project Sharing: Task" class="o-form-project-tasks">
                 <header>
-                    <button name="action_assign_to_me" string="Assign to Me" type="object" class="oe-highlight"
-                            attrs="{'invisible' : &quot;[('user_ids', 'in', [uid])]&quot;}" data-hotkey="q" groups="base.group_user"/>
-                    <button name="action_unassign_me" string="Unassign Me" type="object" class="oe-highlight"
-                            attrs="{'invisible' : &quot;[('user_ids', 'not in', [uid])]&quot;}" data-hotkey="q"/>
-                    <field name="stageId" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" attrs="{'invisible': [('projectId', '=', False), ('stageId', '=', False)]}" />
+                    <button name="actionAssignToMe" string="Assign to Me" type="object" class="oe-highlight"
+                            attrs="{'invisible' : &quot;[['userIds', 'in', [uid]]]&quot;}" data-hotkey="q" groups="base.groupUser"/>
+                    <button name="actionUnassignMe" string="Unassign Me" type="object" class="oe-highlight"
+                            attrs="{'invisible' : &quot;[['userIds', 'not in', [uid]]]&quot;}" data-hotkey="q"/>
+                    <field name="stageId" widget="statusbar" options="{'clickable': '1', 'foldField': 'fold'}" attrs="{'invisible': [['projectId', '=', false], ['stageId', '=', false]]}" />
                 </header>
                 <sheet string="Task">
-                    <div class="oe-button-box" name="button_box">
-                        <button name="action_open_parent_task" type="object" special="cancel" class="oe_stat_button o_debounce_disabled" icon="fa-tasks" string="Parent Task" attrs="{'invisible': [('parent_id', '=', False)]}"/>
+                    <div class="oe-button-box" name="buttonBox">
+                        <button name="actionOpenParentTask" type="object" special="cancel" class="oe-stat-button o-debounce-disabled" icon="fa-tasks" string="Parent Task" attrs="{'invisible': [['parentId', '=', false]]}"/>
                     </div>
-                    <widget name="web_ribbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
-                    <div class="oe_title pr-0">
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <div class="oe-title pr-0">
                         <h1 class="d-flex flex-row justify-content-between">
                             <field name="priority" widget="priority" class="mr-3"/>
-                            <field name="label" class="o_task_name text-truncate" placeholder="Task Title..."/>
-                            <field name="kanban_state" widget="state_selection" class="ml-auto"/>
+                            <field name="label" class="o-task-name text-truncate" placeholder="Task Title..."/>
+                            <field name="kanbanState" widget="stateSelection" class="ml-auto"/>
                             <field name="legendBlocked" invisible="1"/>
-                            <field name="legend_normal" invisible="1"/>
-                            <field name="legend_done" invisible="1"/>
+                            <field name="legendNormal" invisible="1"/>
+                            <field name="legendDone" invisible="1"/>
                         </h1>
                     </div>
                     <group>
                         <group>
                             <field name="projectId" invisible="1"/>
-                            <field name="display_project_id" string="Project" invisible="1"/>
-                            <field name="user_ids" invisible="1" />
-                            <field name="portal_user_names"
+                            <field name="displayProjectId" string="Project" invisible="1"/>
+                            <field name="userIds" invisible="1" />
+                            <field name="portalUserNames"
                                 string="Assignees"
-                                class="o_task_user_field"/>
+                                class="o-task-user-field"/>
                         </group>
                         <group>
                             <field name="active" invisible="1"/>
-                            <field name="parent_id" invisible="1" />
+                            <field name="parentId" invisible="1" />
                             <field name="companyId" invisible="1" />
-                            <field name="is_closed" invisible="1" />
-                            <field name="allow_subtasks" invisible="1" />
-                            <field name="partnerId" options="{'no_open': True, 'no_create': True, 'no_edit': True}"/>
-                            <field name="date_deadline" attrs="{'invisible': [('is_closed', '=', True)]}"/>
-                            <field name="tagIds" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True, 'no_edit_color': True}"/>
+                            <field name="isClosed" invisible="1" />
+                            <field name="allowSubtasks" invisible="1" />
+                            <field name="partnerId" options="{'noOpen': true, 'noCreate': true, 'noEdit': true}"/>
+                            <field name="dateDeadline" attrs="{'invisible': [['isClosed', '=', true]]}"/>
+                            <field name="tagIds" widget="many2manyTags" options="{'colorField': 'color', 'noCreateEdit': true, 'noEditColor': true}"/>
                         </group>
                     </group>
                     <notebook>
-                        <page name="description_page" string="Description">
+                        <page name="descriptionPage" string="Description">
                             <field name="description" type="html" options="{'collaborative': true}"/>
                         </page>
-                        <page name="sub_tasks_page" string="Sub-tasks" attrs="{'invisible': [('allow_subtasks', '=', False)]}">
-                            <field name="child_ids" context="{'default_project_id': projectId if not parent_id or not display_project_id else display_project_id, 'default_parent_id': id, 'default_partner_id': partnerId, 'form_view_ref' : 'project.project_sharing_project_task_view_form'}">
+                        <page name="subTasksPage" string="Sub-tasks" attrs="{'invisible': [['allowSubtasks', '=', false]]}">
+                            <field name="childIds" context="{'default_projectId': !bool(parentId) || !displayProjectId ? projectId : displayProjectId, 'default_parentId': id, 'default_partnerId': partnerId, 'formViewRef' : 'project.projectSharingProjectTaskViewForm'}">
                                 <tree editable="bottom">
                                     <field name="projectId" invisible="1"/>
-                                    <field name="is_closed" invisible="1"/>
+                                    <field name="isClosed" invisible="1"/>
                                     <field name="sequence" widget="handle"/>
                                     <field name="label"/>
-                                    <field name="display_project_id" string="Project" optional="hide" invisible="1"/>
+                                    <field name="displayProjectId" string="Project" optional="hide" invisible="1"/>
                                     <field name="companyId" invisible="1"/>
-                                    <field name="partnerId" options="{'no_open': True, 'no_create': True, 'no_edit': True}" optional="hide"/>
+                                    <field name="partnerId" options="{'noOpen': true, 'noCreate': true, 'noEdit': true}" optional="hide"/>
                                     <!-- TODO: [XBO] remove me in master -->
-                                    <field name="user_ids" invisible="1"/>
-                                    <field name="portal_user_names" string="Assignees"/>
-                                    <field name="date_deadline" attrs="{'invisible': [('is_closed', '=', True)]}" optional="show"/>
-                                    <field name="tagIds" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
-                                    <field name="kanban_state" widget="state_selection" optional="hide"/>
+                                    <field name="userIds" invisible="1"/>
+                                    <field name="portalUserNames" string="Assignees"/>
+                                    <field name="dateDeadline" attrs="{'invisible': [['isClosed', '=', true]]}" optional="show"/>
+                                    <field name="tagIds" widget="many2manyTags" options="{'colorField': 'color'}" optional="hide"/>
+                                    <field name="kanbanState" widget="stateSelection" optional="hide"/>
                                     <field name="stageId" optional="show"/>
-                                    <button name="action_open_task" type="object" title="View Task" string="View Task" class="btn btn-link pull-right"
-                                            context="{'form_view_ref': 'project.project_sharing_project_task_view_form'}"
-                                            attrs="{'invisible': &quot;[('display_project_id', '!=', False), ('display_project_id', '!=', activeId)]&quot;}"/>
+                                    <button name="actionOpenTask" type="object" title="View Task" string="View Task" class="btn btn-link pull-right"
+                                            context="{'formViewRef': 'project.projectSharingProjectTaskViewForm'}"
+                                            attrs="{'invisible': &quot;[['displayProjectId', '!=', false], ['displayProjectId', '!=', activeId]]&quot;}"/>
                                 </tree>
                             </field>
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter"/>
+                <div class="oe-chatter"/>
             </form>
         </field>
     </record>
 
-    <record id="project_sharing_project_task_view_search" model="ir.ui.view">
+    <record id="projectSharingProjectTaskViewSearch" model="ir.ui.view">
         <field name="label">project.task.search.form</field>
         <field name="model">project.task</field>
         <field name="priority">999</field>
@@ -238,45 +238,45 @@
                 <field name="label" string="Task"/>
                 <field name="tagIds"/>
                 <!-- TODO: [XBO] remove me in master -->
-                <field name="user_ids" invisible="1"/>
-                <field name="portal_user_names" string="Assignees"/>
-                <field name="partnerId" operator="child_of"/>
+                <field name="userIds" invisible="1"/>
+                <field name="portalUserNames" string="Assignees"/>
+                <field name="partnerId" operator="childOf"/>
                 <field name="stageId"/>
-                <field string="Project" name="display_project_id"/>
-                <filter string="Unassigned" name="unassigned" domain="[('user_ids', '=', False)]"/>
+                <field string="Project" name="displayProjectId"/>
+                <filter string="Unassigned" name="unassigned" domain="[['userIds', '=', false]]"/>
                 <separator/>
-                <filter string="Starred" name="starred" domain="[('priority', 'in', [1, 2])]"/>
+                <filter string="Starred" name="starred" domain="[['priority', 'in', [1, 2]]]"/>
                 <separator/>
-                <filter string="Late Tasks" name="late" domain="[('date_deadline', '&lt;', context_today().strftime('%Y-%m-%d')), ('is_closed', '=', False)]"/>
+                <filter string="Late Tasks" name="late" domain="[['dateDeadline', '&lt;', toFormat(contextToday(),'yyyy-MM-dd')], ['isClosed', '=', false]]"/>
                 <separator/>
-                <filter invisible="1" string="Today Activities" name="activities_today"
-                    domain="[('activityIds.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter invisible="1" string="Future Activities" name="activities_upcoming_all"
-                    domain="[('activityIds.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter invisible="1" string="Today Activities" name="activitiesToday"
+                    domain="[['activityIds.dateDeadline', '=', toFormat(contextToday(), 'yyyy-MM-dd')]]"/>
+                <filter invisible="1" string="Future Activities" name="activitiesUpcomingAll"
+                    domain="[['activityIds.dateDeadline', '&gt;', toFormat(contextToday(), 'yyyy-MM-dd')]]"/>
                 <group expand="0" string="Group By">
-                    <filter string="Stage" name="stage" context="{'group_by': 'stageId'}"/>
+                    <filter string="Stage" name="stage" context="{'groupby': 'stageId'}"/>
                     <!-- TODO: [XBO] remove me in master -->
-                    <filter string="Assignees" name="user" context="{'group_by': 'user_ids'}" invisible="1"/>
+                    <filter string="Assignees" name="user" context="{'groupby': 'userIds'}" invisible="1"/>
                     <!-- [XBO] TODO: remove me in master -->
-                    <filter string="Project" name="project" context="{'group_by': 'projectId'}" invisible="1"/>
-                    <filter string="Customer" name="customer" context="{'group_by': 'partnerId'}"/>
-                    <filter string="Kanban State" name="kanban_state" context="{'group_by': 'kanban_state'}"/>
-                    <filter string="Deadline" name="date_deadline" context="{'group_by': 'date_deadline'}"/>
+                    <filter string="Project" name="project" context="{'groupby': 'projectId'}" invisible="1"/>
+                    <filter string="Customer" name="customer" context="{'groupby': 'partnerId'}"/>
+                    <filter string="Kanban State" name="kanbanState" context="{'groupby': 'kanbanState'}"/>
+                    <filter string="Deadline" name="dateDeadline" context="{'groupby': 'dateDeadline'}"/>
                     <!-- [XBO] TODO: remove me in master -->
-                    <filter string="Creation Date" name="group_create_date" context="{'group_by': 'createdAt'}" invisible="1"/>
+                    <filter string="Creation Date" name="groupCreateDate" context="{'groupby': 'createdAt'}" invisible="1"/>
                 </group>
             </search>
         </field>
     </record>
 
-    <record id="project_sharing_project_task_action" model="ir.actions.actwindow">
+    <record id="projectSharingProjectTaskAction" model="ir.actions.actwindow">
         <field name="label">Project Sharing</field>
         <field name="resModel">project.task</field>
         <field name="viewMode">kanban,tree,form</field>
-        <field name="search_view_id" ref="project.project_sharing_project_task_view_search"/>
-        <field name="domain">[('display_project_id', '=', activeId)]</field>
+        <field name="searchViewId" ref="project.projectSharingProjectTaskViewSearch"/>
+        <field name="domain">[['displayProjectId', '=', activeId]]</field>
         <field name="context">{
-            'default_project_id': activeId,
+            'default_projectId': activeId,
             'delete': 0,
         }</field>
         <field name="help" type="html">
@@ -289,22 +289,22 @@
         </field>
     </record>
 
-    <record id="project_sharing_kanban_action_view" model="ir.actions.actwindow.view">
+    <record id="projectSharingKanbanActionView" model="ir.actions.actwindow.view">
         <field name="viewMode">kanban</field>
-        <field name="act_window_id" ref="project.project_sharing_project_task_action"/>
-        <field name="view_id" ref="project.project_sharing_project_task_view_kanban"/>
+        <field name="actwindowId" ref="project.projectSharingProjectTaskAction"/>
+        <field name="viewId" ref="project.projectSharingProjectTaskViewKanban"/>
     </record>
 
-    <record id="project_sharing_tree_action_view" model="ir.actions.actwindow.view">
+    <record id="projectSharingTreeActionView" model="ir.actions.actwindow.view">
         <field name="viewMode">tree</field>
-        <field name="act_window_id" ref="project.project_sharing_project_task_action"/>
-        <field name="view_id" ref="project.project_sharing_project_task_view_tree"/>
+        <field name="actwindowId" ref="project.projectSharingProjectTaskAction"/>
+        <field name="viewId" ref="project.projectSharingProjectTaskViewTree"/>
     </record>
 
-    <record id="project_sharing_form_action_view" model="ir.actions.actwindow.view">
+    <record id="projectSharingFormActionView" model="ir.actions.actwindow.view">
         <field name="viewMode">form</field>
-        <field name="act_window_id" ref="project.project_sharing_project_task_action"/>
-        <field name="view_id" ref="project.project_sharing_project_task_view_form"/>
+        <field name="actwindowId" ref="project.projectSharingProjectTaskAction"/>
+        <field name="viewId" ref="project.projectSharingProjectTaskViewForm"/>
     </record>
 
 </verp>

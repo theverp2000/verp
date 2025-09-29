@@ -33,7 +33,7 @@
             <form string="Resource">
             <sheet>
                 <field name="active" invisible="1" />
-                <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                 <group>
                     <group name="userDetails">
                         <field name="label"/>
@@ -260,7 +260,7 @@
         <field name="arch" type="xml">
             <form string="Working Time">
                 <sheet string="Working Time">
-                    <widget name="webRibbon" text="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" text="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <div class="oe-button-box" name="buttonBox">
                         <button name="%(resourceCalendarLeavesActionFromCalendar)d" type="action"
                                 string="Time Off" icon="fa-plane"

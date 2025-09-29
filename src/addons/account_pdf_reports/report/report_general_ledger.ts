@@ -1,6 +1,9 @@
-import { AbstractModel, api, MetaModel } from "../../../core";
+import { api } from "../../../core";
 import { UserError } from "../../../core/helper/errors";
-import { _convert$, bool, parseValues, pop } from "../../../core/tools";
+import { AbstractModel, MetaModel } from "../../../core/models";
+import { _convert$, parseValues } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { pop } from "../../../core/tools/misc";
 
 @MetaModel.define()
 class ReportGeneralLedger extends AbstractModel {
@@ -66,7 +69,7 @@ class ReportGeneralLedger extends AbstractModel {
                 LEFT JOIN "resCurrency" c ON (l."currencyId"=c.id)
                 LEFT JOIN "resPartner" p ON (l."partnerId"=p.id)
                 JOIN "accountJournal" j ON (l."journalId"=j.id)
-                WHERE l.accountId IN (${String(accounts.ids) || 'NULL'})` + filters + ' GROUP BY l."accountId", aaa.label';
+                WHERE l."accountId" IN (${String(accounts.ids) || 'NULL'})` + filters + ' GROUP BY l."accountId", aaa.label';
             const res = await cr.execute(_convert$(sql), {bind: initWhereParams});
             for (const row of res) {
                 moveLines[pop(row, 'accountId')].push(parseValues(row));

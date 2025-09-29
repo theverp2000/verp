@@ -7,7 +7,7 @@ import { expression } from "../../../core/osv";
 import { len } from "../../../core/tools/iterable";
 import { emailNormalize } from "../../../core/tools/mail";
 import { pop } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/string";
+import { f } from "../../../core/tools/utils";
 import { AWAY_TIMER, DISCONNECTION_TIMER } from "../../bus/models/bus_presence";
 
 /**
@@ -136,10 +136,11 @@ class Partner extends Model {
   async mailPartnerFormat(): Promise<{}> {
     const partnersFormat = new Dict();
     for (const partner of this) {
-      const internalUsers = (await partner.userIds).sub(await (await partner.userIds).filtered('share'));
+      const userIds = await partner.userIds;
+      const internalUsers = userIds.sub(await userIds.filtered('share'));
       const mainUser = len(internalUsers) > 0
         ? internalUsers[0]
-        : len(await partner.userIds) > 0 ? (await partner.userIds)[0] : this.env.items('res.users');
+        : len(userIds) > 0 ? userIds[0] : this.env.items('res.users');
       partnersFormat[partner.id] = {
         id: partner.id,
         displayName: await partner.displayName,

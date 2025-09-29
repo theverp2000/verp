@@ -3,13 +3,12 @@ import { Fields } from "../../../core/fields";
 import { UserError, ValidationError } from "../../../core/helper/errors";
 import { MetaModel, Model, _super } from "../../../core/models";
 import { cleanString } from "../../../core/service/middleware/utils";
-import { literalEval } from '../../../core/tools/save_eval';
+import { literalEval } from "../../../core/tools/ast";
 import { bool } from "../../../core/tools/bool";
 import { len } from "../../../core/tools/iterable";
 import { isHtmlEmpty } from "../../../core/tools/mail";
 import { removeAccents } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/string";
-import { _f } from "../../../core/tools/string";
+import { _f, f } from "../../../core/tools/utils";
 import { markup } from "../../../core/tools/xml";
 
 // see rfc5322 section 3.2.3

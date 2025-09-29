@@ -51,7 +51,7 @@ QUnit.test('mark as read', async function (assert) {
         resId: 11,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 21,
+        mailMessageId: 21,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -113,7 +113,7 @@ QUnit.test('click on preview should mark as read and open the thread', async fun
         resId: 11,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 21,
+        mailMessageId: 21,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -194,7 +194,7 @@ QUnit.test('click on expand from chat window should close the chat window and op
         resId: 11,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 21,
+        mailMessageId: 21,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -258,7 +258,7 @@ QUnit.test('[technical] opening a non-channel chat window should not call channe
         resId: 11,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 21,
+        mailMessageId: 21,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -329,7 +329,7 @@ QUnit.test('preview should display last needaction message preview even if there
         resId: 11,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 21,
+        mailMessageId: 21,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -370,7 +370,7 @@ QUnit.test('chat window header should not have unread counter for non-channel th
         resId: 11,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 21,
+        mailMessageId: 21,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,

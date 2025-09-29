@@ -147,7 +147,7 @@
                     <a style="cursor: pointer" class="alert-link o-form-uri" type="action" name="%(actionProcurementCompute)d">Run the scheduler</a> manually to trigger the reordering rules right now.
                 </div>
                 <sheet>
-                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <div class="oe-title">
                         <h1>
                             <field name="label"/>

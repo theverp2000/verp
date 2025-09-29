@@ -1,6 +1,9 @@
-import { AbstractModel, Fields, MetaModel, _Date, _Datetime, api } from "../../../core";
+import { Fields, _Date, _Datetime, api } from "../../../core";
 import { Dict } from "../../../core/helper";
-import { addDate, bool, dateSetTz, dateWithoutTz, extend, formatTime, len, literalEval } from "../../../core/tools";
+import { AbstractModel, MetaModel } from "../../../core/models";
+import { bool, extend, formatTime, len } from "../../../core/tools";
+import { literalEval } from "../../../core/tools/ast";
+import { addDate, dateSetTz, dateWithoutTz } from "../../../core/tools/date_utils";
 
 @MetaModel.define()
 class HrEmployeeBase extends AbstractModel {

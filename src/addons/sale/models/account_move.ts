@@ -1,6 +1,7 @@
 import _ from "lodash";
-import { _super, api, Fields, MetaModel, Model } from "../../../core";
+import { api, Fields } from "../../../core";
 import { MapKey, UserError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models";
 import { bool, isInstance, some, update } from "../../../core/tools";
 
 @MetaModel.define()

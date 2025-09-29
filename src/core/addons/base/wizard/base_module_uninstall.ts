@@ -1,5 +1,7 @@
-import { api, Fields, MetaModel, TransientModel } from "../../..";
-import { bool } from "../../../tools";
+import { api } from "../../..";
+import { Fields } from "../../../fields";
+import { MetaModel, TransientModel } from "../../../models";
+import { bool } from "../../../tools/bool";
 
 @MetaModel.define()
 class BaseModuleUninstall extends TransientModel {

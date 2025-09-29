@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
 <verp>
-    <record id="digest_digest_view_form" model="ir.ui.view">
+    <record id="digestDigestViewForm" model="ir.ui.view">
         <field name="label">digest.digest.view.form.inherit.project.task</field>
         <field name="model">digest.digest</field>
-        <field name="inheritId" ref="digest.digest_digest_view_form"/>
+        <field name="inheritId" ref="digest.digestDigestViewForm"/>
         <field name="arch" type="xml">
-            <xpath expr="//group[@name='kpi_general']" position="after">
-                <group name="kpi_project" string="Project" groups="project.group_project_user">
-                    <field name="kpi_project_task_opened"/>
+            <xpath expr="//group[@name='kpiGeneral']" position="after">
+                <group name="kpiProject" string="Project" groups="project.groupProjectUser">
+                    <field name="kpiProjectTaskOpened"/>
                 </group>
             </xpath>
         </field>

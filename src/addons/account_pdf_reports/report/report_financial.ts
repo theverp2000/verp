@@ -1,6 +1,9 @@
-import { AbstractModel, api, MetaModel } from "../../../core";
+import _ from "lodash";
+import { api } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { _convert$, bool, parseFloat, parseValues, sorted } from "../../../core/tools";
+import { AbstractModel, MetaModel } from "../../../core/models";
+import { _convert$, parseFloat, parseValues, sorted } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
 
 @MetaModel.define()
 class ReportFinancial extends AbstractModel {
@@ -203,7 +206,8 @@ class ReportFinancial extends AbstractModel {
             'data': data['form'],
             'docs': docs,
             'now': () => new Date(),
-            'getAccountLines': reportLines
+            'getAccountLines': reportLines,
+            'fill': _.fill
         }
     }
 }

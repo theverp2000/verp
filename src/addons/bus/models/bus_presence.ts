@@ -1,12 +1,14 @@
-import { TIMEOUT } from "./bus";
+import { TIMEOUT } from "./bus"
 
 export const DISCONNECTION_TIMER = TIMEOUT + 5
 export const AWAY_TIMER = 1800  // 30 minutes
 
 import { DateTime, Interval } from "luxon";
-import { Fields, MetaModel, Model, _Datetime, api } from "../../../core";
+import { api } from "../../../core";
+import { Fields, _Datetime } from "../../../core/fields";
+import { MetaModel, Model } from "../../../core/models";
+import { DEFAULT_SERVER_DATETIME_FORMAT } from "../../../core/tools/misc";
 import { PG_CONCURRENCY_ERRORS_TO_RETRY } from "../../../core/service/model";
-import { DEFAULT_SERVER_DATETIME_FORMAT } from "../../../core/tools";
 
 /**
  * User Presence

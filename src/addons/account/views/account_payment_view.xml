@@ -224,7 +224,7 @@
                         </div>
 
                         <widget name="webRibbon" text="Invoicing App Legacy"
-                                bgColor="bg-info"
+                                bgcolor="bg-info"
                                 attrs="{'invisible': [['state', '!=', 'invoicingLegacy']]}"
                                 tooltip="This payment has been generated through the Invoicing app, before installing Accounting. It has been disabled by the 'Invoicing Switch Threshold Date' setting so that it does not impact your accounting."
                         />

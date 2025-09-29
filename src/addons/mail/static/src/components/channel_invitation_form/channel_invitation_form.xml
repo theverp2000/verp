@@ -14,7 +14,7 @@
                             <div class="o_ChannelInvitationForm_selectablePartner d-flex align-items-center px-3 py-1" t-on-click="channelInvitationForm.onClickSelectablePartner.bind(channelInvitationForm, selectablePartner)" t-att-data-partner-id="selectablePartner.id">
                                 <div class="o_ChannelInvitationForm_selectablePartnerAvatarContainer flex-shrink-0 position-relative">
                                     <img class="o_ChannelInvitationForm_selectablePartnerAvatar w-100 h-100 rounded-circle" t-att-src="selectablePartner.avatarUrl" alt="Avatar"/>
-                                    <t t-if="selectablePartner.imStatus and selectablePartner.imStatus !== 'imPartner'">
+                                    <t t-if="selectablePartner.imStatus &amp;&amp; selectablePartner.imStatus !== 'imPartner'">
                                         <PartnerImStatusIcon
                                             class="o_ChannelInvitationForm_selectablePartnerImStatusIcon d-flex align-items-center justify-content-center text-white"
                                             t-att-class="{
@@ -59,7 +59,7 @@
                         </button>
                     </div>
                 </t>
-                <t t-if="channelInvitationForm.thread and channelInvitationForm.thread.invitationLink">
+                <t t-if="channelInvitationForm.thread &amp;&amp; channelInvitationForm.thread.invitationLink">
                     <h4 class="mx-3 mt-3 mb-2">Invitation Link</h4>
                     <div class="mx-3 my-2">
                         <input type="text" t-att-value="channelInvitationForm.thread.invitationLink"/>

@@ -1,6 +1,7 @@
 import xpath from 'xpath';
-import { _super, api, MetaModel, Model } from "../../../core";
+import { api } from "../../../core";
 import { httpPost } from "../../../core/http";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { urlEncode } from "../../../core/service/middleware/utils";
 import { bool, f, getrootXml, jsonParse, parseXml, stringify } from "../../../core/tools";
 

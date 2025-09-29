@@ -54,7 +54,7 @@ QUnit.test('notification group basic layout', async function (assert) {
     });
     // failure that is expected to be used in the test
     this.data['mail.notification'].records.push({
-        mail_message_id: 11, // id of the related message
+        mailMessageId: 11, // id of the related message
         notification_status: 'exception', // necessary value to have a failure
         notificationType: 'email', // expected failure type for email message
     });
@@ -125,7 +125,7 @@ QUnit.test('mark as read', async function (assert) {
     });
     // failure that is expected to be used in the test
     this.data['mail.notification'].records.push({
-        mail_message_id: 11, // id of the related message
+        mailMessageId: 11, // id of the related message
         notification_status: 'exception', // necessary value to have a failure
         notificationType: 'email', // expected failure type for email message
     });
@@ -189,13 +189,13 @@ QUnit.test('grouped notifications by document', async function (assert) {
     this.data['mail.notification'].records.push(
         // first failure that is expected to be used in the test
         {
-            mail_message_id: 11, // id of the related first message
+            mailMessageId: 11, // id of the related first message
             notification_status: 'exception', // one possible value to have a failure
             notificationType: 'email', // expected failure type for email message
         },
         // second failure that is expected to be used in the test
         {
-            mail_message_id: 12, // id of the related second message
+            mailMessageId: 12, // id of the related second message
             notification_status: 'bounce', // other possible value to have a failure
             notificationType: 'email', // expected failure type for email message
         }
@@ -261,13 +261,13 @@ QUnit.test('grouped notifications by document model', async function (assert) {
     this.data['mail.notification'].records.push(
         // first failure that is expected to be used in the test
         {
-            mail_message_id: 11, // id of the related first message
+            mailMessageId: 11, // id of the related first message
             notification_status: 'exception', // one possible value to have a failure
             notificationType: 'email', // expected failure type for email message
         },
         // second failure that is expected to be used in the test
         {
-            mail_message_id: 12, // id of the related second message
+            mailMessageId: 12, // id of the related second message
             notification_status: 'bounce', // other possible value to have a failure
             notificationType: 'email', // expected failure type for email message
         }
@@ -365,13 +365,13 @@ QUnit.test('different mail.channel are not grouped', async function (assert) {
     this.data['mail.notification'].records.push(
         // first failure that is expected to be used in the test
         {
-            mail_message_id: 11, // id of the related first message
+            mailMessageId: 11, // id of the related first message
             notification_status: 'exception', // one possible value to have a failure
             notificationType: 'email', // expected failure type for email message
         },
         // second failure that is expected to be used in the test
         {
-            mail_message_id: 12, // id of the related second message
+            mailMessageId: 12, // id of the related second message
             notification_status: 'bounce', // other possible value to have a failure
             notificationType: 'email', // expected failure type for email message
         }
@@ -440,13 +440,13 @@ QUnit.test('multiple grouped notifications by document model, sorted by the most
     this.data['mail.notification'].records.push(
         // first failure that is expected to be used in the test
         {
-            mail_message_id: 11, // id of the related first message
+            mailMessageId: 11, // id of the related first message
             notification_status: 'exception', // one possible value to have a failure
             notificationType: 'email', // expected failure type for email message
         },
         // second failure that is expected to be used in the test
         {
-            mail_message_id: 12, // id of the related second message
+            mailMessageId: 12, // id of the related second message
             notification_status: 'bounce', // other possible value to have a failure
             notificationType: 'email', // expected failure type for email message
         }
@@ -517,7 +517,7 @@ QUnit.test('non-failure notifications are ignored', async function (assert) {
     this.data['mail.notification'].records.push(
         // notification that is expected to be used in the test
         {
-            mail_message_id: 11, // id of the related first message
+            mailMessageId: 11, // id of the related first message
             notification_status: 'ready', // non-failure status
             notificationType: 'email', // expected notification type for email message
         },

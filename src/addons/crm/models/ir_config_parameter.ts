@@ -1,5 +1,6 @@
-import { MetaModel, Model, _super, api } from "../../../core";
+import { api } from "../../../core";
 import { MODULE_UNINSTALL_FLAG } from "../../../core/addons/base";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { bool } from "../../../core/tools";
 
 @MetaModel.define()

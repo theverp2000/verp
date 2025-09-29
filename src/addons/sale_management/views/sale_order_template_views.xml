@@ -19,7 +19,7 @@
             <form string="Quotation Template">
                 <sheet>
                     <div name="buttonBox" class="oe-button-box"/>
-                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <div class="oe-title">
                         <label for="label"/>
                         <h1>

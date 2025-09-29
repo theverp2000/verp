@@ -1,5 +1,5 @@
-import mime from 'mime-types';
 import { isAlpha } from "./func";
+import mime from 'mime-types';
 
 const _pptPattern = new RegExp('\x00\x6E\x1E\xF0|\x0F\x00\xE8\x03|\xA0\x46\x1D\xF0|\xFD\xFF\xFF\xFF(\x0E|\x1C|\x43)\x00\x00\x00');
 
@@ -7,11 +7,9 @@ class _Entry {
   mimetype: string;
   signatures: Buffer[];
   discriminants: any;
-  maxSignatureLength: number;
   constructor(mimetype: string, signatures: Buffer[], discriminants: any) {
     this.mimetype = mimetype;
     this.signatures = signatures;
-    this.maxSignatureLength = Math.max(...signatures.map(signature => signature.byteLength));
     this.discriminants = discriminants;
   }
 };
@@ -47,32 +45,43 @@ function _checkSvg(data: Buffer) {
 
 function _checkOlecf(data: Buffer) {
   const offset = 0x200;
-  if (data.subarray(offset).includes('\xEC\xA5\xC1\x00')) {
+  if (data.subarray(offset).includes('\xEC\xA5\xC1\x00'))
     return 'application/msword';
-  }
-  // the _xlsPattern stuff doesn't seem to work correctly (the test file only has a bunch of \xf* at offset 0x200), that apparently works
-  else if (data.includes('Microsoft Excel')) {
+  // the _xls_pattern stuff doesn't seem to work correctly (the test file
+  // only has a bunch of \xf* at offset 0x200), that apparently works
+  else if (data.includes('Microsoft Excel'))
     return 'application/vnd.ms-excel';
-  }
-  else if (_pptPattern.test(data.subarray(offset).toString('latin1'))) {
+  else if (_pptPattern.test(data.subarray(offset).toString('latin1')))
     return 'application/vnd.ms-powerpoint';
-  }
   return false;
 }
 
 function _checkOoxml(data: Buffer) {
-  console.warn('Not implemented');
-  return false;
+  // const f = io.BytesIO(data) as f, zipfile.ZipFile(f) as z:
+  // filenames = z.namelist()
+  // // OOXML documents should have a [Content_Types].xml file for early
+  // // check that we're interested in this thing at all
+  // if '[Content_Types].xml' not in filenames:
+  //   return false
+
+  // // then there is a directory whose name denotes the type of the file:
+  // // word, pt (powerpoint) or xl (excel)
+  // for dirname, mime in _ooxml_dirs.items():
+  //     if any(entry.startsWith(dirname) for entry in filenames):
+  //         return mime
+
+  // return false
 }
 
 function _checkOpenContainerFormat(data: Buffer) {
-  console.warn('Not implemented');
-  return false;
+
 }
 
 /**
  * Attempts to guess the mime type of the provided binary data, similar
     to but significantly more limited than libmagic
+    :param str bin_data: 
+    :returns: 
  * @param data binary data to try and guess a mime type for
  * @param value 
  * @returns matched mimetype or `'application/octet-stream'` if none matched
@@ -108,6 +117,8 @@ export function guessMimetype(data: Buffer, value='application/octet-stream') {
  * Return the extension the current filename based on the heuristic that
   ext is less than or equal to 10 chars and is alphanumeric.
 
+  :param str filename: 
+  :returns: 
  * @param filename filename to try and guess a extension for
  * @returns detected extension or `''`
  */

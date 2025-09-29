@@ -62,7 +62,7 @@ var FieldAutocomplete = FieldChar.extend(AutocompleteMixin, {
      * Check if the autocomplete should be active
      * Active :
      *  - only when creating new record
-     *  - on model res.partner and isCompany=true
+     *  - on model res.partner and is_company=true
      *  - on model res.company
      *
      * @returns {boolean}

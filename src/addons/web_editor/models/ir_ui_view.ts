@@ -1,10 +1,12 @@
 import _ from "lodash";
 import uuid from "uuid";
 import xpath from "xpath";
-import { MetaModel, Model, _super, api } from "../../../core";
+import { api } from "../../../core";
 import { AccessError, ValidationError, ValueError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { E, bool, equal, f, getAttributes, getObjectAttributes, isElement, isInstance, iterchildren, len, parseInt, parseXml, serializeXml, setOptions, update, zip } from "../../../core/tools";
+import { bool, equal, f, isInstance, len, parseInt, setOptions, update, zip } from "../../../core/tools";
+import { E, getAttributes, getObjectAttributes, isElement, iterchildren, parseXml, serializeXml } from "../../../core/tools/xml";
 
 const EDITING_ATTRIBUTES = ['data-oe-model', 'data-oe-id', 'data-oe-field', 'data-oe-xpath', 'data-note-id']
 

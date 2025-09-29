@@ -1,4 +1,4 @@
-import { MetaModel, Model } from "../../../core";
+import { MetaModel, Model } from "../../../core/models"
 
 @MetaModel.define()
 class ResCountry extends Model {

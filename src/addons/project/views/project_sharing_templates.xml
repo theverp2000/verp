@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <verp>
 
-    <template id="project_sharing_portal" name="Project Sharing View in Portal">
-        <t t-call="portal.frontend_layout">
-            <t t-set="no_footer" t-value="true"/>
-            <t t-call="project.project_sharing"/>
+    <template id="projectSharingPortal" name="Project Sharing View in Portal">
+        <t t-call="portal.frontendLayout">
+            <t t-set="noFooter" t-value="true"/>
+            <t t-call="project.projectSharing"/>
         </t>
     </template>
 
-    <template id="project_sharing" name="Project Sharing View">
+    <template id="projectSharing" name="Project Sharing View">
         <!--    We need to forward the request lang to ensure that the lang set on the portal match the lang delivered -->
-        <iframe width="100%" height="100%" frameborder="0" t-attf-src="/{{ request.context['lang'] }}/my/project/{{ str(projectId) }}/project_sharing"/>
+        <iframe width="100%" height="100%" frameborder="0" t-attf-src="/{{ env.context['lang'] }}/my/project/{{ String(projectId) }}/projectSharing"/>
     </template>
 
-    <template id="project_sharing_embed" name="Project Sharing View Embed">
+    <template id="projectSharingEmbed" name="Project Sharing View Embed">
         <t t-call="web.layout">
-            <t t-set="head_project_sharing">
+            <t t-set="headProjectSharing">
                 <script type="text/javascript">
-                    verp.__session_info__ = <t t-out="json.dumps(session_info)"/>;
-                    // Prevent the menu_service to load anything. In an ideal world, Project Sharing assets would only contain
+                    verp.__session_info__ = <t t-out="stringify(sessionInfo)"/>;
+                    // Prevent the menuService to load anything. In an ideal world, Project Sharing assets would only contain
                     // what is genuinely necessary, and not the whole backend.
                     verp.loadMenusPromise = Promise.resolve();
-                    verp.loadTemplatesPromise = fetch(`/web/webclient/qweb/${verp.__session_info__.cache_hashes.qweb}?bundle=project.assets_qweb`).then(doc => doc.text());
+                    verp.loadTemplatesPromise = fetch(`/web/webclient/qweb/${verp.__session_info__.cacheHashes.qweb}?bundle=project.assetsQweb`).then(doc => doc.text());
                 </script>
                 <base target="_parent"/>
-                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="web.assetsCommon" t-js="false"/>
                 <t t-call-assets="project.webclient" t-js="false"/>
-                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="web.assetsCommon" t-css="false"/>
                 <t t-call-assets="project.webclient" t-css="false"/>
-                <t t-call="web.conditional_assets_tests"/>
+                <t t-call="web.conditionalAssetsTests"/>
             </t>
-            <t t-set="head" t-value="head_project_sharing + (head or '')"/>
-            <t t-set="body_classname" t-value="'o_web_client'"/>
+            <t t-set="head" t-value="headProjectSharing + (head || '')"/>
+            <t t-set="bodyClassname" t-value="'o-web-client'"/>
         </t>
     </template>
 

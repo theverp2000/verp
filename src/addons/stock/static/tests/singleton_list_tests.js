@@ -62,7 +62,7 @@ QUnit.module('Views', {
         // Creates a new line...
         await testUtils.dom.click($('.o-list-button-add'));
         // ... and fills fields with new values
-        var $input = $('.o-selected-row input[name=name]');
+        var $input = $('.o-selected-row input[name=label]');
         await testUtils.fields.editInput($input, 'Bilou');
         await testUtils.fields.triggerKeydown($input, 'tab');
 
@@ -95,7 +95,7 @@ QUnit.module('Views', {
         // Creates a new line...
         await testUtils.dom.click($('.o-list-button-add'));
         // ... and fills fields with already existing value
-        var $input = $('.o-selected-row input[name=name]');
+        var $input = $('.o-selected-row input[name=label]');
         var name = 'Samuel Oak';
         await testUtils.fields.editInput($input, name);
         await testUtils.fields.triggerKeydown($input, 'tab');
@@ -147,7 +147,7 @@ QUnit.module('Views', {
         // Creates a new line...
         await testUtils.dom.click($('.o-list-button-add'));
         // ... and fills fields with already existing value
-        var $input = $('.o-selected-row input[name=name]');
+        var $input = $('.o-selected-row input[name=label]');
         var name = 'Bobby B. Bop';
         await testUtils.fields.editInput($input, name);
         await testUtils.fields.triggerKeydown($input, 'tab');
@@ -196,7 +196,7 @@ QUnit.module('Views', {
 
         // Add existing record
         await testUtils.dom.click($('.o-list-button-add'));
-        $input = $('.o-selected-row input[name=name]');
+        $input = $('.o-selected-row input[name=label]');
         await testUtils.fields.editInput($input, 'Leto II Atreides');
         await testUtils.fields.triggerKeydown($input, 'tab');
         $input = $('.o-selected-row input[name=age]');
@@ -206,7 +206,7 @@ QUnit.module('Views', {
 
         // Add new record
         await testUtils.dom.click($('.o-list-button-add'));
-        $input = $('.o-selected-row input[name=name]');
+        $input = $('.o-selected-row input[name=label]');
         await testUtils.fields.editInput($input, 'Valentin Cognito');
         await testUtils.fields.triggerKeydown($input, 'tab');
         $input = $('.o-selected-row input[name=age]');
@@ -244,7 +244,7 @@ QUnit.module('Views', {
 
         // Creates a new record...
         await testUtils.dom.click(list.$('.o-add-record_row a'));
-        var $input = $('.o-selected-row input[name=name]');
+        var $input = $('.o-selected-row input[name=label]');
         await testUtils.fields.editInput($input, 'Del Tutorial');
         await testUtils.fields.triggerKeydown($input, 'tab');
         $input = $('.o-selected-row input[name=age]');
@@ -257,7 +257,7 @@ QUnit.module('Views', {
 
         // Creates an existing record in same group...
         await testUtils.dom.click(list.$('.o-add-record_row a'));
-        var $input = $('.o-selected-row input[name=name]');
+        var $input = $('.o-selected-row input[name=label]');
         await testUtils.fields.editInput($input, 'Samuel Oak');
         await testUtils.dom.click($('.o-list-button-save'));
         // ... then checks the list has been refreshed
@@ -266,7 +266,7 @@ QUnit.module('Views', {
 
         // Creates an existing but not displayed record...
         await testUtils.dom.click(list.$('.o-add-record_row a'));
-        var $input = $('.o-selected-row input[name=name]');
+        var $input = $('.o-selected-row input[name=label]');
         await testUtils.fields.editInput($input, 'Daniel Fortesque');
         await testUtils.fields.triggerKeydown($input, 'tab');
         $input = $('.o-selected-row input[name=age]');

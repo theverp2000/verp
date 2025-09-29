@@ -1,20 +1,20 @@
-.o-kanban-view.o_kanban_dashboard.o_project_kanban {
+.o-kanban-view.o-kanban-dashboard.o-project-kanban {
 
-    .o_project_kanban_main {
+    .o-project-kanban-main {
         max-width: 300px;
 
         // Prevents the kanban settings menu from overflowing and creating a scrollbar.
-        .o_kanban_card_manage_pane .o_kanban_card_manage_section a {
+        .o-kanban-card-manage-pane .o-kanban-card-manage-section a {
             @extend .text-wrap;
         }
     }
 
-    .o_project_kanban_boxes {
+    .o-project-kanban-boxes {
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
 
-        .o_project_kanban_box {
+        .o-project-kanban-box {
             position: relative;
             text-align: center;
             padding: 0 0 0 0;
@@ -25,14 +25,14 @@
                  padding-left: 12px
              }
 
-            .o_value {
+            .o-value {
                 font-weight: 800;
             }
 
             > div {
                 font-weight: 500;
 
-                button.o_needaction {
+                button.o-needaction {
                     font-size: small;
                     font-weight: 400;
                     margin-left: 4px;
@@ -52,27 +52,27 @@
     }
 
     @include media-breakpoint-down(sm) {
-        .o_view_nocontent {
+        .o-view-nocontent {
             top: 15%;
         }
     }
 
     .o-kanban-record {
-        div[name="is_favorite"] .fa-star-o {
+        div[name="isFavorite"] .fa-star-o {
             visibility: hidden;
         }
-        &:hover div[name="is_favorite"] .fa-star-o {
+        &:hover div[name="isFavorite"] .fa-star-o {
             visibility: visible;
         }
     }
 }
 
-.o_dow_widget {
+.o-dow-widget {
     th {
         padding: 10px 10px 0 10px;
     }
 
-    .o_dow_days {
+    .o-dow-days {
         td {
             text-align: center;
             vertical-align: middle;

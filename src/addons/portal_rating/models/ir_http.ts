@@ -1,4 +1,5 @@
-import { _super, AbstractModel, MetaModel } from "../../../core";
+import { _super } from "../../../core/models";
+import { AbstractModel, MetaModel } from "../../../core/models"
 
 @MetaModel.define()
 class IrHttp extends AbstractModel {

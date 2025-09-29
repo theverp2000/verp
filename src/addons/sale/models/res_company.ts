@@ -1,5 +1,6 @@
 import { readFile } from "fs/promises";
-import { _super, api, Fields, MetaModel, Model } from "../../../core";
+import { api, Fields } from "../../../core";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { getResourcePath } from "../../../core/modules";
 import { b64encode, bool, len, update } from "../../../core/tools";
 

@@ -1,4 +1,5 @@
-import { Fields, MetaModel, TransientModel } from "../../../core";
+import { Fields } from "../../../core";
+import { MetaModel, TransientModel } from "../../../core/models"
 
 /**
  * Wizard to update a manual goal

@@ -1,4 +1,5 @@
-import { Fields, MetaModel, TransientModel } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { MetaModel, TransientModel } from "../../../core/models"
 
 @MetaModel.define()
 class StockInventoryConflict extends TransientModel {

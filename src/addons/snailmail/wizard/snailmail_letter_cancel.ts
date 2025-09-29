@@ -1,4 +1,5 @@
-import { Fields, MetaModel, TransientModel, api } from "../../../core";
+import { Fields, api } from "../../../core";
+import { MetaModel, TransientModel } from "../../../core/models";
 
 @MetaModel.define()
 class SnailmailLetterCancel extends TransientModel {

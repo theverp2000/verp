@@ -1,4 +1,5 @@
-import { Fields, MetaModel, Model } from "../../../core";
+import { Fields } from "../../../core";
+import { MetaModel, Model } from "../../../core/models"
 import { dropViewIfExists, f } from "../../../core/tools";
 
 @MetaModel.define()

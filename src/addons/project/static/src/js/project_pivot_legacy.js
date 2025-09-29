@@ -2,7 +2,7 @@
 
 import PivotView from 'web.PivotView';
 import { ProjectControlPanel } from '@project/js/project_control_panel';
-import viewRegistry from 'web.view_registry';
+import viewRegistry from 'web.viewRegistry';
 
 export const ProjectPivotView = PivotView.extend({
   config: Object.assign({}, PivotView.prototype.config, {
@@ -10,4 +10,4 @@ export const ProjectPivotView = PivotView.extend({
   }),
 });
 
-viewRegistry.add('project_pivot', ProjectPivotView);
+viewRegistry.add('projectPivot', ProjectPivotView);

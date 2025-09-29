@@ -5,10 +5,10 @@ import FormView from 'web.FormView';
 import FormController from 'web.FormController';
 import { bus, _t } from 'web.core';
 import { device } from 'web.config';
-import viewRegistry from 'web.view_registry';
+import viewRegistry from 'web.viewRegistry';
 
 const ProjectFormController = FormController.extend({
-    on_attach_callback() {
+    onAttachCallback() {
         this._super(...arguments);
         if (!device.isMobile) {
             bus.on("DOM_updated", this, this._onDomUpdated);
@@ -21,12 +21,12 @@ const ProjectFormController = FormController.extend({
             $editable.css('min-height', minHeight + 'px');
         }
     },
-    on_detach_callback() {
+    onDetachCallback() {
         this._super(...arguments);
         bus.off('DOM_updated', this._onDomUpdated);
     },
     _getActionMenuItems(state) {
-        if (!this.archiveEnabled || !state.data['recurrence_id']) {
+        if (!this.archiveEnabled || !state.data['recurrenceId']) {
             return this._super(...arguments);
         }
 
@@ -48,24 +48,24 @@ const ProjectFormController = FormController.extend({
     _onDeleteRecord() {
         const record = this.model.get(this.handle);
 
-        if (!record.data.recurrence_id) {
+        if (!record.data.recurrenceId) {
             return this._super(...arguments);
         }
-        this._stopRecurrence(record.res_id, 'delete');
+        this._stopRecurrence(record.resId, 'delete');
     },
 
-    _countTasks(recurrence_id) {
+    _countTasks(recurrenceId) {
         return this._rpc({
             model: 'project.task',
-            method: 'search_count',
-            args: [[["recurrence_id", "=", recurrence_id.res_id]]],
+            method: 'searchCount',
+            args: [[["recurrenceId", "=", recurrenceId.resId]]],
         });
     },
 
     async _stopRecurrence(resId, mode) {
         const record = this.model.get(this.handle);
-        const recurrence_id = record.data.recurrence_id;
-        const count = await this._countTasks(recurrence_id);
+        const recurrenceId = record.data.recurrenceId;
+        const count = await this._countTasks(recurrenceId);
         const allowContinue = count != 1;
 
         const alert = allowContinue
@@ -78,7 +78,7 @@ const ProjectFormController = FormController.extend({
                     click: () => {
                         this._rpc({
                             model: 'project.task',
-                            method: 'action_stop_recurrence',
+                            method: 'actionStopRecurrence',
                             args: [resId],
                         }).then(() => {
                             if (mode === 'archive') {
@@ -112,7 +112,7 @@ const ProjectFormController = FormController.extend({
                     click: () => {
                         this._rpc({
                             model: 'project.task',
-                            method: 'action_continue_recurrence',
+                            method: 'actionContinueRecurrence',
                             args: [resId],
                         }).then(() => {
                             if (mode === 'archive') {
@@ -139,4 +139,4 @@ export const ProjectFormView = FormView.extend({
     }),
 });
 
-viewRegistry.add('project_form', ProjectFormView);
+viewRegistry.add('projectForm', ProjectFormView);

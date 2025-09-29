@@ -1,6 +1,8 @@
-import { Fields, MetaModel, TransientModel } from "../../../core";
+import { Fields } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { subDate, toFormat, update } from "../../../core/tools";
+import { MetaModel, TransientModel } from "../../../core/models";
+import { update } from "../../../core/tools";
+import { subDate, toFormat } from "../../../core/tools/date_utils";
 
 @MetaModel.define()
 class AccountAgedTrialBalance extends TransientModel {

@@ -1,4 +1,5 @@
-import { _super, AbstractModel, api, Fields, MetaModel } from "../../../core";
+import { api, Fields } from "../../../core";
+import { _super, AbstractModel, MetaModel } from "../../../core/models";
 import { bool, getrootXml, iterchildren, parseXml, serializeXml } from "../../../core/tools";
 
 

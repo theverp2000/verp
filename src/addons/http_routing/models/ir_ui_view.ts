@@ -1,5 +1,6 @@
-import { MetaModel, Model, _super, api } from "../../../core";
-import { slug, unslugUrl } from "../../../core/tools";
+import { api } from "../../../core";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { slug, unslugUrl } from "../../../core/tools/slug";
 
 @MetaModel.define()
 class IrUiView extends Model {

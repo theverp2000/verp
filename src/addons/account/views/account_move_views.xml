@@ -671,8 +671,8 @@
         <widget name="webRibbon" title="Paid" attrs="{'invisible': ['|', ['paymentState', '!=', 'paid'], ['moveType', 'not in', ['outInvoice', 'outRefund', 'inInvoice', 'inRefund', 'outReceipt', 'inReceipt']]]}"/>
         <widget name="webRibbon" title="In Payment" attrs="{'invisible': ['|', ['paymentState', '!=', 'inPayment'], ['moveType', 'not in', ['outInvoice', 'outRefund', 'inInvoice', 'inRefund', 'outReceipt', 'inReceipt']]]}"/>
         <widget name="webRibbon" title="Partial" attrs="{'invisible': ['|', ['paymentState', '!=', 'partial'], ['moveType', 'not in', ['outInvoice', 'outRefund', 'inInvoice', 'inRefund', 'outReceipt', 'inReceipt']]]}"/>
-        <widget name="webRibbon" title="Reversed" bgColor="bg-danger" attrs="{'invisible': [['paymentState', '!=', 'reversed']]}"/>
-        <widget name="webRibbon" text="Invoicing App Legacy" bgColor="bg-info" attrs="{'invisible': [['paymentState', '!=', 'invoicingLegacy']]}" tooltip="This entry has been generated through the Invoicing app, before installing Accounting. It has been disabled by the 'Invoicing Switch Threshold Date' setting so that it does not impact your accounting."/>
+        <widget name="webRibbon" title="Reversed" bgcolor="bg-danger" attrs="{'invisible': [['paymentState', '!=', 'reversed']]}"/>
+        <widget name="webRibbon" text="Invoicing App Legacy" bgcolor="bg-info" attrs="{'invisible': [['paymentState', '!=', 'invoicingLegacy']]}" tooltip="This entry has been generated through the Invoicing app, before installing Accounting. It has been disabled by the 'Invoicing Switch Threshold Date' setting so that it does not impact your accounting."/>
 
         <!-- Invisible fields -->
         <field name="id" invisible="1"/>

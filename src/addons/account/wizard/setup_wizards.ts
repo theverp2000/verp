@@ -1,6 +1,9 @@
-import { Fields, MetaModel, TransientModel, _Date, _super, api } from "../../../core";
-import { ValidationError } from "../../../core/helper";
-import { bool, pop, subDate } from "../../../core/tools";
+import { Fields, _Date, api } from "../../../core";
+import { ValidationError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { bool } from "../../../core/tools/bool";
+import { subDate } from "../../../core/tools/date_utils";
+import { pop } from "../../../core/tools/misc";
 
 @MetaModel.define()
 class FinancialYearOpeningWizard extends TransientModel {

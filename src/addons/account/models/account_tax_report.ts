@@ -1,7 +1,12 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
 import { ValidationError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { _f, bool, extend, len, pop } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { extend, len } from "../../../core/tools/iterable";
+import { pop } from "../../../core/tools/misc";
+import { _f } from "../../../core/tools/utils";
 
 @MetaModel.define()
 class AccountTaxReport extends Model {

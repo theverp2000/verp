@@ -1,4 +1,5 @@
-import { Fields, MetaModel, TransientModel } from "../../..";
+import { Fields } from "../../../fields";
+import { MetaModel, TransientModel } from "../../../models";
 
 @MetaModel.define()
 class BaseModuleUpdate extends TransientModel {

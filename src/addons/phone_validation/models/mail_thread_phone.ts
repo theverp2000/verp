@@ -1,5 +1,7 @@
-import { AbstractModel, Fields, MetaModel, api } from "../../../core";
+import _ from "lodash";
+import { Fields, api } from "../../../core";
 import { AccessError, Dict, NotImplementedError, UserError } from "../../../core/helper";
+import { AbstractModel, MetaModel } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { _f, len, quoteDouble } from "../../../core/tools";
 import { phoneSanitizeNumbersWRecord } from "../tools";
@@ -29,32 +31,26 @@ class PhoneMixin extends AbstractModel {
     static _parents = ['mail.thread'];
 
     static phoneSanitized = Fields.Char(
-        {
-            string: 'Sanitized Number', compute: "_computePhoneSanitized", computeSudo: true, store: true,
-            help: "Field used to store sanitized phone number. Helps speeding up searches and comparisons."
-        });
+        {string: 'Sanitized Number', compute: "_computePhoneSanitized", computeSudo: true, store: true,
+        help: "Field used to store sanitized phone number. Helps speeding up searches and comparisons."});
     static phoneSanitizedBlacklisted = Fields.Boolean(
-        {
-            string: 'Phone Blacklisted', compute: "_computeBlacklisted", computeSudo: true, store: false,
-            search: "_searchPhoneSanitizedBlacklisted", groups: "base.groupUser",
-            help: "If the sanitized phone number is on the blacklist, the contact won't receive mass mailing sms anymore, from any list"
-        });
+        {string: 'Phone Blacklisted', compute: "_computeBlacklisted", computeSudo: true, store: false,
+        search: "_searchPhoneSanitizedBlacklisted", groups: "base.groupUser",
+        help: "If the sanitized phone number is on the blacklist, the contact won't receive mass mailing sms anymore, from any list"});
     static phoneBlacklisted = Fields.Boolean(
-        {
-            string: 'Blacklisted Phone is Phone', compute: "_computeBlacklisted", computeSudo: true, store: false, groups: "base.groupUser",
-            help: "Indicates if a blacklisted sanitized phone number is a phone number. Helps distinguish which number is blacklisted \
+        {string: 'Blacklisted Phone is Phone', compute: "_computeBlacklisted", computeSudo: true, store: false, groups: "base.groupUser",
+        help: "Indicates if a blacklisted sanitized phone number is a phone number. Helps distinguish which number is blacklisted \
             when there is both a mobile and phone field in a model."});
     static mobileBlacklisted = Fields.Boolean(
-        {
-            string: 'Blacklisted Phone Is Mobile', compute: "_computeBlacklisted", computeSudo: true, store: false, groups: "base.groupUser",
-            help: "Indicates if a blacklisted sanitized phone number is a mobile number. Helps distinguish which number is blacklisted \
+        {string: 'Blacklisted Phone Is Mobile', compute: "_computeBlacklisted", computeSudo: true, store: false, groups: "base.groupUser",
+        help: "Indicates if a blacklisted sanitized phone number is a mobile number. Helps distinguish which number is blacklisted \
             when there is both a mobile and phone field in a model."});
-    static phoneMobileSearch = Fields.Char("Phone/Mobile", { store: false, search: '_searchPhoneMobileSearch' });
+    static phoneMobileSearch = Fields.Char("Phone/Mobile", {store: false, search: '_searchPhoneMobileSearch'});
 
     async _searchPhoneMobileSearch(operator, value) {
-        value = typeof (value) == 'string' ? value.trim() : value;
+        value = typeof(value)== 'string' ? value.trim() : value;
         const phoneFields = this._phoneGetNumberFields().filter(fname => fname in this._fields && this._fields[fname].store);
-        if (!phoneFields.length) {
+        if (! phoneFields.length) {
             throw new UserError(await this._t('Missing definition of phone Fields.'));
         }
 
@@ -73,7 +69,7 @@ class PhoneMixin extends AbstractModel {
         }
 
         const pattern = new RegExp('[\s\\./\(\)\-]');
-        const sqlOperator = { '=like': 'LIKE', '=ilike': 'ILIKE' }[operator] ?? operator;
+        const sqlOperator = {'=like': 'LIKE', '=ilike': 'ILIKE'}[operator] ?? operator;
 
         let res;
         if (value.startsWith('+') || value.startsWith('00')) {
@@ -84,7 +80,7 @@ class PhoneMixin extends AbstractModel {
                 whereStr = phoneFields.map(phoneField => _f(`model.{phoneField} IS NULL OR (
                         REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s' OR
                         REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s'
-                )`, { phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator })).join(' AND ');
+                )`, {phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator})).join(' AND ');
             }
             else {
                 // searching on +32485112233 should also finds 0032485112233 (and vice versa)
@@ -92,7 +88,7 @@ class PhoneMixin extends AbstractModel {
                 whereStr = phoneFields.map(phoneField => _f(`model.{phoneField} IS NOT NULL AND (
                             REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s' OR
                             REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s'
-                    )`, { phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator })).join(' OR ');
+                    )`, {phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator})).join(' OR ');
             }
             const query = `SELECT model.id FROM "${this.cls._table}" model WHERE ${whereStr};`;
 
@@ -101,24 +97,24 @@ class PhoneMixin extends AbstractModel {
                 term = `${term}%`;
             }
             res = await this._cr.execute(
-                query, Array(len(phoneFields)).fill([pattern, '00' + term, pattern, '+' + term]).flat()
+                query, _.fill(Array(len(phoneFields)), [pattern, '00' + term, pattern, '+' + term]).flat()
             )
         }
         else {
             let whereStr;
             if (expression.NEGATIVE_TERM_OPERATORS.includes(operator)) {
-                whereStr = phoneFields.map(phoneField => _f(`(model.{phoneField} IS NULL OR REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s')`, { phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator })).join(' AND ');
+                whereStr = phoneFields.map(phoneField => _f(`(model.{phoneField} IS NULL OR REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s')`, {phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator})).join(' AND ');
             }
             else {
-                whereStr = phoneFields.map(phoneField => _f(`(model.{phoneField} IS NOT NULL AND REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s')`, { phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator })).join();
+                whereStr = phoneFields.map(phoneField => _f(`(model.{phoneField} IS NOT NULL AND REGEXP_REPLACE(model.{phoneField}, '%s', '', 'g') {sqlOperator} '%s')`, {phoneField: quoteDouble(phoneField), sqlOperator: sqlOperator})).join();
             }
             const query = `SELECT model.id FROM ${this.cls._table} model WHERE ${whereStr};`;
-            let term = value.replaceALl(pattern, '');
+            let term = value.replaceAll(pattern, '');
             if (!['=', '!='].includes(operator)) { // for like operators
                 term = `%${term}%`;
             }
             res = await this._cr.execute(
-                query, Array(len(phoneFields)).fill([pattern, term]).flat()
+                query, _.fill(Array(len(phoneFields)), [pattern, term]).flat()
             );
         }
         if (!len(res)) {
@@ -126,7 +122,7 @@ class PhoneMixin extends AbstractModel {
         }
         return [['id', 'in', res.map(r => r['id'])]];
     }
-
+    
     @api.depends((self) => self._phoneGetSanitizeTriggers())
     async _computePhoneSanitized() {
         await this._assertPhoneField();
@@ -176,7 +172,7 @@ class PhoneMixin extends AbstractModel {
         // Assumes operator is '=' or '!=' and value is True or False
         await this._assertPhoneField();
         if (operator !== '=') {
-            if (operator === '!=' && typeof (value) === 'boolean') {
+            if (operator === '!=' && typeof(value) === 'boolean') {
                 value = !value;
             }
             else {
@@ -202,7 +198,7 @@ class PhoneMixin extends AbstractModel {
             `;
         }
         const res = await this._cr.execute(query, [this.cls._table]);
-        if (!res.length) {
+        if (! res.length) {
             return [[0, '=', 1]];
         }
         return [['id', 'in', res.map(r => r['id'])]];
@@ -242,7 +238,7 @@ class PhoneMixin extends AbstractModel {
         return false;
     }
 
-    async phoneGetSanitizedNumbers(numberFname = 'mobile', forceFormat = 'E164') {
+    async phoneGetSanitizedNumbers(numberFname='mobile', forceFormat='E164') {
         const res = Dict.fromKeys(this.ids, false);
         const countryFname = this._phoneGetCountryField();
         for (const record of this) {
@@ -252,7 +248,7 @@ class PhoneMixin extends AbstractModel {
         return res;
     }
 
-    async phoneGetSanitizedNumber(numberFname = 'mobile', forceFormat = 'E164') {
+    async phoneGetSanitizedNumber(numberFname='mobile', forceFormat='E164') {
         this.ensureOne();
         const countryFname = this._phoneGetCountryField();
         const number = await this[numberFname];

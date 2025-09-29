@@ -1,5 +1,6 @@
-import { Fields, MetaModel, Model, _super } from "../../..";
-import { len } from "../../../tools";
+import { Fields } from "../../../fields";
+import { MetaModel, Model, _super } from "../../../models";
+import { len } from "../../../tools/iterable";
 
 /**
  * Represents an SMTP server, able to send outgoing emails, with SSL and TLS capabilities.

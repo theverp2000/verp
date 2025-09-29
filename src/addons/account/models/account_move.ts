@@ -1,9 +1,18 @@
 import _ from "lodash";
 import { DateTime } from "luxon";
-import { Field, Fields, MetaModel, Model, ModelRecords, _Date, _super, api, tools } from "../../../core";
-import { setdefault } from "../../../core/api";
-import { AccessError, DefaultDict, Dict, MapKey, NotImplementedError, RedirectWarning, UserError, ValidationError } from "../../../core/helper";
-import { _f, bool, contextmanager, dateMin, emailRe, emailSplit, equal, escapeHtml, extend, f, floatCompare, floatIsZero, formatDate, formatLang, getEntries, getLang, getMonth, isCallable, isHtmlEmpty, isInstance, iter, len, pop, sha256, some, sorted, sortedAsync, stringify, sum, toDate, update, zipLongest } from "../../../core/tools";
+import { api, tools } from "../../../core";
+import { setdefault } from "../../../core/api/func";
+import { Field, Fields, _Date } from "../../../core/fields";
+import { DefaultDict, Dict, MapKey } from "../../../core/helper/collections";
+import { AccessError, NotImplementedError, RedirectWarning, UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, ModelRecords, _super } from "../../../core/models";
+import { bool, emailRe, emailSplit, equal, floatCompare, floatIsZero, formatDate, formatLang, getEntries, getLang, isCallable, isHtmlEmpty, isInstance, pop, sha256, sorted, sortedAsync, update } from "../../../core/tools";
+import { contextmanager } from "../../../core/tools/context";
+import { dateMin, getMonth, toDate } from "../../../core/tools/date_utils";
+import { extend, iter, len, some, sum, zipLongest } from "../../../core/tools/iterable";
+import { stringify } from "../../../core/tools/json";
+import { _f, f } from "../../../core/tools/utils";
+import { escapeHtml } from "../../../core/tools/xml";
 import { INTEGRITY_HASH_LINE_FIELDS } from "./account_move_line";
 
 export const MAX_HASH_VERSION = 2;
@@ -3255,7 +3264,7 @@ class AccountMove extends Model {
     let partnerRefNr = (partnerRef || '').replace(/\D/g, '').slice(-21) || String(partnerId.id).slice(-21);
     partnerRefNr = partnerRefNr.slice(-21);
     const checkDigits = calcCheckDigits(`${partnerRefNr}RF`);
-    const reference = f('RF%s %s', checkDigits, Array.from(zipLongest(_.fill(Array(4), partnerRefNr), "")).map(x => x.join(" ")));
+    const reference = f('RF%s %s', checkDigits, Array.from(zipLongest(_.fill(Array(4), iter(String(partnerRefNr))), "")).map(x => x.join(" ")));
     return reference;
   }
 

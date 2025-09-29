@@ -1,4 +1,5 @@
-import { _super, AbstractModel, api, MetaModel } from "../../../core";
+import { api } from "../../../core";
+import { _super, AbstractModel, MetaModel } from "../../../core/models"
 import { parseFloat, pop } from "../../../core/tools";
 
 @MetaModel.define()

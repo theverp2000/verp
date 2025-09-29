@@ -1,5 +1,7 @@
 import { v1 as uuidv1, v4 as uuidv4 } from 'uuid';
-import { Fields, MetaModel, Model, _Datetime, _super, api, tools } from '../../..';
+import { api, tools } from '../../..';
+import { Fields, _Datetime } from "../../../fields";
+import { MetaModel, Model, _super } from "../../../models";
 import { config } from "../../../tools/config";
 
 const _defaultParameters = {

@@ -1,7 +1,11 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
-import { UserError } from "../../../core/helper";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { UserError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { bool, extend, f } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { extend } from "../../../core/tools/iterable";
+import { f } from "../../../core/tools/utils";
 
 @MetaModel.define()
 class AccountPaymentMethod extends Model {

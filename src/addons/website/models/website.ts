@@ -4,22 +4,27 @@ import assert from "assert";
 import fs from "fs/promises";
 import _ from "lodash";
 import xpath from "xpath";
+import ico from 'sharp-ico';
 import * as iap_tools from "../../../addons/iap/tools/iap_tools";
-import { BaseModel, Fields, MetaModel, Model, _Datetime, _super, api, registry, release, tools } from "../../../core";
+import { Fields, _Datetime, api, registry, release, tools } from "../../../core";
 import { getattr, hasattr, setdefault } from "../../../core/api";
 import { AccessError, OrderedMultiDict, UserError, ValueError } from "../../../core/helper";
 import { Endpoint, _root, addonsManifest, httpGet } from "../../../core/http";
+import { BaseModel, MetaModel, Model, _super } from "../../../core/models";
 import { getResourcePath } from "../../../core/modules";
 import { expression } from "../../../core/osv";
 import { FALSE_DOMAIN } from "../../../core/osv/expression";
 import { NotFound } from "../../../core/service";
 import { Rule } from "../../../core/service/middleware/rule";
 import { urlEncode, urlJoin, urlParse, urlQuotePlus } from "../../../core/service/middleware/utils";
-import { _f, b64encode, bool, columnExists, enumerate, equal, escapePsql, f, floatRound, getArgumentNames, isDigit, isInstance, isList, len, parseInt, parseXml, pop, quote, quoteList, rstrip, serializeXml, setOptions, sha512, slugify, sorted, stringify, tableExists, toText, update, urlFor } from "../../../core/tools";
+import { _f, b64decode, b64encode, bool, columnExists, enumerate, equal, escapePsql, f, floatRound, getArgumentNames, imageProcess, isDigit, isInstance, isList, len, parseInt, pop, quote, quoteList, rstrip, setOptions, sha512, slugify, sorted, tableExists, toText, update, urlFor } from "../../../core/tools";
+import { stringify } from "../../../core/tools/json";
+import { parseXml, serializeXml } from "../../../core/tools/xml";
 import { _guessMimetype } from "../../http_routing";
 import { pager } from "../../portal";
 import { getUnaccentSqlWrapper, similarityScore, textFromHtml } from "../tools";
 import { sitemapQs2dom } from "./ir_http";
+import sharp from "sharp";
 
 const DEFAULT_CDN_FILTERS = [
     "^/[^/]+/static/",

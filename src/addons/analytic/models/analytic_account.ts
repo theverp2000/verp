@@ -1,7 +1,12 @@
-import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
-import { Map2, ValidationError } from "../../../core/helper";
-import { expression } from "../../../core/osv";
-import { bool, f, sum } from "../../../core/tools";
+import { api } from "../../../core"
+import { Fields, _Date } from "../../../core/fields"
+import { Map2 } from "../../../core/helper/collections"
+import { ValidationError } from "../../../core/helper/errors"
+import { MetaModel, Model, _super } from "../../../core/models"
+import { expression } from "../../../core/osv"
+import { bool } from "../../../core/tools/bool"
+import { sum } from "../../../core/tools/iterable"
+import { f } from "../../../core/tools/utils"
 
 @MetaModel.define()
 class AccountAnalyticDistribution extends Model {
@@ -209,6 +214,7 @@ class AccountAnalyticAccount extends Model {
           domain = [];
       }
       else {
+            // `partnerId` is in auto_join and the searches using ORs with auto_join fields doesn't work we have to cut the search in two searches ... https://github.com/verp/verp/issues/25175
             const partnerIds = this.env.items('res.partner')._search([['label', operator, name]], {limit, accessRightsUid: nameGetUid});
             const domainOperator = operator === 'not ilike' ? '&' : '|';
             domain = [domainOperator, domainOperator, ['code', operator, name], ['label', operator, name], ['partnerId', 'in', partnerIds]];

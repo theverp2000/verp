@@ -1,5 +1,6 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { Fields, api } from "../../../core";
 import { ValidationError, ValueError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { Router, Rule } from "../../../core/service/middleware";
 import { bool, f, isInstance, len, pop } from "../../../core/tools";
 

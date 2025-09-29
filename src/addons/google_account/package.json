@@ -1,10 +1,7 @@
 {
     "label": "Google Users",
     "category": "Hidden/Tools",
-    "descriptions": [
-        "The module adds google user in res user.",
-        "========================================"
-    ],
+    "description": "The module adds google user in res user.\n========================================",
     "depends": ["base_setup"],
     "data": [
         "data/google_account_data.xml"

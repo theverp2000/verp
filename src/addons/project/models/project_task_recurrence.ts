@@ -1,9 +1,10 @@
 import { RRule, Weekday } from "rrule"
-import { _super, MetaModel, Model } from "../../../core/models"
 import { _Date, api, Fields } from "../../../core"
-import { addDate, bool, dateMin, extend, len, parseInt, range, range2, setDate, some, subDate } from "../../../core/tools"
 import { ValidationError } from "../../../core/helper"
+import { _super, MetaModel, Model } from "../../../core/models"
+import { addDate, bool, getEntries, len, max, parseInt, range, setDate, some, subDate } from "../../../core/tools"
 import { monthrange } from "../../../core/tools/calendar"
+import _ from "lodash"
 
 export const MONTHS = {
     'january': 31,
@@ -43,24 +44,24 @@ class ProjectTaskRecurrence extends Model {
     static _name = 'project.task.recurrence';
     static _description = 'Task Recurrence';
 
-    static taskIds = Fields.One2many('project.task', 'recurrenceId', {copy: false});
+    static taskIds = Fields.One2many('project.task', 'recurrenceId', { copy: false });
     static nextRecurrenceDate = Fields.Date();
-    static recurrenceLeft = Fields.Integer({string: "Number of Tasks Left to Create", copy: false});
+    static recurrenceLeft = Fields.Integer({ string: "Number of Tasks Left to Create", copy: false });
 
-    static repeatInterval = Fields.Integer({string: 'Repeat Every', default: 1});
+    static repeatInterval = Fields.Integer({ string: 'Repeat Every', default: 1 });
     static repeatUnit = Fields.Selection([
         ['day', 'Days'],
         ['week', 'Weeks'],
         ['month', 'Months'],
         ['year', 'Years'],
-    ], {default: 'week'});
+    ], { default: 'week' });
     static repeatType = Fields.Selection([
         ['forever', 'Forever'],
         ['until', 'End Date'],
         ['after', 'Number of Repetitions'],
-    ], {default: "forever", string: "Until"});
-    static repeatUntil = Fields.Date({string: "End Date"});
-    static repeatNumber = Fields.Integer({string: "Repetitions"});
+    ], { default: "forever", string: "Until" });
+    static repeatUntil = Fields.Date({ string: "End Date" });
+    static repeatNumber = Fields.Integer({ string: "Repetitions" });
 
     static repeatOnMonth = Fields.Selection([
         ['date', 'Date of the Month'],
@@ -72,17 +73,17 @@ class ProjectTaskRecurrence extends Model {
         ['day', 'Day of the Year'],
     ]);
 
-    static mon = Fields.Boolean({string: "Mon"});
-    static tue = Fields.Boolean({string: "Tue"});
-    static wed = Fields.Boolean({string: "Wed"});
-    static thu = Fields.Boolean({string: "Thu"});
-    static fri = Fields.Boolean({string: "Fri"});
-    static sat = Fields.Boolean({string: "Sat"});
-    static sun = Fields.Boolean({string: "Sun"});
+    static mon = Fields.Boolean({ string: "Mon" });
+    static tue = Fields.Boolean({ string: "Tue" });
+    static wed = Fields.Boolean({ string: "Wed" });
+    static thu = Fields.Boolean({ string: "Thu" });
+    static fri = Fields.Boolean({ string: "Fri" });
+    static sat = Fields.Boolean({ string: "Sat" });
+    static sun = Fields.Boolean({ string: "Sun" });
 
-    static repeatDay = Fields.Selection([
-        Array.from(range(1, 32)).map(i => [String(i), String(i)])
-    ]);
+    static repeatDay = Fields.Selection(
+        _.range(1, 32).map(i => [String(i), String(i)])
+    );
     static repeatWeek = Fields.Selection([
         ['first', 'First'],
         ['second', 'Second'],
@@ -97,7 +98,7 @@ class ProjectTaskRecurrence extends Model {
         ['fri', 'Friday'],
         ['sat', 'Saturday'],
         ['sun', 'Sunday'],
-    ], {string: 'Day Of The Week', readonly: false});
+    ], { string: 'Day Of The Week', readonly: false });
     static repeatMonth = Fields.Selection([
         ['january', 'January'],
         ['february', 'February'],
@@ -116,7 +117,7 @@ class ProjectTaskRecurrence extends Model {
     @api.constrains('repeatUnit', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
     async _checkRecurrenceDays() {
         for (const project of await this.filtered(async (p) => await p.repeatUnit == 'week')) {
-            if (! some(await project('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'))) {
+            if (!some(await project('mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'))) {
                 throw new ValidationError('You should select a least one day');
             }
         }
@@ -146,7 +147,7 @@ class ProjectTaskRecurrence extends Model {
 
     @api.constrains('repeatUnit', 'repeatOnMonth', 'repeatDay', 'repeatType', 'repeatUntil')
     async _checkRepeatUntilMonth() {
-        if (bool(await this.filtered(async (r) => await r.repeatType == 'until' && await r.repeatUnit == 'month' && await r.repeatUntil && await r.repeatOnMonth == 'date' && parseInt(await r.repeatDay) > (await r.repeatUntil).getDate() && monthrange((await r.repeatUntil).getFullYear(), (await r.repeatUntil).getMonth()+1)[1] != (await r.repeatUntil).getDate()))) {
+        if (bool(await this.filtered(async (r) => await r.repeatType == 'until' && await r.repeatUnit == 'month' && await r.repeatUntil && await r.repeatOnMonth == 'date' && parseInt(await r.repeatDay) > (await r.repeatUntil).getDate() && monthrange((await r.repeatUntil).getFullYear(), (await r.repeatUntil).getMonth() + 1)[1] != (await r.repeatUntil).getDate()))) {
             throw new ValidationError('The end date should be after the day of the month or the last day of the month');
         }
     }
@@ -159,7 +160,7 @@ class ProjectTaskRecurrence extends Model {
             'label', 'recurringTask', 'analyticAccountId'];
     }
 
-    async _getWeekdays(n=1) {
+    async _getWeekdays(n = 1) {
         this.ensureOne();
         if (await this['repeatUnit'] == 'week') {
             const res = []
@@ -168,14 +169,15 @@ class ProjectTaskRecurrence extends Model {
                     res.push(fn.nth(n));
                 }
             }
+            return res;
         }
-        return [DAYS[await this['repeatWeekday']](n)];
+        return [DAYS[await this['repeatWeekday']].nth(n)];
     }
 
     @api.model()
-    async _getNextRecurringDates(dateStart, repeatInterval, repeatUnit, repeatType, repeatUntil, repeatOnMonth, repeatOnYear, weekdays, repeatDay, repeatWeek, repeatMonth, opts={}) {
+    async _getNextRecurringDates(dateStart, repeatInterval, repeatUnit, repeatType, repeatUntil, repeatOnMonth, repeatOnYear, weekdays, repeatDay, repeatWeek, repeatMonth, opts = {}) {
         let count = opts['count'] ?? 1;
-        const rruleOpts = {'interval': repeatInterval || 1, 'dtstart': dateStart};
+        const rruleOpts = { 'interval': repeatInterval || 1, 'dtstart': dateStart };
         repeatDay = parseInt(repeatDay);
         let start: any = false;
         const dates = [];
@@ -197,20 +199,20 @@ class ProjectTaskRecurrence extends Model {
         else if (repeatUnit == 'month') {
             rruleOpts['freq'] = RRule.MONTHLY;
             if (repeatOnMonth == 'date') {
-                start = subDate(dateStart, {days: 1});
-                start = setDate(start, {day: Math.min(repeatDay, monthrange(start.getFullYear(), start.getMonth()+1)[1])});
+                start = subDate(dateStart, { days: 1 });
+                start = setDate(start, { day: Math.min(repeatDay, monthrange(start.getFullYear(), start.getMonth() + 1)[1]) });
                 if (start < dateStart) {
                     // Ensure the next recurrence is in the future
-                    start = addDate(start, {months: repeatInterval});
-                    start = setDate(start, {day: Math.min(repeatDay, monthrange(start.getFullYear(), start.getMonth()+1)[1])});
+                    start = addDate(start, { months: repeatInterval });
+                    start = setDate(start, { day: Math.min(repeatDay, monthrange(start.getFullYear(), start.getMonth() + 1)[1]) });
                 }
-                const canGenerateDate = repeatType == 'until' 
-                ? () => start <= repeatUntil
-                : () => len(dates) < count;
+                const canGenerateDate = repeatType == 'until'
+                    ? () => start <= repeatUntil
+                    : () => len(dates) < count;
                 while (canGenerateDate()) {
                     dates.push(start);
-                    start = addDate(start, {months: repeatInterval});
-                    start = setDate(start, {day: Math.min(repeatDay, monthrange(start.getFullYear(), start.getMonth()+1)[1])});
+                    start = addDate(start, { months: repeatInterval });
+                    start = setDate(start, { day: Math.min(repeatDay, monthrange(start.getFullYear(), start.getMonth() + 1)[1]) });
                 }
                 return dates;
             }
@@ -238,20 +240,20 @@ class ProjectTaskRecurrence extends Model {
         const fieldsToCopy = this._getRecurringFields();
         const taskValues = (await task.read(fieldsToCopy)).pop();
         const createValues = {};
-        for (const [field, value] of taskValues.items()) {
-            createValues[field] = Array.isArray(value) ? value[0] : value; 
+        for (const [field, value] of getEntries(taskValues)) {
+            createValues[field] = Array.isArray(value) ? value[0] : value;
         }
         createValues['stageId'] = bool(await (await task.projectId).typeIds) ? (await (await task.projectId).typeIds)[0].id : (await task.stageId).id;
         createValues['userIds'] = false;
         return createValues;
     }
 
-    async _createSubtasks(task, newTask, depth=3) {
+    async _createSubtasks(task, newTask, depth = 3) {
         if (depth == 0 || !(await task.childIds).ok) {
             return;
         }
         const children = [],
-        childRecurrence = [];
+            childRecurrence = [];
         // copy the subtasks of the original task
         for (const child of await task.childIds) {
             if ((await child.recurrenceId).ok && childRecurrence.includes((await child.recurrenceId).id)) {
@@ -286,30 +288,29 @@ class ProjectTaskRecurrence extends Model {
 
     async _createNextTask() {
         for (const recurrence of this) {
-            const taskIds = await (await recurrence.sudo()).taskIds;
-            const maxId = Math.max(...taskIds.ids);
-            const createValues = await recurrence._newTaskValues(taskIds[maxId]);
+            const task = max(await (await recurrence.sudo()).taskIds, t => t.id);
+            const createValues = await recurrence._newTaskValues(task);
             const newTask = await (await this.env.items('project.task').sudo()).create(createValues);
-            await recurrence._createSubtasks(taskIds[maxId], newTask, 3);
+            await recurrence._createSubtasks(task, newTask, 3);
         }
     }
 
     async _setNextRecurrenceDate() {
         const today = _Date.today();
-        const tomorrow = addDate(today, {days: 1});
+        const tomorrow = addDate(today, { days: 1 });
         for (const recurrence of await this.filtered(
             async (r) => {
                 const repeatType = await r.repeatType;
                 return repeatType == 'after' && await r.recurrenceLeft >= 0
-                || repeatType == 'until' && await r.repeatUntil >= today
-                || repeatType == 'forever';
+                    || repeatType == 'until' && await r.repeatUntil >= today
+                    || repeatType == 'forever';
             }
         )) {
             if (await recurrence.repeatType == 'after' && await recurrence.recurrenceLeft == 0) {
                 await recurrence.set('nextRecurrenceDate', false);
             }
             else {
-                const nextDate = await this._getNextRecurringDates(tomorrow, await recurrence.repeatInterval, await recurrence.repeatUnit, await recurrence.repeatType, await recurrence.repeatUntil, await recurrence.repeatOnMonth, await recurrence.repeatOnYear, await recurrence._getWeekdays(), await recurrence.repeatDay, await recurrence.repeatWeek, await recurrence.repeatMonth, {count: 1});
+                const nextDate = await this._getNextRecurringDates(tomorrow, await recurrence.repeatInterval, await recurrence.repeatUnit, await recurrence.repeatType, await recurrence.repeatUntil, await recurrence.repeatOnMonth, await recurrence.repeatOnYear, await recurrence._getWeekdays(), await recurrence.repeatDay, await recurrence.repeatWeek, await recurrence.repeatMonth, { count: 1 });
                 await recurrence.set('nextRecurrenceDate', nextDate.length ? nextDate[0] : false);
             }
         }

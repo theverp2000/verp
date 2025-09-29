@@ -1,6 +1,8 @@
-import { Fields, MetaModel, Model, _Datetime, _super, api } from "../../../core";
+import { Fields, _Datetime, api } from "../../../core";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { _f, bool, escapePsql, escapeRegExp, f, len, parseInt, quote, quoteList, safeEval, slugify } from "../../../core/tools";
+import { _f, bool, escapePsql, escapeRegExp, f, len, parseInt, quote, quoteList, slugify } from "../../../core/tools";
+import { safeEval } from "../../../core/tools/save_eval";
 import { textFromHtml } from "../tools";
 
 @MetaModel.define()

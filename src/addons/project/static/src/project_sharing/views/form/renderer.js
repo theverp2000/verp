@@ -14,15 +14,15 @@ export default FormRenderer.extend({
         // Call the parent window to get the url displayed in the browser since we are in an iframe
         const query = new URLSearchParams(window.parent.location.search);
         return {
-            token: query.get('access_token') || '',
+            token: query.get('accessToken') || '',
             resModel: 'project.task',
             pid: '',
             hash: '',
-            res_id: this.state.res_id,
-            pager_step: 10,
-            allow_composer: !!this.state.res_id,
-            two_columns: false,
-            project_sharing_id: session.projectId,
+            resId: this.state.resId,
+            pagerStep: 10,
+            allowComposer: !!this.state.resId,
+            twoColumns: false,
+            projectSharingId: session.projectId,
         };
     },
     _makeChatterContainerTarget() {
@@ -34,7 +34,7 @@ export default FormRenderer.extend({
         this._chatterContainerComponent.appendTo(this._chatterContainerTarget);
     },
     _renderNode(node) {
-        if (node.tag === 'div' && node.attrs.class === 'oe_project_sharing_chatter') {
+        if (node.tag === 'div' && node.attrs.class === 'oe-project-sharing-chatter') {
             let isVisible = true;
             if (node.attrs.modifiers && node.attrs.modifiers.invisible) {
                 const record = this._getRecord(this.state.id);

@@ -1,5 +1,6 @@
-import { _Datetime, _super, Fields, MetaModel, Model } from "../../../core";
+import { _Datetime, Fields } from "../../../core";
 import { DefaultDict, MapKey } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { bool, floatIsZero, floatRound, len, pop, subDate, sum, update } from "../../../core/tools";
 
 const OPERATORS = {
@@ -267,7 +268,7 @@ class ProductProduct extends Model {
             ratiosFreeQty = [];
 
             for (let [component, bomSubLines] of bomSubLinesGrouped.items()) {
-                component = await (await component.withContext({mrpComputeQuantities: qties})).withPrefetch(prefetchComponentIds);
+                component = (await component.withContext({mrpComputeQuantities: qties})).withPrefetch(prefetchComponentIds);
                 let qtyPerKit = 0;
                 for (const [bomLine, bomLineData] of bomSubLines) {
                     if (await component.type != 'product' || floatIsZero(bomLineData['qty'], {precisionRounding: await (await bomLine.productUomId).rounding})) {

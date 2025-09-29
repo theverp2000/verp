@@ -10,4 +10,4 @@ class BurndownChartView extends GraphView {}
 BurndownChartView.components = { ...GraphView.components, Renderer: BurndownChartRenderer };
 BurndownChartView.buttonTemplate = "project.BurndownChartView.Buttons";
 
-viewRegistry.add("burndown_chart", BurndownChartView);
+viewRegistry.add("burndownChart", BurndownChartView);

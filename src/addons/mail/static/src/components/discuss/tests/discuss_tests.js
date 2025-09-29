@@ -529,7 +529,7 @@ QUnit.test('sidebar: channel rendering with needaction counter', async function 
     });
     // expected needaction notification
     this.data['mail.notification'].records.push({
-        mail_message_id: 100, // id of related message
+        mailMessageId: 100, // id of related message
         resPartnerId: this.data.currentPartnerId, // must be for current partner
     });
     await this.start();
@@ -1459,12 +1459,12 @@ QUnit.test('inbox messages are never squashed', async function (assert) {
     );
     this.data['mail.notification'].records.push(
         {
-            mail_message_id: 100,
+            mailMessageId: 100,
             notification_status: 'sent',
             notificationType: 'inbox',
             resPartnerId: this.data.currentPartnerId,
         }, {
-            mail_message_id: 101,
+            mailMessageId: 101,
             notification_status: 'sent',
             notificationType: 'inbox',
             resPartnerId: this.data.currentPartnerId,
@@ -2343,12 +2343,12 @@ QUnit.test('inbox: mark all messages as read', async function (assert) {
     this.data['mail.notification'].records.push(
         // notification to have first message in inbox
         {
-            mail_message_id: 100, // id of related message
+            mailMessageId: 100, // id of related message
             resPartnerId: this.data.currentPartnerId, // must be for current partner
         },
         // notification to have second message in inbox
         {
-            mail_message_id: 101, // id of related message
+            mailMessageId: 101, // id of related message
             resPartnerId: this.data.currentPartnerId, // must be for current partner
         }
     );
@@ -2925,7 +2925,7 @@ QUnit.test('rendering of inbox message', async function (assert) {
         resId: 20, // random related id
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -3200,7 +3200,7 @@ QUnit.test('reply to message from inbox (message linked to document)', async fun
     });
     // notification to have message in Inbox
     this.data['mail.notification'].records.push({
-        mail_message_id: 100, // id of related message
+        mailMessageId: 100, // id of related message
         resPartnerId: this.data.currentPartnerId, // must be for current partner
     });
     await this.start({
@@ -3338,12 +3338,12 @@ QUnit.test('messages marked as read move to "History" mailbox', async function (
     this.data['mail.notification'].records.push(
         // notification to have first message in inbox
         {
-            mail_message_id: 100, // id of related message
+            mailMessageId: 100, // id of related message
             resPartnerId: this.data.currentPartnerId, // must be for current partner
         },
         // notification to have second message in inbox
         {
-            mail_message_id: 101, // id of related message
+            mailMessageId: 101, // id of related message
             resPartnerId: this.data.currentPartnerId, // must be for current partner
         }
     );
@@ -3457,11 +3457,11 @@ QUnit.test('mark a single message as read should only move this message to "Hist
     );
     this.data['mail.notification'].records.push(
         {
-            mail_message_id: 1,
+            mailMessageId: 1,
             resPartnerId: this.data.currentPartnerId,
         },
         {
-            mail_message_id: 2,
+            mailMessageId: 2,
             resPartnerId: this.data.currentPartnerId,
         }
     );
@@ -3580,7 +3580,7 @@ QUnit.test('all messages in "Inbox" in "History" after marked all as read', asyn
         });
         // notification to have message in Inbox
         this.data['mail.notification'].records.push({
-            mail_message_id: id, // id of related message
+            mailMessageId: id, // id of related message
             resPartnerId: this.data.currentPartnerId, // must be for current partner
         });
 

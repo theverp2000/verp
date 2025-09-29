@@ -1,13 +1,23 @@
+import { allTimezones, groupbyAsync, md5, update } from './../../../tools/misc';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { TextEncoder } from 'node:util';
 import * as xpath from 'xpath';
-import { AbstractModel, BaseModel, Command, Fields, MetaModel, Model, _super, api, tools } from '../../..';
-import { Dict, Map2, MapKey, RedirectWarning, UserError, ValidationError, ValueError } from '../../../helper';
-import { Query, expression } from '../../../osv';
+import { api, tools } from '../../..';
+import { Command, Fields } from "../../../fields";
+import { Map2, Dict, MapKey } from '../../../helper';
+import { RedirectWarning, UserError, ValidationError, ValueError } from '../../../helper/errors';
+import { AbstractModel, BaseModel, MetaModel, Model, _super } from "../../../models";
+import { getUnaccentWrapper } from '../../../osv/expression';
+import { Query } from '../../../osv/query';
 import { urlParse } from '../../../service/middleware/utils';
-import { _convert$, _f, _format, b64encode, bool, emailNormalizeAll, f, formataddr, isInstance, len, next, parseHtml, serializeHtml } from '../../../tools';
-import { allTimezones, groupbyAsync, md5, update } from './../../../tools';
+import { b64encode } from '../../../tools';
+import { bool } from '../../../tools/bool';
+import { isInstance } from '../../../tools/func';
+import { len, next } from '../../../tools/iterable';
+import { emailNormalizeAll, formataddr } from '../../../tools/mail';
+import { _convert$, _f, _format, f } from '../../../tools/utils';
+import { parseHtml, serializeHtml } from '../../../tools/xml';
 
 export const WARNING_MESSAGE = [
   ['no-message', 'No Message'],
@@ -463,7 +473,7 @@ class Partner extends Model {
     * multi emails: sometimes this field is used to hold several addresses
       like email1@domain.com, email2@domain.com. We currently let this value
       untouched, but remove any formatting from multi emails;
-    * invalid email: if something is wrong, keep it in emailFormatted as
+    * invalid email: if something is wrong, keep it in email_formatted as
       this eases management and understanding of failures at mail.mail,
       mail.notification and mailing.trace level;
     * void email: emailFormatted is false, as we cannot do anything with
@@ -728,7 +738,7 @@ class Partner extends Model {
       }
     }
     let result = true;
-    // To write in SUPERUSER on field isCompany and avoid access rights problems.
+    // To write in SUPERUSER on field is_company and avoid access rights problems.
     if ('isCompany' in values && await this.userHasGroups('base.groupPartnerManager') && !this.env.su) {
       result = await (await _super(Partner, this).sudo()).write({ 'isCompany': values['isCompany'] });
       delete values['isCompany'];
@@ -941,7 +951,7 @@ class Partner extends Model {
       if (['=ilike', '=like'].includes(operator))
         operator = operator.slice(1);
 
-      const unaccent = await expression.getUnaccentWrapper(self.env.cr);
+      const unaccent = await getUnaccentWrapper(self.env.cr);
 
       const fields = await self._getNameSearchOrderByFields();
 
@@ -966,7 +976,7 @@ class Partner extends Model {
         vat: unaccent('"resPartner"."vat"')
       });
 
-      whereClauseParams = whereClauseParams.concat(Array(3).fill(searchName));  // for email / displayName, reference
+      whereClauseParams = whereClauseParams.concat(_.fill(Array(3), searchName));  // for email / displayName, reference
       whereClauseParams = whereClauseParams.concat([searchName.replace(/[^a-zA-Z0-9\-\.]+/g, '') ?? null]);  // for vat
       whereClauseParams = whereClauseParams.concat([searchName]);  // for order by
       if (limit) {

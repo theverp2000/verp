@@ -1,11 +1,19 @@
 import fs from "fs/promises";
 import _ from 'lodash';
 import path from 'path';
-import { Command, Fields, MetaModel, Model, ModelRecords, _super, api, tools } from '../../..';
-import { UserError, ValidationError, ValueError } from '../../../helper';
-import { getResourcePath } from '../../../modules';
+import sharp from 'sharp';
+import ico from 'sharp-ico';
+import { api, tools } from '../../..';
+import { Command, Fields } from "../../../fields";
+import { UserError, ValidationError, ValueError } from '../../../helper/errors';
+import { MetaModel, Model, _super } from "../../../models";
+import { getResourcePath } from '../../../modules/modules';
+import { b64encode, filePath } from '../../../tools';
+import { bool } from '../../../tools/bool';
+import { isInstance } from '../../../tools/func';
+import { isFile, pop } from '../../../tools/misc';
+import { ModelRecords } from './../../../models';
 import { Query } from "../../../osv";
-import { b64encode, bool, filePath, isFile, isInstance, pop } from '../../../tools';
 
 @MetaModel.define()
 class Company extends Model {

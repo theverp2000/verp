@@ -1,7 +1,10 @@
-import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { Fields, _Date, api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { Query } from "../../../core/osv";
-import { bool, diffDate, extend, parseFloat, split } from "../../../core/tools";
+import { extend, parseFloat, split } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { diffDate } from "../../../core/tools/date_utils";
 
 // Budgets
 @MetaModel.define()

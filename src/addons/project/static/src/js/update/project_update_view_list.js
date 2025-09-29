@@ -3,7 +3,7 @@
 import ListController from 'web.ListController';
 import ListRenderer from 'web.ListRenderer';
 import ListView from 'web.ListView';
-import viewRegistry from 'web.view_registry';
+import viewRegistry from 'web.viewRegistry';
 import ProjectRightSidePanel from '@project/js/right_panel/project_right_panel';
 import {
     RightPanelControllerMixin,
@@ -23,4 +23,4 @@ export const ProjectUpdateListView = ListView.extend(RightPanelViewMixin).extend
     }),
 });
 
-viewRegistry.add('project_update_list', ProjectUpdateListView);
+viewRegistry.add('projectUpdateList', ProjectUpdateListView);

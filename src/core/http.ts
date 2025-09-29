@@ -5,11 +5,12 @@ import _ from "lodash";
 import { DateTime } from "luxon";
 import { format } from "node:util";
 import path from "path";
+import * as prettier from 'prettier';
 import * as core from '.';
 import { Headers } from '../core/service/middleware/datastructures';
 import { Environment } from "./api";
 import { getattr, hasattr, mro, setattr } from "./api/func";
-import { CombinedMultiDict, Dict, FrozenDict, Map2, MultiDict, Stack } from "./helper/collections";
+import { CombinedMultiDict, Map2, Dict, FrozenDict, Stack, MultiDict } from "./helper/collections";
 import { AccessDenied, KeyError, NotImplementedError, RedirectWarning, RuntimeError, UserError, ValueError } from "./helper/errors";
 import { getModule, getmembers } from "./models";
 import { getDirectories, readManifest } from "./modules/modules";
@@ -18,7 +19,7 @@ import { BaseRequest } from "./service/middleware/base_request";
 import { BaseResponse } from "./service/middleware/base_response";
 import { BadRequest, Forbidden, HTTPException, NotFound } from "./service/middleware/exceptions";
 import { SharedDataMiddleware } from "./service/middleware/shared_data";
-import { redirect, urlEncode } from "./service/middleware/utils";
+import { redirect, urlEncode, urlQuote } from "./service/middleware/utils";
 import { wrapFile } from "./service/middleware/wsgi";
 import { checkSession } from "./service/security";
 import { Cursor } from "./sql_db";
@@ -1034,10 +1035,8 @@ export class WebRequest {
       try {
         const registry = await this.getRegistry();
         if (errObj == null && !this._failed) {
-          if (cr.objTransaction) {
-            await cr.commit();
-            await cr.reset();
-          }
+          await cr.commit();
+          await cr.reset();
           if (registry) {
             await registry.signalChanges();
           }
@@ -2162,7 +2161,7 @@ export function setSafeImageHeaders(headers, content) {
     headers['content-type'] = contentType;
   }
   headers['x-content-type-options'] = 'nosniff';
-  headers['content-length'] = `'${content.length}'`;
+  headers['content-length'] = content.length;
   return Array.from<any[]>(headers);
 }
 

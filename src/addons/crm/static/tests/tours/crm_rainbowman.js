@@ -14,7 +14,7 @@
             trigger: ".o-kanban-button-new",
             content: "click create",
         }, {
-            trigger: "input[name=name]",
+            trigger: "input[name=label]",
             content: "complete name",
             run: "text Test Lead 1",
         }, {
@@ -22,7 +22,7 @@
             content: "complete expected revenue",
             run: "text 999999997",
         }, {
-            trigger: "button.o_kanban_add",
+            trigger: "button.o-kanban-add",
             content: "create lead",
         }, {
             trigger: ".o-kanban-record .o_kanban_record_title:contains('Test Lead 1')",
@@ -36,7 +36,7 @@
             trigger: ".o-kanban-button-new",
             content: "create second lead",
         }, {
-            trigger: "input[name=name]",
+            trigger: "input[name=label]",
             content: "complete name",
             run: "text Test Lead 2",
         }, {
@@ -44,7 +44,7 @@
             content: "complete expected revenue",
             run: "text 999999998",
         }, {
-            trigger: "button.o_kanban_add",
+            trigger: "button.o-kanban-add",
             content: "create lead",
         }, {
             trigger: ".o-kanban-record .o_kanban_record_title:contains('Test Lead 2')",

@@ -1,5 +1,6 @@
-import { Fields, MetaModel, Model } from "../../../core";
 import { WARNING_HELP, WARNING_MESSAGE } from "../../../core/addons/base/models";
+import { Fields } from "../../../core/fields";
+import { MetaModel, Model } from "../../../core/models"
 
 @MetaModel.define()
 class Partner extends Model {

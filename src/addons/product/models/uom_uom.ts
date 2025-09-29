@@ -1,4 +1,5 @@
-import { api, MetaModel, Model } from "../../../core";
+import { api } from "../../../core";
+import { MetaModel, Model } from "../../../core/models";
 
 @MetaModel.define()
 class UoM extends Model {

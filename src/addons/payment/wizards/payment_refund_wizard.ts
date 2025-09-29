@@ -1,5 +1,6 @@
-import { Fields, MetaModel, TransientModel, api } from "../../../core";
+import { Fields, api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
+import { MetaModel, TransientModel } from "../../../core/models"
 
 @MetaModel.define()
 class PaymentRefundWizard extends TransientModel {

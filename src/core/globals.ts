@@ -10,7 +10,7 @@ global.CORE_PATH = path.normalize(__dirname + '/addons'); // => ./core/addons
 global._Pool = null;
 global.loaded = {};
 global.logDebug = false;
-global.logSql = false; // `false` or `console.log`
+global.logSql = false;  // change to `console.log` to debug
 global.globalSeq = 1;
 global.ormcache = true;
 global.ormcacheContext = true;
@@ -19,7 +19,7 @@ global._phonenumbersLibWarning = false;
 global.processing = false;
 global.logHttp = false;
 global.logXml = false;
-global.logAttachment = true;
+global.mustInstall = false;
 
 console.log(`rootPath=${global.ROOT_PATH}`);
 

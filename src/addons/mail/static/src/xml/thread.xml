@@ -33,7 +33,7 @@
                         <img class="o-viewer-img" t-attf-src="/web/image/#{widget.activeAttachment.id}?unique=#{unique}&amp;model=#{model}" alt="Viewer"/>
                     </t>
                     <iframe t-if="widget.activeAttachment.fileType == 'application/pdf'" class="o-viewer-pdf"  t-attf-src="/web/static/lib/pdfjs/web/viewer.html?file=/web/content/#{widget.activeAttachment.id}?model%3D#{model}%26filename%3D#{window.encodeURIComponent(widget.activeAttachment.label)}" />
-                    <iframe t-if="(widget.activeAttachment.fileType or '').indexOf('text') !== -1" class="o-viewer-text" t-attf-src="/web/content/#{widget.activeAttachment.id}?model=#{model}" />
+                    <iframe t-if="(widget.activeAttachment.fileType || '').indexOf('text') !== -1" class="o-viewer-text" t-attf-src="/web/content/#{widget.activeAttachment.id}?model=#{model}" />
                     <iframe t-if="widget.activeAttachment.fileType == 'youtu'" class="o-viewer-text"  allow="autoplay; encrypted-media" width="560" height="315" t-attf-src="https://www.youtube.com/embed/#{widget.activeAttachment.youtube}"/>
                     <video t-if="widget.activeAttachment.fileType == 'video'" class="o-viewer-video" controls="controls">
                         <source t-attf-src="/web/image/#{widget.activeAttachment.id}?model=#{model}" t-att-data-type="widget.activeAttachment.mimetype"/>

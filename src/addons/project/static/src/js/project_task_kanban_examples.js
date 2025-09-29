@@ -2,10 +2,10 @@
 
 import { _lt } from 'web.core';
 import {Markup} from 'web.utils';
-import kanbanExamplesRegistry from 'web.kanban_examples_registry';
+import kanbanExamplesRegistry from 'web.kanbanExamplesRegistry';
 
-const greenBullet = Markup`<span class="o_status d-inline-block o_status_green"></span>`;
-const redBullet = Markup`<span class="o_status d-inline-block o_status_red"></span>`;
+const greenBullet = Markup`<span class="o-status d-inline-block o-status-green"></span>`;
+const redBullet = Markup`<span class="o-status d-inline-block o-status-red"></span>`;
 const star = Markup`<a style="color: gold;" class="fa fa-star"/>`;
 const clock = Markup`<a class="fa fa-clock-o" />`;
 

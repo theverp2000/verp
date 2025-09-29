@@ -3,27 +3,27 @@
     background-color: $white;
     border-color: $border-color;
 
-    .o_portal_chatter {
+    .o-portal-chatter {
         width: 100%;
 
-        .o_portal_chatter_header {
+        .o-portal-chatter-header {
             text-align: center;
             vertical-align: middle;
         }
 
-        div.o_portal_chatter_composer,
-        div.o_portal_chatter_messages {
+        div.o-portal-chatter-composer,
+        div.o-portal-chatter-messages {
             div.media {
                 gap: 10px;
 
-                .o_portal_chatter_attachments {
+                .o-portal-chatter-attachments {
                     margin-bottom: 1rem;
-                    .o_portal_chatter_attachment {
-                        .o_portal_chatter_attachment_delete {
+                    .o-portal-chatter-attachment {
+                        .o-portal-chatter-attachment-delete {
                             @include o-position-absolute($top: 0, $right: 0);
                             opacity: 0;
                         }
-                        &:hover .o_portal_chatter_attachment_delete {
+                        &:hover .o-portal-chatter-attachment-delete {
                             opacity: 1;
                         }
                     }
@@ -31,18 +31,18 @@
             }
         }
 
-        .o_portal_chatter_avatar {
+        .o-portal-chatter-avatar {
             width: 45px;
             height: 45px;
         }
 
-        .o_portal_message_internal_off {
+        .o-portal-message-internal-off {
             .btn-danger {
                 display: none;
             }
         }
 
-        .o_portal_message_internal_on {
+        .o-portal-message-internal-on {
             .btn-success {
                 display: none;
             }
@@ -52,13 +52,13 @@
     &.o-aside {
         flex-direction: column;
 
-        .o_portal_chatter {
-            .o_portal_chatter_header {
+        .o-portal-chatter {
+            .o-portal-chatter-header {
                 padding-top: 1rem;
                 padding-bottom: 2px;
             }
 
-            .o_portal_chatter_composer, .o_portal_chatter_messages {
+            .o-portal-chatter-composer, .o-portal-chatter-messages {
                 margin-left: 1rem;
                 margin-right: 1rem;
             }

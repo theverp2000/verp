@@ -1,11 +1,13 @@
 // from theveb.urls import url_join
 
 import _ from "lodash";
-import { AbstractModel, Fields, MetaModel, _super, api } from "../../../core";
+import { Fields, api } from "../../../core";
 import { AccessError, NotImplementedError } from "../../../core/helper";
+import { AbstractModel, MetaModel, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { urlJoin } from "../../../core/service/middleware/utils";
-import { bool, escapePsql, f, isdisjoint, jsonParse, stringify, strip, urlFor } from "../../../core/tools";
+import { bool, escapePsql, f, isdisjoint, strip, urlFor } from "../../../core/tools";
+import { jsonParse, stringify } from "../../../core/tools/json";
 import { textFromHtml } from "../tools";
 
 @MetaModel.define()
@@ -149,7 +151,7 @@ class WebsiteCoverPropertiesMixin extends AbstractModel {
     }
     const coverProperties = jsonParse(vals['coverProperties']);
     const resizeClasses = (coverProperties['resizeClass'] || '').replaceAll('  ', ' ').split(' ');
-    const classes = ['o-half-screen-height', 'o-full-screen-height', 'cover-auto'];
+    const classes = ['o-half-screen-height', 'o-full-screen-height', 'cover_auto'];
     if (!isdisjoint(classes)) {
       // Updating cover properties and the given 'resizeClass' set is
       // valid, normal write.

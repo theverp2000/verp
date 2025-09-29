@@ -15,7 +15,7 @@ class IrAttachment extends Model {
    */
   async _checkAttachmentsAccess(attachmentTokens?: any[]) {
     let self = await this.sudo(false);
-    attachmentTokens = attachmentTokens ?? Array(self._length).fill(null);
+    attachmentTokens = attachmentTokens ?? _.fill(Array(self._length), null);
     if (len(attachmentTokens) != len(self)) {
       throw new UserError(await this._t("An access token must be provided for each attachment."));
     }

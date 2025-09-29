@@ -1,9 +1,10 @@
 import path from "path";
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { Fields, api } from "../../../core";
 import { MODULE_UNINSTALL_FLAG } from "../../../core/addons/base";
-import { getattr } from "../../../core/api";
 import { Dict, MissingError, OrderedDict } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models"
 import { bool, f, len, pop, sortedAsync } from "../../../core/tools";
+import { getattr } from "../../../core/api";
 
 @MetaModel.define()
 class IrModuleModule extends Model {

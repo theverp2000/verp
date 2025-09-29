@@ -1,6 +1,7 @@
-import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
-import { UserError } from "../../../core/helper";
-import { bool } from "../../../core/tools";
+import { Fields, api } from "../../../core";
+import { UserError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { bool } from "../../../core/tools/bool";
 
 @MetaModel.define()
 class StockImmediateTransferLine extends TransientModel {

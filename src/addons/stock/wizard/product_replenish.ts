@@ -1,6 +1,9 @@
-import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
-import { UserError } from "../../../core/helper";
-import { cleanContext, len } from "../../../core/tools";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { UserError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { cleanContext } from "../../../core/tools";
+import { len } from "../../../core/tools/iterable";
 
 @MetaModel.define()
 class ProductReplenish extends TransientModel {

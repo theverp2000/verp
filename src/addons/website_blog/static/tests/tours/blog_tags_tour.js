@@ -14,7 +14,7 @@ tour.register('blog_tags', {
     }, {
         content: "Edit blog post",
         trigger: "a[data-action=edit]",
-        extra_trigger: "section#o_wblog_post_main",
+        extraTrigger: "section#o_wblog_post_main",
     }, {
         content: "Open tag dropdown",
         trigger: "we-customizeblock-option:contains(Tags) we-toggler",

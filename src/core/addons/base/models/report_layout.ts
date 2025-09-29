@@ -1,4 +1,5 @@
-import { Fields, MetaModel, Model } from "../../..";
+import { Fields } from "../../../fields"
+import { MetaModel, Model } from "../../../models"
 
 @MetaModel.define()
 class ReportLayout extends Model {

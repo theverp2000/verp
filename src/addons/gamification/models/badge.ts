@@ -1,5 +1,6 @@
-import { _super, api, Fields, MetaModel, Model } from "../../../core";
+import { api, Fields } from "../../../core";
 import { UserError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models";
 import { Query } from "../../../core/osv";
 import { bool, setDate } from "../../../core/tools";
 

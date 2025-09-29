@@ -1,6 +1,7 @@
-import { AbstractModel, Fields, MetaModel, Model, _Date, _Datetime, _super, api, tools } from "../../../core";
+import { Fields, _Date, _Datetime, api, tools } from "../../../core";
 import { setdefault } from "../../../core/api";
 import { DatabaseError, MapKey, UserError, ValidationError } from "../../../core/helper";
+import { AbstractModel, MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { _f, addDate, b64encode, bool, dateSetTz, extend, floatCompare, floatIsZero, floatRepr, floatRound, groupbyAsync, isInstance, len, someAsync, sorted, sortedAsync, sum, update } from "../../../core/tools";
 

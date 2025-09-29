@@ -1,4 +1,4 @@
-import { _super, MetaModel, Model } from "../../../core";
+import { _super, MetaModel, Model } from "../../../core/models"
 
 @MetaModel.define()
 class Page extends Model {

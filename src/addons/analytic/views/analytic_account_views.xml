@@ -18,7 +18,7 @@
             <field name="arch" type="xml">
                 <form string="Analytic Tags">
                     <sheet>
-                        <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                         <group>
                             <field name="active" invisible="1"/>
                             <field name="label"/>
@@ -186,7 +186,7 @@
                                 </div>
                             </button>
                         </div>
-                        <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                        <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                         <div class="oe-title">
                             <label for="label"/>
                             <h1>

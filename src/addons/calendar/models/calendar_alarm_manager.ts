@@ -1,7 +1,9 @@
-import { _Date, _Datetime, AbstractModel, api, MetaModel } from "../../../core";
+import { _Date, _Datetime, api } from "../../../core";
 import { setdefault } from "../../../core/api";
 import { Dict } from "../../../core/helper";
-import { addDate, bool, diffDate, extend, f, len, plaintext2html, subDate } from "../../../core/tools";
+import { MetaModel, AbstractModel } from "../../../core/models"
+import { bool, extend, f, len, plaintext2html } from "../../../core/tools";
+import { addDate, diffDate, subDate } from "../../../core/tools/date_utils";
 
 @MetaModel.define()
 class AlarmManager extends AbstractModel {

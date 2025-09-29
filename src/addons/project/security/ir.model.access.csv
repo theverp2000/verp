@@ -1,43 +1,43 @@
-id,name,modelId:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_project_project,project.project,model_project_project,project.group_project_user,1,0,0,0
-access_project_project_manager,project.project,model_project_project,project.group_project_manager,1,1,1,1
-access_project_project_stage,project.project_stage,model_project_project_stage,base.group_user,1,0,0,0
-access_project_project_stage_manager,project.project_stage.manager,model_project_project_stage,project.group_project_manager,1,1,1,1
-access_project_task_type_user,project.task.type.user,model_project_task_type,base.group_user,1,0,0,0
-access_project_task_type_project_user,project.task.type.project.user,model_project_task_type,project.group_project_user,1,1,1,1
-access_project_task_type_manager,project.task.type manager,model_project_task_type,project.group_project_manager,1,1,1,1
-access_project_task_type_portal,task_type_portal,project.model_project_task_type,base.group_portal,1,0,0,0
-access_project_task,project.task,model_project_task,project.group_project_user,1,1,1,1
-access_report_project_task_user,report.project.task.user,model_report_project_task_user,project.group_project_manager,1,1,1,1
-access_partner_task_user,base.res.partner user,base.model_res_partner,project.group_project_user,1,0,0,0
-access_task_on_partner,project.task on partners,model_project_task,base.group_user,1,0,0,0
-access_task_portal,task_portal,project.model_project_task,base.group_portal,1,0,0,0
-access_project_user,project.project on partners,model_project_project,base.group_user,1,0,0,0
-access_project_portal,project_portal,project.model_project_project,base.group_portal,1,0,0,0
-access_resource_calendar,project.resource_calendar user,resource.model_resource_calendar,project.group_project_user,1,0,0,0
-access_resource_calendar_attendance,project.resource_calendar_attendance user,resource.model_resource_calendar_attendance,project.group_project_user,1,0,0,0
-access_resource_calendar_leaves_user,resource.calendar.leaves user,resource.model_resource_calendar_leaves,project.group_project_user,1,1,1,1
-access_project_tags_all,project.project_tags_all,model_project_tags,,1,0,0,0
-access_project_tags_manager,project.project_tags_manager,model_project_tags,project.group_project_manager,1,1,1,1
-access_project_tags_portal,project_tags_portal,project.model_project_tags,base.group_portal,1,0,0,0
-access_mail_activity_type_project_manager,mail.activity.type.project.manager,mail.model_mail_activity_type,project.group_project_manager,1,1,1,1
-access_account_analytic_account_user,account.analytic.account,analytic.model_account_analytic_account,project.group_project_user,1,0,0,0
-access_account_analytic_account_manager,account.analytic.account,analytic.model_account_analytic_account,project.group_project_manager,1,1,1,1
-access_account_analytic_line_project,account.analytic.line project,analytic.model_account_analytic_line,project.group_project_manager,1,1,1,1
-access_project_delete_wizard,access_project_delete_wizard,model_project_delete_wizard,project.group_project_manager,1,1,1,1
-access_project_task_type_delete_wizard,project.task.type.delete.wizard,model_project_task_type_delete_wizard,project.group_project_manager,1,1,1,1
-access_project_task_recurrence,project.task.recurrence,model_project_task_recurrence,project.group_project_user,1,1,1,1
-project.access_project_task_burndown_chart_report,access_project_task_burndown_chart_report,project.model_project_task_burndown_chart_report,project.group_project_manager,1,1,1,1
-access_project_update_user,project.update.user,model_project_update,base.group_user,1,0,0,0
-access_project_update_portal,project.update.portal,model_project_update,base.group_portal,0,0,0,0
-access_project_update_project_user,project.update.project.user,model_project_update,project.group_project_user,1,1,1,1
-access_project_update_project_manager,project.update.project.manager,model_project_update,project.group_project_manager,1,1,1,1
-access_project_milestone_user,project.milestone.user,model_project_milestone,base.group_user,1,0,0,0
-access_project_milestone_portal,project.milestone.portal,model_project_milestone,base.group_portal,0,0,0,0
-access_project_milestone_project_user,project.milestone.project.user,model_project_milestone,project.group_project_user,1,0,0,0
-access_project_milestone_project_manager,project.milestone.project.manager,model_project_milestone,project.group_project_manager,1,1,1,1
-access_project_collaborator_manager,project.collaborator.manager,model_project_collaborator,project.group_project_manager,1,1,1,1
-access_project_collaborator_user,project.collaborator.user,model_project_collaborator,project.group_project_user,1,0,0,0
-access_project_collaborator_portal,project.collaborator.portal,model_project_collaborator,base.group_portal,1,0,0,0
-access_project_share_manager,project.share.wizard.manager,model_project_share_wizard,project.group_project_manager,1,1,1,0
-access_project_personal_stage,project.personal.stage.user,model_project_task_stage_personal,base.group_user,1,1,1,1
+id,label,modelId:id,groupId:id,permRead,permWrite,permCreate,permUnlink
+access_project_project,project.project,model_projectProject,project.groupProjectUser,1,0,0,0
+access_project_project_manager,project.project,model_projectProject,project.groupProjectManager,1,1,1,1
+access_project_project_stage,project.project_stage,model_projectProjectStage,base.groupUser,1,0,0,0
+access_project_project_stage_manager,project.project_stage.manager,model_projectProjectStage,project.groupProjectManager,1,1,1,1
+access_project_task_type_user,project.task.type.user,model_projectTaskType,base.groupUser,1,0,0,0
+access_project_task_type_project_user,project.task.type.project.user,model_projectTaskType,project.groupProjectUser,1,1,1,1
+access_project_task_type_manager,project.task.type manager,model_projectTaskType,project.groupProjectManager,1,1,1,1
+access_project_task_type_portal,task_type_portal,project.model_projectTaskType,base.groupPortal,1,0,0,0
+access_project_task,project.task,model_projectTask,project.groupProjectUser,1,1,1,1
+access_report_project_task_user,report.project.task.user,model_reportProjectTaskUser,project.groupProjectManager,1,1,1,1
+access_partner_task_user,base.res.partner user,base.model_resPartner,project.groupProjectUser,1,0,0,0
+access_task_on_partner,project.task on partners,model_projectTask,base.groupUser,1,0,0,0
+access_task_portal,task_portal,project.model_projectTask,base.groupPortal,1,0,0,0
+access_project_user,project.project on partners,model_projectProject,base.groupUser,1,0,0,0
+access_project_portal,project_portal,project.model_projectProject,base.groupPortal,1,0,0,0
+access_resource_calendar,project.resource_calendar user,resource.model_resourceCalendar,project.groupProjectUser,1,0,0,0
+access_resource_calendar_attendance,project.resource_calendar_attendance user,resource.model_resourceCalendarAttendance,project.groupProjectUser,1,0,0,0
+access_resource_calendar_leaves_user,resource.calendar.leaves user,resource.model_resourceCalendarLeaves,project.groupProjectUser,1,1,1,1
+access_project_tags_all,project.project_tags_all,model_projectTags,,1,0,0,0
+access_project_tags_manager,project.project_tags_manager,model_projectTags,project.groupProjectManager,1,1,1,1
+access_project_tags_portal,project_tags_portal,project.model_projectTags,base.groupPortal,1,0,0,0
+access_mail_activity_type_project_manager,mail.activity.type.project.manager,mail.model_mailActivityType,project.groupProjectManager,1,1,1,1
+access_account_analytic_account_user,account.analytic.account,analytic.model_accountAnalyticAccount,project.groupProjectUser,1,0,0,0
+access_account_analytic_account_manager,account.analytic.account,analytic.model_accountAnalyticAccount,project.groupProjectManager,1,1,1,1
+access_account_analytic_line_project,account.analytic.line project,analytic.model_accountAnalyticLine,project.groupProjectManager,1,1,1,1
+access_project_delete_wizard,access_project_delete_wizard,model_projectDeleteWizard,project.groupProjectManager,1,1,1,1
+access_project_task_type_delete_wizard,project.task.type.delete.wizard,model_projectTaskTypeDeleteWizard,project.groupProjectManager,1,1,1,1
+access_project_task_recurrence,project.task.recurrence,model_projectTaskRecurrence,project.groupProjectUser,1,1,1,1
+project.access_project_task_burndown_chart_report,access_project_task_burndown_chart_report,project.model_projectTaskBurndownChartReport,project.groupProjectManager,1,1,1,1
+access_project_update_user,project.update.user,model_projectUpdate,base.groupUser,1,0,0,0
+access_project_update_portal,project.update.portal,model_projectUpdate,base.groupPortal,0,0,0,0
+access_project_update_project_user,project.update.project.user,model_projectUpdate,project.groupProjectUser,1,1,1,1
+access_project_update_project_manager,project.update.project.manager,model_projectUpdate,project.groupProjectManager,1,1,1,1
+access_project_milestone_user,project.milestone.user,model_projectMilestone,base.groupUser,1,0,0,0
+access_project_milestone_portal,project.milestone.portal,model_projectMilestone,base.groupPortal,0,0,0,0
+access_project_milestone_project_user,project.milestone.project.user,model_projectMilestone,project.groupProjectUser,1,0,0,0
+access_project_milestone_project_manager,project.milestone.project.manager,model_projectMilestone,project.groupProjectManager,1,1,1,1
+access_project_collaborator_manager,project.collaborator.manager,model_projectCollaborator,project.groupProjectManager,1,1,1,1
+access_project_collaborator_user,project.collaborator.user,model_projectCollaborator,project.groupProjectUser,1,0,0,0
+access_project_collaborator_portal,project.collaborator.portal,model_projectCollaborator,base.groupPortal,1,0,0,0
+access_project_share_manager,project.share.wizard.manager,model_projectShareWizard,project.groupProjectManager,1,1,1,0
+access_project_personal_stage,project.personal.stage.user,model_projectTaskStagePersonal,base.groupUser,1,1,1,1

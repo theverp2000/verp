@@ -9,4 +9,4 @@ const viewRegistry = registry.category("views");
 class ProjectPivotView extends PivotView {}
 ProjectPivotView.ControlPanel = ProjectControlPanel;
 
-viewRegistry.add("project_pivot", ProjectPivotView);
+viewRegistry.add("projectPivot", ProjectPivotView);

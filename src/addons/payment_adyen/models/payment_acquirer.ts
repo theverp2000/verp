@@ -1,6 +1,7 @@
-import { _super, api, Fields, http, MetaModel, Model } from "../../../core";
+import { api, Fields, http } from "../../../core";
 import { ValidationError } from "../../../core/helper";
-import { _f, lstrip, rstrip } from "../../../core/tools";
+import { _super, MetaModel, Model } from "../../../core/models"
+import { _f, f, lstrip, rstrip } from "../../../core/tools";
 import { API_ENDPOINT_VERSIONS } from "../const";
 
 @MetaModel.define()

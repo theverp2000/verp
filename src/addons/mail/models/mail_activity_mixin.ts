@@ -7,9 +7,7 @@ import { expression } from "../../../core/osv";
 import { isInstance, stringPart } from "../../../core/tools";
 import { bool } from "../../../core/tools/bool";
 import { next } from "../../../core/tools/iterable";
-import { f } from "../../../core/tools/string";
-import { _convert$ } from "../../../core/tools/string";
-import { _f } from "../../../core/tools/string";
+import { _convert$, _f, f } from "../../../core/tools/utils";
 
 /**
  * Mail Activity Mixin is a mixin class to use if you want to add activities

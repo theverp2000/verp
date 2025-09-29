@@ -62,8 +62,8 @@ QUnit.module('Views', {
                     allday: {string: "allday", type: "boolean"},
                     partnerIds: {string: "attendees", type: "one2many", relation: 'partner', default: [[6, 0, [1]]]},
                     type: {string: "type", type: "integer"},
-                    eventTypeId: {string: "Event Type", type: "many2one", relation: 'event_type'},
-                    color:  {string: "Color", type: "integer", related: 'eventTypeId.color'},
+                    event_type_id: {string: "Event Type", type: "many2one", relation: 'event_type'},
+                    color:  {string: "Color", type: "integer", related: 'event_type_id.color'},
                     is_hatched: {string: "Hatched", type: "boolean"}
                 },
                 records: [
@@ -2254,9 +2254,9 @@ QUnit.module('Views', {
         );
 
         this.data.event.records.push(
-            {id: 8, userId: 4, partnerId: 1, name: "event 8", start: "2016-12-11 09:00:00", stop: "2016-12-11 10:00:00", allday: false, partnerIds: [1,2,3], eventTypeId: 3, color: 4},
-            {id: 9, userId: 4, partnerId: 1, name: "event 9", start: "2016-12-11 19:00:00", stop: "2016-12-11 20:00:00", allday: false, partnerIds: [1,2,3], eventTypeId: 1, color: 1},
-            {id: 10, userId: 4, partnerId: 1, name: "event 10", start: "2016-12-11 12:00:00", stop: "2016-12-11 13:00:00", allday: false, partnerIds: [1,2,3], eventTypeId: 4, color: 0},
+            {id: 8, userId: 4, partnerId: 1, name: "event 8", start: "2016-12-11 09:00:00", stop: "2016-12-11 10:00:00", allday: false, partnerIds: [1,2,3], event_type_id: 3, color: 4},
+            {id: 9, userId: 4, partnerId: 1, name: "event 9", start: "2016-12-11 19:00:00", stop: "2016-12-11 20:00:00", allday: false, partnerIds: [1,2,3], event_type_id: 1, color: 1},
+            {id: 10, userId: 4, partnerId: 1, name: "event 10", start: "2016-12-11 12:00:00", stop: "2016-12-11 13:00:00", allday: false, partnerIds: [1,2,3], event_type_id: 4, color: 0},
         );
 
         var calendar = await createCalendarView({
@@ -2272,7 +2272,7 @@ QUnit.module('Views', {
                 'mode="week" '+
                 'color="color">'+
                     '<field name="partnerIds" write_model="filter_partner" write_field="partnerId"/>'+
-                    '<field name="eventTypeId" filters="1" color="color"/>'+
+                    '<field name="event_type_id" filters="1" color="color"/>'+
             '</calendar>',
             viewOptions: {
                 initialDate: initialDate,

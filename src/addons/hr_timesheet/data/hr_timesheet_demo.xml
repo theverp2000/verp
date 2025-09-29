@@ -3,7 +3,7 @@
 
     <!-- User Demo -->
     <record id="base.userDemo" model="res.users">
-        <field name="groups_id" eval="[(4, ref('group_hr_timesheet_user'))]"/>
+        <field name="groupsId" eval="[[4, refId('group_hr_timesheet_user'))]"/>
     </record>
 
     <!-- Employee -->
@@ -13,7 +13,7 @@
 
     <record id="hr.employee_qdp" model="hr.employee">
         <field name="timesheet_cost">75</field>
-        <field name="parent_id" ref="hr.employee_admin"/>
+        <field name="parentId" ref="hr.employee_admin"/>
     </record>
 
     <!-- Projects -->
@@ -28,7 +28,7 @@
     <!-- Timesheet Lines -->
     <record id="working_hours_requirements" model="account.analytic.line">
         <field name="label">Requirements analysis</field>
-        <field name="userId" ref='base.user_admin'/>
+        <field name="userId" ref='base.userAdmin'/>
         <field name="date" eval="(DateTime.now() + relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
         <field name="unit_amount">2.00</field>
         <field name="projectId" ref='project.project_project_2'/>
@@ -37,7 +37,7 @@
 
     <record id="working_hours_design" model="account.analytic.line">
         <field name="label">Design</field>
-        <field name="userId" ref='base.user_admin'/>
+        <field name="userId" ref='base.userAdmin'/>
         <field name="date" eval="(DateTime.now() + relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
         <field name="unit_amount">1.00</field>
         <field name="projectId" ref='project.project_project_2'/>
@@ -46,7 +46,7 @@
 
     <record id="working_hours_coding" model="account.analytic.line">
         <field name="label">Quality analysis</field>
-        <field name="userId" ref='base.user_admin'/>
+        <field name="userId" ref='base.userAdmin'/>
         <field name="date" eval="(DateTime.now() + relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
         <field name="unit_amount">3.00</field>
         <field name="projectId" ref='project.project_project_2'/>
@@ -55,7 +55,7 @@
 
     <record id="working_hours_testing" model="account.analytic.line">
         <field name="label">Quality analysis</field>
-        <field name="userId" ref='base.user_admin'/>
+        <field name="userId" ref='base.userAdmin'/>
         <field name="date" eval="(DateTime.now() + relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
         <field name="unit_amount">1.00</field>
         <field name="projectId" ref='project.project_project_2'/>
@@ -64,7 +64,7 @@
 
     <record id="working_hours_maintenance" model="account.analytic.line">
         <field name="label">Delivery</field>
-        <field name="userId" ref='base.user_admin'/>
+        <field name="userId" ref='base.userAdmin'/>
         <field name="date" eval="(DateTime.now() + relativedelta(days=-1)).strftime('%Y-%m-%d')"/>
         <field name="unit_amount">1.00</field>
         <field name="projectId" ref='project.project_project_2'/>
@@ -3676,15 +3676,15 @@
         <field name="deadline" eval="(DateTime.now() + relativedelta(years=1, months=3)).strftime('%Y-%m-15')"/>
     </record>
 
-    <record id="project_update_1" model="project.update" context="{'default_project_id': ref('project.project_project_1')}">
+    <record id="project_update_1" model="project.update" context="{'default_project_id': refId('project.project_project_1')}">
         <field name="label">Weekly review</field>
         <field name="userId" eval="ref('base.userDemo')"/>
         <field name="progress" eval="30"/>
         <field name="status">on_hold</field>
     </record>
-    <record id="project_update_2" model="project.update" context="{'default_project_id': ref('project.project_project_2')}">
+    <record id="project_update_2" model="project.update" context="{'default_project_id': refId('project.project_project_2')}">
         <field name="label">Weekly review</field>
-        <field name="userId" eval="ref('base.user_admin')"/>
+        <field name="userId" eval="ref('base.userAdmin')"/>
         <field name="progress" eval="30"/>
         <field name="status">off_track</field>
     </record>

@@ -1,5 +1,5 @@
-import { MetaModel, Model } from "../../../core";
-import { bool } from "../../../core/tools";
+import { MetaModel, Model } from "../../../core/models"
+import { bool } from "../../../core/tools/bool";
 
 @MetaModel.define()
 class ResPartner extends Model {

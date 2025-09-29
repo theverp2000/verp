@@ -1,7 +1,9 @@
 import * as path from 'path';
+
+import { config, isDir } from '../tools';
+
 import * as api from '../api';
 import { getModulePath, getModules, initializeSysPath } from '../modules';
-import { config, isDir } from '../tools';
 
 const commands = new Map<string, any>();
 
@@ -61,4 +63,3 @@ export default program;
 export {
   Command, main, program
 };
-

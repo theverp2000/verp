@@ -1,5 +1,6 @@
 import _ from "lodash";
-import { Fields, MetaModel, Model, _Datetime, api } from "../../../core";
+import { Fields, _Datetime, api } from "../../../core";
+import { MetaModel, Model } from "../../../core/models";
 import { bool, f, len, next } from "../../../core/tools";
 
 @MetaModel.define()

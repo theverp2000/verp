@@ -1,5 +1,6 @@
-import { Fields, MetaModel, Model, api, tools } from "../../../core";
-import { f } from "../../../core/tools";
+import { Fields, api, tools } from "../../../core";
+import { MetaModel, Model } from "../../../core/models"
+import { f, quoteDouble, quoteList } from "../../../core/tools";
 
 @MetaModel.define()
 class HrEmployeePublic extends Model {

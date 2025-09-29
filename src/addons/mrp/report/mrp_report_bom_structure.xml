@@ -149,7 +149,7 @@
             </tr>
         </t>
         <t t-if="data['operations']" name="operations">
-            <t t-set="spaceTd" t-value="'margin-left: '+ str(data['level'] * 20) + 'px;'"/>
+            <t t-set="spaceTd" t-value="'margin-left: '+ String(data['level'] * 20) + 'px;'"/>
             <tr class="o-mrp-bom-report-line o-mrp-bom-cost" t-att-data-productId="data['product'].id" t-att-data-id="'operation-' + String(data['bom'].id)" t-att-data-bom-id="data['bom'].id" t-att-parent-id="data['bom'].id" t-att-data-qty="data['bomQty']" t-att-data-level="data['level']">
                 <td name="tdOpr">
                     <span t-att-style="spaceTd"/>
@@ -198,7 +198,7 @@
     <template id="reportMrpOperationLine">
       <t t-set="currency" t-value="data['currency']"/>
       <t t-foreach="data['operations']" t-as="op">
-          <t t-set="spaceTd" t-value="'margin-left: '+ str(op['level'] * 20) + 'px;'"/>
+          <t t-set="spaceTd" t-value="'margin-left: '+ String(op['level'] * 20) + 'px;'"/>
           <tr class="o-mrp-bom-report-line o-mrp-bom-cost" t-att-parent-id="'operation-' + String(data['bomId'])">
               <td name="tdOprLine">
                   <span t-att-style="spaceTd"/>

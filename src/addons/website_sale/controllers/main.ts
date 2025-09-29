@@ -1,18 +1,20 @@
-import assert from "assert";
-import { _Date, Command, http } from "../../../core";
+import { _Date, Command, http } from "../../../core"
 import { nl2br } from "../../../core/addons/base";
 import { setdefault } from "../../../core/api";
-import { AccessError, MapKey, MissingError, ValidationError, ValueError } from "../../../core/helper";
-import { WebRequest } from "../../../core/http";
-import { expression } from "../../../core/osv";
 import { Forbidden, NotFound } from "../../../core/service";
-import { urlEncode, urlParse } from "../../../core/service/middleware/utils";
-import { _t, bool, equal, f, floatCompare, floatRound, isInstance, jsonParse, len, parseFloat, parseInt, pop, range, setOptions, singleEmailRe, sorted, stringify, update } from "../../../core/tools";
-import * as payment from '../../payment/controllers';
-import { PaymentPostProcessing } from "../../payment/controllers/post_processing";
-import { buildUrlWParams } from "../../portal";
-import * as website from "../../website/controllers";
+import { _t, bool, equal, f, floatCompare, floatRound, isInstance, jsonParse, len, parseFloat, parseInt, pop, range, setOptions, singleEmailRe, slug, sorted, stringify, update } from "../../../core/tools";
 import { sitemapQs2dom } from "../../website/models";
+
+import * as website from "../../website/controllers";
+import * as payment from '../../payment/controllers';
+import { AccessError, MapKey, MissingError, ValidationError, ValueError } from "../../../core/helper";
+import { PaymentPostProcessing } from "../../payment/controllers/post_processing";
+import { expression } from "../../../core/osv";
+import { urlEncode, urlParse } from "../../../core/service/middleware/utils";
+import _ from "lodash";
+import assert from "assert";
+import { buildUrlWParams } from "../../portal";
+import { WebRequest } from "../../../core/http";
 
 class TableCompute {
     table: {}
@@ -252,7 +254,7 @@ class WebsiteSale extends http.Controller {
 
         const category = env.items('product.public.category');
         let dom = sitemapQs2dom(qs, '/shop/category', category.cls._recName);
-        dom = dom.concat((await env.items('website').getCurrentWebsite()).websiteDomain());
+        dom = dom.concat(await (await env.items('website').getCurrentWebsite()).websiteDomain());
         for (const cat of await category.search(dom)) {
             const loc = f('/shop/category/%s', await cat.slug());
             if (! qs || loc.includes(qs.toLowerCase())) {
@@ -410,7 +412,7 @@ class WebsiteSale extends http.Controller {
                 }
             }
         }
-        const websiteDomain = req.website.websiteDomain();
+        const websiteDomain = await req.website.websiteDomain();
         const categsDomain = [['parentId', '=', false]].concat(websiteDomain);
         let searchCategories;
         if (search) {

@@ -1,13 +1,20 @@
 import glob from 'glob';
 import _ from "lodash";
 import pt from 'path';
-import { Fields, MetaModel, Model, _super, api, tools } from "../../..";
+import * as api from "../../../api";
 import * as conf from "../../../conf";
+import { Fields } from "../../../fields";
 import { Dict } from '../../../helper/collections';
 import { FileNotFoundError, ValueError } from "../../../helper/errors";
 import { _root, addonsManifest } from "../../../http";
-import { URI, rstringPart, bool, isInstance, enumerate, extend, len, sorted, topologicalSort } from "../../../tools";
-import { filePath, } from '../../../tools/models';
+import { MetaModel, Model, _super } from "../../../models";
+import { isInstance, rstringPart } from "../../../tools/func";
+import { enumerate, extend, len, sorted } from "../../../tools/iterable";
+import { filePath,  } from '../../../tools/models';
+import { URI } from "../../../tools/uri";
+import { bool } from '../../../tools/bool';
+import { tools } from '../../..';
+import { topologicalSort } from '../../../tools/misc';
 
 export const SCRIPT_EXTENSIONS = ['js'];
 export const STYLE_EXTENSIONS = ['css', 'scss', 'sass', 'less'];
@@ -408,7 +415,7 @@ class IrAsset extends Model {
             dir = fullPath.substring(0, index);
             ext = `${sub === sub1 ? '*' : '**'}/${fullPath.substring(index + sub.length)}`;
           }
-          paths = glob.sync(ext.replace(`${pt.sep}`, `/`), {
+          paths = glob.sync(ext.replaceAll(`${pt.sep}`, `/`), {
             nodir: true,
             noglobstar: sub === sub1,
             ignore: [],

@@ -1,7 +1,9 @@
 import _ from "lodash";
-import { _Date, _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
+import { _Date, _Datetime, api, Fields } from "../../../core";
+import { _super, MetaModel, Model } from "../../../core/models";
+import { _f, _f2, addDate, bool, chain, enumerate, extend, islice, len, repeat, sorted, subDate, takewhile, today, update, ustr } from "../../../core/tools";
 import { UserError } from "../../../core/helper";
-import { _f2, addDate, bool, chain, enumerate, extend, islice, len, literalEval, repeat, sorted, subDate, takewhile, today, update, ustr } from "../../../core/tools";
+import { literalEval } from "../../../core/tools/ast";
 
 // display top 3 in ranking, could be db variable
 const MAX_VISIBILITY_RANKING = 3;
@@ -508,7 +510,7 @@ class Challenge extends Model {
             'label': <gamification.goal.description label>,
             'description': <gamification.goal.description description>,
             'condition': <reach condition {lower,higher}>,
-            'computationMode': <target computation {manually,count,sum,javascript}>,
+            'computationMode': <target computation {manually,count,sum,python}>,
             'monetary': <{true,false}>,
             'suffix': <value suffix>,
             'action': <{true,false}>,
@@ -604,7 +606,7 @@ class Challenge extends Model {
             if (len(goals) < 3) {
                 // display at least the top 3 in the results
                 const missing = 3 - len(goals);
-                for (const [ranking, mockGoal] of enumerate(Array(missing).fill({'id': false,
+                for (const [ranking, mockGoal] of enumerate(_.fill(Array(missing), {'id': false,
                                                       'userId': false,
                                                       'label': '',
                                                       'current': 0,

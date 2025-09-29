@@ -3,14 +3,13 @@ import os from "os";
 import { UnicodeEncodeError } from "../helper/errors";
 import { urlParse } from "../service/middleware/utils";
 import { bool } from "./bool";
-import { isInstance } from "./func";
-import { rstringPart } from "./string";
+import { isInstance, rstringPart } from "./func";
 import * as html from "./html";
 import { extend } from "./iterable";
-import { isASCII, f } from "./string";
+import { f, isASCII } from "./utils";
 import { escapeHtml, markup } from "./xml";
 
-export const safeAttrs = new Set(Array.from(html.htmlSafeAttrs).concat(['style',
+export const safeAttrs = new Set(Array.from(html.safeAttrs).concat(['style',
   'data-o-mail-quote',  // quote detection
   'data-oe-model', 'data-oe-id', 'data-oe-field', 'data-oe-type', 'data-oe-expression', 'data-oe-translation-id', 'data-oe-nodeid',
   'data-last-history-steps',
@@ -709,11 +708,11 @@ export function html2Text(body = '') {
     // .replace(/<style[^>]*>[\s\S]*?<\/style[^>]*>/ig, '')
     // .replace(/<head[^>]*>[\s\S]*?<\/head[^>]*>/ig, '')
     // .replace(/<script[^>]*>[\s\S]*?<\/script[^>]*>/ig, '')
-    .replace(/<\/\s*(?:p|div)>/ig, '\n')
-    .replace(/<br[^>]*\/?>/ig, '\n')
-    .replace(/<[^>]*>/ig, '') // one for removing all with tag <>
+    .replaceAll(/<\/\s*(?:p|div)>/ig, '\n')
+    .replaceAll(/<br[^>]*\/?>/ig, '\n')
+    .replaceAll(/<[^>]*>/ig, '') // one for removing all with tag <>
     .replaceAll('&nbsp;', ' ')
-    .replace(/[^\S\r\n][^\S\r\n]+/ig, ' ')
+    .replaceAll(/[^\S\r\n][^\S\r\n]+/ig, ' ')
 }
 
 /**

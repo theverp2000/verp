@@ -1,7 +1,10 @@
 import _ from "lodash";
-import { Fields, MetaModel, TransientModel, _Date, _super, api } from "../../../core";
-import { Dict, UserError, ValidationError } from "../../../core/helper";
-import { _f, bool, extend, f, formatDate, formatLang, groupbyAsync, len, remove, stringify, sum, update } from "../../../core/tools";
+import { Fields, _Date, api } from "../../../core";
+import { Dict } from "../../../core/helper/collections";
+import { UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { _f, bool, extend, f, formatDate, formatLang, groupbyAsync, len, remove, sum, update } from "../../../core/tools";
+import { stringify } from "../../../core/tools/json";
 
 @MetaModel.define()
 class AutomaticEntryWizard extends TransientModel {

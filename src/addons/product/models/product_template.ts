@@ -1,8 +1,14 @@
 import _ from "lodash";
-import { Fields, MetaModel, Model, _Date, _super, api, tools } from "../../../core";
-import { Dict, MapKey, StopIteration, UserError, ValidationError } from "../../../core/helper";
+import { api, tools } from "../../../core";
+import { Fields, _Date } from "../../../core/fields";
+import { Dict, MapKey } from "../../../core/helper/collections";
+import { StopIteration, UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { bool, extend, f, isImageSizeAbove, isList, len, nextAsync, product } from "../../../core/tools";
+import { f } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { isImageSizeAbove } from "../../../core/tools/image";
+import { extend, isList, len, nextAsync, product } from "../../../core/tools/iterable";
 
 @MetaModel.define()
 class ProductTemplate extends Model {
@@ -264,8 +270,8 @@ class ProductTemplate extends Model {
       }
 
       if (pricelist.ok) {
-        const quantities = Array(this._length).fill(quantity);
-        const partners = Array(this._length).fill(partner);
+        const quantities = _.fill(Array(this._length), quantity);
+        const partners = _.fill(Array(this._length), partner);
         prices = await pricelist.getProductsPrice(this, quantities, partners);
       }
     }
@@ -1488,7 +1494,7 @@ class ProductTemplate extends Model {
     // The following list reflects product_template_attribute_values_per_line
     // For each line, instead of a list of values, it contains the index of the selected value
     // -1 means no value has been picked for the line in the current (partial) combination
-    const valueIndexPerLine = Array(len(productTemplateAttributeValuesPerLine)).fill(-1);
+    const valueIndexPerLine = _.fill(Array(len(productTemplateAttributeValuesPerLine)), -1);
     // determines which line line we're working on
     let lineIndex = 0;
 

@@ -36,7 +36,7 @@
                 <div class="o_ChannelMemberList_avatarContainer position-relative flex-shrink-0" t-on-click="channel.onClickMemberAvatar(member)">
                     <img class="o_ChannelMemberList_avatar rounded-circle w-100 h-100" t-attf-src="/mail/channel/{{ channel.id }}/partner/{{ member.id }}/avatar128" alt="Avatar"/>
 
-                    <t t-if="member.imStatus and member.imStatus !== 'imPartner'">
+                    <t t-if="member.imStatus &amp;&amp; member.imStatus !== 'imPartner'">
                         <PartnerImStatusIcon
                             class="o_ChannelMemberList_partnerImStatusIcon d-flex align-items-center justify-content-center"
                             t-att-class="{

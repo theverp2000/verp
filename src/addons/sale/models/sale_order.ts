@@ -1,9 +1,11 @@
 import _ from "lodash";
-import { _Date, _Datetime, _super, api, Field, Fields, MetaModel, Model } from "../../../core";
+import { _Date, _Datetime, api, Field, Fields } from "../../../core";
 import { setdefault } from "../../../core/api";
 import { AccessError, UserError, ValidationError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { _f, addDate, bool, dateMin, extend, f, floatIsZero, groupby, htmlKeepUrl, isHtmlEmpty, isInstance, len, parseInt, pop, sorted, stringify, update } from "../../../core/tools";
+import { _f, addDate, bool, dateMin, extend, f, floatIsZero, groupby, htmlKeepUrl, isHtmlEmpty, isInstance, len, parseInt, pop, sorted, update } from "../../../core/tools";
+import { stringify } from "../../../core/tools/json";
 import { checkRightsOnRecordset } from "../../payment";
 
 @MetaModel.define()
@@ -798,7 +800,7 @@ class SaleOrder extends Model {
             action['domain'] = [['id', 'in', invoices.ids]];
         }
         else if (len(invoices) == 1) {
-            const formView = [[(await self.env.ref('account.view_move_form')).id, 'form']];
+            const formView = [[await self.env.refId('account.viewMoveForm'), 'form']];
             if ('views' in action) {
                 action['views'] = formView.concat(action['views'].filter(([,view]) => view != 'form'));
             }

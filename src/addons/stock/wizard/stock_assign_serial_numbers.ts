@@ -1,5 +1,6 @@
-import { Fields, MetaModel, TransientModel, api } from "../../../core";
-import { ValidationError } from "../../../core/helper";
+import { Fields, api } from "../../../core";
+import { ValidationError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel } from "../../../core/models";
 import { bool, len } from "../../../core/tools";
 
 @MetaModel.define()

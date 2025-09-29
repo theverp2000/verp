@@ -1,4 +1,5 @@
-import { Fields, MetaModel, Model } from "../../..";
+import { Fields } from "../../../fields"
+import { MetaModel, Model } from "../../../models"
 
 const PAPER_SIZES = [
     {

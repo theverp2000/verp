@@ -2,7 +2,8 @@ import { STATUS_CODES } from 'http';
 import * as http from '../../../core/http';
 import { NotFound, Timeout } from '../../../core/service';
 import { urlEncode } from '../../../core/service/middleware/utils';
-import { b64decode, b64encode, guessExtension, guessMimetype, imageProcess, isAlpha, isInstance, parseInt } from '../../../core/tools';
+import { b64decode, b64encode, imageProcess, isAlpha, isInstance, parseInt } from '../../../core/tools';
+import { guessExtension, guessMimetype } from '../../../core/tools/mimetypes';
 import { ConnectionError } from '../../iap';
 
 @http.define()

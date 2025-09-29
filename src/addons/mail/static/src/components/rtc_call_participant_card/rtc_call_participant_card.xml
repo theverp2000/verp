@@ -6,7 +6,7 @@
              t-att-class="{
                 'o-isClickable': callParticipantCard.invitedGuest or callParticipantCard.invitedPartner or !callParticipantCard.isMinimized,
                 'o-isTalking': callParticipantCard and !callParticipantCard.isMinimized and callParticipantCard.isTalking,
-                'o-isInvitation': callParticipantCard and callParticipantCard.isInvitation,
+                'o-isInvitation': callParticipantCard &amp;&amp; callParticipantCard.isInvitation,
             }"
             t-on-contextmenu="_onContextMenu"
         >

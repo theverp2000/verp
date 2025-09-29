@@ -1,6 +1,7 @@
 import _ from "lodash";
-import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { Fields, _Date, api } from "../../../core";
 import { DefaultDict, OrderedSet, UserError, ValueError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models"
 import { UpCamelCase, bool, f, floatCompare, floatIsZero, isInstance, pop, sum, update } from "../../../core/tools";
 
 @MetaModel.define()
@@ -71,11 +72,11 @@ class StockMove extends Model {
     }
 
     /**
-     * Returns the `stock.move.line` records of `this` considered as incoming. It is done thanks
+     * Returns the `stock.move.line` records of `self` considered as incoming. It is done thanks
         to the `_shouldBeValued` method of their source and destionation location as well as their
         owner.
 
-     * @returns a subset of `this` containing the incoming records
+     * @returns a subset of `self` containing the incoming records
      */
     async _getInMoveLines() {
         this.ensureOne();
@@ -95,7 +96,7 @@ class StockMove extends Model {
      * Check if the move should be considered as entering the company so that the cost method
         will be able to apply the correct logic.
 
-     * @returns true if the move is entering the company else false
+     * @returns True if the move is entering the company else false
      */
     async _isIn() {
         this.ensureOne();
@@ -106,11 +107,11 @@ class StockMove extends Model {
     }
 
     /**
-     * Returns the `stock.move.line` records of `this` considered as outgoing. It is done thanks
+     * Returns the `stock.move.line` records of `self` considered as outgoing. It is done thanks
         to the `_shouldBeValued` method of their source and destionation location as well as their
         owner.
 
-     * @returns a subset of `this` containing the outgoing records
+     * @returns a subset of `self` containing the outgoing records
      */
     async _getOutMoveLines() {
         let res = this.env.items('stock.move.line');
@@ -129,7 +130,7 @@ class StockMove extends Model {
      * Check if the move should be considered as leaving the company so that the cost method
         will be able to apply the correct logic.
 
-     * @returns true if the move is leaving the company else false
+     * @returns True if the move is leaving the company else false
      */
     async _isOut() {
         this.ensureOne();
@@ -143,7 +144,7 @@ class StockMove extends Model {
      * Check if the move should be considered as a dropshipping move so that the cost method
         will be able to apply the correct logic.
 
-     * @returns true if the move is a dropshipping one else false
+     * @returns True if the move is a dropshipping one else false
      */
     async _isDropshipped() {
         this.ensureOne();
@@ -154,7 +155,7 @@ class StockMove extends Model {
      * Check if the move should be considered as a returned dropshipping move so that the cost
         method will be able to apply the correct logic.
 
-     * @returns true if the move is a returned dropshipping one else false
+     * @returns True if the move is a returned dropshipping one else false
      */
     async _isDropshippedReturned() {
         this.ensureOne();
@@ -179,10 +180,11 @@ class StockMove extends Model {
     }
 
     /**
-     * Create a `stock.valuation.layer` from `this`.
+     * Create a `stock.valuation.layer` from `self`.
 
-     * @param forcedQuantity under some circunstances, the quantity to value is different than
+        :param forcedQuantity: under some circunstances, the quantity to value is different than
             the initial demand of the move (Default value = null)
+     * @param forcedQuantity 
      * @returns 
      */
     async _createInSvl(forcedQuantity?: any) {
@@ -210,17 +212,16 @@ class StockMove extends Model {
     }
 
     /**
-     * Create a `stock.valuation.layer` from `this`.
+     * Create a `stock.valuation.layer` from `self`.
 
-     * @param forcedQuantity under some circunstances, the quantity to value is different than
-            the initial demand of the move (Default value = null)
+     * @param forcedQuantity under some circunstances, the quantity to value is different than the initial demand of the move (Default value = null)
      * @returns 
      */
     async _createOutSvl(forcedQuantity?: any) {
         const svlValsList = [];
         for (let move of this) {
             move = await move.withCompany(await move.companyId);
-            const product = await move['productId']; 
+            const product = await move.productId; 
             const valuedMoveLines = await move._getOutMoveLines();
             let valuedQuantity = 0;
             for (const valuedMoveLine of valuedMoveLines) {
@@ -241,10 +242,9 @@ class StockMove extends Model {
     }
 
     /**
-     * Create a `stock.valuation.layer` from `this`.
+     * Create a `stock.valuation.layer` from `self`.
 
-     * @param forcedQuantity under some circunstances, the quantity to value is different than
-            the initial demand of the move (Default value = null)
+     * @param forcedQuantity under some circunstances, the quantity to value is different than the initial demand of the move (Default value = null)
      * @returns 
      */
     async _createDropshippedSvl(forcedQuantity?: any) {
@@ -291,8 +291,7 @@ class StockMove extends Model {
     /**
      * Create a `stock.valuation.layer` from `this`.
 
-     * @param forcedQuantity under some circunstances, the quantity to value is different than
-            the initial demand of the move (Default value = null)
+     * @param forcedQuantity under some circunstances, the quantity to value is different than the initial demand of the move (Default value = null)
      * @returns 
      */
     async _createDropshippedReturnedSvl(forcedQuantity?: any) {
@@ -300,7 +299,7 @@ class StockMove extends Model {
     }
 
     async _actionDone(cancelBackorder: any=false) {
-        // Init a dict that will group the moves by valuation type, according to `move._is_valued_type`.
+        // Init a dict that will group the moves by valuation type, according to `move._isValuedType`.
         let valuedMoves = Object.fromEntries((await this._getValuedTypes()).map(valuedType => [valuedType, this.env.items('stock.move')]));
         for (const move of this) {
             if (floatIsZero(await move.quantityDone, {precisionRounding: await (await move.productUom).rounding})) {
@@ -423,7 +422,7 @@ class StockMove extends Model {
             stdPriceUpdate[keyId] = newStdPrice;
         }
 
-        // adapt standard price on incomming moves if the product cost_method is 'fifo'
+        // adapt standard price on incomming moves if the product costMethod is 'fifo'
         for (const move of await this.filtered(async (move) =>
                                   await (await (await move.withCompany(await move.companyId)).productId).costMethod == 'fifo'
                                   && floatIsZero(await (await (await move.productId).sudo()).quantitySvl, {precisionRounding: await (await (await move.productId).uomId).rounding}))) {

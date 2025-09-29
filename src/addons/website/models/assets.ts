@@ -1,7 +1,8 @@
-import { AbstractModel, MetaModel, _super } from "../../../core";
 import { httpGet } from "../../../core/http";
+import { AbstractModel, MetaModel, _super } from "../../../core/models";
 import { urlParse } from "../../../core/service/middleware/utils";
-import { bool, encodebytes, f, lstrip, parseInt, pop, replaceAsync, stringify } from "../../../core/tools";
+import { bool, encodebytes, f, lstrip, parseInt, pop, replaceAsync } from "../../../core/tools";
+import { stringify } from "../../../core/tools/json";
 
 @MetaModel.define()
 class Assets extends AbstractModel {
@@ -107,7 +108,7 @@ class Assets extends AbstractModel {
         }
       }
       // {'font_x': 45, 'font_y': 55} -> "('font_x': 45, 'font_y': 55)"
-      values['google-local-fonts'] = stringify(googleLocalFonts).replace('{', '(').replace('}', ')');
+      values['google-local-fonts'] = stringify(googleLocalFonts).replaceAll('{', '(').replaceAll('}', ')');
     }
 
     const customUrl = self.makeCustomAssetFileUrl(url, 'web.assetsCommon');
@@ -121,10 +122,10 @@ class Assets extends AbstractModel {
           (...args: string[]) => "var(--#{" + args[1] + "})");
       }
       const pattern = f("'%s': %%s,\n", name);
-      const regex = new RegExp(f(pattern, ".+"));
+      const regex = new RegExp(f(pattern, ".+"), 'g');
       const replacement = f(pattern, value);
       if (regex.test(updatedFileContent)) {
-        updatedFileContent = updatedFileContent.replaceAll(regex, replacement);
+        updatedFileContent = updatedFileContent.replace(regex, replacement);
       }
       else {
         updatedFileContent = updatedFileContent.replace(/( *)(.*hook.*)/g, f('$1%s$1$2', replacement));

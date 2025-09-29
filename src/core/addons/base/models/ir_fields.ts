@@ -1,8 +1,13 @@
 import _ from "lodash";
 import { format } from 'node:util';
-import { AbstractModel, Command, Field, MetaModel, ModelRecords, _Date, _Datetime, _super, api } from "../../..";
+import { Command, Field, _Date, _Datetime, api } from "../../..";
 import { ValueError, Warning } from '../../../helper/errors';
-import { _format, bool, chain, dateSetTz, extend, isInstance, len, partial, stringify } from '../../../tools';
+import { AbstractModel, MetaModel } from "../../../models";
+import { _format, bool, dateSetTz, extend } from '../../../tools';
+import { isInstance, partial } from '../../../tools/func';
+import { chain, len } from '../../../tools/iterable';
+import { stringify } from "../../../tools/json";
+import { ModelRecords, _super } from './../../../models';
 
 const REFERENCING_FIELDS = [undefined, null, 'id', '.id'];
 
@@ -66,32 +71,31 @@ class IrFieldsConverter extends AbstractModel {
   }
   
   @api.model()
-  async toField(model, field, fromtype='string') {
+  toField(model, field, fromtype='string') {
     const typename = fromtype;
     const funcName = `_${typename}To${_.upperFirst(field.type)}`;
     const converter = this[funcName];
-    if (!converter) {
+    if (!converter)
       return null;
-    }
     return partial(converter, this, model, field);
   }
 
   @api.model()
-  async forModel(model: ModelRecords, fromtype='string') {
+  forModel(model: ModelRecords, fromtype='string') {
     const self = this as any;
     model = this.env.items(model._name);
     const converters = {}
     for (const [name, field] of Object.entries(model._fields)) {
-      converters[name] = await this.toField(model, field, fromtype);
+      converters[name] = this.toField(model, field, fromtype);
     }
 
     async function fn(record, log) {
       const converted = {}
-      const importFileContext = self.env.context['importFile'];
+      const importFileContext = self.env.context['importFile']
       for (const [field, value] of Object.entries<any>(record)) {
         if (REFERENCING_FIELDS.includes(field))
           continue;
-        if (!bool(value)) {
+        if (!value) {
           converted[field] = false;
           continue;
         }
@@ -101,9 +105,9 @@ class IrFieldsConverter extends AbstractModel {
           [converted[field], ws] = await converters[field](value);
           for (let w of ws) {
             if (typeof w === 'string') {
-              w = new ImportWarning(w);
+              w = new ImportWarning(w)
             }
-            log(field, w);
+            log(field, w)
           }
         } catch(e) {
           console.log('>>> ERROR fn convert:', field, value);
@@ -536,13 +540,13 @@ class IrFieldsConverter extends AbstractModel {
 
   @api.model()
   async _stringToMany2many(self, model, field, value) {
-    const [record] = value;
+    const {record} = value;
 
-    const [subfield, warnings] = await self._referencingSubfield(record);
+    const [subfield, warnings] = self._referencingSubfield(record);
 
     let ids = [];
     for (const reference of (await record[subfield]).split(',')) {
-      const [id, x, ws] = await self.dbIdFor(model, field, subfield, reference);
+      const [id, x, ws] = self.dbIdFor(model, field, subfield, reference);
       ids.push(id);
       extend(warnings, ws);
     }
@@ -579,7 +583,7 @@ class IrFieldsConverter extends AbstractModel {
       // only one row with only ref field, field=ref1,ref2,ref3 as in
       // m2o/m2m
       const record = records[0]
-      const [subfield, ws] = await self._referencingSubfield(record);
+      const [subfield, ws] = self._referencingSubfield(record);
       extend(warnings, ws);
       // transform [{subfield:ref1,ref2,ref3}] into
       // [{subfield:ref1},{subfield:ref2},{subfield:ref3}]

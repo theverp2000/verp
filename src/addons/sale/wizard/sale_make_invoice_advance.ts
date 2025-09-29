@@ -1,5 +1,6 @@
-import { api, Fields, MetaModel, TransientModel } from "../../../core";
+import { api, Fields } from "../../../core";
 import { UserError } from "../../../core/helper";
+import { MetaModel, TransientModel } from "../../../core/models";
 import { bool, f, len, parseInt, toFormat } from "../../../core/tools";
 
 @MetaModel.define()
@@ -116,7 +117,7 @@ class SaleAdvancePaymentInv extends TransientModel {
         let context = { 'lang': await (await order.partnerId).lang }
         if (await this['advancePaymentMethod'] === 'percentage') {
             const advanceProductTaxes = await (await (await this['productId']).taxesId).filtered(async (tax) => (await tax.companyId).eq(await order.companyId));
-            if ((await (await (await order.fiscalPositionId).mapTax(advanceProductTaxes)).mapped('priceInclude').every(i => i))) {
+            if (await (await (await (await order.fiscalPositionId).mapTax(advanceProductTaxes)).mapped('priceInclude')).every(i => i)) {
                 amount = await order.amountTotal * await this['amount'] / 100;
             }
             else {
@@ -184,8 +185,8 @@ class SaleAdvancePaymentInv extends TransientModel {
         else {
             // Create deposit product if necessary
             if (!(await this['productId']).ok) {
-                const vals = this._prepareDepositProduct();
-                await this.set('productId', this.env.items('product.product').create(vals));
+                const vals = await this._prepareDepositProduct();
+                await this.set('productId', await this.env.items('product.product').create(vals));
                 await (await this.env.items('ir.config.parameter').sudo()).setParam('sale.defaultDepositProductId', (await this['productId']).id);
             }
             const product = await this['productId'];
@@ -203,7 +204,7 @@ class SaleAdvancePaymentInv extends TransientModel {
                 const taxIds = (await (await order.fiscalPositionId).mapTax(taxes)).ids;
                 let analyticTagIds = [];
                 for (const line of await order.orderLine) {
-                    analyticTagIds = (await line.analyticTagIds).map(analyticTag => [4, analyticTag.id, null]);
+                    analyticTagIds = await (await line.analyticTagIds).map(analyticTag => [4, analyticTag.id, null]);
                 }
                 const soLineValues = await this._prepareSoLine(order, analyticTagIds, taxIds, amount);
                 const soLine = await saleLineObj.create(soLineValues);

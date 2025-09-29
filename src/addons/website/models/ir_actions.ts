@@ -1,6 +1,8 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { Fields, api } from "../../../core";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { urlJoin } from "../../../core/service/middleware/utils";
-import { f, stringify } from "../../../core/tools";
+import { f } from "../../../core/tools";
+import { stringify } from "../../../core/tools/json";
 
 /**
  * Add website option in server actions.

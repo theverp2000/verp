@@ -1,5 +1,7 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
-import { Dict } from "../../../core/helper";
+import { api } from "../../../core"
+import { Fields } from "../../../core/fields"
+import { Dict } from "../../../core/helper/collections"
+import { MetaModel, Model, _super } from "../../../core/models"
 
 @MetaModel.define()
 class StorageCategory extends Model {

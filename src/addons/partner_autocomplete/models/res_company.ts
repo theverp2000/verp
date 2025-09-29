@@ -1,8 +1,13 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
-import { getattr } from "../../../core/api";
-import { Dict } from "../../../core/helper";
-import { bool, emailDomainExtract, isInstance, isList, pop, update, urlDomainExtract } from "../../../core/tools";
-import { _MAIL_DOMAIN_BLACKLIST } from "../../iap/tools";
+import { Fields, api } from "../../../core";
+import { getattr } from "../../../core/api/func";
+import { Dict } from "../../../core/helper/collections";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { bool } from "../../../core/tools/bool";
+import { isInstance } from "../../../core/tools/func";
+import { isList } from "../../../core/tools/iterable";
+import { emailDomainExtract, urlDomainExtract } from "../../../core/tools/mail";
+import { pop, update } from "../../../core/tools/misc";
+import { _MAIL_DOMAIN_BLACKLIST } from "../../iap/tools/iap_tools";
 
 const COMPANY_AC_TIMEOUT = 5
 

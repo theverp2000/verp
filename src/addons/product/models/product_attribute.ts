@@ -1,6 +1,8 @@
 import { random } from "lodash";
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
 import { Dict, UserError, ValidationError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { bool, f, len, pop, sorted } from "../../../core/tools";
 

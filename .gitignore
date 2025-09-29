@@ -1,7 +1,6 @@
 # These are some examples of commonly ignored file patterns.
 # You should customize this list as applicable to your project.
 # Learn more about .gitignore:
-#     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
 # Node artifact files
 node_modules/
@@ -11,9 +10,8 @@ build/
 # Compiled Java class files
 *.class
 
-# Compiled Python bytecode
-*.py
-*.pyc
+# Compiled Javascript bytecode
+*.py[cod]
 
 # Log files
 *.log
@@ -50,14 +48,11 @@ Thumbs.db
 *.mov
 *.wmv
 
-# None translation
-*.po
-*.pot
-
 # Updated files ontime
-# src/config.json
+src/config.json
 
-# Draft files
-src/docs/
+# Draft
 src/draft/
-src/test/
+
+#Populate
+**/populate/

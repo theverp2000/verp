@@ -1,6 +1,12 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
-import { Dict, UserError, ValidationError } from "../../../core/helper";
-import { bool, extend, f, len, range, sum, update } from "../../../core/tools";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { Dict } from "../../../core/helper/collections";
+import { UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { bool } from "../../../core/tools/bool";
+import { extend, len, range, sum } from "../../../core/tools/iterable";
+import { update } from "../../../core/tools/misc";
+import { f } from "../../../core/tools/utils";
 
 @MetaModel.define()
 class ProductionLot extends Model {

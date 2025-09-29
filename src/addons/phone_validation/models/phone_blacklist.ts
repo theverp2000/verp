@@ -1,5 +1,6 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { Fields, api } from "../../../core";
 import { UserError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { bool, isList, quoteList } from "../../../core/tools";
 import { phoneSanitizeNumbersWRecord } from "../tools";
 

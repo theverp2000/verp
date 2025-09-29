@@ -1,6 +1,8 @@
-import { _super, AbstractModel, api, MetaModel } from "../../../core";
+import { api } from "../../../core";
+import { hasattr } from "../../../core/api";
 import { UserError } from "../../../core/helper";
 import { httpGet } from "../../../core/http";
+import { _super, AbstractModel, MetaModel } from "../../../core/models"
 import { bool, f, getRandom, markup, range, rstrip } from "../../../core/tools";
 import { EtherpadLiteClient } from "../etherpad";
 

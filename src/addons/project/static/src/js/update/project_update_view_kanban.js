@@ -3,7 +3,7 @@
 import KanbanController from 'web.KanbanController';
 import KanbanRenderer from 'web.KanbanRenderer';
 import KanbanView from 'web.KanbanView';
-import viewRegistry from 'web.view_registry';
+import viewRegistry from 'web.viewRegistry';
 import ProjectRightSidePanel from '@project/js/right_panel/project_right_panel';
 import {
     RightPanelControllerMixin,
@@ -23,4 +23,4 @@ export const ProjectUpdateKanbanView = KanbanView.extend(RightPanelViewMixin).ex
     }),
 });
 
-viewRegistry.add('project_update_kanban', ProjectUpdateKanbanView);
+viewRegistry.add('projectUpdateKanban', ProjectUpdateKanbanView);

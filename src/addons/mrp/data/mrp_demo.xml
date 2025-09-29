@@ -740,7 +740,7 @@
         </function>
 
         <!-- set 'create component' as true for the demo manufacturing picking type
-        while leaving the default value to False for the others -->
+        while leaving the default value to false for the others -->
         <function model="stock.warehouse" name="write">
             <value model="stock.warehouse" eval="(await obj.env.items('stock.warehouse').search([])).ids"/>
             <value eval="{'manufactureToResupply': true}"/>

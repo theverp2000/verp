@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<verp>
+    <data noupdate="1">
+
+        <record id="resBank_1" model="res.bank">
+            <field name="label">Reserve</field>
+            <field name="active" eval="false"/>
+        </record>
+
+    </data>
+</verp>

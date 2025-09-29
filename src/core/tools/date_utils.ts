@@ -159,7 +159,7 @@ function formatDuration(duration: Duration, opts: { granularity?: string, thresh
       if (pattern == null) {
         return '';
       }
-      return pattern.replaceAll('{0}', String(value));
+      return pattern.replace('{0}', String(value));
     }
   }
   return '';

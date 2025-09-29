@@ -1,17 +1,18 @@
 import assert from "assert";
 import { ServerResponse } from "http";
 import { decode } from "utf8";
-import { AbstractModel, MetaModel, _super, api, registry, tools } from "../../../core";
+import { api, registry, tools } from "../../../core";
 import { QWebException } from "../../../core/addons/base";
 import * as ir_http from '../../../core/addons/base/models/ir_http';
 import { Environment, getattr, hasattr } from "../../../core/api";
 import { AccessError, MissingError, UserError } from "../../../core/helper";
 import { WebRequest, _root } from "../../../core/http";
+import { AbstractModel, MetaModel, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { HTTPException, MethodNotAllowed, NotFound } from "../../../core/service";
-import { RequestRedirect, Rule } from "../../../core/service/middleware";
 import { BaseResponse } from "../../../core/service/middleware/base_response";
 import { HTTP_STATUS_CODES, cleanString, urlUnquotePlus } from "../../../core/service/middleware/utils";
+import { RequestRedirect, Rule } from "../../../core/service/middleware";
 import { bool, config, doWith, f, isInstance, len, lstrip, parseInt, slug, stringPart, update, urlFor, ustr } from "../../../core/tools";
 
 export function _guessMimetype(ext: any = null, value: string = 'text/html'): {} {

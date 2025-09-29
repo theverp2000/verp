@@ -1,8 +1,8 @@
-import { ServerResponse } from "http";
-import { http } from "../../../core";
-import { AccessDenied } from "../../../core/helper";
-import { WebRequest } from "../../../core/http";
-import { BusController } from "../../bus/controllers/main";
+import { ServerResponse } from "http"
+import { WebRequest } from "../../../core/http"
+import { BusController } from "../../bus/controllers/main"
+import { http } from "../../../core"
+import { AccessDenied } from "../../../core/helper/errors";
 
 @http.define()
 class EditorCollaborationController extends BusController {

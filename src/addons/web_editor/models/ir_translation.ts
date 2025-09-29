@@ -1,6 +1,8 @@
 import assert from "assert";
-import { MetaModel, Model, _super, api } from "../../../core";
-import { _f, f, htmlTranslate, len, parseHtml, serializeHtml, serializeXml, stringPart, xmlTranslate } from "../../../core/tools";
+import { api } from "../../../core";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { _f, f, htmlTranslate, len, partition, stringPart, xmlTranslate } from "../../../core/tools";
+import { parseHtml, serializeHtml, serializeXml } from "../../../core/tools/xml";
 
 function editTranslationMapping(data: {} = {}) {
     data = Object.assign(data, { model: stringPart(data['label'], ',')[0], value: data['value'] || data['src'] });

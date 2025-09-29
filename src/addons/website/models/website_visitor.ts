@@ -1,10 +1,12 @@
 import * as uuid from "uuid";
-import { Fields, MetaModel, Model, _Datetime, api } from "../../../core";
+import { Fields, _Datetime, api } from "../../../core";
 import { _tzGet } from "../../../core/addons/base";
 import { UserError, ValueError } from "../../../core/helper";
 import { WebRequest, WebResponse } from "../../../core/http";
+import { MetaModel, Model } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { addDate, allTimezones, bool, diffDate, formatTimeAgo, parseInt, subDate, update } from "../../../core/tools";
+import { allTimezones, bool, parseInt, update } from "../../../core/tools";
+import { addDate, diffDate, formatTimeAgo, subDate } from "../../../core/tools/date_utils";
 
 @MetaModel.define()
 class WebsiteTrack extends Model {

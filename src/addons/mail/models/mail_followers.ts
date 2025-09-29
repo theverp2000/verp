@@ -1,11 +1,11 @@
 import _ from "lodash";
 import { api } from "../../../core";
-import { setdefault } from "../../../core/api/func";
 import { Command, Fields } from "../../../core/fields";
 import { Map2 } from "../../../core/helper/collections";
-import { MetaModel, Model, _super } from "../../../core/models";
-import { bool, len, next, setOptions } from "../../../core/tools";
-import { f } from "../../../core/tools/string";
+import { MetaModel, Model, _super } from "../../../core/models"
+import { bool, chain, iter, len, next, setOptions } from "../../../core/tools";
+import { f } from "../../../core/tools/utils";
+import { setdefault } from "../../../core/api/func";
 
 /**
  * mail_followers holds the data related to the follow mechanism inside
@@ -28,19 +28,17 @@ class Followers extends Model {
   // However, followers of unlinked models are deleted by models themselves
   // (see 'ir.model' inheritance).
   static resModel = Fields.Char(
-    'Related Document Model Name', { required: true, index: true });
+    'Related Document Model Name', {required: true, index: true});
   static resId = Fields.Many2oneReference(
-    'Related Document ID', { index: true, help: 'Id of the followed resource', modelField: 'resModel' })
+      'Related Document ID', {index: true, help: 'Id of the followed resource', modelField: 'resModel'})
   static partnerId = Fields.Many2one(
-    'res.partner', { string: 'Related Partner', index: true, ondelete: 'CASCADE', required: true, domain: [['type', '!=', 'private']] })
+      'res.partner', {string: 'Related Partner', index: true, ondelete: 'CASCADE', required: true, domain: [['type', '!=', 'private']]})
   static subtypeIds = Fields.Many2many(
-    'mail.message.subtype', {
-      string: 'Subtype',
-    help: "Message subtypes followed, meaning subtypes that will be pushed onto the user's Wall."
-  })
-  static label = Fields.Char('Name', { related: 'partnerId.label' })
-  static email = Fields.Char('Email', { related: 'partnerId.email' })
-  static isActive = Fields.Boolean('Is Active', { related: 'partnerId.active' });
+      'mail.message.subtype', {string: 'Subtype',
+      help: "Message subtypes followed, meaning subtypes that will be pushed onto the user's Wall."})
+  static label = Fields.Char('Name', {related: 'partnerId.label'})
+  static email = Fields.Char('Email', {related: 'partnerId.email'})
+  static isActive = Fields.Boolean('Is Active', {related: 'partnerId.active'});
 
   static _sql_constraints = [
     ['mail_followers_res_partner_res_model_id_uniq', 'unique("resModel","resId","partnerId")', 'Error, a partner cannot follow twice the same object.'],
@@ -59,7 +57,7 @@ class Followers extends Model {
     if (!valsList) {
       valsList = [];
       for (const rec of this) {
-        valsList.push({ 'resModel': await rec.resModel, 'resId': await rec.resId });
+        valsList.push({'resModel': await rec.resModel, 'resId': await rec.resId});
       }
     }
     for (const record of valsList) {
@@ -125,7 +123,7 @@ class Followers extends Model {
    */
   async _getRecipientData(records, messageType, subtypeId, pids?: any) {
     // await  Promise.all([
-    await this.env.items('mail.followers').flush(['partnerId', 'subtypeIds']),
+      await this.env.items('mail.followers').flush(['partnerId', 'subtypeIds']),
       await this.env.items('mail.message.subtype').flush(['internal']),
       await this.env.items('res.users').flush(['notificationType', 'active', 'partnerId', 'groupsId']),
       await this.env.items('res.partner').flush(['active', 'partnerShare']),
@@ -215,9 +213,9 @@ GROUP BY partner.id, users."notificationType"`;
    * @param includeActive 
    * @returns 
    */
-  async _getSubscriptionData(docData, pids, includePshare: boolean = false, includeActive: boolean = false) {
+  async _getSubscriptionData(docData, pids, includePshare: boolean=false, includeActive: boolean=false) {
     // base query: fetch followers of given documents
-    let whereClause = Array(len(docData)).fill(`fol."resModel" = '%s' AND fol."resId" IN (%s)`).join(' OR ');
+    let whereClause = _.fill(Array(len(docData)), `fol."resModel" = '%s' AND fol."resId" IN (%s)`).join(' OR ');
     let whereParams = [];
     for (const [rm, rids] of docData) {
       whereParams = whereParams.concat([rm, String(rids) || 'NULL']);
@@ -238,7 +236,7 @@ GROUP BY partner.id, users."notificationType"`;
     }
 
     const query = f(`
-      SELECT fol.id AS fid, fol."resId" AS rid, fol."partnerId" AS pid, array_agg(subtype.id)%s%s AS subids 
+      SELECT fol.id AS fid, fol."resId" AS rid, fol."partnerId" AS pid, array_agg(subtype.id) AS subids %s%s
       FROM "mailFollowers" fol
       %s
       LEFT JOIN "mailFollowersMailMessageSubtypeRel" "folRel" ON "folRel"."mailFollowersId" = fol.id
@@ -273,9 +271,9 @@ GROUP BY partner.id, users."notificationType"`;
    * @param partnerIds 
    * @param options 
    */
-  async _insertFollowers(resModel, resIds, partnerIds, options: { subtypes?: any, customerIds?: any, checkExisting?: boolean, existingPolicy?: string } = {}) {
-    setOptions(options, { checkExisting: true, existingPolicy: 'skip' });
-    const sudoSelf = await (await this.sudo()).withContext({ default_partnerId: false });
+  async _insertFollowers(resModel, resIds, partnerIds, options: {subtypes?: any, customerIds?: any, checkExisting?: boolean, existingPolicy?: string}={}) {
+    setOptions(options, {checkExisting: true, existingPolicy: 'skip'});
+    const sudoSelf = await (await this.sudo()).withContext({default_partnerId: false});
     let newObj, upd;
     if (!options.subtypes) { // no subtypes -> default computation, no force, skip existing
       [newObj, upd] = await this._addDefaultFollowers(
@@ -291,7 +289,7 @@ GROUP BY partner.id, users."notificationType"`;
       const valsList = [];
       for (const [resId, valuesList] of Object.entries<any>(newObj)) {
         for (const values of valuesList) {
-          valsList.push({ ...values, resId: resId })
+          valsList.push({...values, resId: resId})
         }
       }
       await sudoSelf.create(valsList);
@@ -319,8 +317,8 @@ GROUP BY partner.id, users."notificationType"`;
    * @param options 
    * @returns 
    */
-  async _addDefaultFollowers(resModel, resIds, partnerIds?: any[], options: { customerIds?: any, checkExisting?: boolean, existingPolicy?: string } = {}) {
-    setOptions(options, { checkExisting: true, existingPolicy: 'skip' });
+  async _addDefaultFollowers(resModel, resIds, partnerIds?: any[], options: {customerIds?: any, checkExisting?: boolean, existingPolicy?: string}={}) {
+    setOptions(options, {checkExisting: true, existingPolicy: 'skip'});
     if (!bool(partnerIds)) {
       return [{}, {}];
     }
@@ -368,15 +366,15 @@ GROUP BY partner.id, users."notificationType"`;
    * @param options 
    * @returns 
    */
-  async _addFollowers(resModel, resIds, partnerIds, subtypes, options:
-    { checkExisting?: boolean, existingPolicy?: string } = {}) {
+  async _addFollowers(resModel, resIds, partnerIds, subtypes, options: 
+        {checkExisting?: boolean, existingPolicy?: string}={}) {
     options.existingPolicy = options.existingPolicy ?? 'skip';
     const _resIds = resIds ?? [0];
     const dataFols = {}
     const docPids = Object.fromEntries(_resIds.map(i => [i, new Set()]));
 
     if (options.checkExisting && resIds) {
-      for (const { fid, rid, pid, subids } of await this._getSubscriptionData([[resModel, resIds]], partnerIds ?? null)) {
+      for (const {fid, rid, pid, subids} of await this._getSubscriptionData([[resModel, resIds]], partnerIds ?? null)) {
         if (options.existingPolicy !== 'force') {
           if (pid) {
             docPids[rid].add(pid);
@@ -392,7 +390,7 @@ GROUP BY partner.id, users."notificationType"`;
     const update = {}
     for (const resId of _resIds) {
       for (const partnerId of new Set<number>(partnerIds ?? [])) {
-        if (!docPids[resId].has(partnerId)) {
+        if (! docPids[resId].has(partnerId)) {
           setdefault(newObj, resId, []).push({
             'resModel': resModel,
             'partnerId': partnerId,
@@ -402,7 +400,7 @@ GROUP BY partner.id, users."notificationType"`;
         else if (['replace', 'update'].includes(options.existingPolicy)) {
           const [folId, sids] = next(Object.entries<any>(dataFols).filter(([key, val]) => val[0] == resId && val[1] == partnerId).map(([key, val]) => [key, val[2]]), [false, []]);
           // next(((key, val[2]) for key, val in data_fols.items() if val[0] == resId and val[1] == partnerId), (false, []))
-
+          
           const newSids = _.difference<number>(subtypes[partnerId], sids);
           const oldSids = _.difference<number>(sids, subtypes[partnerId]);
           const updateCmd = [];
@@ -413,7 +411,7 @@ GROUP BY partner.id, users."notificationType"`;
             updateCmd.concat(oldSids.map(sid => Command.unlink(sid)));
           }
           if (updateCmd.length) {
-            update[folId] = { 'subtypeIds': updateCmd };
+            update[folId] = {'subtypeIds': updateCmd};
           }
         }
       }

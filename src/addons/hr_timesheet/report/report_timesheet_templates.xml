@@ -36,7 +36,7 @@
                             </td>
                             <td class="text-right">
                                 <span t-if="is_uom_day" t-esc="line._get_timesheet_time_day()" t-options="{'widget': 'timesheet_uom'}"/>
-                                <span t-else="" t-field="line.unit_amount" t-options="{'widget': 'duration', 'digital': True, 'unit': 'hour', 'round': 'minute'}"/>
+                                <span t-else="" t-field="line.unit_amount" t-options="{'widget': 'duration', 'digital': true, 'unit': 'hour', 'round': 'minute'}"/>
                             </td>
                         </tr>
                         <tr>
@@ -50,7 +50,7 @@
                                 </strong>
                                 <strong t-else="">
                                     <span style="margin-right: 15px;">Total (Hours)</span>
-                                    <t t-esc="sum(lines.mapped('unit_amount'))" t-options="{'widget': 'duration', 'digital': True, 'unit': 'hour', 'round': 'minute'}"/>
+                                    <t t-esc="sum(lines.mapped('unit_amount'))" t-options="{'widget': 'duration', 'digital': true, 'unit': 'hour', 'round': 'minute'}"/>
                                 </strong>
                             </td>
                         </tr>
@@ -66,7 +66,7 @@
                 <t t-set="show_task" t-value="bool(docs.mapped('taskId'))"/>
                 <t t-set="show_project" t-value="len(docs.mapped('projectId')) > 1"/>
                 <div class="page">
-                    <div class="oe-structure"/>
+                    <div class="oe_structure"/>
                     <div class="row" style="margin-top:10px;">
                         <div class="col-lg-12">
                             <h2>
@@ -81,7 +81,7 @@
                     <t t-set='is_uom_day' t-value='docs._is_timesheet_encode_uom_day()'/>
                     <t t-set='lines' t-value='docs'/>
                     <t t-call="hr_timesheet.timesheet_table"/>
-                    <div class="oe-structure"/>
+                    <div class="oe_structure"/>
                 </div>
             </t>
         </t>
@@ -93,7 +93,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">hr_timesheet.report_timesheet</field>
         <field name="report_file">report_timesheet</field>
-        <field name="binding_model_id" ref="model_account_analytic_line"/>
+        <field name="bindingModelId" ref="model_account_analytic_line"/>
         <field name="binding_type">report</field>
     </record>
 
@@ -104,7 +104,7 @@
                 <t t-set="show_Task" t-value="len(docs.mapped('id')) == 1"/>
                 <div class="page">
                     <t t-foreach="docs" t-as="doc">
-                        <div class="oe-structure"/>
+                        <div class="oe_structure"/>
                         <div class="row" style="margin-top:10px;">
                             <div class="col-lg-12">
                                 <t t-if="doc.allow_timesheets and doc.timesheet_ids">
@@ -138,7 +138,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">hr_timesheet.report_project_task_timesheet</field>
         <field name="report_file">report_timesheet_task</field>
-        <field name="binding_model_id" ref="model_project_task"/>
+        <field name="bindingModelId" ref="model_projectTask"/>
         <field name="binding_type">report</field>
     </record>
 
@@ -151,7 +151,7 @@
                 <t t-set="show_project" t-value="len(docs) > 1"/>
 
                 <div class="page">
-                    <div class="oe-structure"/>
+                    <div class="oe_structure"/>
                     <div class="row" style="margin-top:10px;">
                         <div class="col-lg-12">
                             <h2>
@@ -166,7 +166,7 @@
                     <t t-set="is_uom_day" t-value="docs.timesheet_ids and docs.timesheet_ids[0]._is_timesheet_encode_uom_day()"/>
                     <t t-set="lines" t-value="docs.timesheet_ids"/>
                     <t t-call="hr_timesheet.timesheet_table"/>
-                    <div class="oe-structure"/>
+                    <div class="oe_structure"/>
                 </div>
             </t>
         </t>
@@ -178,7 +178,7 @@
         <field name="report_type">qweb-pdf</field>
         <field name="report_name">hr_timesheet.report_timesheet_project</field>
         <field name="report_file">report_timesheet_project</field>
-        <field name="binding_model_id" ref="model_project_project"/>
+        <field name="bindingModelId" ref="model_project_project"/>
         <field name="binding_type">report</field>
     </record>
 </verp>

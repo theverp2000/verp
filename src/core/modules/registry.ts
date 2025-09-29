@@ -8,17 +8,18 @@ import { dbFactory } from './../service/db';
 require('./../globals');
 
 import assert from 'assert';
-import { randomUUID } from 'crypto';
 import _ from 'lodash';
 import { Environment } from '../api/api';
 import { linearize } from '../api/mro';
 import { WebRequest } from '../http';
 import { BaseModel, MetaModel } from '../models';
 import { Cursor, TestCursor } from '../sql_db';
-import { addForeignKey, dropConstraint, extend, isInstance, isIterable, len, partial } from '../tools';
+import { addForeignKey, dropConstraint, extend, isIterable, len } from '../tools';
 import { config } from '../tools/config';
 import { contextmanager } from '../tools/context';
+import { isInstance, partial } from '../tools/func';
 import * as lazy from '../tools/lazy';
+import { randomUUID } from 'crypto';
 
 const _logger = console;//.getLogger(__name__)
 const _schema = console;//.getLogger('core.schema');
@@ -145,6 +146,7 @@ export class Registry {
     let registry: Registry;
 
     {
+      global.logDebug = false;
       const t0 = new Date();
 
       registry = new Registry();
@@ -179,6 +181,7 @@ export class Registry {
       registry.init = null;
       const t = ((new Date()).getTime() - t0.getTime()) / 1000;
       console.info(`Registry loaded in ${t}ms`);
+      // global.logDebug = true;
     }
     return registry;
   }

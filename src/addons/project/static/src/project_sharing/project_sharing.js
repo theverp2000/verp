@@ -14,11 +14,11 @@ export class ProjectSharingWebClient extends Component {
         window.parent.document.body.style.margin = "0"; // remove the margin in the parent body
         this.actionService = useService('action');
         this.user = useService("user");
-        useService("legacy_service_provider");
+        useService("legacyServiceProvider");
         useOwnDebugContext({ categories: ["default"] });
         useBus(this.env.bus, "ACTION_MANAGER:UI-UPDATED", (mode) => {
             if (mode !== "new") {
-                this.el.classList.toggle("o_fullscreen", mode === "fullscreen");
+                this.el.classList.toggle("o-fullscreen", mode === "fullscreen");
             }
         });
         useEffect(
@@ -45,9 +45,9 @@ export class ProjectSharingWebClient extends Component {
     }
 
     async _showView() {
-        const { action_name, projectId } = session;
+        const { actionName, projectId } = session;
         await this.actionService.doAction(
-            action_name,
+            actionName,
             {
                 clearBreadcrumbs: true,
                 additionalContext: {

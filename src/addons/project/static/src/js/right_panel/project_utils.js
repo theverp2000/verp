@@ -1,16 +1,16 @@
 /** @verp-module **/
 
 import { _lt } from 'web.core';
-import fieldUtils from 'web.field_utils';
+import fieldUtils from 'web.fieldUtils';
 import { ComponentAdapter } from 'web.OwlCompatibility';
-import { FormViewDialog } from 'web.view_dialogs';
+import { FormViewDialog } from 'web.viewDialogs';
 const { useState, useRef } = owl.hooks;
 
 class MilestoneComponent extends owl.Component {
     constructor() {
         super(...arguments);
         this.contextValue = Object.assign({}, {
-            'default_project_id': this.props.context.activeId,
+            'default_projectId': this.props.context.activeId,
         }, this.props.context);
         this.FormViewDialog = FormViewDialog;
         this.state = useState({
@@ -28,7 +28,7 @@ class MilestoneComponent extends owl.Component {
 
     set context(value) {
         this.contextValue = Object.assign({}, {
-            'default_project_id': value.activeId,
+            'default_projectId': value.activeId,
         }, value);
     }
 
@@ -49,7 +49,7 @@ class MilestoneComponent extends owl.Component {
 
     _createContext() {
         return Object.assign({}, {
-            'default_project_id': this.contextValue.activeId,
+            'default_projectId': this.contextValue.activeId,
         }, this.contextValue);
     }
 
@@ -78,8 +78,8 @@ export class OpenMilestone extends MilestoneComponent {
     constructor() {
         super(...arguments);
         this.milestone = useState(this.props.milestone);
-        this.state.colorClass = this.milestone.is_deadline_exceeded ? "o_milestone_danger" : "";
-        this.state.checkboxIcon = this.milestone.is_reached ? "fa-check-square-o" : "fa-square-o";
+        this.state.colorClass = this.milestone.isDeadlineExceeded ? "o-milestone-danger" : "";
+        this.state.checkboxIcon = this.milestone.isReached ? "fa-check-square-o" : "fa-square-o";
     }
 
     get OPEN_PROJECT_MILESTONE() {
@@ -93,8 +93,8 @@ export class OpenMilestone extends MilestoneComponent {
     willUpdateProps(nextProps) {
         if (nextProps.milestone) {
             this.milestone = nextProps.milestone;
-            this.state.colorClass = this.milestone.is_deadline_exceeded ? "o_milestone_danger" : "";
-            this.state.checkboxIcon = this.milestone.is_reached ? "fa-check-square-o" : "fa-square-o";
+            this.state.colorClass = this.milestone.isDeadlineExceeded ? "o-milestone-danger" : "";
+            this.state.checkboxIcon = this.milestone.isReached ? "fa-check-square-o" : "fa-square-o";
         }
         if (nextProps.context) {
             this.contextValue = nextProps.context;
@@ -103,7 +103,7 @@ export class OpenMilestone extends MilestoneComponent {
 
     dialogClosed() {
         super.dialogClosed();
-        this.write_mutex = false;
+        this.writeMutex = false;
     }
 
     async onDeleteMilestone() {
@@ -116,23 +116,23 @@ export class OpenMilestone extends MilestoneComponent {
     }
 
     onOpenMilestone() {
-        if (!this._isDialogOpen && !this.write_mutex) {
-            this.write_mutex = true;
+        if (!this._isDialogOpen && !this.writeMutex) {
+            this.writeMutex = true;
             this.state.openDialog = true;
         }
     }
 
     async onMilestoneClick() {
-        if (!this.write_mutex) {
-            this.write_mutex = true;
+        if (!this.writeMutex) {
+            this.writeMutex = true;
             this.milestone = await this.rpc({
                 model: 'project.milestone',
-                method: 'toggle_is_reached',
-                args: [[this.milestone.id], !this.milestone.is_reached],
+                method: 'toggleIsReached',
+                args: [[this.milestone.id], !this.milestone.isReached],
             });
-            this.state.colorClass = this.milestone.is_deadline_exceeded ? "o_milestone_danger" : "";
-            this.state.checkboxIcon = this.milestone.is_reached ? "fa-check-square-o" : "fa-square-o";
-            this.write_mutex = false;
+            this.state.colorClass = this.milestone.isDeadlineExceeded ? "o-milestone-danger" : "";
+            this.state.checkboxIcon = this.milestone.isReached ? "fa-check-square-o" : "fa-square-o";
+            this.writeMutex = false;
         }
     }
 }

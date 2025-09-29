@@ -1,0 +1,3854 @@
+/*! e349121d-ff8d-47c9-b857-9f298e8408f2 */
+// ------------------------------------------------------------------
+// Lato
+// ------------------------------------------------------------------
+$lato-font-path: './lato';
+
+@mixin lato-font($type, $weight, $style) {
+    // Cyrillic: U+0400-04FF, U+0500-052F
+    @font-face {
+        font-family: 'Verp Unicode Support Noto';
+        src: url('https://fonts.verpcdn.com/fonts/noto/NotoSans-#{$type}.woff2') format('woff2'),
+             url('https://fonts.verpcdn.com/fonts/noto/NotoSans-#{$type}.woff') format('woff'),
+             url('https://fonts.verpcdn.com/fonts/noto/NotoSans-#{$type}.ttf') format('truetype');
+        font-weight: $weight;
+        font-style: $style;
+        unicode-range: U+0400-04FF, U+0500-052F;
+    }
+    // Hebrew: U+0590-05FF, U+FB1D-FB4F
+    @font-face {
+        font-family: 'Verp Unicode Support Noto';
+        src: url('https://fonts.verpcdn.com/fonts/noto/NotoSansHebrew-#{$type}.woff2') format('woff2'),
+             url('https://fonts.verpcdn.com/fonts/noto/NotoSansHebrew-#{$type}.woff') format('woff'),
+             url('https://fonts.verpcdn.com/fonts/noto/NotoSansHebrew-#{$type}.ttf') format('truetype');
+        font-weight: $weight;
+        font-style: $style;
+        unicode-range: U+0590-05FF, U+FB1D-FB4F;
+    }
+    // Arabic: U+0600-06FF, U+0750-077F
+    @font-face {
+        font-family: 'Verp Unicode Support Noto';
+        src: url('https://fonts.verpcdn.com/fonts/noto/NotoSansArabic-#{$type}.woff2') format('woff2'),
+             url('https://fonts.verpcdn.com/fonts/noto/NotoSansArabic-#{$type}.woff') format('woff'),
+             url('https://fonts.verpcdn.com/fonts/noto/NotoSansArabic-#{$type}.ttf') format('truetype');
+        font-weight: $weight;
+        font-style: $style;
+        unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF;
+    }
+
+    @font-face {
+        font-family: 'Lato';
+        src: url('/web/static/fonts/#{$lato-font-path}/Lato-#{$type}-webfont.eot');
+        src: url('#{$lato-font-path}/Lato-#{$type}-webfont.eot?#iefix') format('embedded-opentype'),
+             url('#{$lato-font-path}/Lato-#{$type}-webfont.woff') format('woff'),
+             url('#{$lato-font-path}/Lato-#{$type}-webfont.ttf') format('truetype'),
+             url('#{$lato-font-path}/Lato-#{$type}-webfont.svg#Lato') format('svg');
+        font-weight: $weight;
+        font-style: $style;
+    }
+    @font-face {
+        font-family: 'Lato-#{$type}';
+        src: url('#{$lato-font-path}/Lato-#{$type}-webfont.eot');
+        src: url('#{$lato-font-path}/Lato-#{$type}-webfont.eot?#iefix') format('embedded-opentype'),
+             url('#{$lato-font-path}/Lato-#{$type}-webfont.woff') format('woff'),
+             url('#{$lato-font-path}/Lato-#{$type}-webfont.ttf') format('truetype'),
+             url('#{$lato-font-path}/Lato-#{$type}-webfont.svg#Roboto') format('svg');
+    }
+}
+
+@mixin lato-font-pair($type, $weight) {
+    @include lato-font('#{$type}', $weight, normal);
+    @include lato-font('#{$type}Ita', $weight, italic);
+}
+
+@include lato-font-pair('Hai', 100);
+@include lato-font-pair('Lig', 300);
+@include lato-font-pair('Reg', 400);
+@include lato-font-pair('Bol', 700);
+@include lato-font-pair('Bla', 900);
+
+// ------------------------------------------------------------------
+// Google fonts
+// ------------------------------------------------------------------
+$google-font-path: './google';
+
+@mixin google-font($family, $type, $weight, $style) {
+    @font-face {
+        font-family: $family;
+        src: url('#{$google-font-path}/#{$family}/#{$family}-#{$type}.ttf') format('truetype');
+        font-weight: $weight;
+        font-style: $style;
+    }
+}
+
+@mixin google-font-pair($family) {
+    @include google-font('#{$family}', 'Regular', 400, normal);
+}
+
+@include google-font-pair('Montserrat');
+@include google-font-pair('Open_Sans');
+@include google-font-pair('Oswald');
+@include google-font-pair('Raleway');
+@include google-font-pair('Roboto');
+
+/*! 4fe56dd2-d3c4-4b30-bc15-cbea719a9855 */
+// Bootstrap functions
+//
+// Utility mixins and functions for evaluating source code across our variables, maps, and mixins.
+
+// Ascending
+// Used to evaluate Sass maps like our grid breakpoints.
+@mixin _assert-ascending($map, $map-name) {
+  $prev-key: null;
+  $prev-num: null;
+  @each $key, $num in $map {
+    @if $prev-num == null or unit($num) == "%" {
+      // Do nothing
+    } @else if not comparable($prev-num, $num) {
+      @warn "Potentially invalid value for #{$map-name}: This map must be in ascending order, but key '#{$key}' has value #{$num} whose unit makes it incomparable to #{$prev-num}, the value of the previous key '#{$prev-key}' !";
+    } @else if $prev-num >= $num {
+      @warn "Invalid value for #{$map-name}: This map must be in ascending order, but key '#{$key}' has value #{$num} which isn't greater than #{$prev-num}, the value of the previous key '#{$prev-key}' !";
+    }
+    $prev-key: $key;
+    $prev-num: $num;
+  }
+}
+
+// Starts at zero
+// Used to ensure the min-width of the lowest breakpoint starts at 0.
+@mixin _assert-starts-at-zero($map, $map-name: "$grid-breakpoints") {
+  $values: map-values($map);
+  $first-value: nth($values, 1);
+  @if $first-value != 0 {
+    @warn "First breakpoint in #{$map-name} must start at 0, but starts at #{$first-value}.";
+  }
+}
+
+// Replace `$search` with `$replace` in `$string`
+// Used on our SVG icon backgrounds for custom forms.
+//
+// @author Hugo Giraudel
+// @param {String} $string - Initial string
+// @param {String} $search - Substring to replace
+// @param {String} $replace ('') - New value
+// @return {String} - Updated string
+@function str-replace($string, $search, $replace: "") {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+
+  @return $string;
+}
+
+// Color contrast
+@function color-yiq($color, $dark: $yiq-text-dark, $light: $yiq-text-light) {
+  $r: red($color);
+  $g: green($color);
+  $b: blue($color);
+
+  $yiq: (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+  @if ($yiq >= $yiq-contrasted-threshold) {
+    @return $dark;
+  } @else {
+    @return $light;
+  }
+}
+
+// Retrieve color Sass maps
+@function color($key: "blue") {
+  @return map-get($colors, $key);
+}
+
+@function theme-color($key: "primary") {
+  @return map-get($theme-colors, $key);
+}
+
+@function gray($key: "100") {
+  @return map-get($grays, $key);
+}
+
+// Request a theme color level
+@function theme-color-level($color-name: "primary", $level: 0) {
+  $color: theme-color($color-name);
+  $color-base: if($level > 0, $black, $white);
+  $level: abs($level);
+
+  @return mix($color-base, $color, $level * $theme-color-interval);
+}
+
+/*! 91c66f3b-5538-4396-bdd8-5b56912c01ad */
+// Toggles
+//
+// Used in conjunction with global variables to enable certain theme features.
+
+// Vendor
+@import "/web/static/lib/bootstrap/scss/vendor/rfs";
+
+// Deprecate
+@import "mixins/deprecate";
+
+// Utilities
+@import "mixins/breakpoints";
+@import "mixins/hover";
+@import "mixins/image";
+@import "mixins/badge";
+@import "mixins/resize";
+@import "mixins/screen-reader";
+@import "mixins/size";
+@import "mixins/reset-text";
+@import "mixins/text-emphasis";
+@import "mixins/text-hide";
+@import "mixins/text-truncate";
+@import "mixins/visibility";
+
+// // Components
+@import "mixins/alert";
+@import "mixins/buttons";
+@import "mixins/caret";
+@import "mixins/pagination";
+@import "mixins/lists";
+@import "mixins/list-group";
+@import "mixins/nav-divider";
+@import "mixins/forms";
+@import "mixins/table-row";
+
+// // Skins
+@import "mixins/background-variant";
+@import "mixins/border-radius";
+@import "mixins/box-shadow";
+@import "mixins/gradients";
+@import "mixins/transition";
+
+// // Layout
+@import "mixins/clearfix";
+@import "mixins/grid-framework";
+@import "mixins/grid";
+@import "mixins/float";
+
+/*! dc9e33c5-aed8-4fb6-b72f-1dac7da51896 */
+// Variables
+//
+// Variables should follow the `$component-state-property-size` formula for
+// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
+
+// Color system
+
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+
+$grays: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$grays: map-merge(
+  (
+    "100": $gray-100,
+    "200": $gray-200,
+    "300": $gray-300,
+    "400": $gray-400,
+    "500": $gray-500,
+    "600": $gray-600,
+    "700": $gray-700,
+    "800": $gray-800,
+    "900": $gray-900
+  ),
+  $grays
+);
+
+$blue:    #007bff !default;
+$indigo:  #6610f2 !default;
+$purple:  #6f42c1 !default;
+$pink:    #e83e8c !default;
+$red:     #dc3545 !default;
+$orange:  #fd7e14 !default;
+$yellow:  #ffc107 !default;
+$green:   #28a745 !default;
+$teal:    #20c997 !default;
+$cyan:    #17a2b8 !default;
+
+$colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$colors: map-merge(
+  (
+    "blue":       $blue,
+    "indigo":     $indigo,
+    "purple":     $purple,
+    "pink":       $pink,
+    "red":        $red,
+    "orange":     $orange,
+    "yellow":     $yellow,
+    "green":      $green,
+    "teal":       $teal,
+    "cyan":       $cyan,
+    "white":      $white,
+    "gray":       $gray-600,
+    "gray-dark":  $gray-800
+  ),
+  $colors
+);
+
+$primary:       $blue !default;
+$secondary:     $gray-600 !default;
+$success:       $green !default;
+$info:          $cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $gray-100 !default;
+$dark:          $gray-800 !default;
+
+$theme-colors: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$theme-colors: map-merge(
+  (
+    "primary":    $primary,
+    "secondary":  $secondary,
+    "success":    $success,
+    "info":       $info,
+    "warning":    $warning,
+    "danger":     $danger,
+    "light":      $light,
+    "dark":       $dark
+  ),
+  $theme-colors
+);
+
+// Set a specific jump point for requesting color jumps
+$theme-color-interval:      8% !default;
+
+// The yiq lightness value that determines when the lightness of color changes from "dark" to "light". Acceptable values are between 0 and 255.
+$yiq-contrasted-threshold:  150 !default;
+
+// Customize the light and dark text colors for use in our YIQ color contrast function.
+$yiq-text-dark:             $gray-900 !default;
+$yiq-text-light:            $white !default;
+
+
+// Options
+//
+// Quickly modify global styling by enabling or disabling optional features.
+
+$enable-caret:                                true !default;
+$enable-rounded:                              true !default;
+$enable-shadows:                              false !default;
+$enable-gradients:                            false !default;
+$enable-transitions:                          true !default;
+$enable-prefers-reduced-motion-media-query:   true !default;
+$enable-hover-media-query:                    false !default; // Deprecated, no longer affects any compiled CSS
+$enable-grid-classes:                         true !default;
+$enable-pointer-cursor-for-buttons:           true !default;
+$enable-print-styles:                         true !default;
+$enable-responsive-font-sizes:                false !default;
+$enable-validation-icons:                     true !default;
+$enable-deprecation-messages:                 true !default;
+
+
+// Spacing
+//
+// Control the default styling of most Bootstrap elements by modifying these
+// variables. Mostly focused on spacing.
+// You can add more entries to the $spacers map, should you need more variation.
+
+$spacer: 1rem !default;
+$spacers: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$spacers: map-merge(
+  (
+    0: 0,
+    1: ($spacer * .25),
+    2: ($spacer * .5),
+    3: $spacer,
+    4: ($spacer * 1.5),
+    5: ($spacer * 3)
+  ),
+  $spacers
+);
+
+// This variable affects the `.h-*` and `.w-*` classes.
+$sizes: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$sizes: map-merge(
+  (
+    25: 25%,
+    50: 50%,
+    75: 75%,
+    100: 100%,
+    auto: auto
+  ),
+  $sizes
+);
+
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-bg:                   $white !default;
+$body-color:                $gray-900 !default;
+
+
+// Links
+//
+// Style anchor elements.
+
+$link-color:                              theme-color("primary") !default;
+$link-decoration:                         none !default;
+$link-hover-color:                        darken($link-color, 15%) !default;
+$link-hover-decoration:                   underline !default;
+// Darken percentage for links with `.text-*` class (e.g. `.text-success`)
+$emphasized-link-hover-darken-percentage: 15% !default;
+
+// Paragraphs
+//
+// Style p element.
+
+$paragraph-margin-bottom:   1rem !default;
+
+
+// Grid breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+) !default;
+
+@include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
+@include _assert-starts-at-zero($grid-breakpoints, "$grid-breakpoints");
+
+
+// Grid containers
+//
+// Define the maximum width of `.container` for different screen sizes.
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1140px
+) !default;
+
+@include _assert-ascending($container-max-widths, "$container-max-widths");
+
+
+// Grid columns
+//
+// Set the number of columns and specify the width of the gutters.
+
+$grid-columns:                12 !default;
+$grid-gutter-width:           30px !default;
+
+
+// Components
+//
+// Define common padding and border radius sizes and more.
+
+$line-height-lg:              1.5 !default;
+$line-height-sm:              1.5 !default;
+
+$border-width:                1px !default;
+$border-color:                $gray-300 !default;
+
+$border-radius:               .25rem !default;
+$border-radius-lg:            .3rem !default;
+$border-radius-sm:            .2rem !default;
+
+$rounded-pill:                50rem !default;
+
+$box-shadow-sm:               0 .125rem .25rem rgba($black, .075) !default;
+$box-shadow:                  0 .5rem 1rem rgba($black, .15) !default;
+$box-shadow-lg:               0 1rem 3rem rgba($black, .175) !default;
+
+$component-active-color:      $white !default;
+$component-active-bg:         theme-color("primary") !default;
+
+$caret-width:                 .3em !default;
+$caret-vertical-align:        $caret-width * .85 !default;
+$caret-spacing:               $caret-width * .85 !default;
+
+$transition-base:             all .2s ease-in-out !default;
+$transition-fade:             opacity .15s linear !default;
+$transition-collapse:         height .35s ease !default;
+
+$embed-responsive-aspect-ratios: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$embed-responsive-aspect-ratios: join(
+  (
+    (21 9),
+    (16 9),
+    (4 3),
+    (1 1),
+  ),
+  $embed-responsive-aspect-ratios
+);
+
+// Typography
+//
+// Font, line-height, and color for body text, headings, and more.
+
+// stylelint-disable value-keyword-case
+$font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+$font-family-base:            $font-family-sans-serif !default;
+// stylelint-enable value-keyword-case
+
+$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-lg:                $font-size-base * 1.25 !default;
+$font-size-sm:                $font-size-base * .875 !default;
+
+$font-weight-lighter:         lighter !default;
+$font-weight-light:           300 !default;
+$font-weight-normal:          400 !default;
+$font-weight-bold:            700 !default;
+$font-weight-bolder:          bolder !default;
+
+$font-weight-base:            $font-weight-normal !default;
+$line-height-base:            1.5 !default;
+
+$h1-font-size:                $font-size-base * 2.5 !default;
+$h2-font-size:                $font-size-base * 2 !default;
+$h3-font-size:                $font-size-base * 1.75 !default;
+$h4-font-size:                $font-size-base * 1.5 !default;
+$h5-font-size:                $font-size-base * 1.25 !default;
+$h6-font-size:                $font-size-base !default;
+
+$headings-margin-bottom:      $spacer / 2 !default;
+$headings-font-family:        null !default;
+$headings-font-weight:        500 !default;
+$headings-line-height:        1.2 !default;
+$headings-color:              null !default;
+
+$display1-size:               6rem !default;
+$display2-size:               5.5rem !default;
+$display3-size:               4.5rem !default;
+$display4-size:               3.5rem !default;
+
+$display1-weight:             300 !default;
+$display2-weight:             300 !default;
+$display3-weight:             300 !default;
+$display4-weight:             300 !default;
+$display-line-height:         $headings-line-height !default;
+
+$lead-font-size:              $font-size-base * 1.25 !default;
+$lead-font-weight:            300 !default;
+
+$small-font-size:             80% !default;
+
+$text-muted:                  $gray-600 !default;
+
+$blockquote-small-color:      $gray-600 !default;
+$blockquote-small-font-size:  $small-font-size !default;
+$blockquote-font-size:        $font-size-base * 1.25 !default;
+
+$hr-border-color:             rgba($black, .1) !default;
+$hr-border-width:             $border-width !default;
+
+$mark-padding:                .2em !default;
+
+$dt-font-weight:              $font-weight-bold !default;
+
+$kbd-box-shadow:              inset 0 -.1rem 0 rgba($black, .25) !default;
+$nested-kbd-font-weight:      $font-weight-bold !default;
+
+$list-inline-padding:         .5rem !default;
+
+$mark-bg:                     #fcf8e3 !default;
+
+$hr-margin-y:                 $spacer !default;
+
+
+// Tables
+//
+// Customizes the `.table` component with basic values, each used across all table variations.
+
+$table-cell-padding:          .75rem !default;
+$table-cell-padding-sm:       .3rem !default;
+
+$table-color:                 $body-color !default;
+$table-bg:                    null !default;
+$table-accent-bg:             rgba($black, .05) !default;
+$table-hover-color:           $table-color !default;
+$table-hover-bg:              rgba($black, .075) !default;
+$table-active-bg:             $table-hover-bg !default;
+
+$table-border-width:          $border-width !default;
+$table-border-color:          $border-color !default;
+
+$table-head-bg:               $gray-200 !default;
+$table-head-color:            $gray-700 !default;
+
+$table-dark-color:            $white !default;
+$table-dark-bg:               $gray-800 !default;
+$table-dark-accent-bg:        rgba($white, .05) !default;
+$table-dark-hover-color:      $table-dark-color !default;
+$table-dark-hover-bg:         rgba($white, .075) !default;
+$table-dark-border-color:     lighten($table-dark-bg, 7.5%) !default;
+$table-dark-color:            $white !default;
+
+$table-striped-order:         odd !default;
+
+$table-caption-color:         $text-muted !default;
+
+$table-bg-level:              -9 !default;
+$table-border-level:          -6 !default;
+
+
+// Buttons + Forms
+//
+// Shared variables that are reassigned to `$input-` and `$btn-` specific variables.
+
+$input-btn-padding-y:         .375rem !default;
+$input-btn-padding-x:         .75rem !default;
+$input-btn-font-family:       null !default;
+$input-btn-font-size:         $font-size-base !default;
+$input-btn-line-height:       $line-height-base !default;
+
+$input-btn-focus-width:       .2rem !default;
+$input-btn-focus-color:       rgba($component-active-bg, .25) !default;
+$input-btn-focus-box-shadow:  0 0 0 $input-btn-focus-width $input-btn-focus-color !default;
+
+$input-btn-padding-y-sm:      .25rem !default;
+$input-btn-padding-x-sm:      .5rem !default;
+$input-btn-font-size-sm:      $font-size-sm !default;
+$input-btn-line-height-sm:    $line-height-sm !default;
+
+$input-btn-padding-y-lg:      .5rem !default;
+$input-btn-padding-x-lg:      1rem !default;
+$input-btn-font-size-lg:      $font-size-lg !default;
+$input-btn-line-height-lg:    $line-height-lg !default;
+
+$input-btn-border-width:      $border-width !default;
+
+
+// Buttons
+//
+// For each of Bootstrap's buttons, define text, background, and border color.
+
+$btn-padding-y:               $input-btn-padding-y !default;
+$btn-padding-x:               $input-btn-padding-x !default;
+$btn-font-family:             $input-btn-font-family !default;
+$btn-font-size:               $input-btn-font-size !default;
+$btn-line-height:             $input-btn-line-height !default;
+
+$btn-padding-y-sm:            $input-btn-padding-y-sm !default;
+$btn-padding-x-sm:            $input-btn-padding-x-sm !default;
+$btn-font-size-sm:            $input-btn-font-size-sm !default;
+$btn-line-height-sm:          $input-btn-line-height-sm !default;
+
+$btn-padding-y-lg:            $input-btn-padding-y-lg !default;
+$btn-padding-x-lg:            $input-btn-padding-x-lg !default;
+$btn-font-size-lg:            $input-btn-font-size-lg !default;
+$btn-line-height-lg:          $input-btn-line-height-lg !default;
+
+$btn-border-width:            $input-btn-border-width !default;
+
+$btn-font-weight:             $font-weight-normal !default;
+$btn-box-shadow:              inset 0 1px 0 rgba($white, .15), 0 1px 1px rgba($black, .075) !default;
+$btn-focus-width:             $input-btn-focus-width !default;
+$btn-focus-box-shadow:        $input-btn-focus-box-shadow !default;
+$btn-disabled-opacity:        .65 !default;
+$btn-active-box-shadow:       inset 0 3px 5px rgba($black, .125) !default;
+
+$btn-link-disabled-color:     $gray-600 !default;
+
+$btn-block-spacing-y:         .5rem !default;
+
+// Allows for customizing button radius independently from global border radius
+$btn-border-radius:           $border-radius !default;
+$btn-border-radius-lg:        $border-radius-lg !default;
+$btn-border-radius-sm:        $border-radius-sm !default;
+
+$btn-transition:              color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out !default;
+
+
+// Forms
+
+$label-margin-bottom:                   .5rem !default;
+
+$input-padding-y:                       $input-btn-padding-y !default;
+$input-padding-x:                       $input-btn-padding-x !default;
+$input-font-family:                     $input-btn-font-family !default;
+$input-font-size:                       $input-btn-font-size !default;
+$input-font-weight:                     $font-weight-base !default;
+$input-line-height:                     $input-btn-line-height !default;
+
+$input-padding-y-sm:                    $input-btn-padding-y-sm !default;
+$input-padding-x-sm:                    $input-btn-padding-x-sm !default;
+$input-font-size-sm:                    $input-btn-font-size-sm !default;
+$input-line-height-sm:                  $input-btn-line-height-sm !default;
+
+$input-padding-y-lg:                    $input-btn-padding-y-lg !default;
+$input-padding-x-lg:                    $input-btn-padding-x-lg !default;
+$input-font-size-lg:                    $input-btn-font-size-lg !default;
+$input-line-height-lg:                  $input-btn-line-height-lg !default;
+
+$input-bg:                              $white !default;
+$input-disabled-bg:                     $gray-200 !default;
+
+$input-color:                           $gray-700 !default;
+$input-border-color:                    $gray-400 !default;
+$input-border-width:                    $input-btn-border-width !default;
+$input-box-shadow:                      inset 0 1px 1px rgba($black, .075) !default;
+
+$input-border-radius:                   $border-radius !default;
+$input-border-radius-lg:                $border-radius-lg !default;
+$input-border-radius-sm:                $border-radius-sm !default;
+
+$input-focus-bg:                        $input-bg !default;
+$input-focus-border-color:              lighten($component-active-bg, 25%) !default;
+$input-focus-color:                     $input-color !default;
+$input-focus-width:                     $input-btn-focus-width !default;
+$input-focus-box-shadow:                $input-btn-focus-box-shadow !default;
+
+$input-placeholder-color:               $gray-600 !default;
+$input-plaintext-color:                 $body-color !default;
+
+$input-height-border:                   $input-border-width * 2 !default;
+
+$input-height-inner:                    calc(#{$input-line-height * 1em} + #{$input-padding-y * 2}) !default;
+$input-height-inner-half:               calc(#{$input-line-height * .5em} + #{$input-padding-y}) !default;
+$input-height-inner-quarter:            calc(#{$input-line-height * .25em} + #{$input-padding-y / 2}) !default;
+
+$input-height:                          calc(#{$input-line-height * 1em} + #{$input-padding-y * 2} + #{$input-height-border}) !default;
+$input-height-sm:                       calc(#{$input-line-height-sm * 1em} + #{$input-btn-padding-y-sm * 2} + #{$input-height-border}) !default;
+$input-height-lg:                       calc(#{$input-line-height-lg * 1em} + #{$input-btn-padding-y-lg * 2} + #{$input-height-border}) !default;
+
+$input-transition:                      border-color .15s ease-in-out, box-shadow .15s ease-in-out !default;
+
+$form-text-margin-top:                  .25rem !default;
+
+$form-check-input-gutter:               1.25rem !default;
+$form-check-input-margin-y:             .3rem !default;
+$form-check-input-margin-x:             .25rem !default;
+
+$form-check-inline-margin-x:            .75rem !default;
+$form-check-inline-input-margin-x:      .3125rem !default;
+
+$form-grid-gutter-width:                10px !default;
+$form-group-margin-bottom:              1rem !default;
+
+$input-group-addon-color:               $input-color !default;
+$input-group-addon-bg:                  $gray-200 !default;
+$input-group-addon-border-color:        $input-border-color !default;
+
+$custom-forms-transition:               background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out !default;
+
+$custom-control-gutter:                 .5rem !default;
+$custom-control-spacer-x:               1rem !default;
+
+$custom-control-indicator-size:         1rem !default;
+$custom-control-indicator-bg:           $input-bg !default;
+
+$custom-control-indicator-bg-size:      50% 50% !default;
+$custom-control-indicator-box-shadow:   $input-box-shadow !default;
+$custom-control-indicator-border-color: $gray-500 !default;
+$custom-control-indicator-border-width: $input-border-width !default;
+
+$custom-control-indicator-disabled-bg:          $input-disabled-bg !default;
+$custom-control-label-disabled-color:           $gray-600 !default;
+
+$custom-control-indicator-checked-color:        $component-active-color !default;
+$custom-control-indicator-checked-bg:           $component-active-bg !default;
+$custom-control-indicator-checked-disabled-bg:  rgba(theme-color("primary"), .5) !default;
+$custom-control-indicator-checked-box-shadow:   none !default;
+$custom-control-indicator-checked-border-color: $custom-control-indicator-checked-bg !default;
+
+$custom-control-indicator-focus-box-shadow:     $input-focus-box-shadow !default;
+$custom-control-indicator-focus-border-color:   $input-focus-border-color !default;
+
+$custom-control-indicator-active-color:         $component-active-color !default;
+$custom-control-indicator-active-bg:            lighten($component-active-bg, 35%) !default;
+$custom-control-indicator-active-box-shadow:    none !default;
+$custom-control-indicator-active-border-color:  $custom-control-indicator-active-bg !default;
+
+$custom-checkbox-indicator-border-radius:       $border-radius !default;
+$custom-checkbox-indicator-icon-checked:        str-replace(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='#{$custom-control-indicator-checked-color}' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e"), "#", "%23") !default;
+
+$custom-checkbox-indicator-indeterminate-bg:           $component-active-bg !default;
+$custom-checkbox-indicator-indeterminate-color:        $custom-control-indicator-checked-color !default;
+$custom-checkbox-indicator-icon-indeterminate:         str-replace(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3e%3cpath stroke='#{$custom-checkbox-indicator-indeterminate-color}' d='M0 2h4'/%3e%3c/svg%3e"), "#", "%23") !default;
+$custom-checkbox-indicator-indeterminate-box-shadow:   none !default;
+$custom-checkbox-indicator-indeterminate-border-color: $custom-checkbox-indicator-indeterminate-bg !default;
+
+$custom-radio-indicator-border-radius:          50% !default;
+$custom-radio-indicator-icon-checked:           str-replace(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='#{$custom-control-indicator-checked-color}'/%3e%3c/svg%3e"), "#", "%23") !default;
+
+$custom-switch-width:                           $custom-control-indicator-size * 1.75 !default;
+$custom-switch-indicator-border-radius:         $custom-control-indicator-size / 2 !default;
+$custom-switch-indicator-size:                  calc(#{$custom-control-indicator-size} - #{$custom-control-indicator-border-width * 4}) !default;
+
+$custom-select-padding-y:           $input-padding-y !default;
+$custom-select-padding-x:           $input-padding-x !default;
+$custom-select-font-family:         $input-font-family !default;
+$custom-select-font-size:           $input-font-size !default;
+$custom-select-height:              $input-height !default;
+$custom-select-indicator-padding:   1rem !default; // Extra padding to account for the presence of the background-image based indicator
+$custom-select-font-weight:         $input-font-weight !default;
+$custom-select-line-height:         $input-line-height !default;
+$custom-select-color:               $input-color !default;
+$custom-select-disabled-color:      $gray-600 !default;
+$custom-select-bg:                  $input-bg !default;
+$custom-select-disabled-bg:         $gray-200 !default;
+$custom-select-bg-size:             8px 10px !default; // In pixels because image dimensions
+$custom-select-indicator-color:     $gray-800 !default;
+$custom-select-indicator:           str-replace(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3e%3cpath fill='#{$custom-select-indicator-color}' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e"), "#", "%23") !default;
+$custom-select-background:          $custom-select-indicator no-repeat right $custom-select-padding-x center / $custom-select-bg-size !default; // Used so we can have multiple background elements (e.g., arrow and feedback icon)
+
+$custom-select-feedback-icon-padding-right: calc((1em + #{2 * $custom-select-padding-y}) * 3 / 4 + #{$custom-select-padding-x + $custom-select-indicator-padding}) !default;
+$custom-select-feedback-icon-position:      center right ($custom-select-padding-x + $custom-select-indicator-padding) !default;
+$custom-select-feedback-icon-size:          $input-height-inner-half $input-height-inner-half !default;
+
+$custom-select-border-width:        $input-border-width !default;
+$custom-select-border-color:        $input-border-color !default;
+$custom-select-border-radius:       $border-radius !default;
+$custom-select-box-shadow:          inset 0 1px 2px rgba($black, .075) !default;
+
+$custom-select-focus-border-color:  $input-focus-border-color !default;
+$custom-select-focus-width:         $input-focus-width !default;
+$custom-select-focus-box-shadow:    0 0 0 $custom-select-focus-width $input-btn-focus-color !default;
+
+$custom-select-padding-y-sm:        $input-padding-y-sm !default;
+$custom-select-padding-x-sm:        $input-padding-x-sm !default;
+$custom-select-font-size-sm:        $input-font-size-sm !default;
+$custom-select-height-sm:           $input-height-sm !default;
+
+$custom-select-padding-y-lg:        $input-padding-y-lg !default;
+$custom-select-padding-x-lg:        $input-padding-x-lg !default;
+$custom-select-font-size-lg:        $input-font-size-lg !default;
+$custom-select-height-lg:           $input-height-lg !default;
+
+$custom-range-track-width:          100% !default;
+$custom-range-track-height:         .5rem !default;
+$custom-range-track-cursor:         pointer !default;
+$custom-range-track-bg:             $gray-300 !default;
+$custom-range-track-border-radius:  1rem !default;
+$custom-range-track-box-shadow:     inset 0 .25rem .25rem rgba($black, .1) !default;
+
+$custom-range-thumb-width:                   1rem !default;
+$custom-range-thumb-height:                  $custom-range-thumb-width !default;
+$custom-range-thumb-bg:                      $component-active-bg !default;
+$custom-range-thumb-border:                  0 !default;
+$custom-range-thumb-border-radius:           1rem !default;
+$custom-range-thumb-box-shadow:              0 .1rem .25rem rgba($black, .1) !default;
+$custom-range-thumb-focus-box-shadow:        0 0 0 1px $body-bg, $input-focus-box-shadow !default;
+$custom-range-thumb-focus-box-shadow-width:  $input-focus-width !default; // For focus box shadow issue in IE/Edge
+$custom-range-thumb-active-bg:               lighten($component-active-bg, 35%) !default;
+$custom-range-thumb-disabled-bg:             $gray-500 !default;
+
+$custom-file-height:                $input-height !default;
+$custom-file-height-inner:          $input-height-inner !default;
+$custom-file-focus-border-color:    $input-focus-border-color !default;
+$custom-file-focus-box-shadow:      $input-focus-box-shadow !default;
+$custom-file-disabled-bg:           $input-disabled-bg !default;
+
+$custom-file-padding-y:             $input-padding-y !default;
+$custom-file-padding-x:             $input-padding-x !default;
+$custom-file-line-height:           $input-line-height !default;
+$custom-file-font-family:           $input-font-family !default;
+$custom-file-font-weight:           $input-font-weight !default;
+$custom-file-color:                 $input-color !default;
+$custom-file-bg:                    $input-bg !default;
+$custom-file-border-width:          $input-border-width !default;
+$custom-file-border-color:          $input-border-color !default;
+$custom-file-border-radius:         $input-border-radius !default;
+$custom-file-box-shadow:            $input-box-shadow !default;
+$custom-file-button-color:          $custom-file-color !default;
+$custom-file-button-bg:             $input-group-addon-bg !default;
+$custom-file-text: (
+  en: "Browse"
+) !default;
+
+
+// Form validation
+
+$form-feedback-margin-top:          $form-text-margin-top !default;
+$form-feedback-font-size:           $small-font-size !default;
+$form-feedback-valid-color:         theme-color("success") !default;
+$form-feedback-invalid-color:       theme-color("danger") !default;
+
+$form-feedback-icon-valid-color:    $form-feedback-valid-color !default;
+$form-feedback-icon-valid:          str-replace(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='#{$form-feedback-icon-valid-color}' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e"), "#", "%23") !default;
+$form-feedback-icon-invalid-color:  $form-feedback-invalid-color !default;
+$form-feedback-icon-invalid:        str-replace(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='#{$form-feedback-icon-invalid-color}' viewBox='-2 -2 7 7'%3e%3cpath stroke='#{$form-feedback-icon-invalid-color}' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E"), "#", "%23") !default;
+
+$form-validation-states: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$form-validation-states: map-merge(
+  (
+    "valid": (
+      "color": $form-feedback-valid-color,
+      "icon": $form-feedback-icon-valid
+    ),
+    "invalid": (
+      "color": $form-feedback-invalid-color,
+      "icon": $form-feedback-icon-invalid
+    ),
+  ),
+  $form-validation-states
+);
+
+// Z-index master list
+//
+// Warning: Avoid customizing these values. They're used for a bird's eye view
+// of components dependent on the z-axis and are designed to all work together.
+
+$zindex-dropdown:                   1000 !default;
+$zindex-sticky:                     1020 !default;
+$zindex-fixed:                      1030 !default;
+$zindex-modal-backdrop:             1040 !default;
+$zindex-modal:                      1050 !default;
+$zindex-popover:                    1060 !default;
+$zindex-tooltip:                    1070 !default;
+
+
+// Navs
+
+$nav-link-padding-y:                .5rem !default;
+$nav-link-padding-x:                1rem !default;
+$nav-link-disabled-color:           $gray-600 !default;
+
+$nav-tabs-border-color:             $gray-300 !default;
+$nav-tabs-border-width:             $border-width !default;
+$nav-tabs-border-radius:            $border-radius !default;
+$nav-tabs-link-hover-border-color:  $gray-200 $gray-200 $nav-tabs-border-color !default;
+$nav-tabs-link-active-color:        $gray-700 !default;
+$nav-tabs-link-active-bg:           $body-bg !default;
+$nav-tabs-link-active-border-color: $gray-300 $gray-300 $nav-tabs-link-active-bg !default;
+
+$nav-pills-border-radius:           $border-radius !default;
+$nav-pills-link-active-color:       $component-active-color !default;
+$nav-pills-link-active-bg:          $component-active-bg !default;
+
+$nav-divider-color:                 $gray-200 !default;
+$nav-divider-margin-y:              $spacer / 2 !default;
+
+
+// Navbar
+
+$navbar-padding-y:                  $spacer / 2 !default;
+$navbar-padding-x:                  $spacer !default;
+
+$navbar-nav-link-padding-x:         .5rem !default;
+
+$navbar-brand-font-size:            $font-size-lg !default;
+// Compute the navbar-brand padding-y so the navbar-brand will have the same height as navbar-text and nav-link
+$nav-link-height:                   $font-size-base * $line-height-base + $nav-link-padding-y * 2 !default;
+$navbar-brand-height:               $navbar-brand-font-size * $line-height-base !default;
+$navbar-brand-padding-y:            ($nav-link-height - $navbar-brand-height) / 2 !default;
+
+$navbar-toggler-padding-y:          .25rem !default;
+$navbar-toggler-padding-x:          .75rem !default;
+$navbar-toggler-font-size:          $font-size-lg !default;
+$navbar-toggler-border-radius:      $btn-border-radius !default;
+
+$navbar-dark-color:                 rgba($white, .5) !default;
+$navbar-dark-hover-color:           rgba($white, .75) !default;
+$navbar-dark-active-color:          $white !default;
+$navbar-dark-disabled-color:        rgba($white, .25) !default;
+$navbar-dark-toggler-icon-bg:       str-replace(url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='#{$navbar-dark-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"), "#", "%23") !default;
+$navbar-dark-toggler-border-color:  rgba($white, .1) !default;
+
+$navbar-light-color:                rgba($black, .5) !default;
+$navbar-light-hover-color:          rgba($black, .7) !default;
+$navbar-light-active-color:         rgba($black, .9) !default;
+$navbar-light-disabled-color:       rgba($black, .3) !default;
+$navbar-light-toggler-icon-bg:      str-replace(url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='#{$navbar-light-color}' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e"), "#", "%23") !default;
+$navbar-light-toggler-border-color: rgba($black, .1) !default;
+
+$navbar-light-brand-color:                $navbar-light-active-color !default;
+$navbar-light-brand-hover-color:          $navbar-light-active-color !default;
+$navbar-dark-brand-color:                 $navbar-dark-active-color !default;
+$navbar-dark-brand-hover-color:           $navbar-dark-active-color !default;
+
+
+// Dropdowns
+//
+// Dropdown menu container and contents.
+
+$dropdown-min-width:                10rem !default;
+$dropdown-padding-y:                .5rem !default;
+$dropdown-spacer:                   .125rem !default;
+$dropdown-font-size:                $font-size-base !default;
+$dropdown-color:                    $body-color !default;
+$dropdown-bg:                       $white !default;
+$dropdown-border-color:             rgba($black, .15) !default;
+$dropdown-border-radius:            $border-radius !default;
+$dropdown-border-width:             $border-width !default;
+$dropdown-inner-border-radius:      calc(#{$dropdown-border-radius} - #{$dropdown-border-width}) !default;
+$dropdown-divider-bg:               $gray-200 !default;
+$dropdown-divider-margin-y:         $nav-divider-margin-y !default;
+$dropdown-box-shadow:               0 .5rem 1rem rgba($black, .175) !default;
+
+$dropdown-link-color:               $gray-900 !default;
+$dropdown-link-hover-color:         darken($gray-900, 5%) !default;
+$dropdown-link-hover-bg:            $gray-100 !default;
+
+$dropdown-link-active-color:        $component-active-color !default;
+$dropdown-link-active-bg:           $component-active-bg !default;
+
+$dropdown-link-disabled-color:      $gray-600 !default;
+
+$dropdown-item-padding-y:           .25rem !default;
+$dropdown-item-padding-x:           1.5rem !default;
+
+$dropdown-header-color:             $gray-600 !default;
+
+
+// Pagination
+
+$pagination-padding-y:              .5rem !default;
+$pagination-padding-x:              .75rem !default;
+$pagination-padding-y-sm:           .25rem !default;
+$pagination-padding-x-sm:           .5rem !default;
+$pagination-padding-y-lg:           .75rem !default;
+$pagination-padding-x-lg:           1.5rem !default;
+$pagination-line-height:            1.25 !default;
+
+$pagination-color:                  $link-color !default;
+$pagination-bg:                     $white !default;
+$pagination-border-width:           $border-width !default;
+$pagination-border-color:           $gray-300 !default;
+
+$pagination-focus-box-shadow:       $input-btn-focus-box-shadow !default;
+$pagination-focus-outline:          0 !default;
+
+$pagination-hover-color:            $link-hover-color !default;
+$pagination-hover-bg:               $gray-200 !default;
+$pagination-hover-border-color:     $gray-300 !default;
+
+$pagination-active-color:           $component-active-color !default;
+$pagination-active-bg:              $component-active-bg !default;
+$pagination-active-border-color:    $pagination-active-bg !default;
+
+$pagination-disabled-color:         $gray-600 !default;
+$pagination-disabled-bg:            $white !default;
+$pagination-disabled-border-color:  $gray-300 !default;
+
+
+// Jumbotron
+
+$jumbotron-padding:                 2rem !default;
+$jumbotron-color:                   null !default;
+$jumbotron-bg:                      $gray-200 !default;
+
+
+// Cards
+
+$card-spacer-y:                     .75rem !default;
+$card-spacer-x:                     1.25rem !default;
+$card-border-width:                 $border-width !default;
+$card-border-radius:                $border-radius !default;
+$card-border-color:                 rgba($black, .125) !default;
+$card-inner-border-radius:          calc(#{$card-border-radius} - #{$card-border-width}) !default;
+$card-cap-bg:                       rgba($black, .03) !default;
+$card-cap-color:                    null !default;
+$card-color:                        null !default;
+$card-bg:                           $white !default;
+
+$card-img-overlay-padding:          1.25rem !default;
+
+$card-group-margin:                 $grid-gutter-width / 2 !default;
+$card-deck-margin:                  $card-group-margin !default;
+
+$card-columns-count:                3 !default;
+$card-columns-gap:                  1.25rem !default;
+$card-columns-margin:               $card-spacer-y !default;
+
+
+// Tooltips
+
+$tooltip-font-size:                 $font-size-sm !default;
+$tooltip-max-width:                 200px !default;
+$tooltip-color:                     $white !default;
+$tooltip-bg:                        $black !default;
+$tooltip-border-radius:             $border-radius !default;
+$tooltip-opacity:                   .9 !default;
+$tooltip-padding-y:                 .25rem !default;
+$tooltip-padding-x:                 .5rem !default;
+$tooltip-margin:                    0 !default;
+
+$tooltip-arrow-width:               .8rem !default;
+$tooltip-arrow-height:              .4rem !default;
+$tooltip-arrow-color:               $tooltip-bg !default;
+
+// Form tooltips must come after regular tooltips
+$form-feedback-tooltip-padding-y:     $tooltip-padding-y !default;
+$form-feedback-tooltip-padding-x:     $tooltip-padding-x !default;
+$form-feedback-tooltip-font-size:     $tooltip-font-size !default;
+$form-feedback-tooltip-line-height:   $line-height-base !default;
+$form-feedback-tooltip-opacity:       $tooltip-opacity !default;
+$form-feedback-tooltip-border-radius: $tooltip-border-radius !default;
+
+
+// Popovers
+
+$popover-font-size:                 $font-size-sm !default;
+$popover-bg:                        $white !default;
+$popover-max-width:                 276px !default;
+$popover-border-width:              $border-width !default;
+$popover-border-color:              rgba($black, .2) !default;
+$popover-border-radius:             $border-radius-lg !default;
+$popover-box-shadow:                0 .25rem .5rem rgba($black, .2) !default;
+
+$popover-header-bg:                 darken($popover-bg, 3%) !default;
+$popover-header-color:              $headings-color !default;
+$popover-header-padding-y:          .5rem !default;
+$popover-header-padding-x:          .75rem !default;
+
+$popover-body-color:                $body-color !default;
+$popover-body-padding-y:            $popover-header-padding-y !default;
+$popover-body-padding-x:            $popover-header-padding-x !default;
+
+$popover-arrow-width:               1rem !default;
+$popover-arrow-height:              .5rem !default;
+$popover-arrow-color:               $popover-bg !default;
+
+$popover-arrow-outer-color:         fade-in($popover-border-color, .05) !default;
+
+
+// Toasts
+
+$toast-max-width:                   350px !default;
+$toast-padding-x:                   .75rem !default;
+$toast-padding-y:                   .25rem !default;
+$toast-font-size:                   .875rem !default;
+$toast-color:                       null !default;
+$toast-background-color:            rgba($white, .85) !default;
+$toast-border-width:                1px !default;
+$toast-border-color:                rgba(0, 0, 0, .1) !default;
+$toast-border-radius:               .25rem !default;
+$toast-box-shadow:                  0 .25rem .75rem rgba($black, .1) !default;
+
+$toast-header-color:                $gray-600 !default;
+$toast-header-background-color:     rgba($white, .85) !default;
+$toast-header-border-color:         rgba(0, 0, 0, .05) !default;
+
+
+// Badges
+
+$badge-font-size:                   75% !default;
+$badge-font-weight:                 $font-weight-bold !default;
+$badge-padding-y:                   .25em !default;
+$badge-padding-x:                   .4em !default;
+$badge-border-radius:               $border-radius !default;
+
+$badge-transition:                  $btn-transition !default;
+$badge-focus-width:                 $input-btn-focus-width !default;
+
+$badge-pill-padding-x:              .6em !default;
+// Use a higher than normal value to ensure completely rounded edges when
+// customizing padding or font-size on labels.
+$badge-pill-border-radius:          10rem !default;
+
+
+// Modals
+
+// Padding applied to the modal body
+$modal-inner-padding:               1rem !default;
+
+$modal-dialog-margin:               .5rem !default;
+$modal-dialog-margin-y-sm-up:       1.75rem !default;
+
+$modal-title-line-height:           $line-height-base !default;
+
+$modal-content-color:               null !default;
+$modal-content-bg:                  $white !default;
+$modal-content-border-color:        rgba($black, .2) !default;
+$modal-content-border-width:        $border-width !default;
+$modal-content-border-radius:       $border-radius-lg !default;
+$modal-content-box-shadow-xs:       0 .25rem .5rem rgba($black, .5) !default;
+$modal-content-box-shadow-sm-up:    0 .5rem 1rem rgba($black, .5) !default;
+
+$modal-backdrop-bg:                 $black !default;
+$modal-backdrop-opacity:            .5 !default;
+$modal-header-border-color:         $border-color !default;
+$modal-footer-border-color:         $modal-header-border-color !default;
+$modal-header-border-width:         $modal-content-border-width !default;
+$modal-footer-border-width:         $modal-header-border-width !default;
+$modal-header-padding-y:            1rem !default;
+$modal-header-padding-x:            1rem !default;
+$modal-header-padding:              $modal-header-padding-y $modal-header-padding-x !default; // Keep this for backwards compatibility
+
+$modal-xl:                          1140px !default;
+$modal-lg:                          800px !default;
+$modal-md:                          500px !default;
+$modal-sm:                          300px !default;
+
+$modal-fade-transform:              translate(0, -50px) !default;
+$modal-show-transform:              none !default;
+$modal-transition:                  transform .3s ease-out !default;
+
+
+// Alerts
+//
+// Define alert colors, border radius, and padding.
+
+$alert-padding-y:                   .75rem !default;
+$alert-padding-x:                   1.25rem !default;
+$alert-margin-bottom:               1rem !default;
+$alert-border-radius:               $border-radius !default;
+$alert-link-font-weight:            $font-weight-bold !default;
+$alert-border-width:                $border-width !default;
+
+$alert-bg-level:                    -10 !default;
+$alert-border-level:                -9 !default;
+$alert-color-level:                 6 !default;
+
+
+// Progress bars
+
+$progress-height:                   1rem !default;
+$progress-font-size:                $font-size-base * .75 !default;
+$progress-bg:                       $gray-200 !default;
+$progress-border-radius:            $border-radius !default;
+$progress-box-shadow:               inset 0 .1rem .1rem rgba($black, .1) !default;
+$progress-bar-color:                $white !default;
+$progress-bar-bg:                   theme-color("primary") !default;
+$progress-bar-animation-timing:     1s linear infinite !default;
+$progress-bar-transition:           width .6s ease !default;
+
+
+// List group
+
+$list-group-color:                  null !default;
+$list-group-bg:                     $white !default;
+$list-group-border-color:           rgba($black, .125) !default;
+$list-group-border-width:           $border-width !default;
+$list-group-border-radius:          $border-radius !default;
+
+$list-group-item-padding-y:         .75rem !default;
+$list-group-item-padding-x:         1.25rem !default;
+
+$list-group-hover-bg:               $gray-100 !default;
+$list-group-active-color:           $component-active-color !default;
+$list-group-active-bg:              $component-active-bg !default;
+$list-group-active-border-color:    $list-group-active-bg !default;
+
+$list-group-disabled-color:         $gray-600 !default;
+$list-group-disabled-bg:            $list-group-bg !default;
+
+$list-group-action-color:           $gray-700 !default;
+$list-group-action-hover-color:     $list-group-action-color !default;
+
+$list-group-action-active-color:    $body-color !default;
+$list-group-action-active-bg:       $gray-200 !default;
+
+
+// Image thumbnails
+
+$thumbnail-padding:                 .25rem !default;
+$thumbnail-bg:                      $body-bg !default;
+$thumbnail-border-width:            $border-width !default;
+$thumbnail-border-color:            $gray-300 !default;
+$thumbnail-border-radius:           $border-radius !default;
+$thumbnail-box-shadow:              0 1px 2px rgba($black, .075) !default;
+
+
+// Figures
+
+$figure-caption-font-size:          90% !default;
+$figure-caption-color:              $gray-600 !default;
+
+
+// Breadcrumbs
+
+$breadcrumb-padding-y:              .75rem !default;
+$breadcrumb-padding-x:              1rem !default;
+$breadcrumb-item-padding:           .5rem !default;
+
+$breadcrumb-margin-bottom:          1rem !default;
+
+$breadcrumb-bg:                     $gray-200 !default;
+$breadcrumb-divider-color:          $gray-600 !default;
+$breadcrumb-active-color:           $gray-600 !default;
+$breadcrumb-divider:                quote("/") !default;
+
+$breadcrumb-border-radius:          $border-radius !default;
+
+
+// Carousel
+
+$carousel-control-color:             $white !default;
+$carousel-control-width:             15% !default;
+$carousel-control-opacity:           .5 !default;
+$carousel-control-hover-opacity:     .9 !default;
+$carousel-control-transition:        opacity .15s ease !default;
+
+$carousel-indicator-width:           30px !default;
+$carousel-indicator-height:          3px !default;
+$carousel-indicator-hit-area-height: 10px !default;
+$carousel-indicator-spacer:          3px !default;
+$carousel-indicator-active-bg:       $white !default;
+$carousel-indicator-transition:      opacity .6s ease !default;
+
+$carousel-caption-width:             70% !default;
+$carousel-caption-color:             $white !default;
+
+$carousel-control-icon-width:        20px !default;
+
+$carousel-control-prev-icon-bg:      str-replace(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='#{$carousel-control-color}' viewBox='0 0 8 8'%3e%3cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3e%3c/svg%3e"), "#", "%23") !default;
+$carousel-control-next-icon-bg:      str-replace(url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='#{$carousel-control-color}' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3e%3c/svg%3e"), "#", "%23") !default;
+
+$carousel-transition-duration:       .6s !default;
+$carousel-transition:                transform $carousel-transition-duration ease-in-out !default; // Define transform transition first if using multiple transitions (e.g., `transform 2s ease, opacity .5s ease-out`)
+
+
+// Spinners
+
+$spinner-width:         2rem !default;
+$spinner-height:        $spinner-width !default;
+$spinner-border-width:  .25em !default;
+
+$spinner-width-sm:        1rem !default;
+$spinner-height-sm:       $spinner-width-sm !default;
+$spinner-border-width-sm: .2em !default;
+
+
+// Close
+
+$close-font-size:                   $font-size-base * 1.5 !default;
+$close-font-weight:                 $font-weight-bold !default;
+$close-color:                       $black !default;
+$close-text-shadow:                 0 1px 0 $white !default;
+
+
+// Code
+
+$code-font-size:                    87.5% !default;
+$code-color:                        $pink !default;
+
+$kbd-padding-y:                     .2rem !default;
+$kbd-padding-x:                     .4rem !default;
+$kbd-font-size:                     $code-font-size !default;
+$kbd-color:                         $white !default;
+$kbd-bg:                            $gray-900 !default;
+
+$pre-color:                         $gray-900 !default;
+$pre-scrollable-max-height:         340px !default;
+
+
+// Utilities
+
+$displays: none, inline, inline-block, block, table, table-row, table-cell, flex, inline-flex !default;
+$overflows: auto, hidden !default;
+$positions: static, relative, absolute, fixed, sticky !default;
+
+
+// Printing
+
+$print-page-size:                   a3 !default;
+$print-body-min-width:              map-get($grid-breakpoints, "lg") !default;
+
+/*! 0626d5c0-12b2-4493-b577-926889b91ac3 */
+$bs-datetimepicker-timepicker-font-size: 1.2em !default;
+$bs-datetimepicker-active-bg: $blue !default;
+$bs-datetimepicker-active-color: $white !default;
+$bs-datetimepicker-border-radius: $border-radius !default;
+$bs-datetimepicker-btn-hover-bg: $gray-200 !default;
+$bs-datetimepicker-disabled-color: $gray-600 !default;
+$bs-datetimepicker-alternate-color: $gray-600 !default;
+$bs-datetimepicker-secondary-border-color: #ccc !default;
+$bs-datetimepicker-secondary-border-color-rgba: rgba(0, 0, 0, 0.2) !default;
+$bs-datetimepicker-primary-border-color: white !default;
+$bs-datetimepicker-text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25) !default;
+
+.bootstrap-datetimepicker-widget {
+    list-style: none;
+
+    &.dropdown-menu {
+        display: block;
+        margin: 2px 0;
+        padding: 4px;
+        width: 14rem;
+
+        &.timepicker-sbs {
+            @media (min-width: map-get($grid-breakpoints, 'sm')) {
+                width: 38em;
+            }
+
+            @media (min-width: map-get($grid-breakpoints, 'md')) {
+                width: 38em;
+            }
+
+            @media (min-width: map-get($grid-breakpoints, 'lg')) {
+                width: 38em;
+            }
+        }
+
+        &:before, &:after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+        }
+
+        &.bottom {
+            &:before {
+                border-left: 7px solid transparent;
+                border-right: 7px solid transparent;
+                border-bottom: 7px solid $bs-datetimepicker-secondary-border-color;
+                border-bottom-color: $bs-datetimepicker-secondary-border-color-rgba;
+                top: -7px;
+                left: 7px;
+            }
+
+            &:after {
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-bottom: 6px solid $bs-datetimepicker-primary-border-color;
+                top: -6px;
+                left: 8px;
+            }
+        }
+
+        &.top {
+            &:before {
+                border-left: 7px solid transparent;
+                border-right: 7px solid transparent;
+                border-top: 7px solid $bs-datetimepicker-secondary-border-color;
+                border-top-color: $bs-datetimepicker-secondary-border-color-rgba;
+                bottom: -7px;
+                left: 6px;
+            }
+
+            &:after {
+                border-left: 6px solid transparent;
+                border-right: 6px solid transparent;
+                border-top: 6px solid $bs-datetimepicker-primary-border-color;
+                bottom: -6px;
+                left: 7px;
+            }
+        }
+
+        &.float-right {
+            &:before {
+                left: auto;
+                right: 6px;
+            }
+
+            &:after {
+                left: auto;
+                right: 7px;
+            }
+        }
+
+        &.wider {
+            width: 16rem;
+        }
+    }
+
+    .list-unstyled {
+        margin: 0;
+    }
+
+    a[data-action] {
+        padding: 6px 0;
+    }
+
+    a[data-action]:active {
+        box-shadow: none;
+    }
+
+    .timepicker-hour, .timepicker-minute, .timepicker-second {
+        width: 54px;
+        font-weight: bold;
+        font-size: $bs-datetimepicker-timepicker-font-size;
+        margin: 0;
+    }
+
+    button[data-action] {
+        padding: 6px;
+    }
+
+    .btn[data-action="incrementHours"]::after {
+        @extend .sr-only;
+        content: "Increment Hours";
+    }
+
+    .btn[data-action="incrementMinutes"]::after {
+        @extend .sr-only;
+        content: "Increment Minutes";
+    }
+
+    .btn[data-action="decrementHours"]::after {
+        @extend .sr-only;
+        content: "Decrement Hours";
+    }
+
+    .btn[data-action="decrementMinutes"]::after {
+        @extend .sr-only;
+        content: "Decrement Minutes";
+    }
+
+    .btn[data-action="showHours"]::after {
+        @extend .sr-only;
+        content: "Show Hours";
+    }
+
+    .btn[data-action="showMinutes"]::after {
+        @extend .sr-only;
+        content: "Show Minutes";
+    }
+
+    .btn[data-action="togglePeriod"]::after {
+        @extend .sr-only;
+        content: "Toggle AM/PM";
+    }
+
+    .btn[data-action="clear"]::after {
+        @extend .sr-only;
+        content: "Clear the picker";
+    }
+
+    .btn[data-action="today"]::after {
+        @extend .sr-only;
+        content: "Set the date to today";
+    }
+
+    .picker-switch {
+        text-align: center;
+
+        &::after {
+            @extend .sr-only;
+            content: "Toggle Date and Time Screens";
+        }
+
+        td {
+            padding: 0;
+            margin: 0;
+            height: auto;
+            width: auto;
+            line-height: inherit;
+
+            span {
+                line-height: 2.5;
+                height: 2.5em;
+                width: 100%;
+            }
+        }
+    }
+
+    table {
+        width: 100%;
+        margin: 0;
+
+
+        & td,
+        & th {
+            text-align: center;
+            border-radius: $bs-datetimepicker-border-radius;
+        }
+
+        & th {
+            height: 20px;
+            line-height: 20px;
+            width: 20px;
+
+            &.picker-switch {
+                width: 145px;
+            }
+
+            &.disabled,
+            &.disabled:hover {
+                background: none;
+                color: $bs-datetimepicker-disabled-color;
+                cursor: not-allowed;
+            }
+
+            &.prev::after {
+                @extend .sr-only;
+                content: "Previous Month";
+            }
+
+            &.next::after {
+                @extend .sr-only;
+                content: "Next Month";
+            }
+        }
+
+        & thead tr:first-child th {
+            cursor: pointer;
+
+            &:hover {
+                background: $bs-datetimepicker-btn-hover-bg;
+            }
+        }
+
+        & td {
+            height: 54px;
+            line-height: 54px;
+            width: 54px;
+
+            &.cw {
+                font-size: .8em;
+                height: 20px;
+                line-height: 20px;
+                color: $bs-datetimepicker-alternate-color;
+            }
+
+            &.day {
+                height: 20px;
+                line-height: 20px;
+                width: 20px;
+            }
+
+            &.day:hover,
+            &.hour:hover,
+            &.minute:hover,
+            &.second:hover {
+                background: $bs-datetimepicker-btn-hover-bg;
+                cursor: pointer;
+            }
+
+            &.old,
+            &.new {
+                color: $bs-datetimepicker-alternate-color;
+            }
+
+            &.today {
+                position: relative;
+
+                &:before {
+                    content: '';
+                    display: inline-block;
+                    border: solid transparent;
+                    border-width: 0 0 7px 7px;
+                    border-bottom-color: $bs-datetimepicker-active-bg;
+                    border-top-color: $bs-datetimepicker-secondary-border-color-rgba;
+                    position: absolute;
+                    bottom: 4px;
+                    right: 4px;
+                }
+            }
+
+            &.active,
+            &.active:hover {
+                background-color: $bs-datetimepicker-active-bg;
+                color: $bs-datetimepicker-active-color;
+                text-shadow: $bs-datetimepicker-text-shadow;
+            }
+
+            &.active.today:before {
+                border-bottom-color: #fff;
+            }
+
+            &.disabled,
+            &.disabled:hover {
+                background: none;
+                color: $bs-datetimepicker-disabled-color;
+                cursor: not-allowed;
+            }
+
+            span {
+                display: inline-block;
+                width: 54px;
+                height: 54px;
+                line-height: 54px;
+                margin: 2px 1.5px;
+                cursor: pointer;
+                border-radius: $bs-datetimepicker-border-radius;
+
+                &:hover {
+                    background: $bs-datetimepicker-btn-hover-bg;
+                }
+
+                &.active {
+                    background-color: $bs-datetimepicker-active-bg;
+                    color: $bs-datetimepicker-active-color;
+                    text-shadow: $bs-datetimepicker-text-shadow;
+                }
+
+                &.old {
+                    color: $bs-datetimepicker-alternate-color;
+                }
+
+                &.disabled,
+                &.disabled:hover {
+                    background: none;
+                    color: $bs-datetimepicker-disabled-color;
+                    cursor: not-allowed;
+                }
+            }
+        }
+    }
+
+    &.usetwentyfour {
+        td.hour {
+            height: 27px;
+            line-height: 27px;
+        }
+    }
+}
+
+.input-group [data-toggle="datetimepicker"] {
+    cursor: pointer;
+}
+
+/*! 9fb69de9-51a8-4311-aa45-91f7f3d3d3e7 */
+/************** DEFINITION of ANIMATIONS **************/
+// 'marked' effects
+@keyframes markAnim {
+    0% {
+        opacity: 0;
+        transform: scaleX(0.50) scaleY(0.50);
+    }
+    30% {
+        opacity: 1;
+        transform: scaleX(1.00) scaleY(1.00);
+    }
+    100% {
+        opacity: 0;
+        transform: scaleX(1.00) scaleY(1.00);
+    }
+}
+
+@-moz-keyframes markAnim {
+    0% {
+        opacity: 0;
+        -moz-transform: scaleX(0.50) scaleY(0.50);
+    }
+    30% {
+        opacity: 1;
+        -moz-transform: scaleX(1.00) scaleY(1.00);
+    }
+    100% {
+        opacity: 0;
+        -moz-transform: scaleX(1.00) scaleY(1.00);
+    }
+}
+
+@-webkit-keyframes markAnim {
+    0% {
+        opacity: 0;
+        -webkit-transform: scaleX(0.50) scaleY(0.50);
+    }
+    30% {
+        opacity: 1;
+        -webkit-transform: scaleX(1.00) scaleY(1.00);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: scaleX(1.00) scaleY(1.00);
+    }
+}
+
+@-o-keyframes markAnim {
+    0% {
+        opacity: 0;
+        -o-transform: scaleX(0.50) scaleY(0.50);
+    }
+    30% {
+        opacity: 1;
+        -o-transform: scaleX(1.00) scaleY(1.00);
+    }
+    100% {
+        opacity: 0;
+        -o-transform: scaleX(1.00) scaleY(1.00);
+    }
+}
+
+@-ms-keyframes markAnim {
+    0% {
+        opacity: 0;
+        -ms-transform: scaleX(0.50) scaleY(0.50);
+    }
+    30% {
+        opacity: 1;
+        -ms-transform: scaleX(1.00) scaleY(1.00);
+    }
+    100% {
+        opacity: 0;
+        -ms-transform: scaleX(1.00) scaleY(1.00);
+    }
+}
+
+// 'bounce' effect
+@-webkit-keyframes bounceIn {
+  0%, 20%, 40%, 60%, 80%, 100% {
+    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  }
+
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(.3, .3, .3);
+            transform: scale3d(.3, .3, .3);
+  }
+  20% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+            transform: scale3d(1.1, 1.1, 1.1);
+  }
+  40% {
+    -webkit-transform: scale3d(.9, .9, .9);
+            transform: scale3d(.9, .9, .9);
+  }
+  60% {
+    opacity: 1;
+    -webkit-transform: scale3d(1.03, 1.03, 1.03);
+            transform: scale3d(1.03, 1.03, 1.03);
+  }
+  80% {
+    -webkit-transform: scale3d(.97, .97, .97);
+            transform: scale3d(.97, .97, .97);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+}
+
+@keyframes bounceIn {
+  0%, 20%, 40%, 60%, 80%, 100% {
+    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+            transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+  }
+  0% {
+    opacity: 0;
+    -webkit-transform: scale3d(.3, .3, .3);
+            transform: scale3d(.3, .3, .3);
+  }
+  20% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1);
+            transform: scale3d(1.1, 1.1, 1.1);
+  }
+  40% {
+    -webkit-transform: scale3d(.9, .9, .9);
+            transform: scale3d(.9, .9, .9);
+  }
+  60% {
+    opacity: 1;
+    -webkit-transform: scale3d(1.03, 1.03, 1.03);
+            transform: scale3d(1.03, 1.03, 1.03);
+  }
+  80% {
+    -webkit-transform: scale3d(.97, .97, .97);
+            transform: scale3d(.97, .97, .97);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: scale3d(1, 1, 1);
+            transform: scale3d(1, 1, 1);
+  }
+}
+
+/*! 775f7eb7-6a92-449f-aaea-53d8140e1a85 */
+.o_has_banner {
+    .o_view_nocontent {
+        top: 30%;
+        @include media-breakpoint-down(sm) {
+            position: relative;
+            margin: auto;
+        }
+    }
+}
+
+/*! 9c2486c9-3fc7-4f87-bafb-48cb009b25e6 */
+//------------------------------------------------------------------------------
+// Bootstrap Mixins and Functions Extensions
+// Those will affect the way bootstrap is generated wherever bootstrap is used
+//------------------------------------------------------------------------------
+
+// This variable must be defined here instead of bootstrap overridden files
+// otherwise we will have deprecation messages for assets_common generation
+$enable-deprecation-messages: false !default;
+
+// Override color-yiq function to handle the alpha component of colors and
+// automatic threshold
+@function color-yiq($color, $dark: $yiq-text-dark, $light: $yiq-text-light, $background: $body-bg, $cross-mix: true) {
+    $threshold: if($yiq-contrasted-threshold != false, $yiq-contrasted-threshold / 255 * 100%, false);
+    @return o-get-most-contrast($color, $light, $dark, $background, $threshold, $cross-mix);
+}
+
+@function mute-color($color) {
+    @return scale-color($color, $alpha: -30%);
+}
+
+// This placeholder regroups the rules that will apply on all elements with a
+// bg-* class (see o-bg-color, bg-variant). The optimized-css way would be to
+// have a common class for them all.
+%o-bg-color-component-color-reset {
+    h1, h2, h3, h4, h5, h6 {
+        color: inherit;
+    }
+}
+
+$o-yiq-min-opacity-threshold: 0.3 !default;
+$o-color-extras-nesting-selector: '&' !default;
+
+@mixin o-bg-color($color, $text-color: null, $with-extras: true, $important: true, $yiq-min-opacity-threshold: $o-yiq-min-opacity-threshold, $background: $body-bg, $nesting-selector: $o-color-extras-nesting-selector) {
+    @if ($color) {
+        $-yiq-threshold-met: alpha($color) > $yiq-min-opacity-threshold;
+
+        $-yiq-color: if($text-color, $text-color, if($-yiq-threshold-met, color-yiq($color, $background: $background), null));
+        background-color: $color#{if($important, ' !important', '')};
+        color: $-yiq-color; // not important so that text utilities still work
+
+        @if $with-extras and $-yiq-threshold-met {
+            #{$nesting-selector} {
+                @extend %o-bg-color-component-color-reset;
+
+                .text-muted {
+                    // Always important since the basic BS rule is important
+                    color: mute-color($-yiq-color) !important;
+                }
+            }
+        }
+    }
+}
+
+// Override background utilities so that they come with a default contrasted
+// color (especially useful in the frontend editor for example). Also modifies
+// the way .text-muted elements are rendered in those environments.
+@mixin bg-variant($parent, $color, $text-color: null) {
+    #{$parent} {
+        @include o-bg-color($color, $text-color);
+    }
+    a#{$parent},
+    button#{$parent} {
+        @include hover-focus {
+            @include o-bg-color(darken($color, 10%), $text-color, false);
+        }
+    }
+}
+@mixin bg-gradient-variant($parent, $color, $text-color: null) {
+    #{$parent} {
+        @include o-bg-color($color, $text-color);
+        background-image: linear-gradient(180deg, mix($body-bg, $color, 15%), $color) !important;
+        background-repeat: repeat-x !important;
+    }
+}
+
+/*! 78ff258d-359a-4e33-ae8b-712bd5112200 */
+.o_field_color_picker {
+    display: flex;
+    float: right;
+    margin-right: 7px;
+    width: 100%;
+    ul {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        @include o-kanban-colorpicker;
+        @include o-kanban-record-color;
+        width: 100%;
+        max-width: unset;
+        margin: 0;
+        padding: 0;
+        > li {
+            border: 2px solid white;
+            box-shadow: 0 0 0 1px gray('300');
+            margin: $o-kanban-inner-hmargin 4px 0 0;
+            > a:focus {
+                outline: none;
+            }
+        }
+    }
+}
+
+.o_field_color_picker_preview {
+    @include o-kanban-record-color;
+    margin-right: 7px;
+    > li {
+        display: inline-block;
+        margin: $o-kanban-inner-hmargin $o-kanban-inner-hmargin 0 0;
+        border: 1px solid white;
+        box-shadow: 0 0 0 1px gray('300');
+
+        > a {
+            display: block;
+
+            &::after {
+                content: "";
+                display: block;
+                width: 20px;
+                height: 15px;
+            }
+        }
+
+        // No Color
+        a.oe_kanban_color_0 {
+            position: relative;
+            &::before {
+                content: "";
+                @include o-position-absolute(-2px, $left: 10px);
+                display: block;
+                width: 1px;
+                height: 20px;
+                transform: rotate(45deg);
+                background-color: red;
+            }
+            &::after {
+                background-color: white;
+            }
+        }
+    }
+}
+
+/*! 9ca90226-261d-4a0e-91d0-29d34147f36a */
+// COLOR PICKER
+.o_colorpicker_widget {
+    .o_color_pick_area {
+        height: 125px;
+        background-image: linear-gradient(to bottom, hsl(0, 0%, 100%) 0%, hsla(0, 0%, 100%, 0) 50%, hsla(0, 0%, 0%, 0) 50%, hsl(0, 0%, 0%) 100%),
+                          linear-gradient(to right, hsl(0, 0%, 50%) 0%, hsla(0, 0%, 50%, 0) 100%);
+        cursor: crosshair;
+    }
+    .o_color_slider {
+        background: linear-gradient(#F00 0%, #FF0 16.66%, #0F0 33.33%, #0FF 50%, #00F 66.66%, #F0F 83.33%, #F00 100%);
+    }
+    .o_opacity_slider, .o_color_preview {
+        @extend %o-preview-alpha-background;
+    }
+    .o_color_slider, .o_opacity_slider {
+        width: 4%;
+        margin-right: 2%;
+        cursor: pointer;
+    }
+    .o_slider_pointer, .o_opacity_pointer {
+        @include o-position-absolute($left: -50%);
+        width: 200%;
+        height: 8px;
+        margin-top: -2px;
+    }
+    .o_slider_pointer, .o_opacity_pointer, .o_picker_pointer, .o_color_preview {
+        box-shadow: inset 0 0 0 1px rgba(white, 0.9);
+        border: 1px solid black;
+    }
+    .o_color_picker_inputs {
+        font-size: 10px;
+
+        input {
+            font-family: monospace !important; // FIXME: the monospace font used in the editor has not consistent ch units on Firefox
+            height: 18px;
+            font-size: 11px;
+        }
+        .o_hex_div input {
+            width: 7ch;
+        }
+        .o_rgba_div input {
+            margin-right: 3px;
+            width: 3ch;
+        }
+    }
+}
+
+/*! e13240d0-07cf-42d7-a603-e0be4740bb9f */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+.o_datepicker {
+    position: relative;
+
+    .o_datepicker_input {
+        width: 100%;
+        cursor: pointer;
+    }
+
+    .o_datepicker_button {
+        @include o-position-absolute(2px, 4px);
+        pointer-events: none; // let click events go through the underlying input
+        &:after {
+            @include o-caret-down($caret-width: 4px);
+        }
+    }
+
+    .o_datepicker_warning {
+        top: 0;
+        right: 20px;
+    }
+}
+
+
+// The 'div.dropdown-menu' part is needed to override default bootstrap rule as
+// this file is unfortunately placed in common assets.
+div.dropdown-menu.bootstrap-datetimepicker-widget {
+    min-width: 0;
+    padding: 0;
+    border: 1px solid $dropdown-border-color;
+    overflow: visible; // Needed until dropdown-menu will be 'hoverflow:hidden'
+
+    // Need to put datetimepicker widget above everything else
+    z-index: $zindex-modal + 1;
+
+    // Also fix the dropdown width
+    width: 22rem;
+}
+
+.bootstrap-datetimepicker-widget .datepicker table {
+    th, td {
+        border-radius: 0;
+        border-bottom-width: $border-width;
+        width: percentage(1/8);
+        height: 30px;
+        line-height: 30px;
+        color: gray('900');
+
+        &.prev, &.next, &.old, &.new {
+            @include o-hover-opacity(.5);
+        }
+    }
+
+    thead tr:nth-child(1) th {
+        border-top: 0;
+    }
+
+    thead tr:nth-child(2) th {
+        height: 20px;
+        line-height: 20px;
+    }
+
+    thead tr:nth-child(2) th, td.cw {
+        background-color: gray('100');
+        font-size: $font-size-sm;
+        font-weight: $font-weight-bold;
+        color: $o-main-text-color;
+    }
+
+    td {
+        font-size: ($font-size-base + $font-size-sm) * .5;
+
+        &.today:not(.active):before {
+            border-bottom-color: $o-brand-primary;
+        }
+
+        &.active {
+            border-bottom-color: $bs-datetimepicker-active-color;
+            color: $bs-datetimepicker-active-color;
+        }
+    }
+}
+
+.bootstrap-datetimepicker-widget {
+    .picker-switch {
+        font-size: $font-size-lg;
+    }
+
+    .accordion-toggle {
+        span.fa {
+            margin: 0;
+            border-radius: 0;
+            color: $o-main-text-color;
+            border-top: 1px solid $border-color;
+            box-shadow: 0 1px 0 $border-color; // overlaps with main box border
+
+            &.primary {
+                color: $o-brand-primary;
+            }
+        }
+    }
+}
+
+/*! 3752099d-047b-4567-ac8c-8ae6b4771fd2 */
+// Match DateTimePicker styling
+
+.daterangepicker {
+    font-family: inherit;
+
+    .calendar-table {
+        td, th {
+            border-bottom-color: $table-border-color;
+
+            &, &.start-date.end-date {
+                border-radius: 0;
+            }
+
+            &:not(.active) {
+                color: gray('900');
+            }
+
+            &.prev, &.next, &.off.ends {
+                @include o-hover-opacity(.5);
+            }
+        }
+
+        td {
+            font-size: ($font-size-base + $font-size-sm) * .5;
+
+            &.today {
+                position: relative;
+
+                &:before {
+                    content: '';
+                    display: inline-block;
+                    position: absolute;
+                    bottom: 4px;
+                    right: 4px;
+                    border: solid transparent;
+                    border-width: 0 0 7px 7px;
+                    border-bottom-color: $o-brand-primary;
+                    border-top-color: $dropdown-border-color;
+                }
+            }
+
+            &.in-range {
+                background-color: rgba($o-brand-verp, 0.3);
+                color: $o-main-text-color;
+                text-shadow: none;
+            }
+
+            &.active,
+            &.active:hover {
+                background-color: $o-brand-verp;
+                color: $white;
+                text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        thead tr {
+            &:nth-child(1) th {
+                height: 30px;
+                line-height: 30px;
+
+                &.month {
+                    font-size: $font-size-lg;
+                }
+            }
+            &:nth-child(2) th {
+                background-color: gray('100');
+                font-size: $font-size-sm;
+                font-weight: $font-weight-bold;
+                color: $o-main-text-color;
+            }
+        }
+    }
+
+    .calendar-time{
+        /*rtl:ignore*/
+        direction:ltr;
+        select {
+            &.hourselect, &.minuteselect, &.secondselect, &.ampmselect {
+                display: initial;
+                -webkit-appearance: menulist-button;
+                -moz-appearance: menulist-button;
+                appearance: menulist-button;
+            }
+        }
+    } 
+    .drp-buttons .drp-selected {
+        display: none;
+    }
+
+    @include media-breakpoint-down(sm) {
+        position: fixed;
+        top: auto !important;
+        left: 0 !important;
+        bottom: 0;
+        right: 0 !important;
+        width: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+        @include border-top-radius(1rem);
+        box-shadow: $box-shadow-lg;
+
+        .drp-calendar {
+            max-width: inherit;
+            padding-right: 0 !important;
+            padding-left: 0 !important;
+        }
+
+        .drp-buttons {
+            position: sticky;
+            bottom: 0;
+            background-color: #fff;
+        }
+    }
+}
+
+/*! 0b7b7336-1d67-4f85-8409-38d61fb79c21 */
+// This is rtl language specific fix
+// It will override the font awesome symbols and flip them 180 degree
+.o_rtl {
+    .fa {
+        &.fa-align-right,
+        &.fa-align-left,
+        &.fa-chevron-right,
+        &.fa-chevron-left,
+        &.fa-arrow-right,
+        &.fa-arrow-left,
+        &.fa-hand-o-right,
+        &.fa-hand-o-left,
+        &.fa-arrow-circle-right,
+        &.fa-arrow-circle-left,
+        &.fa-caret-right,
+        &.fa-caret-left,
+        &.fa-rotate-right,
+        &.fa-rotate-left,
+        &.fa-angle-double-right,
+        &.fa-angle-double-left,
+        &.fa-angle-right,
+        &.fa-angle-left,
+        &.fa-quote-right,
+        &.fa-quote-left,
+        &.fa-chevron-circle-right,
+        &.fa-chevron-circle-left,
+        &.fa-long-arrow-right,
+        &.fa-long-arrow-left,
+        &.fa-toggle-right,
+        &.fa-toggle-left,
+        &.fa-caret-square-o-right,
+        &.fa-arrow-circle-o-left,
+        &.fa-arrow-circle-o-right,
+        &.fa-caret-square-o-left {
+            transform: rotate(180deg);
+        }
+    }
+}
+/*! 895e9d70-6675-42fe-9d8f-31c7855c23c7 */
+.o_shortcut_table {
+    border-collapse: separate;
+    border-spacing: 0 1em;
+
+    .o_key {
+        background-color: #F4F7F8;
+        border-radius: 3px;
+        border: 1px solid #B4B4B4;
+        $shadowvalue: 0px 1px 1px rgba(0,0,0,0.2), inset 0px -1px 1px 1px rgba(230,230,230,0.8), inset 0px 2px 0px 0px rgba(255,255,255,0.8);
+        box-shadow: $shadowvalue;
+        display: inline-block;
+        font-family: Consolas,"Liberation Mono",Courier,monospace;
+        font-size: 0.85em;
+        padding: 2px 4px;
+    }
+} 
+
+/*! 0760e778-3ffa-4cad-94ed-899ecd297055 */
+.o_image {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    background-image: url('/web/static/img/mimetypes/unknown.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    &[data-mimetype^='image'] {
+        background-image: url('/web/static/img/mimetypes/image.svg');
+    }
+    &[data-mimetype^='audio'] {
+        background-image: url('/web/static/img/mimetypes/audio.svg');
+    }
+    &[data-mimetype^='text'], &[data-mimetype$='rtf'] {
+        background-image: url('/web/static/img/mimetypes/text.svg');
+    }
+    &[data-mimetype*='octet-stream'], &[data-mimetype*='download'], &[data-mimetype*='javascript'] {
+        background-image: url('/web/static/img/mimetypes/binary.svg');
+    }
+    &[data-mimetype^='video'], &[title$='.mp4'], &[title$='.avi'] {
+        background-image: url('/web/static/img/mimetypes/video.svg');
+    }
+    &[data-mimetype$='archive'], &[data-mimetype$='compressed'], &[data-mimetype*='zip'], &[data-mimetype$='tar'], &[data-mimetype*='package'] {
+        background-image: url('/web/static/img/mimetypes/archive.svg');
+    }
+    &[data-mimetype='application/pdf'] {
+        background-image: url('/web/static/img/mimetypes/pdf.svg');
+    }
+    &[data-mimetype^='text-master'], &[data-mimetype*='document'], &[data-mimetype*='msword'], &[data-mimetype*='wordprocessing'] {
+        background-image: url('/web/static/img/mimetypes/document.svg');
+    }
+    &[data-mimetype*='application/xml'], &[data-mimetype$='html'] {
+        background-image: url('/web/static/img/mimetypes/web_code.svg');
+    }
+    &[data-mimetype$='css'], &[data-mimetype$='less'], &[data-ext$='less'] {
+        background-image: url('/web/static/img/mimetypes/web_style.svg');
+    }
+    &[data-mimetype*='-image'], &[data-mimetype*='diskimage'], &[data-ext$='dmg'] {
+        background-image: url('/web/static/img/mimetypes/disk.svg');
+    }
+    &[data-mimetype$='csv'], &[data-mimetype*='vc'], &[data-mimetype*='excel'], &[data-mimetype$='numbers'], &[data-mimetype$='calc'], &[data-mimetype*='mods'], &[data-mimetype*='spreadsheet'] {
+        background-image: url('/web/static/img/mimetypes/spreadsheet.svg');
+    }
+    &[data-mimetype^='key'] {
+        background-image: url('/web/static/img/mimetypes/certificate.svg');
+    }
+    &[data-mimetype*='presentation'], &[data-mimetype*='keynote'], &[data-mimetype*='teacher'], &[data-mimetype*='slideshow'], &[data-mimetype*='powerpoint'] {
+        background-image: url('/web/static/img/mimetypes/presentation.svg');
+    }
+    &[data-mimetype*='cert'], &[data-mimetype*='rules'], &[data-mimetype*='pkcs'], &[data-mimetype$='stl'], &[data-mimetype$='crl'] {
+        background-image: url('/web/static/img/mimetypes/certificate.svg');
+    }
+    &[data-mimetype*='-font'], &[data-mimetype*='font-'], &[data-ext$='ttf'] {
+        background-image: url('/web/static/img/mimetypes/font.svg');
+    }
+    &[data-mimetype*='-dvi'] {
+        background-image: url('/web/static/img/mimetypes/print.svg');
+    }
+    &[data-mimetype*='script'], &[data-mimetype*='x-sh'], &[data-ext*='bat'], &[data-mimetype$='bat'], &[data-mimetype$='cgi'], &[data-mimetype$='-c'], &[data-mimetype*='java'], &[data-mimetype*='ruby'] {
+        background-image: url('/web/static/img/mimetypes/script.svg');
+    }
+    &[data-mimetype*='javascript'] {
+        background-image: url('/web/static/img/mimetypes/javascript.svg');
+    }
+    &[data-mimetype*='calendar'], &[data-mimetype$='ldif'] {
+        background-image: url('/web/static/img/mimetypes/calendar.svg');
+    }
+    &[data-mimetype$='postscript'], &[data-mimetype$='cdr'], &[data-mimetype$='xara'], &[data-mimetype$='cgm'], &[data-mimetype$='graphics'], &[data-mimetype$='draw'], &[data-mimetype*='svg'] {
+        background-image: url('/web/static/img/mimetypes/vector.svg');
+    }
+}
+
+/*! 587733ca-a533-49c9-a88a-6632b9d70eb5 */
+.modal.o_technical_modal {
+
+    .modal-content {
+        border-radius: 0;
+
+        .modal-header .o_subtitle {
+            margin-left: 10px;
+        }
+
+        .modal-header .modal-title {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .modal-body {
+            &.o_actwindow {
+                padding: 0;
+            }
+
+            .o_modal_header {
+                @include o-webclient-padding($top: 10px, $bottom: 10px);
+                @include clearfix;
+
+                .o_search_options {
+                    display: inline-block;
+                }
+                .o_pager {
+                    float: right;
+                }
+            }
+
+            > :not(.o_view_sample_data) .o_view_nocontent {
+                position: unset;
+            }
+
+            .o_modal_changes td {
+                &:first-child {
+                    padding-right: 10px;
+                    vertical-align: top;
+                    white-space: nowrap;
+                }
+                &:not(:first-child) {
+                    width: 100%;
+                }
+            }
+        }
+
+        .modal-footer {
+            flex-wrap: wrap;
+            text-align: left;
+            justify-content: flex-start;
+
+            // TODO These rules should not be necessary if we used buttons
+            // as direct children of the modal-footer as normally required
+            > div, > footer {
+                flex: 1 1 auto;
+            }
+
+            footer {
+                > :not(:first-child) { margin-left: .25rem; }
+                > :not(:last-child) { margin-right: .25rem; }
+                button {
+                    margin-bottom: .5rem;
+                }
+            }
+        }
+    }
+
+    @include media-breakpoint-up(sm) {
+        .modal-dialog .modal-content .modal-body.o_dialog_error {
+            overflow: visible;
+            display: flex;
+            flex-flow: column nowrap;
+
+            > .alert, > button {
+                flex: 0 0 auto;
+            }
+
+            > .o_error_detail {
+                flex: 1 1 auto;
+                min-height: 0;
+                overflow: auto;
+            }
+        }
+    }
+
+    @include media-breakpoint-down(xs) {
+        &.o_modal_full {
+            .modal-dialog {
+                margin: 0px;
+                height: 100%;
+
+                .modal-content {
+                    height: 100%;
+                    border: none;
+
+                    .modal-header {
+                        background: $o-brand-verp;
+                        .modal-title, .o_subtitle, button.close {
+                            color: white;
+                        }
+                    }
+
+                    .modal-body {
+                        height: 100%;
+                        overflow-y: auto;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.modal.o_inactive_modal {
+    z-index: $zindex-modal-backdrop - 1;
+}
+
+.o_dialog {
+
+    > .modal {
+        display: block;
+    }
+}
+
+// Temporary fix for modals which are not instantiated thanks to the Dialog
+// JS classes (deprecated case) (see bootstrap_overridden.scss) + Frontend.
+//
+// TODO the following code was disabled because it is saas-incompatible
+//
+// :not(body) > .modal {
+//     z-index: $zindex-modal-background + 1;
+// }
+
+/*! 0902e16a-eafc-4b1a-9594-0a9d66a53e29 */
+.o_web_sign_name_and_signature {
+    // for the absolute of the font selection to work
+    position: relative;
+}
+
+/* Signature Dialog */
+// The .card selector is important to make sure the position absolute will take
+// priority over the position relative of the card.
+.card.o_web_sign_auto_font_selection {
+    @include o-position-absolute(0, 0);
+
+    .o_web_sign_auto_font_list {
+        overflow: auto;
+
+        > a {
+            height: 100px;
+
+            > img {
+                height: 100%;
+            }
+        }
+    }
+}
+
+.o-field-widget {
+    .o_signature {
+        outline: 1px solid rgba(theme-color('secondary'), 0.3);
+        position: relative;
+        &.o_signature_empty {
+            display: flex;
+        }
+        > p {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    }
+}
+
+.o_field_invalid {
+    .o_signature {
+        outline: 3px solid theme-color('danger');
+        cursor: pointer;
+    }
+}
+.o-form-editable {
+    .o_signature:hover {
+        outline: 3px solid $o-enterprise-primary-color;
+        cursor: pointer;
+    }
+}
+
+.o_signature_stroke {
+    position: absolute;
+    border-top: #D1D0CE solid 2px;
+    bottom: 16%;
+    width: 72%;
+    left: 14%;
+}
+
+/*! a0f5b101-5d61-48ed-97ee-a00e081c6f25 */
+
+// This file is included in both backend and frontend bundles.
+// Bundle-specific rules can be found in 'webclient/navbar.scss' (backend) and
+// 'website.ui.scss' (frontend).
+
+// = Main Navbar
+// ============================================================================
+.o_main_navbar {
+  background-color: $o-brand-verp;
+  border-bottom: 1px solid $o-navbar-inverse-link-hover-bg;
+  display: grid;
+  height: $o-navbar-height;
+  gap: 0px 0px;
+  grid-template-areas: "apps brand sections systray";
+  grid-template-columns:
+    minmax($o-navbar-height, max-content)
+    max-content
+    minmax($o-navbar-height, 1fr)
+    fit-content(100%);
+  grid-template-rows: $o-navbar-height;
+  min-width: min-content;
+
+  // = Scoped Variables
+  //
+  // Variables scoped within the current context that mirror backend's
+  // boostrap values.
+  // --------------------------------------------------------------------------
+  $-backend-font-weight-bold: 500;
+  $-backend-entry-hover-bg: rgba(0, 0, 0, .08);
+  $-backend-h3-font-size: 17px;
+  $-backend-h2-font-size: 20px;
+  $-backend-entry-hpadding: 20px;
+  $-backend-entry-vpadding: 3px;
+
+  // = % PseudoClasses
+  //
+  // Regroup rules shared across different elements
+  // --------------------------------------------------------------------------
+  %-main-navbar-entry-base {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: auto;
+    height: $o-navbar-height;
+    cursor: pointer;
+    user-select: none;
+    background: transparent;
+
+    @include o-hover-text-color(rgba($white, .9), $white);
+  }
+
+  %-main-navbar-entry-padding {
+    padding: 0 $o-horizontal-padding;
+  }
+
+  %-main-navbar-entry-bg-hover {
+    @include hover() {
+      background-color: $-backend-entry-hover-bg;
+    }
+  }
+
+  %-main-navbar-entry-active {
+    @include plain-hover-focus() {
+      background: $-backend-entry-hover-bg;
+      color: $white;
+    }
+  }
+
+  // = Reset browsers defaults
+  // --------------------------------------------------------------------------
+  > ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  // = Owl <Dropdown> components
+  // --------------------------------------------------------------------------
+  &,.o_menu_sections, .o_menu_systray {
+
+    .dropdown .dropdown-toggle {
+      @extend %-main-navbar-entry-base;
+      @extend %-main-navbar-entry-padding;
+      @extend %-main-navbar-entry-bg-hover;
+      border: 0;
+      white-space: nowrap;
+    }
+
+    .dropdown {
+      &.show > .dropdown-toggle {
+        @extend %-main-navbar-entry-active;
+      }
+    }
+
+    .o_nav_entry {
+      @extend %-main-navbar-entry-base;
+      @extend %-main-navbar-entry-padding;
+      @extend %-main-navbar-entry-bg-hover;
+    }
+
+    .dropdown-menu {
+      margin-top: 0;
+      border-top: 0;
+      @include border-top-radius(0);
+    }
+
+    .o_dropdown_menu_group_entry.dropdown-item {
+      padding-left: $o-dropdown-hpadding * 1.5;
+
+      + .dropdown-item:not(.o_dropdown_menu_group_entry) {
+        margin-top: .8em;
+      }
+    }
+  }
+
+  // = Legacy elements adaptations
+  // --------------------------------------------------------------------------
+  > .o_menu_sections, .o_menu_systray {
+    > div > a, > div > label:only-child, .dropdown-toggle, .dropdown-toggle.o-dropdown--narrow {
+      padding: 0 $dropdown-item-padding-x * .5;
+    }
+
+    > div {
+      &, > a {
+        @extend %-main-navbar-entry-base;
+      }
+
+      &.show > a {
+        @extend %-main-navbar-entry-active;
+      }
+
+      > a {
+        @extend %-main-navbar-entry-bg-hover;
+      }
+    }
+  }
+  // = Main Navbar Elements
+  // --------------------------------------------------------------------------
+  .o_menu_toggle, .o_navbar_apps_menu {
+    @extend %-main-navbar-entry-base;
+    font-size: $-backend-h3-font-size;
+    grid-area: apps;
+  }
+
+  .o_menu_toggle { // Enterprise-legacy only
+    @extend %-main-navbar-entry-padding;
+  }
+
+  .o_menu_brand {
+    @extend %-main-navbar-entry-base;
+    @extend %-main-navbar-entry-padding;
+    padding-left: 0;
+    grid-area: brand;
+    font-size: $-backend-h2-font-size;
+    font-weight: $-backend-font-weight-bold;
+
+    @include hover() {
+      background: none;
+    }
+  }
+
+  .o_menu_sections {
+    display: flex;
+    grid-area: sections;
+
+    .o_more_dropdown_section_group {
+      padding: $-backend-entry-vpadding $-backend-entry-hpadding;
+      margin-top: .8em;
+
+      &:first-child {
+        margin-top: $dropdown-padding-y * -1;
+        padding-top: $dropdown-padding-y * 1.5;
+      }
+    }
+  }
+
+  .o_menu_systray {
+    grid-area: systray;
+    display: flex;
+  }
+}
+
+// = SuperUser Design
+// ============================================================================
+body.o_is_superuser .o_menu_systray {
+  position: relative;
+  background: repeating-linear-gradient(135deg, #d9b904, #d9b904 10px, #373435 10px, #373435 20px);
+
+  &:before {
+    content: "";
+    @include o-position-absolute(2px, 2px, 2px, 2px);
+    background-color: $o-brand-verp;
+  }
+}
+
+/*! 4f349517-02f9-48b7-84ca-0e7c3fe13927 */
+@keyframes slide-top {
+    0% {
+        opacity: 0;
+        transform: translateY(-5%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-right {
+    0% {
+        opacity: 0;
+        transform: translateX(5%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-bottom {
+    0% {
+        opacity: 0;
+        transform: translateY(5%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-left {
+    0% {
+        opacity: 0;
+        transform: translateX(-5%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.o-popover {
+    $border-color: gray('300');
+    $bg-color: gray('200');
+    $arrow-pad: 8px;
+    $arrow-size: 8px;
+    $animation-time: 0.2s;
+    max-width: 100vw;
+
+    position: fixed;
+    z-index: 1060;
+    border: 1px solid $border-color;
+    background-color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
+    .-popover_header {
+        background-color: gray('200');
+        font-size: 1.1rem;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid $border-color;
+        &:empty {
+            display: none;
+        }
+    }
+
+    &--top {
+        animation: $animation-time slide-top;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -$arrow-size;
+            border: $arrow-size solid transparent;
+            border-top-color: $bg-color;
+        }
+
+        &::before {
+            margin-top: 1px;
+            border-top-color: $border-color;
+        }
+    }
+
+    &--right {
+        animation: $animation-time slide-right;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 100%;
+            margin-top: -$arrow-size;
+            border: $arrow-size solid transparent;
+            border-right-color: $bg-color;
+        }
+
+        &::before {
+            margin-right: 1px;
+            border-right-color: $border-color;
+        }
+    }
+
+    &--bottom {
+        animation: $animation-time slide-bottom;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -$arrow-size;
+            border: $arrow-size solid transparent;
+            border-bottom-color: $bg-color;
+        }
+
+        &::before {
+            margin-bottom: 1px;
+            border-bottom-color: $border-color;
+        }
+    }
+
+    &--left {
+        animation: $animation-time slide-left;
+
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            margin-top: -$arrow-size;
+            border: $arrow-size solid transparent;
+            border-left-color: $bg-color;
+        }
+
+        &::before {
+            margin-left: 1px;
+            border-left-color: $border-color;
+        }
+    }
+}
+
+/*! 6227c27b-d878-4047-b175-e212443d4362 */
+///
+/// This file regroups the variables that style verp components.
+/// They are available in every asset bundle.
+///
+
+// Font sizes
+$o-root-font-size: 12px !default;
+$o-font-size-base: 13rem * (1px / $o-root-font-size) !default;
+$o-line-height-base: 1.5 !default; // This is BS default
+
+// Colors
+$o-community-color: #71639e !default;
+$o-enterprise-color: #714B67 !default;
+$o-enterprise-primary-color: #017e84 !default;
+
+$o-brand-verp: $o-community-color !default;
+$o-brand-primary: $o-community-color !default;
+
+$o-brand-secondary: #f0eeee !default;
+$o-brand-lightsecondary: #e2e2e0 !default;
+
+// This is BS default
+$o-gray-100: #f8f9fa !default;
+$o-gray-200: #e9ecef !default;
+$o-gray-300: #dee2e6 !default;
+$o-gray-400: #ced4da !default;
+$o-gray-500: #adb5bd !default;
+$o-gray-600: #6c757d !default;
+$o-gray-700: #495057 !default;
+$o-gray-800: #343a40 !default;
+$o-gray-900: #212529 !default;
+
+$o-success: #28a745 !default;
+$o-info: #17a2b8 !default;
+$o-warning: #ffac00 !default;
+$o-danger: #dc3545 !default;
+
+// Fine-tune contextual text colors.
+$o-theme-text-colors: (
+    "success": #008818,
+    "info": #0180a5,
+    "warning": #9a6b01,
+    "danger": #d23f3a,
+)!default;
+
+$o-main-text-color: $o-gray-700 !default;
+$o-main-color-muted: rgba($o-main-text-color, .76) !default;
+$o-main-headings-color: $o-gray-900 !default;
+$o-main-link-color: darken($o-brand-primary, 5%) !default;
+$o-main-favorite-color: #f3cc00 !default;
+$o-main-code-color: #d2317b !default;
+
+$o-view-background-color: white !default;
+$o-shadow-color: #303030 !default;
+
+$o-form-lightsecondary: #ccc !default;
+
+$o-list-footer-bg-color: #eee !default;
+$o-list-footer-font-weight: bold !default;
+
+$o-tooltip-background-color: white !default;
+$o-tooltip-color: #666666 !default;
+$o-tooltip-arrow-color: white !default;
+$o-tooltip-text-color: #777777 !default;
+$o-tooltip-title-text-color: black !default;
+$o-tooltip-title-background-color: #F7F7F7 !default;
+
+// Forms
+
+// o-inputs
+$o-input-padding-y: 2px !default;
+$o-input-padding-x: 4px !default;
+
+$o-input-border-required: $o-brand-primary !default;
+
+// Bootstrap clone, we just change the icon color
+$o-custom-checkbox-indicator-icon-checked-disabled: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'><path fill='#{$o-main-color-muted}' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>") !default;
+
+// Layout
+//
+// Extension of BS4. This is not redefining the BS4 variable directly as we only
+// need the extra ones for media queries (not creating new breakpoint classes).
+// Note: default BS4 values are hardcoded here while it should be possible to
+// merge with the default BS variable (but we would have to take care of
+// ordering & cie).
+$o-extra-grid-breakpoints: (
+    xs: 0,
+    vsm: 475px,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1534px,
+) !default;
+$o-form-group-cols: 12 !default;
+$o-form-spacing-unit: 5px !default;
+$o-horizontal-padding: 16px !default;
+$o-innergroup-rpadding: 45px !default;
+$o-dropdown-hpadding: 20px !default;
+$o-dropdown-vpadding: 3px !default;
+$o-dropdown-box-shadow: 0 1rem 1.1rem rgba(#000, .1) !default;
+
+$o-sheet-vpadding: 24px !default;
+
+$o-statbutton-height: 44px !default;
+$o-statbutton-vpadding: 0px !default;
+$o-statbutton-spacing: 6px !default;
+
+$o-modal-lg: 980px !default;
+$o-modal-md: 650px !default;
+
+// Needed for having no spacing between sheet and mail body in mass_mailing:
+// Different required cancel paddings between web and web_enterprise
+$o-sheet-cancel-tpadding: 0px !default;
+
+$o-avatar-size: 90px !default;
+
+$o-statusbar-height: 33px !default;
+
+$o-label-font-size-factor: 0.8 !default;
+$o-navbar-height: 46px !default;
+
+$o-nb-calendar-colors: 24 !default;
+
+$o-base-settings-mobile-tabs-height: 40px !default;
+$o-base-settings-mobile-tabs-overflow-gap: 3% !default;
+
+$o-cp-breadcrumb-height: 30px !default;
+
+$o-datepicker-week-color: #8f8f8f !default;
+
+$o-card-body-bg-opacity: 0.9 !default;
+
+// Kanban
+
+$o-kanban-default-record-width: 300px !default;
+$o-kanban-small-record-width: 240px !default;
+
+$o-kanban-header-title-height: 50px !default;
+
+$o-kanban-image-width: 64px !default;
+$o-kanban-image-fill-width: 95px !default;
+$o-kanban-inside-vgutter: 8px !default;
+$o-kanban-inside-hgutter: 8px !default;
+$o-kanban-color-border-width: 2px !default;
+$o-kanban-inner-hmargin: 5px !default;
+$o-kanban-progressbar-height: 20px !default;
+
+$o-kanban-mobile-tabs-height: 40px !default;
+$o-kanban-mobile-empty-height: $o-kanban-image-width !default;
+// ------- Kanban dashboard variables -------
+
+// Used to manage spacing in complex dropdown menu
+$o-kanban-dashboard-dropdown-complex-gap: 5px !default;
+
+// Form view
+
+$o-form-view-sheet-max-width: 1140px !default;
+
+/*! 73e7137e-0547-48f6-813e-6fa5e7329aa3 */
+$o-webclient-background-color: $o-gray-100 !default;
+$o-control-panel-background-color: $o-view-background-color !default;
+
+$o-list-footer-color: null !default;
+$o-list-group-header-color: lighten($o-brand-lightsecondary, 10%) !default;
+
+// UI custom colors for tags, kanban records' colors, ...)
+// Note: the first value is the old BS3 gray-light value
+$o-colors: lighten(#000, 46.7%), #F06050, #F4A460, #F7CD1F, #6CC1ED, #814968,
+              #EB7E7F, #2C8397, #475577, #D6145F, #30C381, #9365B8 !default;
+
+$o-colors-secondary: #aa4b6b, #30C381, #97743a, #F7CD1F, #4285F4, #8E24AA,
+                     #D6145F, #173e43, #348F50, #AA3A38, #795548, #5e0231,
+                     #6be585, #999966, #e9d362, #b56969, #bdc3c7, #649173 !default;
+
+// UI custom colors, complete list
+$o-colors-complete: join(
+    set-nth($o-colors, 1, #134E5E),
+    $o-colors-secondary
+)!default;
+
+$o-sheet-cancel-hpadding: $o-horizontal-padding !default;
+$o-sheet-cancel-bpadding: $o-horizontal-padding !default;
+
+$o-statusbar-arrow-width: $o-statusbar-height / 3 !default;
+$o-statusbar-disabled-bg: lighten($o-brand-lightsecondary, 7%) !default;
+
+$o-navbar-inverse-link-hover-bg: darken($o-brand-verp, 10%) !default;
+
+$o-datepicker-week-bg-color: lighten($o-datepicker-week-color, 30%) !default;
+
+// Kanban
+
+$o-kanban-record-margin: $o-horizontal-padding / 2 !default;
+$o-kanban-group-padding: $o-horizontal-padding !default; // Cannot be higher than this
+
+$o-kanban-inside-hgutter-mobile: $o-horizontal-padding !default;
+
+// ------- Kanban dashboard variables -------
+
+// Since rows and containers are used inside cards, we're
+// forced to set the padding relative to the grid system.
+$o-kanban-dashboard-hpadding: $o-horizontal-padding !default;
+$o-kanban-dashboard-vpadding: $o-horizontal-padding / 2 !default;
+
+/*! 1a709ac8-578a-4859-88a1-8362f4d3b47f */
+// Override Tempusdominus variables
+$bs-datetimepicker-active-bg: $o-brand-verp;
+$bs-datetimepicker-active-color: $white;
+$bs-datetimepicker-text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+$bs-datetimepicker-secondary-border-color: $dropdown-border-color;
+$bs-datetimepicker-secondary-border-color-rgba: $dropdown-border-color;
+
+/*! b64da1a4-71fc-4a0a-8210-5e19ee909da1 */
+// translation dialog
+.o_translation_dialog {
+    .o_language_current {
+        font-weight: bold;
+    }
+
+    .row {
+        margin-bottom: 9px;
+    }
+}
+
+/*! 3972d20f-b462-4929-a95f-012270e482b1 */
+.o_hidden {
+    display: none!important;
+}
+
+.o_text_overflow {
+    @include o-text-overflow;
+}
+
+.ui-autocomplete {
+    z-index: $zindex-modal + 1;
+    max-width: 600px;
+    .ui-menu-item > a {
+        display: block;
+    }
+}
+
+[aria-hidden='true'], [aria-hidden='1'] {
+    display: none!important;
+}
+
+.dropdown-toggle {
+    white-space: nowrap;
+
+    &.o-no-caret {
+        &::before, &::after {
+            content: normal;
+        }
+    }
+}
+
+// Allow to change data-toggle="collapse" text according to status
+:not(.collapsed) > .o-collapsed-label,
+.collapsed > .o-not-collapsed-label {
+    display: none;
+}
+
+// This is rtl language specific fix
+// It will fix the extra space in ui-autocomplete class
+// and flip the next and previous symbols of jquery ui.
+.o_rtl {
+    .ui-autocomplete {
+        direction: ltr;
+        right: 0;
+        left: auto;
+    }
+    .ui-datepicker-next, .ui-datepicker-prev {
+        -webkit-transform: rotate(180deg);
+         -o-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+}
+
+.o_catch_attention {
+    position: relative;
+    z-index: 1;
+    animation: catchAttention 200ms ease 0s infinite normal;
+}
+
+// bounce effect
+@keyframes catchAttention {
+    0%, 20%, 40%, 60%, 80%, 100% {
+        transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
+    0% {
+        transform: translateY(-30%);
+    }
+    20% {
+        transform: translateY(-25%);
+    }
+    40% {
+        transform: translateY(-20%);
+    }
+    60% {
+        transform: translateY(-15%);
+    }
+    80% {
+        transform: translateY(-10%);
+    }
+    100% {
+        transform: translateY(-5%);
+    }
+}
+
+// Declare a similar class as 'disabled' but with no visual effect
+.o_debounce_disabled {
+    pointer-events: none;
+}
+
+span.o_force_ltr {
+    display: inline;
+}
+.o_force_ltr, .o_field_phone {
+    unicode-bidi: embed; // ensure element has level of embedding for direction
+    /*rtl:ignore*/
+    direction: ltr;
+}
+
+// To fill the available space while keeping aspect ratio (crop).
+// Assuming the important part of the image is its center.
+.o_object_fit_cover {
+    object-fit: cover;
+}
+
+.o_image_24_cover {
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+}
+
+.o_image_40_cover {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.o_image_64_cover {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+}
+
+// Keep ratio but avoid cropping (so part of the background becomes visible).
+.o_image_64_contain {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+// When having a square is not necessary, the image will take less space if any
+// of its width or height is smaller than 64px.
+.o_image_64_max {
+    max-width: 64px;
+    max-height: 64px;
+}
+
+.o_image_128_max {
+    max-width: 128px !important;
+    max-height: 128px !important;
+}
+
+.o_width_128 {
+    width: 128px;
+}
+
+.o_web_accesskey_overlay {
+    @include o-position-absolute(0, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .6);
+    color: #FFFFFF;
+    font-size: 1rem;
+
+    // Needed as the parent button could be using font-awesome.
+    // Can't be put to a BS variable here as we are in assets common (will be
+    // overridden for backend but left with 'sans-serif' for frontend to not
+    // have an useless frontend rule.
+    font-family: sans-serif;
+}
+
+/*! 5f6c8fef-9a42-44ff-ab62-a7229e5d5cbe */
+
+/*! 5fe2e8b7-8a78-4dea-8d43-ed8ac23b5345 */
+///
+/// This file regroups the verp mixins. They are available in every asset bundle.
+///
+
+// ------------------------------------------------------------------
+// Caret
+// ------------------------------------------------------------------
+@mixin utils-caret-boilerplate {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    -moz-transform: scale(0.9999); // Smooth the caret on firefox
+}
+
+// ------------------------------------------------------------------
+// Position absolute
+// ------------------------------------------------------------------
+@mixin o-position-absolute($top: auto, $right: auto, $bottom: auto, $left: auto) {
+    position: absolute;
+    top: $top;
+    left: $left;
+    bottom: $bottom;
+    right: $right;
+}
+
+// ------------------------------------------------------------------
+// Position sticky
+// ------------------------------------------------------------------
+@mixin o-position-sticky($top: auto, $right: auto, $bottom: auto, $left: auto) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: $top;
+    left: $left;
+    bottom: $bottom;
+    right: $right;
+}
+
+// ------------------------------------------------------------------
+// Text overflow
+// ------------------------------------------------------------------
+@mixin o-text-overflow($display: inline-block, $max-width: 100%) {
+    display: $display;
+    max-width: $max-width;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: top; // To update display context changed by overflow:hidden
+}
+
+// ------------------------------------------------------------------
+// Hovering effects
+// ------------------------------------------------------------------
+@mixin o-hover-opacity($default-opacity: 0.5, $hover-opacity: 1) {
+    opacity: $default-opacity;
+
+    &:hover, &:focus, &.focus {
+        opacity: $hover-opacity;
+    }
+}
+
+//------------------------------------------------------------------------------
+// Colors
+//------------------------------------------------------------------------------
+
+@function luma($color) {
+    @return ((red($color) * .299) + (green($color) * .587) + (blue($color) * .114)) / 255 * 100%;
+}
+//
+// Given two colors, returns the one which has the most constrast with another
+// given color. Careful: if you want to find the text color which will suit the
+// most on a given background color, you should use the 'color-yiq' function.
+//
+@function o-get-most-contrast($color, $c1, $c2, $background: #FFFFFF, $threshold: false, $cross-mix: true) {
+    $background: if($background == null, #FFFFFF, $background);
+
+    $real-color: mix(rgba($color, 1.0), $background, percentage(alpha($color)));
+    $luma: luma($real-color);
+
+    $cross-color: if($cross-mix, $real-color, $background);
+
+    $real-c1: mix(rgba($c1, 1.0), $cross-color, percentage(alpha($c1)));
+    $luma-c1: luma($real-c1);
+
+    $real-c2: mix(rgba($c2, 1.0), $cross-color, percentage(alpha($c2)));
+    $luma-c2: luma($real-c2);
+
+    $-dark: if($luma-c1 <= $luma-c2, $c1, $c2);
+    $-light: if($luma-c1 > $luma-c2, $c1, $c2);
+
+    @if $threshold == false {
+        // Automatic threshold: give a really small preference to light results
+        // as bootstrap does by default (mainly by compatibility at the moment
+        // this code is written)
+        $threshold: ($luma-c1 + $luma-c2) * 0.515; // 150 / 145.63 * 0.5 would be the BS value
+    }
+
+    @return if($luma > $threshold, $-dark, $-light);
+}
+
+// Extend placeholder which adds a chess-like background below the color and
+// image of an element to preview the transparency of that color and image.
+// This is done thanks to both ::before and ::after elements so they must both
+// be available.
+%o-preview-alpha-background {
+    position: relative;
+    z-index: 0;
+
+    &::before {
+        content: "";
+        @include o-position-absolute(0, 0, 0, 0);
+        z-index: -1;
+        background-image: url('/web/static/img/transparent.png');
+        background-size: 10px auto;
+        border-radius: inherit;
+    }
+    &::after {
+        content: "";
+        @include o-position-absolute(0, 0, 0, 0);
+        z-index: -1;
+        background: inherit; // Inherit all background properties
+        border-radius: inherit;
+    }
+}
+
+// ------------------------------------------------------------------
+// Padding
+// ------------------------------------------------------------------
+@mixin o-webclient-padding($top: 0px, $right: $o-horizontal-padding, $bottom: 0px, $left: $o-horizontal-padding) {
+    padding-top: $top;
+    padding-right: $right;
+    padding-bottom: $bottom;
+    padding-left: $left;
+}
+
+// ------------------------------------------------------------------
+// Caret
+// ------------------------------------------------------------------
+@mixin o-caret-down($caret-width: $caret-width, $caret-color: var(--o-input-border-color, currentColor)) {
+    @include utils-caret-boilerplate;
+    border-bottom: 0;
+    border-left: $caret-width solid transparent;
+    border-right: $caret-width solid transparent;
+    border-top: $caret-width solid $caret-color;
+}
+@mixin o-caret-up($caret-width: $caret-width, $caret-color: var(--o-input-border-color, currentColor)) {
+    @include utils-caret-boilerplate;
+    border-bottom: $caret-width solid $caret-color;
+    border-left: $caret-width solid transparent;
+    border-right: $caret-width solid transparent;
+    border-top: 0;
+}
+@mixin o-caret-left($caret-width: $caret-width, $caret-color: var(--o-input-border-color, currentColor)) {
+    @include utils-caret-boilerplate;
+    border-bottom: $caret-width solid transparent;
+    border-left: 0;
+    border-right: $caret-width solid $caret-color;
+    border-top: $caret-width solid transparent;
+}
+@mixin o-caret-right($caret-width: $caret-width, $caret-color: var(--o-input-border-color, currentColor)) {
+    @include utils-caret-boilerplate;
+    border-bottom: $caret-width solid transparent;
+    border-left: $caret-width solid $caret-color;
+    border-right: 0;
+    border-top: $caret-width solid transparent;
+}
+
+//-------------------------------------------------------------------
+// Cursor
+//-------------------------------------------------------------------
+
+@mixin o-grab-cursor() {
+    // Use a custom cursor for the open hand icon as "grab" is not properly
+    // working on Chrome Linux (at least)
+    cursor: url(/web/static/src/img/openhand.cur), grab;
+}
+
+// ------------------------------------------------------------------
+// Hovering effects
+// ------------------------------------------------------------------
+@mixin o-hover-text-color($default-color: $body-color, $hover-color: $link-color) {
+    color: $default-color;
+
+    &:hover, &:focus, &.focus {
+        color: $hover-color;
+    }
+}
+
+// ------------------------------------------------------------------
+// Mixin to define variations for btn-links and muted btn-links
+// ------------------------------------------------------------------
+@mixin o-btn-link-variant($color, $color-active) {
+    text-transform: none;
+    @include o-hover-text-color($default-color: $color, $hover-color: $color-active);
+
+    &, &:hover, &:focus, &:active, &.active {
+        border-color: transparent;
+        background-color: transparent;
+    }
+
+    &.text-muted, .text-muted {
+        @include o-hover-opacity;
+        @include o-hover-text-color($default-color: $text-muted, $hover-color: $color-active);
+    }
+}
+
+// Verp defines a limited Noto font-family for a small variety of unicode
+// characters that are not necessary defined in the user system or even defined
+// but not properly readable. This function allows to add this font family in a
+// given font list.
+//
+// @param {list} $font - a list of font names ending with the generic one.
+// @param {integer} [$index] - the position where to add the support font, if
+//        not given, it will be placed before the generic one.
+@function o-add-unicode-support-font($font, $index: false) {
+    @if $index == false {
+        $index: length($font);
+    }
+
+    $-with-support-font: ();
+    @for $i from 1 through length($font) {
+        @if $i == $index {
+            $-with-support-font: append($-with-support-font, 'Verp Unicode Support Noto', $separator: comma);
+        }
+        $-with-support-font: append($-with-support-font, nth($font, $i), $separator: comma);
+    }
+
+    @return $-with-support-font;
+}
+
+// Function to remove all null values of a map
+@function o-map-omit($map) {
+    $-map: ();
+    @each $key, $value in $map {
+        @if $value != null {
+            $-map: map-merge($-map, (
+                $key: $value,
+            ));
+        }
+    }
+    @return $-map;
+}
+
+// Function to swap two values in a list
+@function o-swap($list, $i, $j) {
+    $tmp: nth($list, $i);
+    $list: set-nth($list, $i, nth($list, $j));
+    @return set-nth($list, $j, $tmp);
+}
+
+// Function to get an element of a list with a default value in case the index
+// is out-of-bounds; also return that value if the retrieved value is null.
+@function o-safe-nth($list, $index, $default: null) {
+    $value: if($index > 0 and $index <= length($list), nth($list, $index), null);
+    @return if($value != null, $value, $default);
+}
+
+// Function to get an element of a map with a default value in case the key
+// does not exist; also return that value if the retrieved value is null.
+@function o-safe-get($map, $key, $default: null) {
+    $value: map-get($map, $key);
+    @return if($value != null, $value, $default);
+}
+
+// ------- Kanban grouped mixins -------
+@mixin o-kanban-icon($base-opacity: 0.5) {
+    display: block;
+    text-align: center;
+    color: $o-main-text-color;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    @include o-hover-opacity($base-opacity);
+}
+@mixin o-kanban-tag-color {
+    @for $size from 1 through length($o-colors) {
+        // Note: the first color is supposed to be invisible if there is a color
+        // field but it is used as a default color when there is no color field
+        &.o_tag_color_#{$size - 1} span {
+            background-color: nth($o-colors, $size);
+        }
+    }
+}
+@mixin o-kanban-record-color {
+    @for $size from 2 through length($o-colors) {
+        // Note: the first color is not defined as it is the 'no color' for kanban
+        .oe_kanban_color_#{$size - 1} {
+            border-left-color: nth($o-colors, $size);
+            &:after {
+                background-color: nth($o-colors, $size);
+                outline: 1px solid nth($o-colors, $size);
+            }
+        }
+    }
+}
+@mixin o-kanban-slim-col {
+    position: relative;
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 0 floor($o-kanban-group-padding * 0.7);
+    cursor: pointer;
+}
+@mixin o-kanban-header-title {
+    display: flex;
+    align-items: center;
+    height: $o-kanban-header-title-height;
+    line-height: 2.2;
+    color: $headings-color;
+}
+@mixin o-kanban-v-title {
+    @include o-position-absolute($o-kanban-inside-vgutter * 2, $left: floor(-$o-kanban-inside-vgutter * 1.2));
+    transform-origin: left bottom 0;
+    transform: rotate(90deg);
+    overflow: visible;
+    white-space: nowrap;
+    font-size: 15px;
+}
+
+// ------- Kanban records mixins -------
+@mixin o-kanban-record-title($font-size) {
+    color: $headings-color;
+    font-size: $font-size;
+    font-weight: 500;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+@mixin o-kanban-dropdown($padding-base: $o-kanban-inside-vgutter) {
+    margin: -1px -1px 1px;
+    padding: $padding-base/2 $padding-base;
+    border: 1px solid transparent;
+    border-bottom: none;
+    vertical-align: top;
+    @include o-hover-text-color($body-color, $headings-color);
+
+    &:focus, &:active, &:focus:active {
+        outline: none;
+        box-shadow: none;
+    }
+}
+@mixin o-kanban-dropdown-open {
+    position: relative;
+    background: white;
+    border-color: $border-color;
+    z-index: $zindex-dropdown + 1;
+}
+@mixin o-kanban-dropdown-menu {
+    @include o-position-absolute($right: -1px);
+    margin-top: -2px;
+    border-color: $border-color;
+    border-top-right-radius: 0;
+}
+@mixin o-kanban-colorpicker {
+    max-width: 150px;
+    padding: 3px ($o-dropdown-hpadding - $o-kanban-inner-hmargin) 3px $o-dropdown-hpadding;
+
+    > li {
+        display: inline-block;
+        margin: $o-kanban-inner-hmargin $o-kanban-inner-hmargin 0 0;
+        border: 1px solid white;
+        box-shadow: 0 0 0 1px gray('300');
+
+        > a {
+            display: block;
+
+            &::after {
+                content: "";
+                display: block;
+                width: 20px;
+                height: 15px;
+            }
+        }
+
+        // No Color
+        &:first-child > a {
+            position: relative;
+            &::before {
+                content: "";
+                @include o-position-absolute(-2px, $left: 10px);
+                display: block;
+                width: 1px;
+                height: 20px;
+                transform: rotate(45deg);
+                background-color: red;
+            }
+            &::after {
+                background-color: white;
+            }
+        }
+    }
+}
+
+// Emulate dropdown links
+@mixin o-kanban-dashboard-dropdown-link($link-padding-gap: $o-dropdown-hpadding) {
+    padding: 0;
+
+    > a {
+        margin: auto auto auto (-$link-padding-gap);
+        padding: 3px $link-padding-gap;
+        color: $dropdown-link-color;
+        display: block;
+
+        &:hover {
+            background-color: $dropdown-link-hover-bg;
+            color: $dropdown-link-hover-color;
+        }
+    }
+
+    &:last-child {
+        margin-bottom: 5px;
+    }
+}
+
+// No content helper
+@mixin o-nocontent-empty {
+    pointer-events: auto;
+    max-width: 650px;
+    margin: auto;
+    padding: 15px;
+    z-index: 1000;
+    text-align: center;
+    color: $o-tooltip-text-color;
+    font-size: 115%;
+
+    > p:first-of-type {
+        margin-top: 0;
+        color: $o-tooltip-title-text-color;
+        font-weight: bold;
+        font-size: 125%;
+    }
+
+    a {
+        cursor: pointer;
+    }
+}
+
+%o-nocontent-init-image {
+    content: "";
+    display: block;
+    margin: auto;
+    background-size: cover;
+}
+
+%o-nocontent-empty-document {
+    @extend %o-nocontent-init-image;
+    @include size(120px, 80px);
+    margin-top: 30px;
+    margin-bottom: 30px;
+    background: transparent url(/web/static/img/empty_folder.svg) no-repeat center;
+}
+
+// ----------------------------------------------------------------------------
+// CSS Variables
+// ----------------------------------------------------------------------------
+
+// Print a document property the right way (depending on the type of the
+// printed variable).
+@mixin print-variable($key, $value) {
+    @if $value != null {
+        $-type: type-of($value);
+        @if $-type == 'string' {
+            --#{$key}: '#{$value}';
+        } @else if $-type == 'list' {
+            --#{$key}: #{inspect($value)};
+        } @else {
+            --#{$key}: #{$value};
+        }
+    }
+}
+
+/*! fb55849e-32de-4c33-b419-fb03a2a75b93 */
+
+.zoomverp {
+    position: relative;
+
+    /* 'Shrink-wrap' the element */
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+
+    img {
+        vertical-align: bottom;
+    }
+}
+
+.zoomverp-flyout {
+    position:absolute;
+    z-index: 100;
+    overflow: hidden;
+    background: #FFF;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    img {
+        max-width: 500%;
+    }
+}
+
+.zoomverp-hover .zoomverp-flyout {
+    left: 0;
+}
+
+.zoomverp-next .zoomverp-flyout {
+    left: 100%;
+}

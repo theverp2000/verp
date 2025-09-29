@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates id="template" xml:space="preserve">
-    <t t-name="day_of_week_widget">
-        <table class="o_dow_widget">
+    <t t-name="dayOfWeekWidget">
+        <table class="o-dow-widget">
             <thead>
                 <tr>
                     <th t-foreach="widget.labels" t-as="label">
@@ -10,24 +10,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="o_dow_days" />
+                <tr class="o-dow-days" />
             </tbody>
         </table>
     </t>
 
-    <span t-name="project.statusWithColor" t-att-class="'o_status_bubble mr-2 o_color_bubble_' + color"></span>
+    <span t-name="project.statusWithColor" t-att-class="'o-status-bubble mr-2 o-color-bubble-' + color"></span>
 
     <div t-name="project.ControlPanel" t-inherit="web.Legacy.ControlPanel" t-inherit-mode="extension" owl="1">
-        <xpath expr="//ol[hasclass('breadcrumb')]" position="inside">
+        <xpath expr="//ol[contains(@class, 'breadcrumb')]" position="inside">
             <t t-call="project.ProjectControlPanelContent">
-                <t t-set="showProjectUpdate" t-value="show_project_update"/>
-                <t t-set="isProjectUser" t-value="is_project_user"/>
+                <t t-set="showProjectUpdate" t-value="showProjectUpdate"/>
+                <t t-set="isProjectUser" t-value="isProjectUser"/>
             </t>
         </xpath>
     </div>
 
     <t t-name="project.ProjectRightPanel" owl="1">
-        <div t-if="projectId" class="o_rightpanel">
+        <div t-if="projectId" class="o-rightpanel">
             <t t-call="project.StatButtonsSection"/>
             <t t-call="project.MilestoneSection"/>
         </div>
@@ -36,21 +36,21 @@
     </t>
 
     <t t-name="project.StatButtonsSection" owl="1">
-        <div class="o_rightpanel_section">
-            <div class="o_form_view">
-                <div class="oe-button-box o_full">
+        <div class="o-rightpanel-section">
+            <div class="o-form-view">
+                <div class="oe-button-box o-full">
                     <t t-foreach="state.data.buttons" t-as="button" t-key="button.order">
-                        <button class="btn oe_stat_button" t-if="button.show"
+                        <button class="btn oe-stat-button" t-if="button.show"
                             t-on-click="onProjectActionClick" 
                             t-att-data-action="button.action"
-                            t-att-data-additional_context="button.additional_context"
-                            t-att-data-type="button.action_type">
-                            <i t-att-class="'fa fa-fw o_button_icon fa-' + button.icon"/>
-                            <div class="o_field_widget o_stat_info">
-                                <span class="o_stat_value">
+                            t-att-data-additionalContext="button.additionalContext"
+                            t-att-data-type="button.actionType">
+                            <i t-att-class="'fa fa-fw o-button-icon fa-' + button.icon"/>
+                            <div class="o-field-widget o-stat-info">
+                                <span class="o-stat-value">
                                     <t t-esc="button.number"/>
                                 </span>
-                                <span class="o_stat_text">
+                                <span class="o-stat-text">
                                     <t t-esc="button.text"/>
                                 </span>
                             </div>
@@ -63,17 +63,17 @@
 
     <t t-name="project.MilestoneSection" owl="1">
         <t t-set="milestones" t-value="state.data.milestones"/>
-        <div class="o_rightpanel_section" name="milestone">
-            <div class="o_rightpanel_header">
-                <div class="o_rightpanel_title">
+        <div class="o-rightpanel-section" name="milestone">
+            <div class="o-rightpanel-header">
+                <div class="o-rightpanel-title">
                     Milestones
                 </div>
-                <span class="o_rightpanel_button">
+                <span class="o-rightpanel-button">
                     <AddMilestone context="context"/>
                 </span>
             </div>
-            <div class="o_rightpanel_data">
-                <div t-foreach="milestones.data" t-as="milestone" t-key="milestone.id" class="o_rightpanel_data_row">
+            <div class="o-rightpanel-data">
+                <div t-foreach="milestones.data" t-as="milestone" t-key="milestone.id" class="o-rightpanel-data-row">
                     <OpenMilestone context="context" milestone="milestone" t-key="milestone.id"/>
                 </div>
                 <span t-if="milestones.data.length === 0" class="text-muted font-italic">
@@ -84,19 +84,19 @@
     </t>
 
     <t t-name="project.AddMilestone" owl="1">
-        <div class="o_add_milestone">
+        <div class="o-add-milestone">
             <a t-on-click="onAddMilestoneClick">Add Milestone</a>
-            <span t-if="state.openDialog" class="o_rightpanel_hidden">
+            <span t-if="state.openDialog" class="o-rightpanel-hidden">
                 <ComponentAdapter
                     Component="FormViewDialog"
                     params="{
                         context: context,
                         _createContext: _createContext,
-                        on_saved: _onDialogSaved,
-                        res_id: false,
+                        onSaved: _onDialogSaved,
+                        resId: false,
                         resModel: 'project.milestone',
                         title: NEW_PROJECT_MILESTONE,
-                        multi_select: true,
+                        multiSelect: true,
                     }"
                     t-ref="dialog"
                 />
@@ -105,31 +105,31 @@
     </t>
 
     <t t-name="project.OpenMilestone" owl="1">
-        <div class="o_open_milestone row" t-att-class="state.colorClass">
-            <span class="o_milestone_checkbox col-1" t-on-click="onMilestoneClick">
+        <div class="o-open-milestone row" t-att-class="state.colorClass">
+            <span class="o-milestone-checkbox col-1" t-on-click="onMilestoneClick">
                 <i class="fa" t-att-class="state.checkboxIcon"></i>
             </span>
-            <div class="o_milestone_detail col-10 p-0" t-on-click="onOpenMilestone">
-                <span class="text-truncate col-8 px-0" t-att-title="milestone.name" style="flex: 10%">
-                    <t t-esc="milestone.name"/>
+            <div class="o-milestone-detail col-10 p-0" t-on-click="onOpenMilestone">
+                <span class="text-truncate col-8 px-0" t-att-title="milestone.label" style="flex: 10%">
+                    <t t-esc="milestone.label"/>
                 </span>
-                <span class="o_rightpanel_center_col col-4">
+                <span class="o-rightpanel-center-col col-4">
                     <t t-esc="deadline"/>
                 </span>
             </div>
-            <span class="o_rightpanel_right_col col-1 px-0">
-                <a class="o_delete_icon" t-on-click="onDeleteMilestone" title="Delete Milestone"><i class="fa fa-trash"></i></a>
+            <span class="o-rightpanel-right-col col-1 px-0">
+                <a class="o-delete-icon" t-on-click="onDeleteMilestone" title="Delete Milestone"><i class="fa fa-trash"></i></a>
             </span>
-            <span t-if="state.openDialog" class="o_rightpanel_hidden">
+            <span t-if="state.openDialog" class="o-rightpanel-hidden">
                 <ComponentAdapter
                     Component="FormViewDialog"
                     params="{
                         context: context,
-                        on_saved: _onDialogSaved,
-                        res_id: milestone.id,
+                        onSaved: _onDialogSaved,
+                        resId: milestone.id,
                         resModel: 'project.milestone',
                         title: OPEN_PROJECT_MILESTONE,
-                        disable_multiple_selection: true,
+                        disableMultipleSelection: true,
                         deletable: true
                     }"
                     t-ref="dialog"

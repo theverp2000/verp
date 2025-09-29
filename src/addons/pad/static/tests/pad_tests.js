@@ -325,11 +325,11 @@ QUnit.module('pad widget', {
             resId: 2,
         });
 
-        assert.containsOnce(form, '.o_form_readonly');
+        assert.containsOnce(form, '.o-form-readonly');
 
         await testUtils.dom.click(form.$('.o-field-widget[name="description"]'));
 
-        assert.containsOnce(form, '.o_form_editable');
+        assert.containsOnce(form, '.o-form-editable');
 
         form.destroy();
         delete FieldPad.prototype.isPadConfigured;
@@ -357,11 +357,11 @@ QUnit.module('pad widget', {
             resId: 2,
         });
 
-        assert.containsOnce(form, '.o_form_readonly');
+        assert.containsOnce(form, '.o-form-readonly');
 
         await testUtils.dom.click(form.$('.o-field-widget[name="description"] a'));
 
-        assert.containsOnce(form, '.o_form_readonly');
+        assert.containsOnce(form, '.o-form-readonly');
 
         form.destroy();
         delete FieldPad.prototype.isPadConfigured;

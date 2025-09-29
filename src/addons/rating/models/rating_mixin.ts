@@ -1,7 +1,8 @@
-import { _Datetime, _super, AbstractModel, api, Fields, MetaModel } from "../../../core";
+import { _Datetime, api, Fields } from "../../../core";
 import { Dict } from "../../../core/helper";
+import { _super, AbstractModel, MetaModel } from "../../../core/models"
 import { expression } from "../../../core/osv";
-import { f, parseFloat, plaintext2html, range, setOptions, subDate, sum } from "../../../core/tools";
+import { doWith, f, parseFloat, plaintext2html, range, setOptions, subDate, sum } from "../../../core/tools";
 import { RATING_LIMIT_MIN, RATING_LIMIT_OK, RATING_LIMIT_SATISFIED } from "./rating";
 
 @MetaModel.define()
@@ -13,7 +14,7 @@ class RatingParentMixin extends AbstractModel {
 
     static ratingIds = Fields.One2many(
         'rating.rating', 'parentResId', {string: 'Ratings',
-        autojoin: true, groups: 'base.group_user',
+        autojoin: true, groups: 'base.groupUser',
         domain: self => [['parentResModel', '=', self._name]]});
     static ratingPercentageSatisfaction = Fields.Integer(
         "Rating Satisfaction",
@@ -197,7 +198,7 @@ class RatingMixin extends AbstractModel {
          :param template: a mail.template record used to compute the message body;
          :param lang: optional lang; it can also be specified directly on the template
            itself in the lang field;
-         :param subtype_id: optional subtype to use when creating the message; is
+         :param subtypeId: optional subtype to use when creating the message; is
            a note by default to avoid spamming followers;
          :param force_send: whether to send the request directly or use the mail
            queue cron (preferred option);

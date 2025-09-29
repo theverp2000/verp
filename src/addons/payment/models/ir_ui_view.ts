@@ -1,5 +1,6 @@
-import { api, MetaModel, Model } from "../../../core";
+import { api } from "../../../core";
 import { UserError } from "../../../core/helper";
+import { MetaModel, Model } from "../../../core/models"
 import { bool } from "../../../core/tools";
 
 @MetaModel.define()

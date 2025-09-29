@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <verp>
-    <record id="project_update_view_search" model="ir.ui.view">
+    <record id="projectUpdateViewSearch" model="ir.ui.view">
         <field name="label">project.update.view.search</field>
         <field name="model">project.update</field>
         <field name="arch" type="xml">
@@ -11,69 +11,69 @@
         </field>
     </record>
 
-    <record id="project_update_view_form" model="ir.ui.view">
+    <record id="projectUpdateViewForm" model="ir.ui.view">
         <field name="label">project.update.view.form</field>
         <field name="model">project.update</field>
         <field name="arch" type="xml">
-            <form string="Project Update" class="o_form_project_update">
+            <form string="Project Update" class="o-form-project-update">
                 <sheet>
-                    <div class="oe_title">
+                    <div class="oe-title">
                         <h1>
-                            <field name="label" class="o_text_overflow" placeholder="Title of the Update"/>
+                            <field name="label" class="o-text-overflow" placeholder="Title of the Update"/>
                         </h1>
                     </div>
                     <group>
                         <group>
                             <field name="projectId" invisible="1"/>
                             <field name="color" invisible="1"/>
-                            <field name="status" widget="status_with_color" options="{'color_field': 'color'}"/>
-                            <field name="progress" widget="progressbar" options="{'current_value': 'progress', 'max_value': '100', 'editable': true}"/>
+                            <field name="status" widget="statusWithColor" options="{'colorField': 'color'}"/>
+                            <field name="progress" widget="progressbar" options="{'currentValue': 'progress', 'maxValue': '100', 'editable': true}"/>
                         </group>
                         <group>
-                            <field name="userId" widget="many2one_avatar_user" readonly="1"/>
+                            <field name="userId" widget="many2oneAvatarUser" readonly="1"/>
                             <field name="date"/>
                         </group>
                     </group>
                     <separator/>
                     <notebook>
                         <page string="Description" name="description">
-                            <field name="description" widget="html_with_action" nolabel="1" class="o_project_update_description"/>
+                            <field name="description" widget="htmlWithAction" nolabel="1" class="o-project-update-description"/>
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" options="{'post_refresh':True}" groups="base.group_user"/>
+                <div class="oe-chatter">
+                    <field name="messageFollowerIds" options="{'postRefresh':true}" groups="base.groupUser"/>
                     <field name="activityIds"/>
-                    <field name="message_ids"/>
+                    <field name="messageIds"/>
                 </div>
             </form>
         </field>
     </record>
 
-    <record id="project_update_view_kanban" model="ir.ui.view">
+    <record id="projectUpdateViewKanban" model="ir.ui.view">
         <field name="label">project.update.view.kanban</field>
         <field name="model">project.update</field>
         <field name="arch" type="xml">
-            <kanban class="o_pupdate_kanban" sample="1" js_class="project_update_kanban">
+            <kanban class="o-pupdate-kanban" sample="1" jsClass="projectUpdateKanban">
                 <field name="color"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="{{!selection_mode ? 'oe_kanban_color_' + record.color.rawValue : ''}} oe_kanban_global_click o_pupdate_kanban_card">
-                            <!-- Project Update Kanban View is always ungrouped - see js_class -->
-                            <div class="o_kanban_detail_ungrouped row">
-                                <div class="col-lg-4 o_pupdate_name">
-                                    <b><field name="name_cropped"/></b>
+                        <div t-attf-class="{{!selectionMode ? 'oe-kanban-color-' + record.color.rawValue : ''}} oe-kanban-global-click o-pupdate-kanban-card">
+                            <!-- Project Update Kanban View is always ungrouped - see jsClass -->
+                            <div class="o-kanban-detail-ungrouped row">
+                                <div class="col-lg-4 o-pupdate-name">
+                                    <b><field name="nameCropped"/></b>
                                     <div>
-                                        <field name="userId" widget="many2one_avatar_user"/>
+                                        <field name="userId" widget="many2oneAvatarUser"/>
                                         <t t-esc="record.userId.value"/>
                                     </div>
                                 </div>
                                 <div class="col-lg-2">
                                     <field name="color" invisible="1"/>
-                                    <b><field name="status" widget="status_with_color" options="{'color_field': 'color'}"/></b>
+                                    <b><field name="status" widget="statusWithColor" options="{'colorField': 'color'}"/></b>
                                 </div>
                                 <div class="col-lg-2">
-                                    <b><field name="progress_percentage" widget="percentage"/></b>
+                                    <b><field name="progressPercentage" widget="percentage"/></b>
                                     <div>Progress</div>
                                 </div>
                                 <div class="col-lg-2">
@@ -88,28 +88,28 @@
         </field>
     </record>
 
-    <record id="project_update_view_tree" model="ir.ui.view">
+    <record id="projectUpdateViewTree" model="ir.ui.view">
         <field name="label">project.update.view.tree</field>
         <field name="model">project.update</field>
         <field name="arch" type="xml">
-            <tree sample="1" js_class="project_update_list">
+            <tree sample="1" jsClass="projectUpdateList">
                 <field name="label"/>
-                <field name="userId" widget="many2one_avatar_user" optional="show"/>
-                <field name="progress_percentage" string="Progress" widget="percentage" optional="show"/>
+                <field name="userId" widget="many2oneAvatarUser" optional="show"/>
+                <field name="progressPercentage" string="Progress" widget="percentage" optional="show"/>
                 <field name="date" optional="show"/>
                 <field name="color" invisible="1"/>
-                <field name="status" widget="status_with_color" options="{'color_field': 'color'}"/>
+                <field name="status" widget="statusWithColor" options="{'colorField': 'color'}"/>
             </tree>
         </field>
     </record>
 
-    <record id="project_update_all_action" model="ir.actions.actwindow">
+    <record id="projectUpdateAllAction" model="ir.actions.actwindow">
         <field name="label">Project Updates</field>
         <field name="type">ir.actions.actwindow</field>
         <field name="resModel">project.update</field>
         <field name="viewMode">kanban,tree,form</field>
-        <field name="domain">[('projectId', '=', activeId)]</field>
-        <field name="search_view_id" ref="project_update_view_search"/>
+        <field name="domain">[['projectId', '=', activeId]]</field>
+        <field name="searchViewId" ref="projectUpdateViewSearch"/>
         <field name="help" type="html">
             <p class="o-view-nocontent-smiling-face">
             No updates found. Let's create one!
@@ -119,7 +119,7 @@
         </field>
     </record>
 
-    <record id="project_milestone_view_form" model="ir.ui.view">
+    <record id="projectMilestoneViewForm" model="ir.ui.view">
         <field name="label">project.milestone.view.form</field>
         <field name="model">project.milestone</field>
         <field name="arch" type="xml">
@@ -130,7 +130,7 @@
                             <field name="projectId" invisible="1"/>
                             <field name="label" placeholder="E.g: Product Launch"/>
                             <field name="deadline"/>
-                            <field name="is_reached"/>
+                            <field name="isReached"/>
                         </group>
                     </group>
                 </sheet>
@@ -138,25 +138,25 @@
         </field>
     </record>
 
-    <record id="project_milestone_view_tree" model="ir.ui.view">
+    <record id="projectMilestoneViewTree" model="ir.ui.view">
         <field name="label">project.milestone.view.tree</field>
         <field name="model">project.milestone</field>
         <field name="arch" type="xml">
-            <tree decoration-danger="is_deadline_exceeded" decoration-muted="is_reached" editable="bottom">
+            <tree decoration-danger="isDeadlineExceeded" decoration-muted="isReached" editable="bottom">
                 <field name="label"/>
                 <field name="deadline" optional="show"/>
-                <field name="is_reached" optional="show"/>
-                <field name="is_deadline_exceeded" invisible="1"/>
+                <field name="isReached" optional="show"/>
+                <field name="isDeadlineExceeded" invisible="1"/>
             </tree>
         </field>
     </record>
 
-    <record id="project_milestone_all" model="ir.actions.actwindow">
+    <record id="projectMilestoneAll" model="ir.actions.actwindow">
         <field name="label">Milestones</field>
         <field name="resModel">project.milestone</field>
         <field name="viewMode">tree,form</field>
-        <field name="context">{'default_project_id': activeId}</field>
-        <field name="domain">[('projectId', '=', activeId)]</field>
+        <field name="context">{'default_projectId': activeId}</field>
+        <field name="domain">[['projectId', '=', activeId]]</field>
         <field name="help" type="html">
             <p class="o-view-nocontent-smiling-face">
             No milestones found. Let's create one!

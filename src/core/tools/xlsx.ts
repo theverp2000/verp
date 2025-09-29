@@ -1,9 +1,9 @@
 import * as ExcelJS from 'exceljs';
 import { UserError } from '../helper';
-import { toText } from "./string";
+import { toText } from './compat';
 import { doWithSync, isInstance } from "./func";
 import { enumerate } from "./iterable";
-import { f } from './string';
+import { f } from './utils';
 
 export class ExportXlsxWriter {
   fieldNames: string[];
@@ -25,7 +25,7 @@ export class ExportXlsxWriter {
     this.workbook = new ExcelJS.Workbook();//this.output, {'inMemory': true});
     this.baseStyle = this.workbook.addFormat({ 'textWrap': true });
     this.headerStyle = this.workbook.addFormat({ 'bold': true })
-    this.headerBoldStyle = this.workbook.addFormat({ 'text_wrap': true, 'bold': true, 'bgColor': '#e9ecef' })
+    this.headerBoldStyle = this.workbook.addFormat({ 'text_wrap': true, 'bold': true, 'bgcolor': '#e9ecef' })
     this.dateStyle = this.workbook.addFormat({ 'text_wrap': true, 'num_format': 'yyyy-mm-dd' })
     this.datetimeStyle = this.workbook.addFormat({ 'text_wrap': true, 'num_format': 'yyyy-mm-dd hh:mm:ss' })
     this.worksheet = this.workbook.addWorksheet()

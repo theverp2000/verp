@@ -1,8 +1,11 @@
 import { v4 as uuid4 } from "uuid";
-import { AbstractModel, Fields, MetaModel, _super, api } from "../../../core";
-import { Dict } from "../../../core/helper";
+import { Fields } from "../../../core/fields"
+import { MetaModel, AbstractModel, _super } from "../../../core/models"
+import { bool } from "../../../core/tools/bool";
+import { f } from "../../../core/tools/utils";
 import { urlEncode } from "../../../core/service/middleware/utils";
-import { bool, f } from "../../../core/tools";
+import { Dict } from "../../../core/helper/collections";
+import { api } from "../../../core";
 
 @MetaModel.define()
 class PortalMixin extends AbstractModel {

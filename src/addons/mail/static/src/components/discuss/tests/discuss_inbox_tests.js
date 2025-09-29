@@ -51,7 +51,7 @@ QUnit.test('reply: discard on pressing escape', async function (assert) {
         resId: 20,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -170,7 +170,7 @@ QUnit.test('reply: discard on discard button click', async function (assert) {
         resId: 20,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -231,7 +231,7 @@ QUnit.test('reply: discard on reply button toggle', async function (assert) {
         resId: 20,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -286,7 +286,7 @@ QUnit.test('reply: discard on click away', async function (assert) {
         resId: 20,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -374,7 +374,7 @@ QUnit.test('"reply to" composer should log note if message replied to is a note'
         resId: 20,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -446,7 +446,7 @@ QUnit.test('"reply to" composer should send message if message replied to is not
         resId: 20,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -517,7 +517,7 @@ QUnit.test('error notifications should not be shown in Inbox', async function (a
         resId: 20,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100, // id of related message
+        mailMessageId: 100, // id of related message
         notification_status: 'exception',
         notificationType: 'email',
         resPartnerId: this.data.currentPartnerId, // must be for current partner
@@ -552,7 +552,7 @@ QUnit.test('show subject of message in Inbox', async function (assert) {
         subject: "Salutations, voyageur", // will be asserted in the test
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -599,7 +599,7 @@ QUnit.test('show subject of message in history', async function (assert) {
     });
     this.data['mail.notification'].records.push({
         is_read: true,
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -680,7 +680,7 @@ QUnit.test('click on (non-channel/non-partner) origin thread link should redirec
         resId: 10,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -737,7 +737,7 @@ QUnit.test('subject should not be shown when subject is the same as the thread n
         name: "Salutations, voyageur",
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -778,7 +778,7 @@ QUnit.test('subject should not be shown when subject is the same as the thread n
         name: "Re: Salutations, voyageur",
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -819,7 +819,7 @@ QUnit.test('subject should not be shown when subject differs from thread name on
         name: "Salutations, voyageur",
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -860,7 +860,7 @@ QUnit.test('subject should not be shown when subject differs from thread name on
         name: "Salutations, voyageur",
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -901,7 +901,7 @@ QUnit.test('subject should be shown when the thread name has an extra prefix com
         name: "Re: Salutations, voyageur",
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -942,7 +942,7 @@ QUnit.test('subject should not be shown when subject differs from thread name on
         name: "Re: Salutations, voyageur",
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,
@@ -983,7 +983,7 @@ QUnit.test('subject should not be shown when subject differs from thread name on
         name: "Salutations, voyageur",
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         notification_status: 'sent',
         notificationType: 'inbox',
         resPartnerId: this.data.currentPartnerId,

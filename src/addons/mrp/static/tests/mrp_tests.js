@@ -113,7 +113,7 @@ QUnit.module('mrp', {
             "src attribute is not set if there are no values");
         await testUtils.form.clickEdit(form);
         assert.isNotVisible(form.$('iframe.o_embed_iframe'), "there should be an invisible iframe in edit mode");
-        await testUtils.fields.editAndTrigger(form.$('.o_field_char'), 'http://example.com', ['input', 'change', 'focusout']);
+        await testUtils.fields.editAndTrigger(form.$('.o-field-char'), 'http://example.com', ['input', 'change', 'focusout']);
         assert.strictEqual(form.$('iframe.o_embed_iframe').attr('src'), 'http://example.com',
             "src should updated on the iframe");
         assert.isVisible(form.$('iframe.o_embed_iframe'), "there should be a visible iframe in edit mode");

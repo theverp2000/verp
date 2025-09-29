@@ -116,7 +116,7 @@ options.registry.NavTabsStyle = options.Class.extend({
      */
     setDirection: function (previewMode, widgetValue, params) {
         const isVertical = widgetValue === 'vertical';
-        this.$target.toggleClass('row s-col-no-resize s-col-no-bgColor', isVertical);
+        this.$target.toggleClass('row s-col-no-resize s-col-no-bgcolor', isVertical);
         this.$target.find('.s-tabs-nav:first .nav').toggleClass('flex-column', isVertical);
         this.$target.find('.s-tabs-nav:first > .nav-link').toggleClass('py-2', isVertical);
         this.$target.find('.s-tabs-nav:first').toggleClass('col-md-3', isVertical);

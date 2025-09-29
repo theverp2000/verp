@@ -1,6 +1,6 @@
-import { AbstractModel, MetaModel, getmembers } from "../../..";
 import { getattr } from "../../../api";
 import { AccessDenied } from "../../../helper";
+import { AbstractModel, MetaModel, getmembers } from "../../../models";
 import { isCallable } from "../../../tools";
 
 /**

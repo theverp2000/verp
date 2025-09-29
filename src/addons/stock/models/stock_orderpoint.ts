@@ -1,8 +1,16 @@
 import { DateTime } from "luxon";
-import { Fields, MetaModel, Model, _Date, _super, api, registry } from "../../../core";
-import { DefaultDict, Dict, FrozenDict, RedirectWarning, UserError, ValidationError } from "../../../core/helper";
+import { Fields, _Date, _Datetime, api, registry } from "../../../core";
+import { DefaultDict, Dict, FrozenDict } from "../../../core/helper/collections";
+import { RedirectWarning, UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
-import { bool, combine, extend, f, floatCompare, isInstance, jsonParse, len, setOptions, splitEvery, stringify } from "../../../core/tools";
+import { bool, isInstance } from "../../../core/tools";
+import { combine } from "../../../core/tools/date_utils";
+import { floatCompare } from "../../../core/tools/float_utils";
+import { extend, len, splitEvery } from "../../../core/tools/iterable";
+import { jsonParse, stringify } from "../../../core/tools/json";
+import { setOptions } from "../../../core/tools/misc";
+import { f } from "../../../core/tools/utils";
 import { ProcurementException } from "./stock_rule";
 
 /**
@@ -422,8 +430,8 @@ class StockWarehouseOrderpoint extends Model {
         let product, warehouse;
         for (const key of toRefill.keys()) {
             [product, warehouse] = key.split('@') as [any, any];
-            product = await this.env.items('product.product').browse(product).withPrefetch(allProductIds);
-            warehouse = await this.env.items('stock.warehouse').browse(warehouse).withPrefetch(allWarehouseIds);
+            product = this.env.items('product.product').browse(product).withPrefetch(allProductIds);
+            warehouse = this.env.items('stock.warehouse').browse(warehouse).withPrefetch(allWarehouseIds);
             const rules = await product._getRulesFromLocation(await warehouse.lotStockId);
             const leadDays = (await (await rules.withContext({bypassDelayDescription: true}))._getLeadDays(product))[0];
             const k = `${leadDays}@${warehouse.id}`;

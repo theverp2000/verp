@@ -1,7 +1,9 @@
-import { MetaModel, Model, api } from "../../../core";
-import { AttributeError, UserError, ValueError } from "../../../core/helper";
-import { HTTPException } from "../../../core/service/middleware";
-import { URI, b64encode, bool, imageDataUri, isInstance, pop, sorted } from "../../../core/tools";
+import { api } from "../../../core";
+import { AttributeError, UserError, ValueError } from "../../../core/helper/errors";
+import { MetaModel, Model } from "../../../core/models";
+import { HTTPException } from "../../../core/service/middleware/exceptions";
+import { URI, b64encode, imageDataUri, isInstance, pop, sorted } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
 
 @MetaModel.define()
 class ResPartnerBank extends Model {

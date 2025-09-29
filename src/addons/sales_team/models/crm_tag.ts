@@ -1,4 +1,5 @@
-import { Fields, MetaModel, Model } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { MetaModel, Model } from "../../../core/models";
 import { getRandom } from "../../../core/tools";
 
 @MetaModel.define()

@@ -118,7 +118,7 @@ export class MockModels {
                     authorId: { string: "Author", type: 'many2one', relation: 'res.partner', default() { return this.currentPartnerId; } },
                     body: { string: "Contents", type: 'html', default: "<p></p>" },
                     date: { string: "Date", type: 'datetime', default() { return moment.utc().format("YYYY-MM-DD HH:mm:ss"); } },
-                    emailFrom: { string: "From", type: 'char' },
+                    email_from: { string: "From", type: 'char' },
                     history_partner_ids: { string: "Partners with History", type: 'many2many', relation: 'res.partner' },
                     id: { string: "Id", type: 'integer' },
                     isDiscussion: { string: "Discussion", type: 'boolean' },
@@ -165,7 +165,7 @@ export class MockModels {
                 fields: {
                     failureType: { string: "Failure Type", type: 'selection', selection: [["SMTP", "Connection failed (outgoing mail server problem)"], ["RECIPIENT", "Invalid email address"], ["BOUNCE", "Email address rejected by destination"], ["UNKNOWN", "Unknown error"]] },
                     is_read: { string: "Is Read", type: 'boolean', default: false },
-                    mail_message_id: { string: "Message", type: 'many2one', relation: 'mail.message' },
+                    mailMessageId: { string: "Message", type: 'many2one', relation: 'mail.message' },
                     notification_status: { string: "Notification Status", type: 'selection', selection: [['ready', 'Ready to Send'], ['sent', 'Sent'], ['bounce', 'Bounced'], ['exception', 'Exception'], ['canceled', 'Canceled']], default: 'ready' },
                     notificationType: { string: "Notification Type", type: 'selection', selection: [['email', 'Handle by Emails'], ['inbox', 'Handle in Verp']], default: 'email' },
                     resPartnerId: { string: "Needaction Recipient", type: 'many2one', relation: 'res.partner' },
@@ -182,7 +182,7 @@ export class MockModels {
             'mail.tracking.value': {
                 fields: {
                     changed_field: { string: 'Changed field', type: 'char' },
-                    field_type: { string: 'Field type', type: 'char' },
+                    fieldType: { string: 'Field type', type: 'char' },
                     new_value: { string: 'New value', type: 'char' },
                     old_value: { string: 'Old value', type: 'char' },
                 },

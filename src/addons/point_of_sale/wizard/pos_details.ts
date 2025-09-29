@@ -1,4 +1,5 @@
-import { Fields, MetaModel, TransientModel, _Datetime, api } from "../../../core";
+import { Fields, _Datetime, api } from "../../../core";
+import { MetaModel, TransientModel } from "../../../core/models"
 import { dateMin } from "../../../core/tools";
 
 @MetaModel.define()

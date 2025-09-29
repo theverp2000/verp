@@ -12,11 +12,19 @@ import { v4 as uuid4 } from 'uuid';
 import { release } from "../../..";
 import { NotImplementedError, StopIteration, UserError, ValueError } from "../../../helper/errors";
 import { getResourcePath } from "../../../modules/modules";
-import { _f, b64decode, bool, chain, filePath, findInPath, isInstance, len, next, range, setOptions, sha512, stringify, toText } from "../../../tools";
+import { b64decode, filePath } from "../../../tools";
+import { bool } from "../../../tools/bool";
+import { toText } from "../../../tools/compat";
+import { findInPath } from "../../../tools/config";
+import { isInstance } from "../../../tools/func";
+import { chain, len, next, range } from "../../../tools/iterable";
 import { isErpModule, transpileJavascript } from "../../../tools/js_transpiler";
+import { stringify } from "../../../tools/json";
 import * as lazy from '../../../tools/lazy';
+import { setOptions, sha512 } from "../../../tools/misc";
 import { forceHook } from "../../../tools/profiler";
 import { SourceMapGenerator } from "../../../tools/sourcemap_generator";
+import { _f } from "../../../tools/utils";
 import { dedent } from "./qweb";
 
 export const EXTENSIONS = [".js", ".css", ".scss", ".sass", ".less"];
@@ -470,7 +478,7 @@ export class AssetsBundle {
     }
 
     function sanitize(...group: any[]) {
-      const reg = /^[.|~|\/]/g
+      const reg = /^[.|~|\/]/
       const ref: string = group[2];
       const line = format('@import "%s"%s', ref, group[3]);
       if (!ref.includes('.') && !(imports.includes(line)) && !reg.test(ref)) {
@@ -577,10 +585,13 @@ export class AssetsBundle {
     await attachment.write(values);
     await attachment.flush();
 
-    if (this.env.context['commitAssetsbundle'] == true) {
+    const _debug = global.logDebug;
+    global.logDebug = true;
+    if (global.logDebug || this.env.context['commitAssetsbundle'] == true) {
       await this.env.cr.commit();
       await this.env.cr.reset();
     }
+    global.logDebug = _debug;
 
     await this.cleanAttachments(extension);
 
@@ -615,7 +626,7 @@ export class AssetsBundle {
     let contentLineCount = contentImportRules.split("\n").length;
     for (const asset of this.stylesheets) {
       let content: string = await asset.getContent();
-      if (bool(content)) {
+      if (content) {
         content = await asset.withHeader(content);
         if (asset.url) {
           generator.addSource(await asset.url, content, contentLineCount);
@@ -626,7 +637,7 @@ export class AssetsBundle {
         contentLineCount += content.split("\n").length;
       }
     }
-    const contentBundle = contentBundleList.join(';\n') + `\n/*# sourceMappingURL=${await sourcemapAttachment.url} */`;
+    const contentBundle = contentBundleList.join('\n') + `\n/*# sourceMappingURL=${await sourcemapAttachment.url} */`
     const cssAttachment = await this.saveAttachment('css', contentBundle);
 
     generator._file = await cssAttachment.url;
@@ -686,7 +697,7 @@ export class AssetsBundle {
       contentLineCount += content.split("\n").length + lineHeader;
     }
 
-    const contentBundle = contentBundleList.join(';\n') + `\n/*# sourceMappingURL=${await sourcemapAttachment.url} */`;
+    const contentBundle = contentBundleList.join(';\n') + '\n/*# sourceMappingURL=' + await sourcemapAttachment.url;
     const jsAttachment = await this.saveAttachment('js', contentBundle);
 
     generator._file = await jsAttachment.url;
@@ -792,7 +803,7 @@ class WebAsset {
       try {
         // Test url against ir.attachments
         const attach = await (await this.bundle.env.items('ir.attachment').sudo()).getServeAttachment(this.url);
-        this._irAttach = await attach[0];
+        this._irAttach = await attach(0);
       } catch (e) {
         throw new AssetNotFound("Could not find %s", this.name);
       }
@@ -811,7 +822,7 @@ class WebAsset {
         return buffer;
       }
       else {
-        const buffer = b64decode(await this._irAttach['datas']).toString('utf-8');
+        const buffer =  b64decode(await this._irAttach['datas']).toString('utf-8');
         return buffer;
       }
     } catch (e) {
@@ -946,20 +957,20 @@ class JavascriptAsset extends WebAsset {
     const l = Math.max(...lines.map(line => line.length));
     return [
       "",
-      "/" + Array(l + 5).fill("*"),
-      ...lines.map(line => `*  {line:<${l}}  *`),
-      Array(l + 5).fill("*") + "/",
+      "/" + _.fill(Array(l + 5), "*"),
+      ...lines.map(line => `*  ${line.padEnd(l)}  *`),
+      _.fill(Array(l + 5), "*") + "/",
       content,
     ].join('\n');
   }
 }
 
 class StylesheetAsset extends WebAsset {
-  rxImport = /@import\s+('|")(?!'|"|\/|https?:\/\/)/gu;
-  rxUrl = /url\s*\(\s*('|"|)(?!'|"|\/|https?:\/\/|data:)/gu;
-  rxSourceMap = /(\/\*# sourceMappingURL=.*)/gu;
-  rxCharset = /(@charset "[^"]+";)/gu;
-  rxIndent = /'^( +|\t+)/gm;
+  rxImport = /@import\s+('|")(?!'|"|\/|https?:\/\/)/u;
+  rxUrl = /url\s*\(\s*('|"|)(?!'|"|\/|https?:\/\/|data:)/u;
+  rxSourceMap = /(\/\*# sourceMappingURL=.*)/u;
+  rxCharset = /(@charset "[^"]+";)/u;
+  rxIndent = /'^( +|\t+)/m;
 
   media: any;
   direction: any;
@@ -1134,7 +1145,7 @@ class SassStylesheetAsset extends PreprocessedCSS {
 
     let content = dedent(this.inline ?? await this._fetchContent());
     try {
-      content = content.replace(this.rxIndent, fixIndent);
+      content = content.replaceAll(this.rxIndent, fixIndent);
     } catch (e) {
       if (!isInstance(e, StopIteration)) {
         throw e;
@@ -1169,7 +1180,6 @@ class ScssStylesheetAsset extends PreprocessedCSS {
     try {
       await forceHook();
       const result = libsass.renderSync({
-        silenceDeprecations: ['legacy-js-api'],
         data: source,
         includePaths: [
           this.bootstrapPath,
@@ -1190,7 +1200,7 @@ class ScssStylesheetAsset extends PreprocessedCSS {
     } catch (e) {
       sassc = 'sassc';
     }
-    return [sassc, '--quiet-deps', '--stdin', '--precision', String(this.precision), '--load-path', this.bootstrapPath, '-t', this.outputStyle];
+    return [sassc, '--stdin', '--precision', String(this.precision), '--load-path', this.bootstrapPath, '-t', this.outputStyle];
   }
 }
 

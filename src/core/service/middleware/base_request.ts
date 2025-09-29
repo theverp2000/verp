@@ -2,8 +2,10 @@ import busboy from 'busboy';
 import contentType from 'content-type';
 import http from 'http';
 import getRawBody from 'raw-body';
-import { MultiDict } from '../../helper/collections';
-import { isInstance, len, URI } from '../../tools';
+import { Dict, MultiDict } from '../../helper/collections';
+import { len } from '../../tools';
+import { isInstance } from '../../tools/func';
+import { URI } from '../../tools/uri';
 import { cookieParse } from './cookie';
 import { getCurrentUrl, parseAcceptLanguages } from './wsgi';
 

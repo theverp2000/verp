@@ -309,6 +309,10 @@ export class Environment {
 
   items(modelName: string): any {
     const cls = this.registry.models[modelName];
+    if (!cls) {
+      console.warn('Undefined model "%s"', modelName);
+      throw new KeyError('Undefined model "%s"', modelName);
+    }
     return cls.prototype._browse(this, [], []);
   }
 
@@ -376,7 +380,7 @@ export class Environment {
         await func();
       }
     } catch (e) {
-      global.logDebug && console.debug('>> Protecting alert', e.stack ?? e.message);
+      global.logDebug && console.debug('>> Protecting alert', e.stack ?? e.message); // todo hide
       throw e;
     } finally {
       _protected.pop();

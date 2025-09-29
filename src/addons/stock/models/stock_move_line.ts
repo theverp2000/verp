@@ -1,7 +1,15 @@
 import _ from "lodash";
-import { Fields, MetaModel, Model, _Datetime, _super, api, tools } from "../../../core";
-import { DefaultDict, Dict, OrderedSet, OrderedSet2, UserError, ValidationError } from "../../../core/helper";
-import { _f, bool, floatCompare, floatIsZero, floatRound, groupbyAsync, isInstance, len, pop, setOptions, sortedAsync, sum } from "../../../core/tools";
+import { api, tools } from "../../../core";
+import { Fields, _Datetime } from "../../../core/fields";
+import { DefaultDict, Dict, OrderedSet, OrderedSet2 } from "../../../core/helper/collections";
+import { UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { bool } from "../../../core/tools/bool";
+import { floatCompare, floatIsZero, floatRound } from "../../../core/tools/float_utils";
+import { len, sortedAsync, sum } from "../../../core/tools/iterable";
+import { groupbyAsync, pop, setOptions } from "../../../core/tools/misc";
+import { _f } from "../../../core/tools/utils";
+import { isInstance } from "../../../core/tools";
 
 function Counter(word) {
     const counter = new Dict<any>();
@@ -665,7 +673,7 @@ class StockMoveLine extends Model {
             // Add with_prefetch() to set the _prefecht_ids = _ids
             // because _prefecht_ids generator look lazily on the cache of moveId
             // which is clear by the unlink of move line
-            await (await moves.withPrefetch())._recomputeState();
+            await moves.withPrefetch()._recomputeState();
         }
         return res;
     }
@@ -830,7 +838,7 @@ class StockMoveLine extends Model {
 
         const lots = await this.env.items('stock.production.lot').create(lotVals);
         for (const [key, mls] of keyToMls.items()) {
-            await mls._assignProductionLot(await lots[keyToIndex[key]].withPrefetch(lots._ids));  // With prefetch to reconstruct the ones broke by accessing by index
+            await mls._assignProductionLot(lots[keyToIndex[key]].withPrefetch(lots._ids));  // With prefetch to reconstruct the ones broke by accessing by index
         }
     }
 

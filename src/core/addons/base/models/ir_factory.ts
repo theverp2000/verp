@@ -1,12 +1,17 @@
 import _, { capitalize, difference, intersection, isEqual, range, zip } from "lodash";
 import assert from "node:assert";
-import { AbstractModel, BaseModel, Command, Field, LOG_ACCESS_COLUMNS, MAGIC_COLUMNS, MetaModel, NewId, VALID_AGGREGATE_FUNCTIONS, _Many2one, _Number, _One2many, api, checkObjectName, tools } from "../../..";
+import { Command, Field, _Datetime, _Many2one, _Number, _One2many, api, tools } from "../../..";
+import { Environment } from "../../../api";
 import { attrgetter, setdefault } from "../../../api/func";
-import { AccessError, Dict, LRU, Map2, MissingError, OrderedDict, OrderedSet2, UserError, ValueError } from "../../../helper";
-import { Query, expression } from "../../../osv";
+import { AccessError, Dict, Map2, MissingError, OrderedDict, OrderedSet2, UserError, ValueError } from "../../../helper";
+import { LRU } from "../../../helper/lru";
+import { AbstractModel, BaseModel, LOG_ACCESS_COLUMNS, MAGIC_COLUMNS, MetaModel, NewId, VALID_AGGREGATE_FUNCTIONS, checkObjectName } from "../../../models";
+import { expression } from "../../../osv";
+import { Query } from "../../../osv/query";
 import { Cursor } from "../../../sql_db";
 import { CountingStream, E, UpCamelCase, _f, bool, chain, cleanContext, enumerate, equal, extend, f, getrootXml, groupby, isCallable, isInstance, islice, itemgetter, len, map, next, parseXml, partial, partition, pop, repr, serializeXml, sorted, stringify, takewhile, unique, update } from "../../../tools";
 import { MODULE_UNINSTALL_FLAG } from "./ir_model";
+import { Populate as populate } from "../../../tools/populate";
 
 function raiseOnInvalidObjectName(name) {
   if (!checkObjectName(name)) {
@@ -22,7 +27,7 @@ function raiseOnInvalidObjectName(name) {
  * @returns split field name
  */
 function fixImportExportIdPaths(fieldname: string) {
-  const fixedDbId = fieldname.replace(/([^/])\.id/g, '$1/id');
+  const fixedDbId = fieldname.replace(/([^/])\.id/g, '$1/id')
   const fixedExternalId = fixedDbId.replace(/([^/]):id/g, '$1/id');
   return fixedExternalId.split('/')
 }
@@ -219,6 +224,152 @@ class IrFactory extends AbstractModel {
     } else {
       return this.cls._tableQuery;
     }
+  }
+
+  async mapped(func) {
+    if (!func) {
+      return this;             // support for an empty path of fields
+    }
+    if (typeof func === 'string') {
+      let recs = this;
+      for (const name of func.split('.')) {
+        const field = recs._fields[name];
+        if (!field) {
+          console.log('Not found field:', name);
+        }
+        recs = await field.mapped(recs);
+      }
+      return recs;
+    } else {
+      return this._mappedFunc(func);
+    }
+  }
+
+  async filteredDomain(domain) {
+    if (!bool(domain)) return this;
+    const result = [];
+    for (const d of Array.from<any>(domain).reverse()) {
+      if (d === '|')
+        result.push(result.pop().or(result.pop()))
+      else if (d === '!')
+        result.push(this.sub(result.pop()))
+      else if (d === '&')
+        result.push(result.pop().and(result.pop()))
+      else if (expression.isTrueLeaf(d))
+        result.push(this)
+      else if (expression.isFalseLeaf(d))
+        result.push(this.browse())
+      else {
+        let [key, comparator, value] = d;
+        if (['childOf', 'parentOf'].includes(comparator)) {
+          result.push(this.search([['id', 'in', this.ids], d]));
+          continue;
+        }
+        if (key.endsWith('.id'))
+          key = key.slice(0, -3);
+        if (key === 'id')
+          key = '';
+        // determine the field with the final type for values
+        let field = null;
+        if (key) {
+          let model = this.browse();
+          for (const fname of key.split('.')) {
+            field = model._fields[fname];
+            model = await model[fname];
+          }
+        }
+        let valueEsc;
+        if (['like', 'ilike', '=like', '=ilike', 'not ilike', 'not like'].includes(comparator)) {
+          valueEsc = value.replace('_', '?').replace('%', '*').replace('[', '?');
+        }
+        const recordsIds = new OrderedSet2();
+        for (const rec of this) {
+          let data = await rec.mapped(key);
+          if (isInstance(data, BaseModel)) {
+            let v = value;
+            if (Array.isArray(value) && value.length) {
+              v = value[0];
+            }
+            if (typeof v === 'string') {
+              data = await data.mapped('displayName');
+            }
+            else {
+              data = data.ok && data.ids;
+              data = bool(data) ? data : [false];
+            }
+          }
+          else if (field && ['date', 'datetime'].includes(field.type)) {
+            // convert all date and datetime values to datetime
+            const normalize = _Datetime.toDatetime;
+            if (Array.isArray(value)) {
+              value = value.map(v => normalize(v));
+            }
+            else {
+              value = normalize(value);
+            }
+            data = data.map(v => normalize(v));
+          }
+          if (['in', 'not in'].includes(comparator)) {
+            if (!(Array.isArray(value))) {
+              value = [value];
+            }
+          }
+
+          let ok;
+          if (comparator === '=')
+            ok = data.includes(value)
+          else if (comparator === 'in')
+            ok = value.some(x => data.includes(x))
+          else if (comparator === '<')
+            ok = data.some(x => x != null && x < value)
+          else if (comparator === '>')
+            ok = data.some(x => x != null && x > value)
+          else if (comparator === '<=')
+            ok = data.some(x => x != null && x <= value)
+          else if (comparator === '>=')
+            ok = data.some(x => x != null && x >= value)
+          else if (['!=', '<>'].includes(comparator))
+            ok = !data.includes(value)
+          else if (comparator === 'not in')
+            ok = value.every(x => !data.includes(x))
+          else if (comparator === 'not ilike') {
+            data = data.map(x => x || "")
+            ok = data.every(x => !x.toLowerCase().includes(value.toLowerCase()))
+          }
+          else if (comparator === 'ilike') {
+            data = data.map(x => (x || "").toLowerCase())
+            ok = data.filter(d => d.includes(valueEsc || '')).length > 0
+          }
+          else if (comparator === 'not like') {
+            data = data.map(x => x || "")
+            ok = data.every(x => !x.includes(value))
+          }
+          else if (comparator === 'like') {
+            data = data.map(x => x || "")
+            ok = data.filter(d => d.includes(value && valueEsc)).length > 0
+          }
+          else if (comparator === '=?')
+            ok = data.includes(value) || !value
+          else if (['=like'].includes(comparator)) {
+            data = data.map(x => x || "")
+            ok = data.filter(d => d.includes(valueEsc)).length > 0
+          }
+          else if (['=ilike'].includes(comparator)) {
+            data = data.map(x => (x || "").toLowerCase())
+            ok = data.filter(d => d.includes(value && valueEsc.toLowerCase())).length > 0
+          }
+          else
+            throw new ValueError('data invalid %s', data)
+          if (ok)
+            recordsIds.add(rec.id)
+        }
+        result.push(this.browse(recordsIds));
+      }
+    }
+    while (result.length > 1) {
+      result.push(result.pop().and(result.pop()));
+    }
+    return result[0];
   }
 
   @api.model()
@@ -1039,7 +1190,7 @@ class IrFactory extends AbstractModel {
       const res = await this._cr.execute(tools._convert$(sql), { bind: params });
       return tools.parseInt(res[0]['count']);
     }
-    query.order = (await this._generateOrderBy(options.order, query)).replaceAll('ORDER BY ', '');
+    query.order = (await this._generateOrderBy(options.order, query)).replace('ORDER BY ', '');
     query.limit = options.limit;
     query.offset = options.offset;
 
@@ -1446,7 +1597,7 @@ class IrFactory extends AbstractModel {
       query.addWhere(`"${cls._table}".id IN (%%s)`);
       let [queryStr, params] = query.select(...qualNames);
       for (const subIds of cr.splitForInConditions(this.ids)) {
-        let str = queryStr.replaceAll('%%s', subIds.toString());
+        let str = queryStr.replace('%%s', subIds.toString());
         str = tools._convert$(str);
         const res = await cr.execute(str, { bind: params });
         for (const r of res) {
@@ -2352,7 +2503,7 @@ class IrFactory extends AbstractModel {
       try {
         await cr.savepoint(true, async () => {
           const recs = await self._loadRecords(dataList, mode == 'update');
-          extend(returnList, dataList.map(data => ({ xmlid: data['xmlid'], id: data['record'].id }) ));
+          extend(returnList, dataList.map(data => ({ xmlid: data['xmlid'], id: data['record'].id })));
         });
         return;
       } catch (e) {
@@ -2824,7 +2975,7 @@ class IrFactory extends AbstractModel {
     // this is for tests using `Form`
     await this.flush();
 
-    const env: api.Environment = this.env;
+    const env: Environment = this.env;
     let names: string[];
     if (Array.isArray(fieldName)) {
       names = fieldName;
@@ -3292,5 +3443,49 @@ class IrFactory extends AbstractModel {
       }
       return;
     }
+  }
+
+  get _populateSizes() {
+    return {
+      'small': 10,    // minimal representative set
+      'medium': 100,  // average database load
+      'large': 1000,  // maxi database load
+    }
+  }
+
+  get _populateDependencies() {
+    return [];
+  }
+
+  async _populate(size) {
+    const batchSize = 1000,
+      minSize = this._populateSizes[size];
+
+    let recordCount = 0,
+      createValues = [],
+      complete = false;
+
+    const fieldGenerators = await this._populateFactories();
+    if (!bool(fieldGenerators)) {
+      return this.browse(); // maybe create an automatic generator?
+    }
+
+    const recordsBatches = [];
+    const generator = populate.chainFactories(fieldGenerators, this._name);
+    while (recordCount < minSize || !complete) {
+      const values = await tools.nextAsync(generator);
+      complete = pop(values, '__complete');
+      createValues.push(values);
+      recordCount += 1;
+      if (len(createValues) >= batchSize) {
+        console.info('Batch: %s/%s', recordCount, minSize);
+        recordsBatches.push(await this.create(createValues));
+        createValues = [];
+      }
+    }
+    if (createValues.length) {
+      recordsBatches.push(await this.create(createValues));
+    }
+    return this.concat(recordsBatches);
   }
 }

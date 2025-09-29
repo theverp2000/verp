@@ -11,9 +11,7 @@ import { fragmentFromString } from "../../../core/tools/html";
 import { formatAmount, formatDate } from "../../../core/tools/models";
 import { convertInlineTemplateToQweb, parseInlineTemplate, renderInlineTemplate, templateEnvGlobals } from "../../../core/tools/rendering_tools";
 import { checkValues } from "../../../core/tools/save_eval";
-import { f } from "../../../core/tools/string";
-import { _f } from "../../../core/tools/string";
-import { ustr } from "../../../core/tools/string";
+import { _f, f, ustr } from "../../../core/tools/utils";
 import { markup, Markup } from "../../../core/tools/xml";
 
 async function formatDatetime(env, dt, tz?: any, dtFormat: string = 'medium', langCode?: any) {

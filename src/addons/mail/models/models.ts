@@ -315,15 +315,15 @@ class BaseModel extends AbstractModel {
    * Generate the email headers based on record
    * @returns 
    */
-  _notifyEmailHeaders() {
+  async _notifyEmailHeaders() {
     if (!this.ok) {
       return {};
     }
     this.ensureOne();
-    return repr(this._notifyEmailHeaderDict());
+    return repr(await this._notifyEmailHeaderDict());
   }
 
-  _notifyEmailHeaderDict() {
+  async _notifyEmailHeaderDict() {
     return {
       'X-Verp-Objects': f("%s-%s", this._name, this.id),
     }

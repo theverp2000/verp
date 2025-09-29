@@ -1,6 +1,8 @@
-import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
+import { Fields, api } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { bool, f, len, literalEval } from "../../../core/tools";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { bool, f, len } from "../../../core/tools";
+import { literalEval } from "../../../core/tools/ast";
 
 @MetaModel.define()
 class ResConfigSettings extends TransientModel {

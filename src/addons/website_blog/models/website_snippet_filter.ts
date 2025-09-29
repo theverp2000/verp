@@ -1,4 +1,5 @@
-import { _Date, _super, MetaModel, Model } from "../../../core";
+import { _Date } from "../../../core";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { len, range, subDate } from "../../../core/tools";
 
 @MetaModel.define()
@@ -20,7 +21,7 @@ class WebsiteSnippetFilter extends Model {
                 'label': await this._t('With a View'),
                 'subtitle': await this._t('Awesome hotel rooms'),
                 'postDate': subDate(_Date.today(), {days: 2}),
-                'websiteUrl': "",
+                'website_url': "",
             }, {
                 'coverProperties': '{"background-image": "url(\'/website_blog/static/src/img/cover_4.jpg\')", "resizeClass": "o-record-has-cover o-half-screen-height", "opacity": "0"}',
                 'label': await this._t('Skies'),

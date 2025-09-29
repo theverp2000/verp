@@ -1,5 +1,6 @@
 import xpath from 'xpath';
-import { _super, AbstractModel, api, MetaModel } from "../../../core";
+import { api } from "../../../core";
+import { _super, AbstractModel, MetaModel } from "../../../core/models"
 import { urlParse } from '../../../core/service/middleware/utils';
 
 @MetaModel.define()

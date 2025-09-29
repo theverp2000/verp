@@ -1,6 +1,8 @@
-import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { Fields, _Date, api } from "../../../core";
 import { ValidationError } from "../../../core/helper";
-import { addDate, bool } from "../../../core/tools";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { bool } from "../../../core/tools";
+import { addDate } from "../../../core/tools/date_utils";
 
 @MetaModel.define()
 class RecurringPayment extends Model {

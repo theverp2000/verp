@@ -150,7 +150,7 @@ export class Query {
         ...     "res_partner",
         ...     "id",
         ...     "partnerId",           # partnerId is the "link" from res_users to res_partner
-        ...     "{lhs}.\"name\" != %s",
+        ...     "{lhs}.\"label\" != %s",
         ...     ("Mitchell Admin",),
         ... )
         >>> rhs_alias
@@ -159,10 +159,10 @@ export class Query {
         From the example above, the resulting query would be something like::
 
             SELECT ...
-            FROM "res_users" AS "res_users"
-            JOIN "res_partner" AS "res_users_res_partner__partner_id"
-                ON "res_users"."partnerId" = "res_users_res_partner__partner_id"."id"
-                AND "res_users"."name" != 'Mitchell Admin'
+            FROM "resUsers"
+            JOIN "resPartner" AS "res_users_res_partner__partner_id"
+                ON "resUsers"."partnerId" = "res_users_res_partner__partner_id"."id"
+                AND "resUsers"."label" != 'Mitchell Admin'
             WHERE ...
 
    * @param kind 

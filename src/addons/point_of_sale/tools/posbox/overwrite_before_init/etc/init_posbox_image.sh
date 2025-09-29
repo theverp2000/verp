@@ -46,33 +46,33 @@ PKGS_TO_INSTALL="
     openbox \
     printer-driver-all \
     javascript-cups \
-    javascript \
-    javascript-babel \
-    javascript-dateutil \
-    javascript-decorator \
-    javascript-dev \
-    javascript-docutils \
-    javascript-jinja2 \
-    javascript-ldap \
-    javascript-libsass \
-    javascript-lxml \
-    javascript-mako \
-    javascript-mock \
-    javascript-netifaces \
-    javascript-passlib \
-    javascript-pil \
-    javascript-pip \
-    javascript-psutil \
-    javascript-psycopg2 \
-    javascript-pydot \
-    javascript-pypdf2 \
-    javascript-qrcode \
-    javascript-reportlab \
-    javascript-requests \
-    javascript-serial \
-    javascript-tz \
-    javascript-urllib3 \
-    javascript-theveb \
+    python3 \
+    python3-babel \
+    python3-dateutil \
+    python3-decorator \
+    python3-dev \
+    python3-docutils \
+    python3-jinja2 \
+    python3-ldap \
+    python3-libsass \
+    python3-lxml \
+    python3-mako \
+    python3-mock \
+    python3-netifaces \
+    python3-passlib \
+    python3-pil \
+    python3-pip \
+    python3-psutil \
+    python3-psycopg2 \
+    python3-pydot \
+    python3-pypdf2 \
+    python3-qrcode \
+    python3-reportlab \
+    python3-requests \
+    python3-serial \
+    python3-tz \
+    python3-urllib3 \
+    python3-theveb \
     rsync \
     screen \
     unclutter \

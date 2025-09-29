@@ -1,17 +1,21 @@
 import _ from "lodash";
 import luxon, { DateTime, Duration } from "luxon";
-import path from "node:path";
-import { BaseModel, _Datetime, http } from "../../../core";
+import { _Datetime, http } from "../../../core";
 import { Home } from "../../../core/addons/web";
 import { setdefault } from "../../../core/api";
 import { Dict, ValueError } from "../../../core/helper";
 import { WebRequest, httpGet } from "../../../core/http";
-import { expression } from "../../../core/osv";
+import { BaseModel } from "../../../core/models";
 import { Forbidden, NotFound } from "../../../core/service";
 import { expVersion } from "../../../core/service/common";
-import { BaseResponse } from "../../../core/service/middleware/base_response";
 import { urlEncode, urlJoin, urlParse } from "../../../core/service/middleware/utils";
-import { URI, b64decode, bool, ellipsis, escapePsql, escapeRegExp, extend, f, isInstance, isList, islice, iterchildren, len, lstrip, parseInt, parseXml, pop, range, setOptions, slugify, someAsync, sorted, stringPart, stringify } from "../../../core/tools";
+import { URI, b64decode, bool, ellipsis, escapePsql, escapeRegExp, extend, f, isInstance, isList, islice, len, lstrip, parseInt, pop, range, setOptions, slugify, someAsync, sorted, stringPart, update } from "../../../core/tools";
+import { iterchildren, parseXml } from "../../../core/tools/xml";
+
+import path from "node:path";
+import { expression } from "../../../core/osv";
+import { BaseResponse } from "../../../core/service/middleware/base_response";
+import { stringify } from "../../../core/tools/json";
 import { _guessMimetype } from '../../http_routing/models/ir_http';
 import { pager as portalPager } from '../../portal/controllers/portal';
 
@@ -263,10 +267,9 @@ export class Website extends Home {
             });
         }
         let dom: any[] = [['url', '=', f('/sitemap-%s.xml', currentWebsite.id)], ['type', '=', 'binary']];
-        const sitemap = await attachment.search(dom, { limit: 1 });
-        if (sitemap.ok) {
+        let sitemap = await attachment.search(dom, { limit: 1 });
+        if (bool(sitemap)) {
             // Check if stored version is still valid
-            luxon.DateTime.now
             const createdAt = _Datetime.toDatetime(await sitemap.createdAt);
             const delta = luxon.Interval.fromDateTimes(createdAt, DateTime.now());
             if (delta.toDuration().hours < SITEMAP_CACHE_TIME.hours) {
@@ -276,7 +279,7 @@ export class Website extends Home {
         if (!bool(content)) {
             // Remove all sitemaps in ir.attachments as we're going to regenerated them
             dom = [['type', '=', 'binary'], '|', ['url', '=like', f('/sitemap-%s-%%.xml', currentWebsite.id)],
-            ['url', '=', f('/sitemap-%s.xml', currentWebsite.id)]]
+            ['url', '=', f('/sitemap-%s.xml', currentWebsite.id)]];
             const sitemaps = await attachment.search(dom);
             await sitemaps.unlink();
 
@@ -290,9 +293,9 @@ export class Website extends Home {
                 }
                 const urls = await view._renderTemplate('website.sitemapLocs', values);
                 if (urls.trim()) {
-                    const content = await view._render_template('website.sitemapXml', { 'content': urls });
+                    content = await view._renderTemplate('website.sitemapXml', { 'content': urls });
                     pages += 1;
-                    lastSitemap = createSitemap(f('/sitemap-%s-%s.xml', currentWebsite.id, pages), content);
+                    lastSitemap = await createSitemap(f('/sitemap-%s-%s.xml', currentWebsite.id, pages), content);
                 }
                 else {
                     break;
@@ -320,7 +323,7 @@ export class Website extends Home {
                     'pages': pagesWithWebsite,
                     'urlRoot': req.httpRequest.urlRoot,
                 })
-                createSitemap(f('/sitemap-%s.xml', currentWebsite.id), content);
+                await createSitemap(f('/sitemap-%s.xml', currentWebsite.id), content);
             }
         }
 

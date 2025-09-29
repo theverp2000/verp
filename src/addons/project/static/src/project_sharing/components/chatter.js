@@ -5,13 +5,13 @@ import Composer from './composer';
 
 export default PortalChatter.extend({
     messageFetch(domain) {
-        if (!this.options.res_id) {
+        if (!this.options.resId) {
             return Promise.resolve();
         }
         return this._super.apply(this, arguments);
     },
     _chatterInit() {
-        if (!this.options.res_id) {
+        if (!this.options.resId) {
             this.result = { messages: [] };
             return Promise.resolve();
         }
@@ -19,8 +19,8 @@ export default PortalChatter.extend({
     },
     _messageFetchPrepareParams() {
         const data = this._super.apply(this, arguments);
-        if (this.options.project_sharing_id) {
-            data.project_sharing_id = this.options.project_sharing_id;
+        if (this.options.projectSharingId) {
+            data.projectSharingId = this.options.projectSharingId;
         }
         return data;
     },

@@ -1,5 +1,6 @@
-import _ from "lodash";
-import { api, MetaModel, Model } from "../../../core";
+import _ from "lodash"
+import { api } from "../../../core"
+import { MetaModel, Model } from "../../../core/models"
 
 @MetaModel.define()
 class ResUsers extends Model {

@@ -1,5 +1,6 @@
-import { Command, Fields, MetaModel, TransientModel, _super, api } from "../../../core";
-import { UserError } from "../../../core/helper";
+import { Command, Fields, api } from "../../../core";
+import { UserError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
 import { bool, len } from "../../../core/tools";
 
 @MetaModel.define()

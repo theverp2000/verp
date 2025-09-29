@@ -1,6 +1,7 @@
 import _ from "lodash";
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
-import { DefaultDict, DefaultMapKey, Dict, MapKey, UserError, ValidationError } from "../../../core/helper";
+import { Fields, api } from "../../../core";
+import { DefaultDict, Dict, DefaultMapKey, MapKey, UserError, ValidationError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models"
 import { bool, extend, floatCompare, floatIsZero, groupbyAsync, isInstance, parseInt, range, sortedAsync, sum, update } from "../../../core/tools";
 
 @MetaModel.define()
@@ -351,7 +352,7 @@ class StockMove extends Model {
                         const mlVals = await move._prepareMoveLineVals();
                         if (await (await line.productId).tracking === 'serial') {
                             extend(moveLinesToCreate, Array.from(range(parseInt(differenceQty))).map(i => mlVals));
-                            extend(mlsQties, Array(parseInt(differenceQty)).fill(1));
+                            extend(mlsQties, _.fill(Array(parseInt(differenceQty)), 1));
                         }
                         else {
                             moveLinesToCreate.push(mlVals);

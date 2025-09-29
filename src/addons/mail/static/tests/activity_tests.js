@@ -325,7 +325,7 @@ QUnit.test('activity view: activity widget', async function (assert) {
 
     var activity = await createView(params);
     var today = activity.$('table tbody tr:first td:nth-child(2).today');
-    var dropdown = today.find('.dropdown-menu.o_activity');
+    var dropdown = today.find('.dropdown-menu.o-activity');
 
     await testUtils.dom.click(today.find('.o-closest-deadline'));
     assert.hasClass(dropdown,'show', "dropdown should be displayed");
@@ -339,7 +339,7 @@ QUnit.test('activity view: activity widget', async function (assert) {
     await testUtils.dom.click(dropdown.find('.o_activity_title_entry[data-activity-id="2"]:first .o_activity_template_send'));
     var overdue = activity.$('table tbody tr:first td:nth-child(3).overdue');
     await testUtils.dom.click(overdue.find('.o-closest-deadline'));
-    dropdown = overdue.find('.dropdown-menu.o_activity');
+    dropdown = overdue.find('.dropdown-menu.o-activity');
     assert.notOk(dropdown.find('.o_activity_title div div div:first span').length,
         "No template should be available");
 
@@ -522,7 +522,7 @@ QUnit.test("Activity view: discard an activity creation dialog", async function 
     await doAction(webClient, 1);
 
     await testUtils.dom.click(
-        $(webClient.el).find(".o_activity_view .o-data-row .o-activity-empty-cell")[0]
+        $(webClient.el).find(".o-activity-view .o-data-row .o-activity-empty-cell")[0]
     );
     await legacyExtraNextTick();
     assert.containsOnce($, ".modal.o-technical-modal", "Activity Modal should be opened");
@@ -660,7 +660,7 @@ QUnit.test("Schedule activity dialog uses the same search view as activity view"
     ])
 
     // click on "Schedule activity"
-    await click(webClient.el.querySelector(".o_activity_view .o_record-selector"));
+    await click(webClient.el.querySelector(".o-activity-view .o_record-selector"));
 
     assert.verifySteps([
         '[[false,"list"],[false,"search"]]',
@@ -680,7 +680,7 @@ QUnit.test("Schedule activity dialog uses the same search view as activity view"
     ])
 
     // click on "Schedule activity"
-    await click(webClient.el.querySelector(".o_activity_view .o_record-selector"));
+    await click(webClient.el.querySelector(".o-activity-view .o_record-selector"));
 
     assert.verifySteps([
         '[[false,"list"],[1,"search"]]',
@@ -715,28 +715,28 @@ QUnit.test('Activity view: apply progressbar filter', async function (assert) {
 
     await doAction(webClient, 1);
 
-    assert.containsNone(webClient.el.querySelector('.o_activity_view thead'),
+    assert.containsNone(webClient.el.querySelector('.o-activity-view thead'),
         '.o-activity-filter-planned,.o-activity-filter-today,.o-activity-filter-overdue,.o-activity-filter-__false',
         "should not have active filter");
-    assert.containsNone(webClient.el.querySelector('.o_activity_view tbody'),
+    assert.containsNone(webClient.el.querySelector('.o-activity-view tbody'),
         '.o-activity-filter-planned,.o-activity-filter-today,.o-activity-filter-overdue,.o-activity-filter-__false',
         "should not have active filter");
-    assert.strictEqual(webClient.el.querySelector('.o_activity_view tbody .o_activity_record').textContent,
+    assert.strictEqual(webClient.el.querySelector('.o-activity-view tbody .o_activity_record').textContent,
         'Office planning', "'Office planning' should be first record");
-    assert.containsOnce(webClient.el.querySelector('.o_activity_view tbody'), '.planned',
+    assert.containsOnce(webClient.el.querySelector('.o-activity-view tbody'), '.planned',
         "other records should be available");
 
     await testUtils.dom.click(webClient.el.querySelector('.o-kanban-counter-progress .progress-bar[data-filter="planned"]'));
-    assert.containsOnce(webClient.el.querySelector('.o_activity_view thead'), '.o-activity-filter-planned',
+    assert.containsOnce(webClient.el.querySelector('.o-activity-view thead'), '.o-activity-filter-planned',
         "planned should be active filter");
-    assert.containsN(webClient.el.querySelector('.o_activity_view tbody'), '.o-activity-filter-planned', 5,
+    assert.containsN(webClient.el.querySelector('.o-activity-view tbody'), '.o-activity-filter-planned', 5,
         "planned should be active filter");
-    assert.strictEqual(webClient.el.querySelector('.o_activity_view tbody .o_activity_record').textContent,
+    assert.strictEqual(webClient.el.querySelector('.o-activity-view tbody .o_activity_record').textContent,
         'Meeting Room Furnitures', "'Office planning' should be first record");
-    const tr = webClient.el.querySelectorAll('.o_activity_view tbody tr')[1];
+    const tr = webClient.el.querySelectorAll('.o-activity-view tbody tr')[1];
     assert.hasClass(tr.querySelectorAll('td')[1], 'o-activity-empty-cell',
         "other records should be hidden");
-    assert.containsNone(webClient.el.querySelector('.o_activity_view tbody'), 'planned',
+    assert.containsNone(webClient.el.querySelector('.o-activity-view tbody'), 'planned',
         "other records should be hidden");
 });
 

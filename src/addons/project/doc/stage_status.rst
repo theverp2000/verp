@@ -46,7 +46,7 @@ Subtypes
 The following subtypes are triggered on ``project.task``:
 
  - ``mt_task_new``: new tasks. Condition: ``obj.stageId and obj.stageId.sequence == 1``
- - ``mt_task_stage``: stage changed. Condition: ``obj.stageId and obj.stageId.sequence != 1``
+ - ``mtTaskStage``: stage changed. Condition: ``obj.stageId and obj.stageId.sequence != 1``
  - ``mt_task_assigned``: user assigned. condition: ``obj.userId and obj.userId.id``
  - ``mt_task_blocked``: kanban state blocked. Condition: ``obj.kanban_state == 'blocked'``
 

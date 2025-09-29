@@ -1,4 +1,5 @@
-import { Fields, MetaModel, Model, _super } from "../../../core";
+import { Fields } from "../../../core";
+import { MetaModel, Model, _super } from "../../../core/models";
 
 @MetaModel.define()
 class Alias extends Model {

@@ -9,4 +9,4 @@ const viewRegistry = registry.category("views");
 export class ProjectGraphView extends GraphView {}
 ProjectGraphView.ControlPanel = ProjectControlPanel;
 
-viewRegistry.add("project_graph", ProjectGraphView);
+viewRegistry.add("projectGraph", ProjectGraphView);

@@ -14,7 +14,7 @@ QUnit.module("Project", hooks => {
                     id: { string: "Id", type: "integer" },
                 },
                 records: [
-                    { id: 1, display_name: "First record"},
+                    { id: 1, displayName: "First record"},
                 ],
             },
         }
@@ -35,7 +35,7 @@ QUnit.module("Project", hooks => {
             View: ProjectFormView,
             model: 'project',
             data: serverData,
-            arch: '<form><field name="display_name"/></form>',
+            arch: '<form><field name="displayName"/></form>',
         });
         assert.containsOnce(document.body, form.el);
         form.destroy()

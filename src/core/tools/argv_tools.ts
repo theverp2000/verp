@@ -63,7 +63,7 @@ function getOptionName (arg) {
   } else if (isLongOption(arg)) {
     return arg.match(re.long)[1];
   } else if (isOptionEqualsNotation(arg)) {
-    return arg.match(re.optEquals)[1].replace(/^--/, '');
+    return arg.match(re.optEquals)[1].replace(/^--/g, '');
   } else {
     return null;
   }

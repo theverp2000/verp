@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>data demo</title>
+    <style>
+        *,
+        html {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: rgb(236, 152, 42);
+        }
+
+        .center {
+            width: 100%;
+            height: 50%;
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-family: "Trebuchet MS", Helvetica, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 144px;
+        }
+
+        p {
+            font-size: 64px;
+        }
+
+        div {
+            color: blue;
+        }
+
+        span {
+            color: red;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+</head>
+
+<body>
+    <!-- <div class="center">
+        <h1>Hello Again!</h1>
+        <p>This is served from a file</p>
+    </div> -->
+    <div data-ho-va-ten="Luong Toan Thuan">
+        The values stored were
+        <span></span>
+        and
+        <span></span>
+    </div>
+
+    <script>
+        $("div").data("test-lan-dau-tien", { 'first-name': 16, lastName: "pizza!" });
+        $("span").first().text($("div").data("testLanDauTien")['first-name']);
+        console.log($("div").data("testLanDauTien"));
+        console.log($("div").dataset.testLanDauTien);
+        console.log($("div").data("test-lan-dau-tien"));
+
+        // $("span").last().text($("div").data("test").last);
+        $("span").last().text($("div").data("test-lan-dau-tien").lastName);
+        // $( "body" ).data( { "my-name": "aValue" } ).data();
+        $("div").attr("ho-va-ten", "Tony Luong");
+    </script>
+
+</body>
+
+</html>

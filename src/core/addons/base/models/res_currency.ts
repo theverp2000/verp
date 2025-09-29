@@ -1,10 +1,17 @@
 import assert from "assert";
 import { DateTime } from "luxon";
 import xpath from 'xpath';
-import { Fields, MetaModel, Model, _Date, _super, api } from "../../..";
-import { ValueError } from "../../../helper";
+import { api } from "../../..";
+import { Fields, _Date } from "../../../fields";
+import { ValueError } from "../../../helper/errors";
+import { MetaModel, Model, _super } from "../../../models";
+import { bool } from "../../../tools/bool";
+import { floatCompare, floatIsZero, floatRound } from "../../../tools/float_utils";
+import { isInstance, stringPart } from "../../../tools/func";
+import { getLang } from "../../../tools/models";
+import { _f, f, num2words, ustr } from "../../../tools/utils";
+import { serializeXml } from "../../../tools/xml";
 import { Query } from "../../../osv";
-import { _f, bool, f, floatCompare, floatIsZero, floatRound, getLang, isInstance, num2words, serializeXml, stringPart, ustr } from "../../../tools";
 
 const CURRENCY_DISPLAY_PATTERN = /(\w+)\s*(?:\((.*)\))?'/;
 

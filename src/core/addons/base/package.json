@@ -2,10 +2,7 @@
     "label": "Base",
     "version": "1.3",
     "category": "Hidden",
-    "descriptions": [
-        "The kernel of Verp, needed for all installation.",
-        "==================================================="
-    ],
+    "description": "The kernel of Verp, needed for all installation.\n===================================================",
     "depends": [],
     "dataMini": [
         "data/res_bank.xml",

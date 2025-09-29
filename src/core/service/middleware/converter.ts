@@ -1,9 +1,11 @@
 import { v1 as uuidv1 } from 'uuid';
 import { tools } from "../..";
 import { ValidationError } from "../../helper/errors";
-import { escapeRegExp, f, isInstance, len } from "../../tools";
-import { Router } from "./router";
+import { escapeRegExp, isInstance } from "../../tools/func";
+import { len } from "../../tools/iterable";
+import { f } from "../../tools/utils";
 import { _fastUrlQuote } from "./utils";
+import { Router } from "./router";
 
 export class BaseConverter {
   regex: RegExp = /[^\/]+/;

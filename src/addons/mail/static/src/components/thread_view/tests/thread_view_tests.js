@@ -738,7 +738,7 @@ QUnit.test('basic rendering of canceled notification', async function (assert) {
     this.data['mail.notification'].records.push({
         failureType: 'SMTP',
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'canceled',
         notificationType: 'email',
         resPartnerId: 12,
@@ -1100,7 +1100,7 @@ QUnit.test('delete all attachments of a message with tracking fields should stil
     );
     this.data['mail.tracking.value'].records.push({
         changed_field: "Name",
-        field_type: "char",
+        fieldType: "char",
         id: 6,
         new_value: "New name",
         old_value: "Old name",

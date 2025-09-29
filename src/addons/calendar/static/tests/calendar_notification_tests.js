@@ -50,7 +50,7 @@ QUnit.module("Calendar Notification", (hooks) => {
                                 type: "calendar.alarm",
                                 payload: [{
                                     alarm_id: 1,
-                                    eventId: 2,
+                                    event_id: 2,
                                     title: "Meeting",
                                     message: "Very old meeting message",
                                     timer: 20 * 60,
@@ -108,7 +108,7 @@ QUnit.module("Calendar Notification", (hooks) => {
                                 type: "calendar.alarm",
                                 payload: [{
                                     alarm_id: 1,
-                                    eventId: 2,
+                                    event_id: 2,
                                     title: "Meeting",
                                     message: "Very old meeting message",
                                     timer: 20 * 60,
@@ -178,7 +178,7 @@ QUnit.module("Calendar Notification", (hooks) => {
                                 type: "calendar.alarm",
                                 payload: [{
                                     alarm_id: 1,
-                                    eventId: 2,
+                                    event_id: 2,
                                     title: "Meeting",
                                     message: "Very old meeting message",
                                     timer: 20 * 60,

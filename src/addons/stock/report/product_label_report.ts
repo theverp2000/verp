@@ -1,5 +1,5 @@
-import { AbstractModel, MetaModel } from "../../../core";
-import { UserError } from "../../../core/helper";
+import { UserError } from "../../../core/helper/errors";
+import { AbstractModel, MetaModel } from "../../../core/models";
 
 @MetaModel.define()
 class ReportProductLabel extends AbstractModel {

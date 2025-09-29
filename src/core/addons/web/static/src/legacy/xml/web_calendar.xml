@@ -12,7 +12,7 @@
     </div>
 
     <t t-name="calendar-box">
-        <div t-att-style="typeof color === 'string' ? ('background-color:' + color) + ';' : ''" t-attf-class="o-event #{record.isHighlighted ? 'o-event-hightlight' : ''} #{typeof color === 'number' ? _.str.sprintf('o-calendar-color-%s', color) : 'o-calendar-color-1'} #{record.isHatched ? 'o-calendar-hatched o-calendar-hatched-' + (typeof color === 'number' ? color : 1): ''} #{record.isStriked ? 'o-calendar-striked o-calendar-striked-' + (typeof color === 'number' ? color : 1): ''}">
+        <div t-att-style="typeof color === 'string' ? ('background-color:' + color) + ';' : ''" t-attf-class="o-event #{record.isHighlighted ? 'o-event-hightlight' : ''} #{typeof color === 'number' ? _.str.sprintf('o-calendar-color-%s', color) : 'o-calendar-color-1'} #{record.isHatched ? 'o-calendar-hatched o-calendar-hatched_' + (typeof color === 'number' ? color : 1): ''} #{record.isStriked ? 'o-calendar-striked o-calendar-striked_' + (typeof color === 'number' ? color : 1): ''}">
             <span t-if="showTime" class="fc-time"/>
             <div class="o-event-title" t-esc="record.displayName"/>
             <div t-if="showLocation and record.location" t-esc="record.location"/>

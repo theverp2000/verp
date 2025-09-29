@@ -1,6 +1,9 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
-import { UserError } from "../../../core/helper";
-import { _f, _lt, bool, extend, f, len, range, update } from "../../../core/tools";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { UserError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { _f, bool, extend, f, len, range, update } from "../../../core/tools";
+import { _lt } from "../../../core/tools/translate";
 
 async function ROUTE_NAMES() {
   return {

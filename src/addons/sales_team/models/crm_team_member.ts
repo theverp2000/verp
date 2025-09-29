@@ -1,6 +1,10 @@
-import { Fields, MetaModel, Model, ModelRecords, _super, api } from "../../../core"
-import { ValidationError } from "../../../core/helper"
-import { _f, bool, f, len } from "../../../core/tools"
+import { api } from "../../../core"
+import { Fields } from "../../../core/fields"
+import { ValidationError } from "../../../core/helper/errors"
+import { MetaModel, Model, ModelRecords, _super } from "../../../core/models"
+import { bool } from "../../../core/tools/bool"
+import { len } from "../../../core/tools/iterable"
+import { _f, f } from "../../../core/tools/utils"
 
 @MetaModel.define()
 class CrmTeamMember extends Model {

@@ -4,7 +4,7 @@ import { _t } from 'web.core';
 import Dialog from 'web.Dialog';
 import ListView from 'web.ListView';
 import ListController from 'web.ListController';
-import viewRegistry from 'web.view_registry';
+import viewRegistry from 'web.viewRegistry';
 import { ProjectControlPanel } from '@project/js/project_control_panel';
 
 const ProjectListController = ListController.extend({
@@ -13,7 +13,7 @@ const ProjectListController = ListController.extend({
             return this._super(...arguments);
         }
 
-        const recurringRecords = this.getSelectedRecords().filter(rec => rec.data.recurrence_id).map(rec => rec.data.id);
+        const recurringRecords = this.getSelectedRecords().filter(rec => rec.data.recurrenceId).map(rec => rec.data.id);
         this.archiveEnabled = recurringRecords.length == 0;
         let actions = this._super(...arguments);
         this.archiveEnabled = true;
@@ -31,7 +31,7 @@ const ProjectListController = ListController.extend({
     },
 
     _onDeleteSelectedRecords() {
-        const recurringRecords = this.getSelectedRecords().filter(rec => rec.data.recurrence_id).map(rec => rec.data.id);
+        const recurringRecords = this.getSelectedRecords().filter(rec => rec.data.recurrenceId).map(rec => rec.data.id);
         if (recurringRecords.length > 0) {
             return this._stopRecurrence(recurringRecords, this.selectedRecords, 'delete');
         }
@@ -42,11 +42,11 @@ const ProjectListController = ListController.extend({
     _countRecordsPerReccurence(recurrenceIds, resIds) {
         return this._rpc({
             model: 'project.task',
-            method: 'read_group',
+            method: 'readGroup',
             args: [
-                [['recurrence_id', 'in', recurrenceIds], ['id', 'not in', resIds]],
-                ['recurrence_id'],
-                ['recurrence_id'],
+                [['recurrenceId', 'in', recurrenceIds], ['id', 'not in', resIds]],
+                ['recurrenceId'],
+                ['recurrenceId'],
             ],
         });
     },
@@ -54,7 +54,7 @@ const ProjectListController = ListController.extend({
     async _stopRecurrence(recurringResIds, resIds, mode) {
         const recurrenceIdsSet = new Set();
         for (const record of this.getSelectedRecords()) {
-            const recurrenceId = record.data.recurrence_id;
+            const recurrenceId = record.data.recurrenceId;
             if (recurrenceId) {
                 recurrenceIdsSet.add(recurrenceId);
             }
@@ -62,7 +62,7 @@ const ProjectListController = ListController.extend({
         const recurrenceIds = Array.from(recurrenceIdsSet);
         // list recurrences that have tasks left after deleting/archiving
         let countsLeft = await this._countRecordsPerReccurence(recurrenceIds, recurringResIds);
-        countsLeft = countsLeft.map(rec => rec.recurrence_id[0]);
+        countsLeft = countsLeft.map(rec => rec.recurrenceId[0]);
         // so we check that no recurrence is absent, as it would mean no task is left
         const allowContinue = recurrenceIds.every(rec => countsLeft.includes(rec));
 
@@ -84,7 +84,7 @@ const ProjectListController = ListController.extend({
                     click: () => {
                         this._rpc({
                             model: 'project.task',
-                            method: 'action_stop_recurrence',
+                            method: 'actionStopRecurrence',
                             args: [recurringResIds],
                         }).then(() => {
                             if (mode === 'archive') {
@@ -116,7 +116,7 @@ const ProjectListController = ListController.extend({
                     click: () => {
                         this._rpc({
                             model: 'project.task',
-                            method: 'action_continue_recurrence',
+                            method: 'actionContinueRecurrence',
                             args: [recurringResIds],
                         }).then(() => {
                             if (mode === 'archive') {
@@ -142,4 +142,4 @@ export const ProjectListView = ListView.extend({
     }),
 });
 
-viewRegistry.add('project_list', ProjectListView);
+viewRegistry.add('projectList', ProjectListView);

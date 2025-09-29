@@ -61,10 +61,10 @@ QUnit.test('channel - counter: should not have a counter if the category is unfo
         resId: 30,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         resPartnerId: this.data.currentPartnerId,
     }, {
-        mail_message_id: 200,
+        mailMessageId: 200,
         resPartnerId: this.data.currentPartnerId,
     });
     await this.start();
@@ -112,10 +112,10 @@ QUnit.test('channel - counter: should have correct value of needaction threads i
         resId: 30,
     });
     this.data['mail.notification'].records.push({
-        mail_message_id: 100,
+        mailMessageId: 100,
         resPartnerId: this.data.currentPartnerId,
     }, {
-        mail_message_id: 200,
+        mailMessageId: 200,
         resPartnerId: this.data.currentPartnerId,
     });
     this.data['res.users.settings'].records.push({

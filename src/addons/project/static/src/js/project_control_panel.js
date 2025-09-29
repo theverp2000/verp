@@ -7,8 +7,8 @@ export class ProjectControlPanel extends ControlPanel {
 
     constructor() {
         super(...arguments);
-        this.show_project_update = this.env.view.type === "form" || this.props.action.context.show_project_update;
-        this.projectId = this.show_project_update ? this.props.action.context.activeId : false;
+        this.showProjectUpdate = this.env.view.type === "form" || this.props.action.context.showProjectUpdate;
+        this.projectId = this.showProjectUpdate ? this.props.action.context.activeId : false;
     }
 
     async willStart() {
@@ -26,23 +26,23 @@ export class ProjectControlPanel extends ControlPanel {
     }
 
     async _loadWidgetData() {
-        if (this.show_project_update) {
+        if (this.showProjectUpdate) {
             this.data = await this.rpc({
                 model: 'project.project',
-                method: 'get_last_update_or_default',
+                method: 'getLastUpdateOrDefault',
                 args: [this.projectId],
             });
-            this.is_project_user = await session.user_has_group('project.group_project_user');
+            this.isProjectUser = await session.userHasGroup('project.groupProjectUser');
         }
     }
 
     async onStatusClick(ev) {
         ev.preventDefault();
         await this.trigger('do-action', {
-            action: "project.project_update_all_action",
+            action: "project.projectUpdateAllAction",
             options: {
-                additional_context: {
-                    default_project_id: this.projectId,
+                additionalContext: {
+                    default_projectId: this.projectId,
                     activeId: this.projectId
                 }
             }

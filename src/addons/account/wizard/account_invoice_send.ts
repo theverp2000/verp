@@ -1,6 +1,11 @@
-import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
-import { UserError } from "../../../core/helper";
-import { bool, f, getLang, len, reOpen, update } from "../../../core/tools";
+import { Fields, api } from "../../../core";
+import { UserError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { len, update } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { reOpen } from "../../../core/tools/mail";
+import { getLang } from "../../../core/tools/models";
+import { f } from "../../../core/tools/utils";
 
 @MetaModel.define()
 class AccountInvoiceSend extends TransientModel {

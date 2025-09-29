@@ -241,7 +241,7 @@ QUnit.module("Views", (hooks) => {
                 },
             });
 
-            assert.containsOnce(webClient, ".o_switch_view.o_graph.active");
+            assert.containsOnce(webClient, ".o-switch-view.o-graph.active");
 
             await toggleGroupByMenu(webClient);
             await toggleMenuItem(webClient, "Date Field");
@@ -250,7 +250,7 @@ QUnit.module("Views", (hooks) => {
             await switchView(webClient, "legacy_toy");
             await legacyExtraNextTick();
 
-            assert.containsOnce(webClient, ".o_switch_view.o_legacy_toy.active");
+            assert.containsOnce(webClient, ".o-switch-view.o_legacy_toy.active");
 
             await cpHelpers.toggleGroupByMenu(webClient);
             await toggleMenuItem(webClient, "Date Field");
@@ -258,7 +258,7 @@ QUnit.module("Views", (hooks) => {
 
             await switchView(webClient, "graph");
 
-            assert.containsOnce(webClient, ".o_switch_view.o_graph.active");
+            assert.containsOnce(webClient, ".o-switch-view.o-graph.active");
 
             // second doAction legacy_toy -> forecast_graph -> legacy_toy
 
@@ -277,7 +277,7 @@ QUnit.module("Views", (hooks) => {
             });
             await legacyExtraNextTick();
 
-            assert.containsOnce(webClient, ".o_switch_view.o_legacy_toy.active");
+            assert.containsOnce(webClient, ".o-switch-view.o_legacy_toy.active");
 
             await cpHelpers.toggleGroupByMenu(webClient);
             await toggleMenuItem(webClient, "Date Field");
@@ -285,7 +285,7 @@ QUnit.module("Views", (hooks) => {
 
             await switchView(webClient, "graph");
 
-            assert.containsOnce(webClient, ".o_switch_view.o_graph.active");
+            assert.containsOnce(webClient, ".o-switch-view.o-graph.active");
 
             await toggleGroupByMenu(webClient);
             await toggleMenuItem(webClient, "Date Field");
@@ -294,7 +294,7 @@ QUnit.module("Views", (hooks) => {
             await switchView(webClient, "legacy_toy");
             await legacyExtraNextTick();
 
-            assert.containsOnce(webClient, ".o_switch_view.o_legacy_toy.active");
+            assert.containsOnce(webClient, ".o-switch-view.o_legacy_toy.active");
 
             unpatchDate();
         }

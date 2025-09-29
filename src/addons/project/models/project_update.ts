@@ -1,15 +1,7 @@
-// from datetime import timedelta
-// from dateutil.relativedelta import relativedelta
-// from werkzeug.urls import url_encode
-
 import { _Date, api, Fields } from "../../../core";
 import { _super, MetaModel, Model } from "../../../core/models"
 import { expression } from "../../../core/osv";
 import { _f, addDate, bool, formatLang, len } from "../../../core/tools";
-
-// from verp import api, fields, models
-// from verp.osv import expression
-// from verp.tools import formatLang
 
 export const STATUS_COLOR = {
     'onTrack': 20,  // green / success

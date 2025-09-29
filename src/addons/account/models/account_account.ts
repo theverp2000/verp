@@ -1,6 +1,8 @@
-import { Fields, MetaModel, Model, ModelRecords, _super, api } from "../../../core";
-import { setdefault } from "../../../core/api";
-import { UserError, ValidationError, ValueError } from "../../../core/helper";
+import { api } from "../../../core";
+import { setdefault } from "../../../core/api/func";
+import { Fields } from "../../../core/fields";
+import { UserError, ValidationError, ValueError } from "../../../core/helper/errors";
+import { MetaModel, Model, ModelRecords, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { _f, bool, dropViewIfExists, f, isInstance, len, range, sum } from "../../../core/tools";
 

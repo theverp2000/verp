@@ -1,6 +1,7 @@
 import { ServerResponse } from "http";
-import { AbstractModel, MetaModel, _super } from "../../../core";
+import { Dict } from "../../../core/helper/collections";
 import { WebRequest } from "../../../core/http";
+import { MetaModel, AbstractModel, _super } from "../../../core/models"
 
 @MetaModel.define()
 class IrHttp extends AbstractModel {

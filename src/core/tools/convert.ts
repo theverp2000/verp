@@ -5,7 +5,6 @@ import _ from "lodash";
 import { DateTime } from 'luxon';
 import path from "path";
 import xpath from "xpath/xpath";
-import { bool, filePath, len, processFileCsv, stringify, toText } from ".";
 import { Command, release } from "..";
 import { callKw, getattr } from "../api/func";
 import { Dict } from "../helper/collections";
@@ -13,9 +12,14 @@ import { ParseError, ValidationError, ValueError } from "../helper/errors";
 import { ModelRecords } from '../models';
 import { getModulePath } from '../modules';
 import * as tools from '../tools';
+import { filePath, processFileCsv } from '../tools';
 import { Environment } from './../api/api';
+import { bool } from "./bool";
+import { toText } from "./compat";
 import { config } from "./config";
 import * as date_utils from './date_utils';
+import { len } from "./iterable";
+import { stringify } from './json';
 import { safeEval, unsafeAsync } from "./save_eval";
 import { E, SKIPPED_ELEMENT_TYPES, getrootXml, isElement, isText, iterchildren, parseXml, serializeHtml, serializeXml } from './xml';
 
@@ -25,6 +29,16 @@ export const ACTION_TYPES = {
   'ir.actions.actwindow': 'Window Actions',
   'ir.actions.acturl': 'URL Actions',
   'ir.actions.report': 'Report Actions'
+}
+
+/**
+ * replace 'refId()' => 'await refId()'
+ * @param aEval 
+ * @returns 
+ */
+function changeAwaitRefId(aEval: string): string {
+  // Todo must check nested functions
+  return aEval.replace(/(await)?(\s)*?((refId)\(([^()]*)\))/gm, (...args) => 'await ' + args[3]);
 }
 
 export async function convertFile(env: Environment, module: string, filename: string, idref: {}, mode: string, noupdate: boolean, kind?: string, pathname?: string) {
@@ -66,16 +80,6 @@ async function convertJsonImport(env: Environment, module: string, pathname: str
 }
 
 async function _evalXml(self: XmlImport, node: Element, env: any): Promise<any> {
-  /**
-   * replace 'refId()' => 'await refId()'
-   * @param aEval 
-   * @returns 
-   */
-  function _changeAwaitRefId(aEval: string): string {
-    // Todo must check nested functions
-    return aEval.replace(/(await)?(\s)*?((refId)\(([^()]*)\))/gm, (...args) => 'await '+ args[3]);
-  }
-
   if (['field', 'value'].includes(node.tagName)) {
     const t = node.getAttribute('type') || 'char';
     const fModel = node.getAttribute('model');
@@ -110,7 +114,7 @@ async function _evalXml(self: XmlImport, node: Element, env: any): Promise<any> 
     if (aEval) {
       const idref2 = _getIdref(self, env, fModel, self.idref);
       try {
-        const newEval = _changeAwaitRefId(aEval);
+        const newEval = changeAwaitRefId(aEval);
         const res = await unsafeAsync(newEval, idref2);
         return res;
       } catch (e) {
@@ -139,7 +143,7 @@ async function _evalXml(self: XmlImport, node: Element, env: any): Promise<any> 
         if (resModel in ACTION_TYPES) {
           resId = (await self.env.items(resModel).browse(resId).actionId).id; // get baseActionId
         }
-        str = str.replaceAll(new RegExp(escapeRegExp(found), 'g'), String(resId));
+        str = str.replace(new RegExp(escapeRegExp(found), 'g'), String(resId));
       }
       str = str.replaceAll('%%', '%');
       return str;
@@ -233,7 +237,7 @@ async function _evalXml(self: XmlImport, node: Element, env: any): Promise<any> 
     if (aEval) {
       const idref2 = _getIdref(self, env, modelStr, self.idref);
       try {
-        const newEval = _changeAwaitRefId(aEval);
+        const newEval = changeAwaitRefId(aEval);
         args = await unsafeAsync(newEval, idref2);
       } catch (e) {
         throw new Error(`Could not eval("${aEval}") for "${node.getAttribute('name')}" in ${stringify(env.context)}.\n${e}`);
@@ -289,6 +293,7 @@ function _getIdref(self, env, modelStr, idref) {
     time: () => DateTime.now(), // luxon DateTime != JSDate
     subDate: date_utils.subDate,
     addDate: date_utils.addDate,
+    setDate: date_utils.setDate,
     toFormat: date_utils.toFormat,
     stringify: stringify,
     refId: (str: string, raiseIfNotFound = true) => idGet(self, str, raiseIfNotFound),
@@ -439,9 +444,9 @@ export class XmlImport {
         user: uid && await this.idGet(uid),
         context: context == null ? context : {
           ...this.env.context,
-          ...safeEval(context, {
-            'obj': this,
-            'refId': idGet,
+          ...await unsafeAsync(changeAwaitRefId(context), {
+            obj: this,
+            refId: (str: string, raiseIfNotFound = true) => idGet(this, str, raiseIfNotFound),
             ...evalContext
           })
         }
@@ -937,7 +942,7 @@ export class XmlImport {
     }
     el.removeAttribute('id')
 
-    const model = this.module.startsWith('theme_') ? 'theme.ir.ui.view': 'ir.ui.view';
+    const model = this.module.startsWith('theme_') ? 'theme.ir.ui.view' : 'ir.ui.view';
     const recordAttrs = {
       'id': tplId,
       'model': model,

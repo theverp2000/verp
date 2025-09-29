@@ -8,8 +8,8 @@ export class ProjectControlPanel extends ControlPanel {
         super(...arguments);
         this.orm = useService("orm");
         this.user = useService("user");
-        const { activeId, show_project_update } = this.env.searchModel.globalContext;
-        this.showProjectUpdate = this.env.config.viewType === "form" || show_project_update;
+        const { activeId, showProjectUpdate } = this.env.searchModel.globalContext;
+        this.showProjectUpdate = this.env.config.viewType === "form" || showProjectUpdate;
         this.projectId = this.showProjectUpdate ? activeId : false;
     }
 
@@ -31,8 +31,8 @@ export class ProjectControlPanel extends ControlPanel {
 
     async loadData() {
         const [data, isProjectUser] = await Promise.all([
-            this.orm.call("project.project", "get_last_update_or_default", [this.projectId]),
-            this.user.hasGroup("project.group_project_user"),
+            this.orm.call("project.project", "getLastUpdateOrDefault", [this.projectId]),
+            this.user.hasGroup("project.groupProjectUser"),
         ]);
         this.data = data;
         this.isProjectUser = isProjectUser;
@@ -40,9 +40,9 @@ export class ProjectControlPanel extends ControlPanel {
 
     async onStatusClick(ev) {
         ev.preventDefault();
-        this.actionService.doAction("project.project_update_all_action", {
+        this.actionService.doAction("project.projectUpdateAllAction", {
             additionalContext: {
-                default_project_id: this.projectId,
+                default_projectId: this.projectId,
                 activeId: this.projectId,
             },
         });

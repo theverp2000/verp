@@ -1,7 +1,9 @@
 import _ from "lodash";
-import { Command, Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { api } from "../../../core";
 import { sanitizeAccountNumber } from "../../../core/addons/base/models/res_bank";
-import { UserError, ValidationError } from "../../../core/helper";
+import { Command, Fields, _Date } from "../../../core/fields";
+import { UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { Query, expression } from "../../../core/osv";
 import { _convert$, bool, f, len, quoteList, range, removeAccents, update } from "../../../core/tools";
 
@@ -526,7 +528,7 @@ class AccountJournal extends Model {
     const allJournalCodes = readCodes.map(codeData => codeData['code']);
 
     let copyCode = code;
-    let codePrefix = code.replace(/\d+/g, '').trim();
+    let codePrefix = code.replaceAll(/\d+/g, '').trim();
     let counter = 1;
     while (counter <= allJournalCodes.length && allJournalCodes.includes(copyCode)) {
       const counterStr = String(counter);
@@ -561,7 +563,7 @@ class AccountJournal extends Model {
     }
 
     if (vals['aliasName']) {
-      // remove alias_name to avoid useless write on alias
+      // remove aliasName to avoid useless write on alias
       delete (vals['aliasName']);
     }
   }

@@ -14,7 +14,7 @@ PROJECT_TASK_READABLE_FIELDS = {
     'analytic_account_active',
     'effective_hours',
     'encode_uom_in_days',
-    'planned_hours',
+    'plannedHours',
     'progress',
     'overtime',
     'remaining_hours',
@@ -30,17 +30,17 @@ class Project(models.Model):
     allow_timesheets = fields.Boolean(
         "Timesheets", compute='_compute_allow_timesheets', store=True, readonly=False,
         default=True, help="Enable timesheeting on the project.")
-    analytic_account_id = fields.Many2one(
-        # note: replaces ['|', ('companyId', '=', False), ('companyId', '=', companyId)]
+    analyticAccountId = fields.Many2one(
+        # note: replaces ['|', ('company_id', '=', False), ('company_id', '=', company_id)]
         domain="""[
-            '|', ('companyId', '=', False), ('companyId', '=', companyId),
+            '|', ('company_id', '=', False), ('company_id', '=', company_id),
             ('partnerId', '=?', partnerId),
         ]"""
     )
 
     timesheet_ids = fields.One2many('account.analytic.line', 'projectId', 'Associated Timesheets')
     timesheet_count = fields.Boolean(compute="_compute_timesheet_count")
-    timesheet_encode_uom_id = fields.Many2one('uom.uom', related='companyId.timesheet_encode_uom_id')
+    timesheet_encode_uom_id = fields.Many2one('uom.uom', related='company_id.timesheet_encode_uom_id')
     total_timesheet_time = fields.Integer(
         compute='_compute_total_timesheet_time', groups='hr_timesheet.group_hr_timesheet_user',
         help="Total number of time (in the proper UoM) recorded in the project, rounded to the unit.")
@@ -53,15 +53,15 @@ class Project(models.Model):
     def _compute_encode_uom_in_days(self):
         self.encode_uom_in_days = self.env.company.timesheet_encode_uom_id == self.env.ref('uom.product_uom_day')
 
-    @api.depends('analytic_account_id')
+    @api.depends('analyticAccountId')
     def _compute_allow_timesheets(self):
-        without_account = self.filtered(lambda t: not t.analytic_account_id and t._origin)
+        without_account = self.filtered(lambda t: not t.analyticAccountId and t._origin)
         without_account.update({'allow_timesheets': False})
 
-    @api.depends('companyId')
+    @api.depends('company_id')
     def _compute_is_internal_project(self):
         for project in self:
-            project.is_internal_project = project == project.companyId.internal_project_id
+            project.is_internal_project = project == project.company_id.internal_project_id
 
     @api.model
     def _search_is_internal_project(self, operator, value):
@@ -81,28 +81,28 @@ class Project(models.Model):
             operator_new = 'not inselect'
         return [('id', operator_new, (query, ()))]
 
-    @api.depends('allow_timesheets', 'task_ids.planned_hours', 'timesheet_ids')
+    @api.depends('allow_timesheets', 'task_ids.plannedHours', 'timesheet_ids')
     def _compute_remaining_hours(self):
         timesheet_read_group = self.env['account.analytic.line'].read_group(
             domain=[('projectId', 'in', self.filtered('allow_timesheets').ids), ('taskId', '!=', False),
                     '|', ('taskId.stageId.fold', '=', False), ('taskId.stageId', '=', False)],
             fields=['effective_hours:sum(unit_amount)'], groupby='projectId')
         task_read_group = self.env['project.task'].read_group(
-            domain=[('planned_hours', '!=', 0.0), ('projectId', 'in', self.filtered('allow_timesheets').ids),
+            domain=[('plannedHours', '!=', 0.0), ('projectId', 'in', self.filtered('allow_timesheets').ids),
                     ('parent_id', '=', False), '|', ('stageId.fold', '=', False), ('stageId', '=', False)],
-            fields=['planned_hours:sum', ], groupby='projectId')
+            fields=['plannedHours:sum', ], groupby='projectId')
         effective_hours_per_project_id = {res['projectId'][0]: res['effective_hours'] for res in timesheet_read_group}
-        planned_hours_per_project_id = {res['projectId'][0]: res['planned_hours'] for res in task_read_group}
+        planned_hours_per_project_id = {res['projectId'][0]: res['plannedHours'] for res in task_read_group}
         for project in self:
-            planned_hours = planned_hours_per_project_id.get(project.id, 0.0)
+            plannedHours = planned_hours_per_project_id.get(project.id, 0.0)
             effective_hours = effective_hours_per_project_id.get(project.id, 0.0)
-            project.remaining_hours = planned_hours - effective_hours if planned_hours else 0.0
+            project.remaining_hours = plannedHours - effective_hours if plannedHours else 0.0
             project.has_planned_hours_tasks = project.id in planned_hours_per_project_id
 
-    @api.constrains('allow_timesheets', 'analytic_account_id')
+    @api.constrains('allow_timesheets', 'analyticAccountId')
     def _check_allow_timesheet(self):
         for project in self:
-            if project.allow_timesheets and not project.analytic_account_id:
+            if project.allow_timesheets and not project.analyticAccountId:
                 raise ValidationError(_('You cannot use timesheets without an analytic account.'))
 
     @api.depends('timesheet_ids')
@@ -152,26 +152,26 @@ class Project(models.Model):
         """ Create an analytic account if project allow timesheet and don't provide one
             Note: create it before calling super() to avoid raising the ValidationError from _check_allow_timesheet
         """
-        defaults = self.default_get(['allow_timesheets', 'analytic_account_id'])
+        defaults = self.default_get(['allow_timesheets', 'analyticAccountId'])
         for values in vals_list:
             allow_timesheets = values.get('allow_timesheets', defaults.get('allow_timesheets'))
-            analytic_account_id = values.get('analytic_account_id', defaults.get('analytic_account_id'))
-            if allow_timesheets and not analytic_account_id:
+            analyticAccountId = values.get('analyticAccountId', defaults.get('analyticAccountId'))
+            if allow_timesheets and not analyticAccountId:
                 analytic_account = self._create_analytic_account_from_values(values)
-                values['analytic_account_id'] = analytic_account.id
+                values['analyticAccountId'] = analytic_account.id
         return super(Project, self).create(vals_list)
 
     def write(self, values):
         # create the AA for project still allowing timesheet
-        if values.get('allow_timesheets') and not values.get('analytic_account_id'):
+        if values.get('allow_timesheets') and not values.get('analyticAccountId'):
             for project in self:
-                if not project.analytic_account_id:
+                if not project.analyticAccountId:
                     project._create_analytic_account()
         return super(Project, self).write(values)
 
     @api.model
     def _init_data_analytic_account(self):
-        self.search([('analytic_account_id', '=', False), ('allow_timesheets', '=', True)])._create_analytic_account()
+        self.search([('analyticAccountId', '=', False), ('allow_timesheets', '=', True)])._create_analytic_account()
 
     @api.ondelete(at_uninstall=False)
     def _unlink_except_contains_entries(self):
@@ -211,7 +211,7 @@ class Project(models.Model):
         return action
 
     def _convert_project_uom_to_timesheet_encode_uom(self, time):
-        uom_from = self.companyId.project_time_mode_id
+        uom_from = self.company_id.project_time_mode_id
         uom_to = self.env.company.timesheet_encode_uom_id
         return round(uom_from._compute_quantity(time, uom_to, raise_if_failure=False), 2)
 
@@ -259,7 +259,7 @@ class Task(models.Model):
     def _compute_encode_uom_in_days(self):
         self.encode_uom_in_days = self._uom_in_days()
 
-    @api.depends('analytic_account_id.active', 'projectId.analytic_account_id.active')
+    @api.depends('analyticAccountId.active', 'projectId.analyticAccountId.active')
     def _compute_analytic_account_active(self):
         """ Overridden in sale_timesheet """
         for task in self:
@@ -276,24 +276,24 @@ class Task(models.Model):
         for task in self:
             task.effective_hours = timesheets_per_task.get(task.id, 0.0)
 
-    @api.depends('effective_hours', 'subtask_effective_hours', 'planned_hours')
+    @api.depends('effective_hours', 'subtask_effective_hours', 'plannedHours')
     def _compute_progress_hours(self):
         for task in self:
-            if (task.planned_hours > 0.0):
+            if (task.plannedHours > 0.0):
                 task_total_hours = task.effective_hours + task.subtask_effective_hours
-                task.overtime = max(task_total_hours - task.planned_hours, 0)
-                if float_compare(task_total_hours, task.planned_hours, precision_digits=2) >= 0:
+                task.overtime = max(task_total_hours - task.plannedHours, 0)
+                if float_compare(task_total_hours, task.plannedHours, precision_digits=2) >= 0:
                     task.progress = 100
                 else:
-                    task.progress = round(100.0 * task_total_hours / task.planned_hours, 2)
+                    task.progress = round(100.0 * task_total_hours / task.plannedHours, 2)
             else:
                 task.progress = 0.0
                 task.overtime = 0
 
-    @api.depends('effective_hours', 'subtask_effective_hours', 'planned_hours')
+    @api.depends('effective_hours', 'subtask_effective_hours', 'plannedHours')
     def _compute_remaining_hours(self):
         for task in self:
-            task.remaining_hours = task.planned_hours - task.effective_hours - task.subtask_effective_hours
+            task.remaining_hours = task.plannedHours - task.effective_hours - task.subtask_effective_hours
 
     @api.depends('effective_hours', 'subtask_effective_hours')
     def _compute_total_hours_spent(self):
@@ -302,17 +302,17 @@ class Task(models.Model):
 
     @api.depends('childIds.effective_hours', 'childIds.subtask_effective_hours')
     def _compute_subtask_effective_hours(self):
-        for task in self.withContext(active_test=False):
+        for task in self.with_context(active_test=False):
             task.subtask_effective_hours = sum(child_task.effective_hours + child_task.subtask_effective_hours for child_task in task.childIds)
 
     def action_view_subtask_timesheet(self):
         self.ensure_one()
-        tasks = self.withContext(active_test=False)._get_all_subtasks()
+        tasks = self.with_context(active_test=False)._get_all_subtasks()
         return {
-            'type': 'ir.actions.actwindow',
+            'type': 'ir.actions.act_window',
             'name': _('Timesheets'),
             'resModel': 'account.analytic.line',
-            'viewMode': 'list,form',
+            'view_mode': 'list,form',
             'context': {
                 'default_project_id': self.projectId.id
             },
@@ -341,10 +341,10 @@ class Task(models.Model):
         if self.env.context.get('hr_timesheet_display_remaining_hours'):
             name_mapping = dict(super().name_get())
             for task in self:
-                if task.allow_timesheets and task.planned_hours > 0 and task.encode_uom_in_days:
+                if task.allow_timesheets and task.plannedHours > 0 and task.encode_uom_in_days:
                     days_left = _("(%s days remaining)") % task._convert_hours_to_days(task.remaining_hours)
                     name_mapping[task.id] = name_mapping.get(task.id, '') + u"\u00A0" + days_left
-                elif task.allow_timesheets and task.planned_hours > 0:
+                elif task.allow_timesheets and task.plannedHours > 0:
                     hours, mins = (str(int(duration)).rjust(2, '0') for duration in divmod(abs(task.remaining_hours) * 60, 60))
                     hours_left = _(
                         "(%(sign)s%(hours)s:%(minutes)s remaining)",

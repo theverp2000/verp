@@ -9,9 +9,7 @@ import { isInstance } from './func';
 import { isList, itemgetter, len, sorted } from './iterable';
 import { parseLocale } from './locale';
 import { DATE_LENGTH, FileDescriptor, expandVars, isFile, posixToLdml, processFileCsv } from './misc';
-import { f } from "./string";
-import { _f } from "./string";
-import { ustr } from "./string";
+import { _f, f, ustr } from './utils';
 import { config } from './config';
 import { toFormat } from './date_utils';
 
@@ -291,7 +289,7 @@ export function formatDecimalizedNumber(num: number, decimal = 1) {
 export function formatDecimalizedAmount(amount, currency?: { position?: any, symbol?: any }) {
   const formatedAmount = formatDecimalizedNumber(amount);
 
-  if (!currency) {
+  if (!bool(currency)) {
     return formatedAmount;
   }
 
@@ -356,10 +354,7 @@ export function fileClose(fd: number) {
   return fs.closeSync(fd);
 }
 
-export function fileWrite(name: string, buffer: Buffer, force = true) {
-  if (buffer.length == 0) {
-    console.warn('fileWrite 0 byte of', name);
-  }
+export function fileWrite(name: string, buffer: Buffer|any, force = true) {
   const fd = fs.openSync(name, force ? 'w' : 'wx');
   let offset = 0;
   while (offset < buffer.length) {

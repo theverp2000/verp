@@ -8,9 +8,9 @@ import { PivotView } from "@web/views/pivot/pivot_view";
 const viewRegistry = registry.category("views");
 
 const MEASURE_STRINGS = {
-    parent_res_id: _lt("Project"),
+    parentResId: _lt("Project"),
     rating: _lt("Rating Value (/5)"),
-    res_id: _lt("Task"),
+    resId: _lt("Task"),
 };
 
 class ProjectRatingArchParser extends PivotArchParser {
@@ -31,4 +31,4 @@ class ProjectRatingArchParser extends PivotArchParser {
 class ProjectRatingPivotView extends PivotView {}
 ProjectRatingPivotView.ArchParser = ProjectRatingArchParser;
 
-viewRegistry.add("project_rating_pivot", ProjectRatingPivotView);
+viewRegistry.add("projectRatingPivot", ProjectRatingPivotView);

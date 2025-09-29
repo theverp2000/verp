@@ -1,13 +1,16 @@
 import fs from "fs/promises";
 import _ from "lodash";
 import assert from "node:assert";
-import { Fields, MetaModel, Model, _super, api, modules, tools } from "../../..";
-import { getattr, setattr } from "../../../api";
+import { api, modules, tools } from "../../..";
+import { getattr, setattr } from "../../../api/func";
+import { Fields } from "../../../fields";
 import { AccessDenied, Dict, OrderedDict, RuntimeError, UserError } from "../../../helper";
 import { WebRequest } from "../../../http";
+import { MetaModel, Model, _super } from "../../../models";
 import { getModuleIcon, getResourcePath } from "../../../modules";
 import { expression } from "../../../osv";
-import { UpCamelCase, b64encode, bool, documentFromString, extend, f, filePath, iterlinks, len, parseHtml, publishString, serializeHtml, setOptions, topologicalSort } from "../../../tools";
+import { UpCamelCase, b64encode, bool, extend, f, filePath, iterlinks, len, parseHtml, publishString, serializeHtml, setOptions, topologicalSort } from "../../../tools";
+import { documentFromString } from "../../../tools/html";
 import { parseVersion } from "../../../tools/parse_version";
 import { quoteList } from "../../../tools/sql";
 import { MODULE_UNINSTALL_FLAG } from "./ir_model";
@@ -571,7 +574,7 @@ class Module extends Model {
           if (!states.includes(state)) states.push(state);
         }
       }
-      return _.difference(installStates, states).length && states.includes('to install');
+      return global.mustInstall && _.difference(installStates, states).length && states.includes('to install');
     }
 
     let modules: any = this;

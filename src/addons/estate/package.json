@@ -2,10 +2,7 @@
   "label": "Real Estate",
   "version": "1.3",
   "category": "Realtor/Service",
-  "descriptions": [
-    "The Sample of Verp, needed for all installation.",
-    "==================================================="
-  ],
+  "description": "The kernel of Verp, needed for all installation.\n===================================================",
   "depends": ["base_setup"],
   "data": [
     "security/ir.model.access.csv",

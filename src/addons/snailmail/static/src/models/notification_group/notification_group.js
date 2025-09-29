@@ -4,7 +4,7 @@ import {
     registerInstancePatchModel,
 } from '@mail/model/model_core';
 
-registerInstancePatchModel('mail.notificationGroup', 'snailmail/static/src/models/notification_group/notification_group.js', {
+registerInstancePatchModel('mail.notification_group', 'snailmail/static/src/models/notification_group/notification_group.js', {
 
     //--------------------------------------------------------------------------
     // Public

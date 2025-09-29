@@ -1802,7 +1802,7 @@ QUnit.module('fields', {}, function () {
 
             // as the quick create failed, a dialog should be open to 'slow create' the record
             assert.containsOnce(document.body, '.modal .o-form-view');
-            assert.strictEqual($('.modal .o-field-widget[name=name]').val(), 'new partner');
+            assert.strictEqual($('.modal .o-field-widget[name=label]').val(), 'new partner');
 
             await testUtils.fields.editInput($('.modal .o-field-widget[name=color]'), 8);
             await testUtils.modal.clickButton('Save & Close');

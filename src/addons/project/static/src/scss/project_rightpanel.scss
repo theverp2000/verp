@@ -6,11 +6,11 @@ $o-rightpanel-p-tiny: $o-rightpanel-p-small*0.5;
 $o-rightpanel-category-default-color: $o-brand-primary;
 $o-rightpanel-filter-default-color: #D59244;
 
-.o_controller_with_rightpanel {
+.o-controller-with-rightpanel {
     display: flex;
     align-items: flex-start;
 
-    .o_renderer_with_rightpanel {
+    .o-renderer-with-rightpanel {
         flex: 1 1 100%;
         overflow: auto; // make the renderer and search panel scroll individually
         max-height: 100%;
@@ -18,11 +18,11 @@ $o-rightpanel-filter-default-color: #D59244;
     }
 }
 
-html .o_web_client > .o_action_manager > .o_action > .o_content > .o_controller_with_rightpanel {
+html .o-web-client > .o-action-manager > .o-action > .o-content > .o-controller-with-rightpanel {
     overflow: hidden;
 }
 
-.o_rightpanel {
+.o-rightpanel {
     flex: 0 0 25%;
     overflow: auto;
     height: 100%;
@@ -31,7 +31,7 @@ html .o_web_client > .o_action_manager > .o_action > .o_content > .o_controller_
     background-color: white;
 
 
-    .o_rightpanel_section {
+    .o-rightpanel-section {
         padding-bottom: $o-rightpanel-p;
         padding-top: $o-rightpanel-p;
 
@@ -47,10 +47,10 @@ html .o_web_client > .o_action_manager > .o_action > .o_content > .o_controller_
             padding-top: 0px;
         }
 
-        .o_rightpanel_header {
+        .o-rightpanel-header {
             padding: $o-rightpanel-p-tiny 0 $o-rightpanel-p-small 0;
 
-            .o_rightpanel_title {
+            .o-rightpanel-title {
                 cursor: default;
                 padding: 8px 0;
                 font-weight: bold;
@@ -58,7 +58,7 @@ html .o_web_client > .o_action_manager > .o_action > .o_content > .o_controller_
                 display:inline;
             }
 
-            .o_rightpanel_button {
+            .o-rightpanel-button {
                 cursor: pointer;
                 font-weight: bold;
                 font-size: small;
@@ -68,70 +68,70 @@ html .o_web_client > .o_action_manager > .o_action > .o_content > .o_controller_
             }
         }
 
-        .o_rightpanel_data {
+        .o-rightpanel-data {
             font-size: small;
-            .o_rightpanel_data_row {
+            .o-rightpanel-data-row {
                 &:hover {
                     background-color: $gray-100;
                     border-radius: 5px;
                 }
             }
-            .o_rightpanel_left_col {
+            .o-rightpanel-left-col {
                 font-size: small;
                 padding-top: 0;
                 padding-bottom: 0;
-                &.o_rightpanel_left_button {
+                &.o-rightpanel-left-button {
                     color: $o-brand-primary;
                     padding-left: 0;
                 }
-                &.o_rightpanel_left_text {
+                &.o-rightpanel-left-text {
                     padding-right: $o-rightpanel-p-small;
                 }
             }
-            .o_rightpanel_right_col {
+            .o-rightpanel-right-col {
                 float: right;
             }
 
-            .o_rightpanel_center_col {
+            .o-rightpanel-center-col {
                 flex-grow: 1;
                 text-align: center;
             }
 
-            .o_open_milestone {
+            .o-open-milestone {
                 margin-bottom: $o-rightpanel-p-tiny;
                 display: flex;
-                &.o_milestone_danger {
+                &.o-milestone-danger {
                     color: $red;
                 }
-                .o_milestone_checkbox {
+                .o-milestone-checkbox {
                     cursor: pointer;
                     padding-right: $o-rightpanel-p-tiny;
                 }
-                .o_milestone_detail {
+                .o-milestone-detail {
                     cursor: pointer;
                     display: flex;
                     justify-content: space-between;
                     flex-grow: 1;
                 }
-                .o_delete_icon {
+                .o-delete-icon {
                     cursor: pointer;
                     padding-left: $o-rightpanel-p-tiny;
                 }
             }
         }
 
-        .o_rightpanel_hidden {
+        .o-rightpanel-hidden {
             display: none;
         }
 
-        .o_color_red {
+        .o-color-red {
             color: $red;
         }
-        .o_color_green {
+        .o-color-green {
             color: $green;
         }
 
-        .o_form_view {
+        .o-form-view {
             .oe-button-box {
                 display: flex;
                 flex-wrap: wrap;
@@ -143,7 +143,7 @@ html .o_web_client > .o_action_manager > .o_action > .o_content > .o_controller_
                     margin-bottom: 0px;
                 }
                 
-                .oe_stat_button {
+                .oe-stat-button {
                     flex-basis: 33.333333%;
                     border-width: 1px;
                     margin-top: -1px;
@@ -154,13 +154,13 @@ html .o_web_client > .o_action_manager > .o_action > .o_content > .o_controller_
                         border-right-width: 0px;
                     }
 
-                    .o_stat_text {
+                    .o-stat-text {
                         white-space: normal;
                     }
                 }
 
                 @media screen and (max-width: 1600px) {
-                    .oe_stat_button {
+                    .oe-stat-button {
                         flex-basis: 50%;
                     
                         &:nth-child(2n){

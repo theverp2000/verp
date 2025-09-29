@@ -8,7 +8,11 @@ import { STATIC_CACHE_LONG, WebRequest, WebResponse, httpGet, httpPost } from ".
 import { getResourcePath } from "../../../core/modules";
 import { BadRequest, NotFound } from "../../../core/service";
 import { urlEncode } from "../../../core/service/middleware/utils";
-import { _t, addDate, b64decode, b64encode, base64ToImage, bool, childNodes, escapeHtml, f, fileClose, fileOpen, fileRead, getAttribute, guessMimetype, imageDataUri, imageProcess, isElement, isInstance, len, parseInt, parseXml, pop, range, serializeXml, setOptions, unslug, update } from "../../../core/tools";
+import { _t, b64decode, b64encode, base64ToImage, bool, f, fileClose, fileOpen, fileRead, imageDataUri, imageProcess, isInstance, parseInt, pop, setOptions, slug, unslug, update } from "../../../core/tools";
+import { addDate } from "../../../core/tools/date_utils";
+import { len, range } from "../../../core/tools/iterable";
+import { guessMimetype } from "../../../core/tools/mimetypes";
+import { childNodes, escapeHtml, getAttribute, isElement, parseXml, serializeXml } from "../../../core/tools/xml";
 import { SUPPORTED_IMAGE_EXTENSIONS, SUPPORTED_IMAGE_MIMETYPES } from "../models";
 
 const DEFAULT_LIBRARY_ENDPOINT = 'https://media-api.theverp.com'
@@ -750,13 +754,13 @@ class WebEditor extends http.Controller {
 
         const colorMapping = Object.fromEntries(userColors.map(([color, paletteNumber]) => [defaultPalette[paletteNumber], color]));
         // create a case-insensitive regex to match all the colors to replace, eg: '(?i)(#3AADAA)|(#7C6576)'
-        const regex = new RegExp(f('(?i)%s', Object.keys(colorMapping).map(color => f('(%s)', color)).join('|')));
+        const regex = new RegExp(f('(?i)%s', Object.keys(colorMapping).map(color => f('(%s)', color)).join('|')), 'g');
 
         function subber(match: string) {
             const key = match.toUpperCase();
             return key in colorMapping ? colorMapping[key] : key;
         }
-        return [svg.replaceAll(regex, subber), svgOptions];
+        return [svg.replace(regex, subber), svgOptions];
     }
 
     /**

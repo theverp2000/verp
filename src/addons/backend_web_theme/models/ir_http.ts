@@ -1,5 +1,5 @@
-import { AbstractModel, MetaModel, _super } from "../../../core";
 import { WebRequest } from "../../../core/http";
+import { AbstractModel, MetaModel, _super } from "../../../core/models"
 import { bool, update } from "../../../core/tools";
 
 @MetaModel.define()

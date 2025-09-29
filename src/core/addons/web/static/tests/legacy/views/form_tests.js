@@ -3064,7 +3064,7 @@ QUnit.module('Views', {
         assert.strictEqual(form.$('.o-control-panel .breadcrumb').text(), 'second record',
             "should have correct displayName");
         await testUtils.form.clickEdit(form);
-        await testUtils.fields.editInput(form.$('input[name=name]'), 'some other name');
+        await testUtils.fields.editInput(form.$('input[name=label]'), 'some other name');
 
         await testUtils.dom.click('.oe-stat-button');
         assert.strictEqual(form.$('.o-control-panel .breadcrumb').text(), 'GOLDORAK',
@@ -4567,7 +4567,7 @@ QUnit.module('Views', {
         // open a subrecord and trigger an onchange
         readInModal = true;
         await testUtils.dom.click(form.$('.o-data-row .o-data-cell:first'));
-        await testUtils.fields.editInput($('.modal .o-field-widget[name=name]'), "new name");
+        await testUtils.fields.editInput($('.modal .o-field-widget[name=label]'), "new name");
 
         form.destroy();
     });
@@ -10333,7 +10333,7 @@ QUnit.module('Views', {
         await testUtils.dom.click($(webClient.el).find('.o-form-button_edit'));
         await testUtils.fields.editInput($(webClient.el).find('.o-field-widget[name="label"]'), 'aaa');
 
-        await testUtils.dom.click($(webClient.el).find('.breadcrumb-item.o_back_button'));
+        await testUtils.dom.click($(webClient.el).find('.breadcrumb-item.o-back-button'));
         await legacyExtraNextTick();
 
         assert.strictEqual($(webClient.el).find('.breadcrumb').text(), 'Partner');
@@ -10566,7 +10566,7 @@ QUnit.module('Views', {
         assert.strictEqual($(webClient.el).find('.breadcrumb').text(), 'Partnerfirst record');
 
         // Return in the list view to detach the form view
-        await testUtils.dom.click($(webClient.el).find('.o_back_button'));
+        await testUtils.dom.click($(webClient.el).find('.o-back-button'));
         await legacyExtraNextTick();
         assert.strictEqual($(webClient.el).find('.breadcrumb').text(), 'Partner');
 

@@ -1,9 +1,6 @@
 {
   "label": "Signup",
-  "descriptions": [
-    "Allow users to sign up and reset their password.",
-    "==============================================="
-  ],
+  "description": "Allow users to sign up and reset their password\n===============================================",
   "version": "1.0",
   "category": "Hidden/Tools",
   "autoInstall": true,

@@ -338,8 +338,8 @@ QUnit.module('hr', {}, function () {
                         <t t-name="kanban-box">
                             <div>
                                 <div class="oe_kanban_footer">
-                                    <div class="o-kanban-record-bottom">
-                                        <div class="oe-kanban-bottom-right">
+                                    <div class="o_kanban_record_bottom">
+                                        <div class="oe_kanban_bottom_right">
                                             <field name="employeeIds" widget="many2many_avatar_employee"/>
                                         </div>
                                     </div>

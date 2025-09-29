@@ -1,18 +1,23 @@
 import assert from "assert";
-import _ from 'lodash';
+import _, { isNumber } from 'lodash';
 import { DateTime } from "luxon";
 import { encode } from "utf8";
 import util from "util";
-import { Cache, CopyMode, Environment, Meta } from './api/api';
-import { attrgetter, getattr, hasattr, setattr, setdefault } from "./api/func";
-import { AccessError, CacheMiss, DefaultDict, Dict, KeyError, Map2, MapKey, MissingError, NotImplementedError, OrderedSet2, UserError, ValueError } from './helper';
-import { BaseModel, ModelRecords, NewId, PREFETCH_MAX, checkObjectName, expandIds, isDefinitionClass, isRegistryClass, newId } from './models';
+
+import { Map2, OrderedSet2 } from './helper/collections';
+import { KeyError, UserError } from './helper/errors';
 import { Registry } from './modules/registry';
 import { dbFactory } from './service/db';
 import { Cursor } from './sql_db';
-import { DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT, IterableGenerator, UpCamelCase, _convert$, _f, _t as _translate, b64decode, bool, chain, enumerate, extend, floatCompare, floatIsZero, floatRepr, floatRound, fromFormat, htmlSanitize, htmlTranslate, humanSize, imageProcess, isCallable, isInstance, isList, islice, len, markup, mergeSequences, repeat, setOptions, sorted, toDate, toDatetime, toText, today, unique } from './tools';
 import * as func from "./tools/func";
 import * as sql from './tools/sql';
+
+import { Cache, CopyMode, Environment, Meta } from './api/api';
+import { attrgetter, getattr, hasattr, setattr, setdefault } from "./api/func";
+import { AccessError, CacheMiss, DefaultDict, Dict, MapKey, MissingError, NotImplementedError, ValueError } from "./helper";
+import { BaseModel, ModelRecords, NewId, PREFETCH_MAX, checkObjectName, expandIds, isDefinitionClass, isRegistryClass, newId } from './models';
+
+import { DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT, IterableGenerator, UpCamelCase, _convert$, _f, _t as _translate, b64decode, bool, chain, enumerate, extend, floatCompare, floatIsZero, floatRepr, floatRound, fromFormat, htmlSanitize, htmlTranslate, humanSize, imageProcess, isCallable, isInstance, isList, islice, len, markup, mergeSequences, pop, repeat, setOptions, sorted, toDate, toDatetime, toText, today, unique } from './tools';
 
 export const NO_ACCESS = '.';
 
@@ -118,7 +123,7 @@ class MetaField {
   }
 }
 
-type FieldOptions = { name?: string, comodelName?: string, inverse?: string | Function, relationField?: string, related?: string | boolean, relation?: string, column1?: string, column2?: string, string?: string, required?: boolean, index?: boolean | number, default?: any, ondelete?: string | {}, onupdate?: string, help?: string, automatic?: boolean, compute?: string | boolean, autojoin?: boolean, copy?: boolean, readonly?: boolean | number, size?: number, selection?: string | any[] | Function | {}, store?: boolean, domain?: any[] | string | Function, modelField?: string, search?: string, translate?: boolean | Function, changeDefault?: boolean, digits?: number | string | [number, number], computeSudo?: boolean, recursive?: boolean, invisible?: boolean, companyDependent?: boolean, attachment?: boolean, groupOperator?: string, maxWidth?: number, maxHeight?: number, prefetch?: boolean, groups?: string, context?: {}, inherited?: boolean, trim?: boolean, validate?: boolean, delegate?: boolean, sanitizeTags?: string | boolean, configParameter?: string, impliedGroup?: boolean | string, sanitize?: boolean, selectionAdd?: [string, string][], renderEngine?: string, tracking?: number | boolean, sanitizeStyle?: boolean, depends?: string[] | string, groupExpand?: any, dependsContext?: string[], checkCompany?: boolean, relatedSudo?: boolean, states?: {}, currencyField?: string, sanitizeAttributes?: any, sanitizeForm?: any, deprecated?: any, provider?: string, defaultModel?: string, stripStyle?: boolean };
+type FieldOptions = { name?: string, comodelName?: string, inverse?: string | Function, relationField?: string, related?: string | boolean, relation?: string, column1?: string, column2?: string, string?: string, required?: boolean, index?: boolean | number, default?: any, ondelete?: string | {}, onupdate?: string, help?: string, automatic?: boolean, compute?: string | boolean, autojoin?: boolean, copy?: boolean, readonly?: boolean | number, size?: number, selection?: string | any[] | Function | {}, store?: boolean, domain?: any[] | string | Function, modelField?: string, search?: string, translate?: boolean | Function, changeDefault?: boolean, digits?: number | string | [number, number], computeSudo?: boolean, recursive?: boolean, invisible?: boolean, companyDependent?: boolean, attachment?: boolean, groupOperator?: string, maxWidth?: number, maxHeight?: number, prefetch?: boolean, groups?: string, context?: {}, inherited?: boolean, trim?: boolean, validate?: boolean, delegate?: boolean, sanitizeTags?: string | boolean, configParameter?: string, impliedGroup?: boolean | string, sanitize?: boolean, selectionAdd?: [string, string][], renderEngine?: string, tracking?: number | boolean, sanitizeStyle?: boolean, depends?: string[] | string, groupExpand?: any, dependsContext?: string[], checkCompany?: boolean, relatedSudo?: boolean, states?: {}, currencyField?: string, sanitizeAttributes?: any, sanitizeForm?: any, deprecated?: any, provider?: string, defaultModel?: string, stripStyle?: boolean, taskDependencyTracking?: boolean };
 
 export class Fields {
   static get MetaField() {
@@ -372,22 +377,11 @@ export class Field {
     } else {
       setOptions(kwargs, args);
     }
-    // Normalize
     if (kwargs['ondelete']) {
-      if (typeof kwargs['ondelete'] === 'string') {
-        kwargs['ondelete'] = kwargs['ondelete'].toUpperCase();
-      }
-      if (typeof kwargs['ondelete'] === 'object') {
-        Object.entries(kwargs['ondelete']).forEach(([k, v]) => {if (typeof v === 'string') kwargs['ondelete'][k] = v.toUpperCase()});
-      }
+      kwargs['ondelete'] = typeof (kwargs['ondelete']) === 'string' ? kwargs['ondelete'].toUpperCase() : kwargs['ondelete'];
     }
     if (kwargs['onupdate']) {
-      if (typeof kwargs['onupdate'] === 'string') {
-        kwargs['onupdate'] = kwargs['onupdate'].toUpperCase();
-      }
-      if (typeof kwargs['onupdate'] === 'object') {
-        Object.entries(kwargs['onupdate']).forEach(([k, v]) => {if (typeof v === 'string') kwargs['onupdate'][k] = v.toUpperCase()});
-      }
+      kwargs['onupdate'] = typeof (kwargs['onupdate']) === 'string' ? kwargs['onupdate'].toUpperCase() : kwargs['onupdate'];
     }
     // Update owner properties
     setOptions(this, kwargs);
@@ -1152,7 +1146,7 @@ export class Field {
     if (!bool(records)) {
       return records;
     }
-    cache.update(records, this, Array(records._length).fill(cacheValue));
+    cache.update(records, this, _.fill(Array(records._length), cacheValue));
     if (this.store) {
       records.env.all.towrite[this.modelName] = records.env.all.towrite[this.modelName] ?? new Map<any, any>();
       const towrite = records.env.all.towrite[this.modelName];
@@ -1490,7 +1484,7 @@ class _Boolean extends Field {
 export class _Number extends Field {
   static type = 'number';
   static groupOperator = 'sum';
-
+  
   get columnType() { return ['NUMERIC', 'NUMERIC'] }
 
   async convertToRead(value, record, useNameGet = true) {
@@ -1781,7 +1775,7 @@ class _String extends Field {
     if (records.nok) {
       return records;
     }
-    cache.update(records, this, Array(records._length).fill(cacheValue));
+    cache.update(records, this, _.fill(Array(records._length), cacheValue));
 
     if (!this.store) {
       return records;
@@ -1824,7 +1818,7 @@ class _String extends Field {
       }
       if (this.translate) {
         cache.invalidate([[this, records.ids]]);
-        cache.update(records, this, Array(records._length).fill(cacheValue));
+        cache.update(records, this, _.fill(Array(records._length), cacheValue))
       }
     }
     if (updateTrans) {
@@ -2441,7 +2435,7 @@ class _Image extends _Binary {
       const newValue = await this._imageProcess(value);
       newRecordValues.push([record, newValue]);
       const cacheValue = await this.convertToCache(this.related ? value : newValue, record);
-      record.env.cache.update(record, this, Array(record._length).fill(cacheValue));
+      record.env.cache.update(record, this, _.fill(Array(record._length), cacheValue));
     }
     await super.create(newRecordValues);
   }
@@ -2466,7 +2460,7 @@ class _Image extends _Binary {
 
     await super.write(records, newValue);
     const cacheValue = await this.convertToCache(this.related ? value : newValue, records);
-    records.env.cache.update(records, this, Array(records._length).fill(cacheValue));
+    records.env.cache.update(records, this, _.fill(Array(records._length), cacheValue));
   }
 
   async _imageProcess(value) {
@@ -2697,15 +2691,20 @@ class _Selection extends Field {
   }
 
   async convertToCache(value, record, validate = true) {
-    if (!validate)
-      return value ? value : null
-    if (value && this.columnType[0] === 'INTEGER')
-      value = _.toInteger(value)
-    if ((await this.getValues(record.env)).includes(value))
-      return value
-    else if (!value)
-      return null
-    throw new ValueError("Wrong value for %s: %s", this, value)
+    if (!validate) {
+      return value ? value : null;
+    }
+    if (value && this.columnType[0] === 'INTEGER') {
+      value = _.toInteger(value);
+    }
+    const values = await this.getValues(record.env);
+    if (values.includes(value)) {
+      return value;
+    }
+    else if (!value) {
+      return null;
+    }
+    throw new ValueError("Wrong value for %s: %s", this, value);
   }
 
   /**
@@ -3096,7 +3095,7 @@ export class _Many2one extends _Relational {
     await this._removeInverses(records, cacheValue);
 
     // update the cache of this
-    cache.update(records, this, Array(records._length).fill(cacheValue));
+    cache.update(records, this, _.fill(Array(records._length), cacheValue));
 
     // update towrite
     if (this.store) {
@@ -3104,7 +3103,7 @@ export class _Many2one extends _Relational {
       const towrite = records.env.all.towrite[this.modelName];
       for (const record of await records.filtered('id')) {
         // cacheValue is already in database format
-        if (!towrite.has(record.id)) {
+        if (!towrite.has(record.id)) { 
           towrite.set(record.id, new Dict<any>());
         }
         towrite.get(record.id)[this.name] = cacheValue;
@@ -3398,7 +3397,10 @@ class _RelationalMulti extends _Relational {
 
   async convertToWrite(value: any, record: ModelRecords) {
     if (Array.isArray(value)) {
-      if (value.every(id => id instanceof Number)) {
+      if (value.some(id => typeof id !== 'number')) {
+        return value;
+      }
+      else {
         value = record.env.items(this.comodelName).browse(value);
       }
     }
@@ -3443,10 +3445,6 @@ class _RelationalMulti extends _Relational {
 
     if (value === false || value == null) {
       return [Command.clear()];
-    }
-
-    if (Array.isArray(value)) {
-      return value;
     }
 
     throw new ValueError("Wrong value for %s: %s", this, value);
@@ -3743,7 +3741,7 @@ export class _One2many extends _RelationalMulti {
           }
           else if ([Command.CLEAR, Command.SET].includes(command[0])) {
             // assign the given lines to the last record only
-            cache.update(recs, this, Array(len(recs)).fill([]));
+            cache.update(recs, this, _.fill(Array(len(recs)), []));
             const lines = comodel.browse(command[0] == Command.SET ? command[2] : []);
             cache.set(recs([-1]), this, lines._ids);
           }
@@ -3852,7 +3850,7 @@ export class _One2many extends _RelationalMulti {
           }
           else if ([Command.CLEAR, Command.SET].includes(command[0])) {
             // assign the given lines to the last record only
-            cache.update(recs, this, Array(len(recs)).fill([]));
+            cache.update(recs, this, _.fill(Array(len(recs)), []));
             const lines = comodel.browse(command[0] == Command.SET ? command[2] : []);
             cache.set(recs([-1]), this, lines._ids);
           }
@@ -3981,6 +3979,10 @@ class _Many2many extends _RelationalMulti {
         self.relation, self.column2, comodel.cls._table, 'id', self.ondelete, model, self._moduleName,
       )
     }
+  }
+
+  get groupable(): boolean {
+    return this.store;
   }
 
   async read(records: ModelRecords) {
@@ -4141,7 +4143,7 @@ class _Many2many extends _RelationalMulti {
     }
     if (len(pairs)) {
       if (this.store) {
-        const query = `INSERT INTO "${this.relation}" ("${this.column1}", "${this.column2}") VALUES ${Array(len(pairs)).fill('%s').join(', ')} ON CONFLICT DO NOTHING`;
+        const query = `INSERT INTO "${this.relation}" ("${this.column1}", "${this.column2}") VALUES ${_.fill(Array(len(pairs)), '%s').join(', ')} ON CONFLICT DO NOTHING`;
         const params = pairs.map(([x, y]) => `(${x},${y})`);
         await cr.execute(query, { params: params });
       }
@@ -4203,7 +4205,7 @@ class _Many2many extends _RelationalMulti {
         }
         // delete the rows where (id1 IN xs AND id2 IN ys) OR ...
         const COND = `"${this.column1}" IN (%s) AND "${this.column2}" IN (%s)`;
-        const query = `DELETE FROM "${this.relation}" WHERE ${Array(len(xsToYs)).fill(COND).join(' OR ')}`;
+        const query = `DELETE FROM "${this.relation}" WHERE ${_.fill(Array(len(xsToYs)), COND).join(' OR ')}`;
         const params = [];
         for (const [xs, ys] of xsToYs) {
           for (const arg of [[...xs], [...ys]]) {

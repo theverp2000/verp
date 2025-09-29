@@ -354,11 +354,11 @@ QUnit.module("ActionManager", (hooks) => {
         );
         assert.hasClass(
             webClient.el.querySelector(".o-control-panel .o-switch-view"),
-            "o_list",
+            "o-list",
             "list switch button should be the first one"
         );
         assert.hasClass(
-            webClient.el.querySelector(".o-control-panel .o-switch-view.o_list"),
+            webClient.el.querySelector(".o-control-panel .o-switch-view.o-list"),
             "active",
             "list should be the active view"
         );
@@ -378,7 +378,7 @@ QUnit.module("ActionManager", (hooks) => {
         );
         assert.hasClass(
             webClient.el.querySelector(".o-control-panel .o-switch-view"),
-            "o_list",
+            "o-list",
             "list switch button should still be the first one"
         );
         assert.hasClass(
@@ -396,7 +396,7 @@ QUnit.module("ActionManager", (hooks) => {
             "should still have two switch buttons (list and kanban)"
         );
         assert.hasClass(
-            webClient.el.querySelector(".o-control-panel .o-switch-view.o_list"),
+            webClient.el.querySelector(".o-control-panel .o-switch-view.o-list"),
             "active",
             "list should now be the active view"
         );
@@ -418,7 +418,7 @@ QUnit.module("ActionManager", (hooks) => {
             "should have two switch buttons (list and kanban)"
         );
         assert.hasClass(
-            webClient.el.querySelector(".o-control-panel .o-switch-view.o_list"),
+            webClient.el.querySelector(".o-control-panel .o-switch-view.o-list"),
             "active",
             "list should be the active view"
         );
@@ -1146,12 +1146,12 @@ QUnit.module("ActionManager", (hooks) => {
         const webClient = await createWebClient({ serverData });
         await doAction(webClient, 3);
         assert.hasClass(
-            $(webClient.el).find(".o-control-panel .o-switch-view.o_list")[0],
+            $(webClient.el).find(".o-control-panel .o-switch-view.o-list")[0],
             "active",
             "list button in control panel is active"
         );
         assert.doesNotHaveClass(
-            $(webClient.el).find(".o-control-panel .o-switch-view.o_graph")[0],
+            $(webClient.el).find(".o-control-panel .o-switch-view.o-graph")[0],
             "active",
             "graph button in control panel is not active"
         );
@@ -1159,12 +1159,12 @@ QUnit.module("ActionManager", (hooks) => {
         await cpHelpers.switchView(webClient.el, "graph");
         await legacyExtraNextTick();
         assert.doesNotHaveClass(
-            $(webClient.el).find(".o-control-panel .o-switch-view.o_list")[0],
+            $(webClient.el).find(".o-control-panel .o-switch-view.o-list")[0],
             "active",
             "list button in control panel is not active"
         );
         assert.hasClass(
-            $(webClient.el).find(".o-control-panel .o-switch-view.o_graph")[0],
+            $(webClient.el).find(".o-control-panel .o-switch-view.o-graph")[0],
             "active",
             "graph button in control panel is active"
         );

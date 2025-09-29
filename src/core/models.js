@@ -14,9 +14,15 @@ import { AccessError, KeyError, MissingError, NotImplementedError, UserError, Va
 import { showConstraints } from './modules/db';
 import { Query, expression } from "./osv";
 import * as tools from './tools';
-import { DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, IterableGenerator, _format, _t, allTimezones, bool, extend, f, filter, getLang, isCallable, isInstance, islice, len, map, partial, pop, remove, sorted, sortedAsync, stringify, update } from './tools';
+import { getLang, stringify } from './tools';
+import { bool } from './tools/bool';
 import { config } from "./tools/config";
+import { isCallable, isInstance, partial } from './tools/func';
+import { IterableGenerator, extend, filter, islice, len, map, remove, sorted, sortedAsync } from './tools/iterable';
+import { DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT, allTimezones, pop, update } from './tools/misc';
 import { addConstraint, quoteList } from './tools/sql';
+import { _t } from './tools/translate';
+import { _format, f } from './tools/utils';
 
 export const PREFETCH_MAX = 1000;
 export const VALID_AGGREGATE_FUNCTIONS = [
@@ -190,7 +196,7 @@ export function isSubclass(obj, base) {
 
 const POPULAR_KEYS = new Set([
   // BaseModel popular properties
-  '_name', '_fields',  '_ids', '_prefetchIds', 'env', 'cls', 'pool', 'then', 'mro'
+  '_name', '_fields', '_ids', '_prefetchIds', 'env', 'cls', 'pool', 'then', 'mro'
 ]);
 
 export class MetaModel extends Meta {
@@ -322,9 +328,9 @@ export function newId(id) {
 export class NewId extends Number {
   constructor(origin, ref) {
     super();
-    setattr(this, '_uuid', uuidv1().slice(0, 8), {enumerable: false, configurable: false});
-    setattr(this, 'origin', origin, {enumerable: false, configurable: false});
-    setattr(this, 'ref', ref, {enumerable: false, configurable: false});
+    setattr(this, '_uuid', uuidv1().slice(0, 8), { enumerable: false, configurable: false });
+    setattr(this, 'origin', origin, { enumerable: false, configurable: false });
+    setattr(this, 'ref', ref, { enumerable: false, configurable: false });
   }
 
   valueOf() {
@@ -1798,23 +1804,23 @@ export class BaseModel extends Function {
 
   _browse(env, ids, prefetchIds) {
     if (Array.isArray(ids)) { // normalize ids to list of numbers, bypass if ids is a Generator
-      for (let i=0; i < ids.length; i++) {
+      for (let i = 0; i < ids.length; i++) {
         if (typeof ids[i] === 'string') {
           ids[i] = Number(ids[i]);
         }
       }
     }
-
+    if (prefetchIds && !Array.isArray(prefetchIds)) {
+      prefetchIds = Array.from(prefetchIds);
+    }
     const cls = this.constructor;
     const records = new cls();
-
-    records._name = cls._name; // firstly assign for easy debuging
+    records._name = cls._name;
     records._ids = ids;
     records._prefetchIds = prefetchIds;
+    records.cls = cls;
     records.env = env;
     records.pool = cls.pool;
-    records.cls = cls;
-
     return records;
   }
 
@@ -1827,7 +1833,7 @@ export class BaseModel extends Function {
       ids = List.from([ids]);
     } else if (typeof ids === 'string') {
       ids = List.from([Number(ids)]);
-    } else { // Iterables: List / Array / Set / Generator
+    } else { // Iterables: List / Array / Set / Generator...
       ids = List.from(ids);
     }
     return this._browse(this.env, ids, ids);
@@ -2193,14 +2199,14 @@ export class BaseModel extends Function {
     this.flush([fieldName]);
 
     const cr = this._cr;
-    const query = tools.f('SELECT "%s" AS id1, "%s" AS id2 FROM "%s" WHERE "%s" IN ($1) AND "%s" IS NOT NULL', field.column1, field.column2, field.relation, field.column1, field.column2);
+    const query = tools.f('SELECT "%s" AS id1, "%s" AS id2 FROM "%s" WHERE "%s" IN (%%s) AND "%s" IS NOT NULL', field.column1, field.column2, field.relation, field.column1, field.column2);
 
-    const succs = new DefaultDict(Set);        // transitive closure of successors
-    const preds = new DefaultDict(Set);        // transitive closure of predecessors
+    const succs = new DefaultDict(() => new Set());        // transitive closure of successors
+    const preds = new DefaultDict(() => new Set());        // transitive closure of predecessors
     const [todo, done] = [new Set(this.ids), new Set()];
     while (todo.size) {
       // retrieve the respective successors of the nodes in 'todo'
-      const res = await cr.execute(query, { bind: [Array.from(todo).join(',')] });
+      const res = await cr.execute(query, [Array.from(todo).join(',')]);
       todo.forEach(e => done.add(e));
       todo.clear();
       for (const { id1, id2 } of res) {
@@ -2255,7 +2261,7 @@ export class BaseModel extends Function {
           if (isInstance(e, MissingError)) {
             const existing = await recs.exists();
             await field.recompute(existing);
-            for (const f of recs.pool.fieldComputed.get(field)) {
+            for (const f of recs.pool.fieldComputed[field]) {
               self.env.removeToCompute(f, await recs.filter((r) => !existing.includes(r)))
             }
           }
@@ -3052,18 +3058,9 @@ export class BaseModel extends Function {
       WHERE c.relname='${this.cls._table}'
         AND c.oid=a.attrelid
         AND a.attisdropped=false
-        AND format_type(a.atttypid, a.atttypmod) NOT IN ('cid', 'tid', 'oid', 'xid')
+        AND pg_catalog.format_type(a.atttypid, a.atttypmod) NOT IN ('cid', 'tid', 'oid', 'xid')
         AND a.attname NOT IN (${quoteList(cols)})
     `;
-    /*const sql = `
-      SELECT a.attname, a.attnotnull
-      FROM pg_attribute a
-      WHERE
-          attrelid = '"${this.cls._table}"'::regclass
-          AND attisdropped = FALSE
-          AND format_type(atttypid, atttypmod) NOT IN ('cid', 'tid', 'oid', 'xid')
-          AND attname NOT IN (${quoteList(cols)});
-    `;*/
     const res = await cr.execute(sql);
 
     for (const row of res) {
@@ -3141,25 +3138,6 @@ export class BaseModel extends Function {
     }
   }
 
-  async mapped(func) {
-    if (!func) {
-      return this;             // support for an empty path of fields
-    }
-    if (typeof func === 'string') {
-      let recs = this;
-      for (const name of func.split('.')) {
-        const field = recs._fields[name];
-        if (!field) {
-          console.log('Not found field:', name);
-        }
-        recs = await field.mapped(recs);
-      }
-      return recs;
-    } else {
-      return this._mappedFunc(func);
-    }
-  }
-
   async map(func) {
     const vals = [];
     for (const rec of this) {
@@ -3224,133 +3202,6 @@ export class BaseModel extends Function {
     return this.browse(ids);
   }
 
-  async filteredDomain(domain) {
-    if (!bool(domain)) return this;
-    const result = [];
-    for (const d of Array.from(domain).reverse()) {
-      if (d === '|')
-        result.push(result.pop().or(result.pop()))
-      else if (d === '!')
-        result.push(this.sub(result.pop()))
-      else if (d === '&')
-        result.push(result.pop().and(result.pop()))
-      else if (expression.isTrueLeaf(d))
-        result.push(this)
-      else if (expression.isFalseLeaf(d))
-        result.push(this.browse())
-      else {
-        let [key, comparator, value] = d;
-        if (['childOf', 'parentOf'].includes(comparator)) {
-          result.push(this.search([['id', 'in', this.ids], d]));
-          continue;
-        }
-        if (key.endsWith('.id'))
-          key = key.slice(0, -3);
-        if (key === 'id')
-          key = '';
-        // determine the field with the final type for values
-        let field = null;
-        if (key) {
-          let model = this.browse();
-          for (const fname of key.split('.')) {
-            field = model._fields[fname];
-            model = await model[fname];
-          }
-        }
-        let valueEsc;
-        if (['like', 'ilike', '=like', '=ilike', 'not ilike', 'not like'].includes(comparator)) {
-          valueEsc = value.replace('_', '?').replace('%', '*').replace('[', '?');
-        }
-        const recordsIds = new OrderedSet2();
-        for (const rec of this) {
-          let data = await rec.mapped(key);
-          if (isInstance(data, BaseModel)) {
-            let v = value;
-            if (Array.isArray(value) && value.length) {
-              v = value[0];
-            }
-            if (typeof v === 'string') {
-              data = await data.mapped('displayName');
-            }
-            else {
-              data = data.ok && data.ids;
-              data = bool(data) ? data : [false];
-            }
-          }
-          else if (field && ['date', 'datetime'].includes(field.type)) {
-            // convert all date and datetime values to datetime
-            const normalize = _Datetime.toDatetime;
-            if (Array.isArray(value)) {
-              value = value.map(v => normalize(v));
-            }
-            else {
-              value = normalize(value);
-            }
-            data = data.map(v => normalize(v));
-          }
-          if (['in', 'not in'].includes(comparator)) {
-            if (!(Array.isArray(value))) {
-              value = [value];
-            }
-          }
-
-          let ok;
-          if (comparator === '=')
-            ok = data.includes(value)
-          else if (comparator === 'in')
-            ok = value.some(x => data.includes(x))
-          else if (comparator === '<')
-            ok = data.some(x => x != null && x < value)
-          else if (comparator === '>')
-            ok = data.some(x => x != null && x > value)
-          else if (comparator === '<=')
-            ok = data.some(x => x != null && x <= value)
-          else if (comparator === '>=')
-            ok = data.some(x => x != null && x >= value)
-          else if (['!=', '<>'].includes(comparator))
-            ok = !data.includes(value)
-          else if (comparator === 'not in')
-            ok = value.every(x => !data.includes(x))
-          else if (comparator === 'not ilike') {
-            data = data.map(x => x || "")
-            ok = data.every(x => !x.toLowerCase().includes(value.toLowerCase()))
-          }
-          else if (comparator === 'ilike') {
-            data = data.map(x => (x || "").toLowerCase())
-            ok = data.filter(d => d.includes(valueEsc || '')).length > 0
-          }
-          else if (comparator === 'not like') {
-            data = data.map(x => x || "")
-            ok = data.every(x => !x.includes(value))
-          }
-          else if (comparator === 'like') {
-            data = data.map(x => x || "")
-            ok = data.filter(d => d.includes(value && valueEsc)).length > 0
-          }
-          else if (comparator === '=?')
-            ok = data.includes(value) || !value
-          else if (['=like'].includes(comparator)) {
-            data = data.map(x => x || "")
-            ok = data.filter(d => d.includes(valueEsc)).length > 0
-          }
-          else if (['=ilike'].includes(comparator)) {
-            data = data.map(x => (x || "").toLowerCase())
-            ok = data.filter(d => d.includes(value && valueEsc.toLowerCase())).length > 0
-          }
-          else
-            throw new ValueError('data invalid %s', data)
-          if (ok)
-            recordsIds.add(rec.id)
-        }
-        result.push(this.browse(recordsIds));
-      }
-    }
-    while (result.length > 1) {
-      result.push(result.pop().and(result.pop()));
-    }
-    return result[0];
-  }
-
   async sorted(key, reverse = false) {
     if (!key) {
       const recs = await this.search([['id', 'in', this.ids]]);
@@ -3364,50 +3215,6 @@ export class BaseModel extends Function {
 
   async reversed(key = null) {
     return this.sorted(key, true);
-  }
-
-  get _populateSizes() {
-    return {
-      'small': 10,    // minimal representative set
-      'medium': 100,  // average database load
-      'large': 1000,  // maxi database load
-    }
-  }
-
-  get _populateDependencies() {
-    return [];
-  }
-
-  async _populate(size) {
-    const batchSize = 1000,
-      minSize = this._populateSizes[size];
-
-    let recordCount = 0,
-      createValues = [],
-      complete = false;
-
-    const fieldGenerators = await this._populateFactories();
-    if (!bool(fieldGenerators)) {
-      return this.browse(); // maybe create an automatic generator?
-    }
-
-    const recordsBatches = [];
-    const generator = await populate.chainFactories(fieldGenerators, this._name);
-    while (recordCount <= minSize || !complete) {
-      const values = await tools.nextAsync(generator);
-      complete = values.pop('__complete');
-      createValues.push(values);
-      recordCount += 1;
-      if (len(createValues) >= batchSize) {
-        console.info('Batch: %s/%s', recordCount, minSize);
-        recordsBatches.push(await this.create(createValues));
-        createValues = [];
-      }
-    }
-    if (createValues.length) {
-      recordsBatches.push(await this.create(createValues));
-    }
-    return this.concat(recordsBatches);
   }
 }
 

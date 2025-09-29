@@ -1,4 +1,4 @@
-import { AbstractModel, MetaModel, _super } from "../../../core";
+import { AbstractModel, MetaModel, _super } from "../../../core/models";
 
 @MetaModel.define()
 class BaseModel extends AbstractModel {

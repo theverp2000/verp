@@ -1,5 +1,7 @@
-import { _super, Fields, MetaModel, Model } from "../../../core";
+import { Fields } from "../../../core";
 import { AccessError } from "../../../core/helper";
+import { _super } from "../../../core/models";
+import { MetaModel, Model } from "../../../core/models"
 import { f, sum } from "../../../core/tools";
 
 @MetaModel.define()

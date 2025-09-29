@@ -1,6 +1,7 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { Fields, api } from "../../../core";
 import { getattr } from "../../../core/api";
 import { UserError, ValidationError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models"
 import { expression } from "../../../core/osv";
 import { bool } from "../../../core/tools";
 

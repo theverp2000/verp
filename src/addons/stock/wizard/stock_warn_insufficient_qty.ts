@@ -1,5 +1,7 @@
-import { AbstractModel, api, Fields, MetaModel, TransientModel } from "../../../core";
-import { NotImplementedError } from "../../../core/helper";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { NotImplementedError } from "../../../core/helper/errors";
+import { MetaModel, AbstractModel, TransientModel } from "../../../core/models"
 
 @MetaModel.define()
 class StockWarnInsufficientQty extends AbstractModel {

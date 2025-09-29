@@ -1,6 +1,8 @@
-import { api, MetaModel, Model } from "../../../core";
-import { ValidationError } from "../../../core/helper";
-import { f, floatCompare } from "../../../core/tools";
+import { api } from "../../../core";
+import { ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model } from "../../../core/models";
+import { f } from "../../../core/tools";
+import { floatCompare } from "../../../core/tools/float_utils";
 
 @MetaModel.define()
 class DecimalPrecision extends Model {

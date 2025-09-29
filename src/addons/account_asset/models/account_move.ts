@@ -1,6 +1,8 @@
-import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
+import { Fields, _Date, api } from "../../../core";
 import { UserError, ValidationError } from "../../../core/helper";
-import { addDate, enumerate, pop, update } from "../../../core/tools";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { enumerate, pop, update } from "../../../core/tools";
+import { addDate } from "../../../core/tools/date_utils";
 
 @MetaModel.define()
 class AccountMove extends Model {

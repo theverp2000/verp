@@ -2,7 +2,7 @@ import { http } from '../../../core';
 import * as web from '../../../core/addons/web/controllers';
 import { Environment } from '../../../core/api';
 import { ipAddress } from '../../../core/service/middleware/ipaddress';
-import { bool } from '../../../core/tools';
+import { bool } from '../../../core/tools/bool';
 
 /**
  * Admin still has `admin` password, flash a message via chatter.

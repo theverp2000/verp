@@ -6,11 +6,11 @@ import KanbanView from 'web.KanbanView';
 import KanbanColumn from 'web.KanbanColumn';
 import KanbanRecord from 'web.KanbanRecord';
 import KanbanModel from 'web.KanbanModel';
-import viewRegistry from 'web.view_registry';
+import viewRegistry from 'web.viewRegistry';
 import { ProjectControlPanel } from '@project/js/project_control_panel';
 import viewUtils from 'web.viewUtils';
 import { Domain } from '@web/core/domain';
-import view_dialogs from 'web.view_dialogs';
+import viewDialogs from 'web.viewDialogs';
 import core from 'web.core';
 
 const _t = core._t;
@@ -23,7 +23,7 @@ const ProjectProjectKanbanRecord = KanbanRecord.extend({
      * @private
      */
     _openRecord: function () {
-        const kanbanBoxesElement = this.el.querySelectorAll('.o_project_kanban_boxes a');
+        const kanbanBoxesElement = this.el.querySelectorAll('.o-project-kanban-boxes a');
         if (this.selectionMode !== true && kanbanBoxesElement.length) {
             kanbanBoxesElement[0].click();
         } else {
@@ -36,8 +36,8 @@ const ProjectProjectKanbanRecord = KanbanRecord.extend({
      */
     _onManageTogglerClicked: function (event) {
         this._super.apply(this, arguments);
-        const thisSettingToggle = this.el.querySelector('.o_kanban_manage_toggle_button');
-        this.el.parentNode.querySelectorAll('.o_kanban_manage_toggle_button.show').forEach(el => {
+        const thisSettingToggle = this.el.querySelector('.o-kanban-manage-toggle-button');
+        this.el.parentNode.querySelectorAll('.o-kanban-manage-toggle-button.show').forEach(el => {
             if (el !== thisSettingToggle) {
                 el.classList.remove('show');
             }
@@ -58,7 +58,7 @@ const ProjectProjectKanbanView = KanbanView.extend({
     })
 });
 
-viewRegistry.add('project_project_kanban', ProjectProjectKanbanView);
+viewRegistry.add('projectProjectKanban', ProjectProjectKanbanView);
 
 // TASKS
 
@@ -70,7 +70,7 @@ const ProjectTaskKanbanColumn = KanbanColumn.extend({
     _onDeleteColumn: function (event) {
         if (this.groupedBy === 'stageId') {
             event.preventDefault();
-            this.trigger_up('kanban_column_delete_wizard');
+            this.triggerUp('kanbanColumnDeleteWizard');
         } else {
             this._super(...arguments);
         }
@@ -83,20 +83,20 @@ const ProjectTaskKanbanColumn = KanbanColumn.extend({
      * @override
      */
     _onEditColumn: function (event) {
-        if (this.groupedBy !== 'personal_stage_type_ids') {
+        if (this.groupedBy !== 'personalStageTypeIds') {
             this._super(...arguments);
             return;
         }
         event.preventDefault();
-        const context = Object.assign({}, this.getSession().user_context, {
-            form_view_ref: 'project.personal_task_type_edit',
+        const context = Object.assign({}, this.getSession().userContext, {
+            formViewRef: 'project.personalTaskTypeEdit',
         });
-        new view_dialogs.FormViewDialog(this, {
+        new viewDialogs.FormViewDialog(this, {
             resModel: this.relation,
-            res_id: this.id,
+            resId: this.id,
             context: context,
             title: _t("Edit Personal Stage"),
-            on_saved: this.trigger_up.bind(this, 'reload'),
+            onSaved: this.triggerUp.bind(this, 'reload'),
         }).open();
     },
 });
@@ -114,7 +114,7 @@ const ProjectTaskKanbanRenderer = KanbanRenderer.extend({
     willStart: function () {
         const superPromise = this._super.apply(this, arguments);
 
-        const isProjectManager = this.getSession().user_has_group('project.group_project_manager').then((hasGroup) => {
+        const isProjectManager = this.getSession().userHasGroup('project.groupProjectManager').then((hasGroup) => {
             this.isProjectManager = hasGroup;
             this._setState();
             return Promise.resolve();
@@ -124,7 +124,7 @@ const ProjectTaskKanbanRenderer = KanbanRenderer.extend({
     },
 
     /**
-     * Allows record drag when grouping by `personal_stage_type_ids`
+     * Allows record drag when grouping by `personalStageTypeIds`
      *
      * @override
      */
@@ -135,26 +135,26 @@ const ProjectTaskKanbanRenderer = KanbanRenderer.extend({
         const field = this.state.fields[groupByFieldName] || {};
         const fieldInfo = this.state.fieldsInfo.kanban[groupByFieldName] || {};
 
-        const grouped_by_date = ["date", "datetime"].includes(field.type);
-        const grouped_by_m2m = field.type === "many2many";
+        const groupedByDate = ["date", "datetime"].includes(field.type);
+        const groupedByM2m = field.type === "many2many";
         const readonly = !!field.readonly || !!fieldInfo.readonly;
-        const groupedByPersonalStage = (groupByFieldName === 'personal_stage_type_ids');
+        const groupedByPersonalStage = (groupByFieldName === 'personalStageTypeIds');
 
-        const draggable = !readonly && (!grouped_by_m2m || groupedByPersonalStage) &&
-            (!grouped_by_date || fieldInfo.allowGroupRangeValue);
+        const draggable = !readonly && (!groupedByM2m || groupedByPersonalStage) &&
+            (!groupedByDate || fieldInfo.allowGroupRangeValue);
 
         // When grouping by personal stage we allow any project user to create
         let editable = this.columnOptions.editable;
         let deletable = this.columnOptions.deletable;
-        if (['stageId', 'personal_stage_type_ids'].includes(groupByFieldName)) {
+        if (['stageId', 'personalStageTypeIds'].includes(groupByFieldName)) {
             this.groupedByM2O = groupedByPersonalStage || this.groupedByM2O;
-            const allow_crud = this.isProjectManager || groupedByPersonalStage;
-            this.createColumnEnabled = editable = deletable = allow_crud;
+            const allowCrud = this.isProjectManager || groupedByPersonalStage;
+            this.createColumnEnabled = editable = deletable = allowCrud;
         }
 
         Object.assign(this.columnOptions, {
             draggable,
-            grouped_by_m2o: this.groupedByM2O,
+            groupedByM2o: this.groupedByM2O,
             editable: editable,
             deletable: deletable,
         });
@@ -162,8 +162,8 @@ const ProjectTaskKanbanRenderer = KanbanRenderer.extend({
 });
 
 export const ProjectKanbanController = KanbanController.extend({
-    custom_events: Object.assign({}, KanbanController.prototype.custom_events, {
-        'kanban_column_delete_wizard': '_onDeleteColumnWizard',
+    customEvents: Object.assign({}, KanbanController.prototype.customEvents, {
+        'kanbanColumnDeleteWizard': '_onDeleteColumnWizard',
     }),
 
     _onDeleteColumnWizard: function (ev) {
@@ -173,11 +173,11 @@ export const ProjectKanbanController = KanbanController.extend({
         const state = this.model.get(this.handle, {raw: true});
         this._rpc({
             model: 'project.task.type',
-            method: 'unlink_wizard',
+            method: 'unlinkWizard',
             args: [columnId],
             context: state.getContext(),
         }).then(function (res) {
-            self.do_action(res);
+            self.doAction(res);
         });
     },
 
@@ -187,14 +187,14 @@ export const ProjectKanbanController = KanbanController.extend({
     _onDeleteColumn: function (ev) {
         const state = this.model.get(this.handle, {raw: true});
         const groupedByFieldname = state.groupedBy[0];
-        if (groupedByFieldname !== 'personal_stage_type_ids') {
+        if (groupedByFieldname !== 'personalStageTypeIds') {
             this._super(...arguments);
             return;
         }
         const column = ev.target;
         this._rpc({
             model: 'project.task.type',
-            method: 'remove_personal_stage',
+            method: 'removePersonalStage',
             args: [[column.id]],
         }).then(this.update.bind(this, {}, {}));
     },
@@ -203,7 +203,7 @@ export const ProjectKanbanController = KanbanController.extend({
 const ProjectTaskKanbanModel = KanbanModel.extend({
 
     /**
-     * Upon updating `personal_stage_type_ids` we actually want to update the `personal_stage_type_id` field.
+     * Upon updating `personalStageTypeIds` we actually want to update the `personalStageTypeId` field.
      *
      * @override
      * @private
@@ -211,63 +211,63 @@ const ProjectTaskKanbanModel = KanbanModel.extend({
     moveRecord: function (recordID, groupID, parentID) {
         const self = this;
         const parent = this.localData[parentID];
-        const new_group = this.localData[groupID];
+        const newGroup = this.localData[groupID];
         const changes = {};
         const groupedFieldName = viewUtils.getGroupByField(parent.groupedBy[0]);
         const groupedField = parent.fields[groupedFieldName];
         // for a date/datetime field, we take the last moment of the group as the group value
         if (['date', 'datetime'].includes(groupedField.type)) {
-            changes[groupedFieldName] = viewUtils.getGroupValue(new_group, groupedFieldName);
+            changes[groupedFieldName] = viewUtils.getGroupValue(newGroup, groupedFieldName);
         } else if (groupedField.type === 'many2one') {
             changes[groupedFieldName] = {
-                id: new_group.res_id,
-                display_name: new_group.value,
+                id: newGroup.resId,
+                displayName: newGroup.value,
             };
         } else if (groupedField.type === 'selection') {
-            const value = _.findWhere(groupedField.selection, {1: new_group.value});
+            const value = _.findWhere(groupedField.selection, {1: newGroup.value});
             changes[groupedFieldName] = value && value[0] || false;
-        } else if (groupedField.type == 'many2many' && groupedFieldName == 'personal_stage_type_ids') {
-            changes['personal_stage_type_id'] = {
-                id: new_group.res_id,
-                display_name: new_group.value,
+        } else if (groupedField.type == 'many2many' && groupedFieldName == 'personalStageTypeIds') {
+            changes['personalStageTypeId'] = {
+                id: newGroup.resId,
+                displayName: newGroup.value,
             }
         } else {
-            changes[groupedFieldName] = new_group.value;
+            changes[groupedFieldName] = newGroup.value;
         }
 
         // Manually updates groups data. Note: this is done before the actual
         // save as it might need to perform a read group in some cases so those
         // updated data might be overridden again.
         const record = self.localData[recordID];
-        const resID = record.res_id;
+        const resID = record.resId;
         // Remove record from its current group
-        let old_group;
+        let oldGroup;
         for (let i = 0; i < parent.data.length; i++) {
-            old_group = self.localData[parent.data[i]];
-            const index = _.indexOf(old_group.data, recordID);
+            oldGroup = self.localData[parent.data[i]];
+            const index = _.indexOf(oldGroup.data, recordID);
             if (index >= 0) {
-                old_group.data.splice(index, 1);
-                old_group.count--;
-                if (!old_group.activeFilter || old_group.activeFilter.value === record.data[parent.progressBar.field]) {
+                oldGroup.data.splice(index, 1);
+                oldGroup.count--;
+                if (!oldGroup.activeFilter || oldGroup.activeFilter.value === record.data[parent.progressBar.field]) {
                     // Here, the record leaving the old group matches its domain,
                     // so we must decrease the domainCount too.
-                    old_group.domainCount--;
+                    oldGroup.domainCount--;
                 }
-                old_group.res_ids = _.without(old_group.res_ids, resID);
-                self._updateParentResIDs(old_group);
+                oldGroup.resIds = _.without(oldGroup.resIds, resID);
+                self._updateParentResIDs(oldGroup);
                 break;
             }
         }
         // Add record to its new group
-        new_group.data.push(recordID);
-        new_group.res_ids.push(resID);
-        new_group.count++;
+        newGroup.data.push(recordID);
+        newGroup.resIds.push(resID);
+        newGroup.count++;
 
         return this.notifyChanges(recordID, changes).then(function () {
             return self.save(recordID);
         }).then(function () {
-            record.parentID = new_group.id;
-            return [old_group.id, new_group.id];
+            record.parentID = newGroup.id;
+            return [oldGroup.id, newGroup.id];
         });
     },
 
@@ -281,18 +281,18 @@ const ProjectTaskKanbanModel = KanbanModel.extend({
     createGroup: function (name, parentID) {
         const parent = this.localData[parentID];
         const groupedFieldName = viewUtils.getGroupByField(parent.groupedBy[0]);
-        if (groupedFieldName !== 'personal_stage_type_ids') {
+        if (groupedFieldName !== 'personalStageTypeIds') {
             return this._super(...arguments);
         }
         const groupBy = parent.groupedBy[0];
         const context = Object.assign({}, parent.context, {
-            default_user_id: this.getSession().uid,
+            default_userId: this.getSession().uid,
         });
         // In case it's a personal stage we don't want to assign it to the project.
-        delete context.default_project_id;
+        delete context.default_projectId;
         return this._rpc({
                 model: 'project.task.type',
-                method: 'name_create',
+                method: 'nameCreate',
                 args: [name],
                 context: context,
             })
@@ -339,9 +339,9 @@ const ProjectTaskKanbanModel = KanbanModel.extend({
      */
     _readGroup: function (list) {
         const groupedBy = list.groupedBy[0];
-        if (groupedBy === 'personal_stage_type_ids') {
+        if (groupedBy === 'personalStageTypeIds') {
             list.domain = Domain.and([
-                [['user_ids', 'in', this.getSession().uid]],
+                [['userIds', 'in', this.getSession().uid]],
                 list.domain
             ]).toList();
         }
@@ -358,4 +358,4 @@ const ProjectKanbanView = KanbanView.extend({
     }),
 });
 
-viewRegistry.add('project_task_kanban', ProjectKanbanView);
+viewRegistry.add('projectTaskKanban', ProjectKanbanView);

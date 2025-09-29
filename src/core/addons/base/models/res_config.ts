@@ -1,9 +1,17 @@
 import _ from "lodash";
 import xpath from "xpath/xpath";
-import { BaseModel, MetaModel, TransientModel, _super, api, tools } from "../../..";
-import { getattr, hasattr } from "../../../api";
-import { AccessError, Dict, NotImplementedError, RedirectWarning, UserError, ValueError } from "../../../helper";
-import { bool, camelCaseTo_, f, isInstance, next, parseInt, repr, rsplit, serializeXml, sortedAsync, stringify } from "../../../tools";
+import { api, tools } from "../../..";
+import { getattr, hasattr } from "../../../api/func";
+import { Dict } from "../../../helper/collections";
+import { AccessError, NotImplementedError, RedirectWarning, UserError, ValueError } from "../../../helper/errors";
+import { BaseModel, MetaModel, TransientModel, _super } from "../../../models";
+import { bool } from "../../../tools/bool";
+import { isInstance, parseInt, partial, rsplit } from "../../../tools/func";
+import { next, sortedAsync } from "../../../tools/iterable";
+import { stringify } from "../../../tools/json";
+import { repr } from "../../../tools/misc";
+import { camelCaseTo_, f } from "../../../tools/utils";
+import { serializeXml } from "../../../tools/xml";
 
 class ResConfigModuleInstallationMixin {
   /**

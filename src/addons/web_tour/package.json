@@ -1,10 +1,7 @@
 {
     "label": "Tours",
     "category": "Hidden",
-    "descriptions": [
-        "Verp Web tours.",
-        "========================"
-    ],
+    "description": "Verp Web tours.\n========================",
     "version": "0.1",
     "depends": ["web"],
     "data": [

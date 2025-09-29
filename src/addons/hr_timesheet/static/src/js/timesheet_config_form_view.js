@@ -44,7 +44,7 @@ verp.define('hr_timesheet.res.config.form', function (require) {
                 if (!config.device.isMobile) {
                     new TimesheetConfigQRCodeDialog(this, apple_url).open();
                 } else {
-                    self.do_action({type: 'ir.actions.act_url', url: apple_url});
+                    self.doAction({type: 'ir.actions.act_url', url: apple_url});
                 }
             });
             this.$el.find('img.o_config_play_store').on('click', function(event) {
@@ -52,7 +52,7 @@ verp.define('hr_timesheet.res.config.form', function (require) {
                 if (!config.device.isMobile) {
                     new TimesheetConfigQRCodeDialog(this, google_url).open();
                 } else {
-                    self.do_action({type: 'ir.actions.act_url', url: google_url});
+                    self.doAction({type: 'ir.actions.act_url', url: google_url});
                 }
             });
         },

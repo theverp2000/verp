@@ -1,9 +1,16 @@
 import _ from "lodash";
-import { BaseModel, Fields, MetaModel, Model, _Date, _Datetime, _super, api, tools } from "../../..";
-import { Dict, UserError, ValueError } from "../../../helper";
+import { api, tools } from "../../..";
+import { Fields, _Date, _Datetime } from "../../../fields";
+import { Dict } from "../../../helper/collections";
+import { UserError, ValueError } from "../../../helper/errors";
+import { BaseModel, MetaModel, Model, _super } from "../../../models";
 import { TERM_OPERATORS_NEGATION } from "../../../osv/expression";
-import { _f, bool, f, isInstance, len, pop } from "../../../tools";
+import { bool } from "../../../tools/bool";
+import { isInstance } from "../../../tools/func";
+import { len } from "../../../tools/iterable";
+import { pop } from "../../../tools/misc";
 import { quoteList } from "../../../tools/sql";
+import { _f, f } from "../../../tools/utils";
 
 const TYPE2FIELD = {
   'char': 'valueText',

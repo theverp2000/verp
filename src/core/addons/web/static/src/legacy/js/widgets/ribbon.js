@@ -6,12 +6,12 @@ verp.define('web.ribbon', function (require) {
      *
      *      - You can specify the text with the title attribute.
      *      - You can specify the tooltip with the tooltip attribute.
-     *      - You can specify a background color for the ribbon with the bgColor attribute
+     *      - You can specify a background color for the ribbon with the bgcolor attribute
      *        using bootstrap classes :
      *        (bg-primary, bg-secondary, bg-success, bg-danger, bg-warning, bg-info,
      *        bg-light, bg-dark, bg-white)
      *
-     *        If you don't specify the bgColor attribute the bg-success class will be used
+     *        If you don't specify the bgcolor attribute the bg-success class will be used
      *        by default.
      */
 
@@ -27,13 +27,13 @@ verp.define('web.ribbon', function (require) {
          * @param {string} options.attrs.title
          * @param {string} options.attrs.text same as title
          * @param {string} options.attrs.tooltip
-         * @param {string} options.attrs.bgColor
+         * @param {string} options.attrs.bgcolor
          */
         init: function (parent, data, options) {
             this._super.apply(this, arguments);
             this.text = options.attrs.title || options.attrs.text;
             this.tooltip = options.attrs.tooltip;
-            this.className = options.attrs.bgColor ? options.attrs.bgColor : 'bg-success';
+            this.className = options.attrs.bgcolor ? options.attrs.bgcolor : 'bg-success';
             if (this.text.length > 15) {
                 this.className += ' o-small';
             } else if (this.text.length > 10) {

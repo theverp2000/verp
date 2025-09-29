@@ -1,11 +1,11 @@
+import { QueryTypes } from "../service/sequelize";
 import assert from "assert";
 import util, { format } from 'util';
 import { SQLError } from '../helper/errors';
 import { dbFactory } from '../service/db';
-import { QueryTypes } from "../service/sequelize";
 import { Cursor } from "../sql_db";
 import { bool } from "./bool";
-import { _f } from "./string";
+import { _f } from "./utils";
 
 export const quote = (x) => `'${x}'`;
 export const quoteDouble = (x) => `"${x}"`;
@@ -259,7 +259,7 @@ export async function createUniqueIndex(cr: Cursor, indexname: string, tablename
 }
 
 export function escapePsql(toEscape: string) {
-  return toEscape.replace(/\\/g, '\\\\').replace(/%/g, '\%').replace(/_/g, '\_');
+  return toEscape.replaceAll(/\\/g, '\\\\').replaceAll('%', '\%').replaceAll('_', '\_');
 }
 
 /**

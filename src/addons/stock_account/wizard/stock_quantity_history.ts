@@ -1,4 +1,4 @@
-import { MetaModel, TransientModel, _super } from "../../../core";
+import { MetaModel, TransientModel, _super } from "../../../core/models"
 import { formatDatetime } from "../../../core/tools";
 
 @MetaModel.define()

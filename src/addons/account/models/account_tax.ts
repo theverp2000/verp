@@ -1,6 +1,8 @@
 import _ from "lodash";
-import { Fields, MetaModel, Model, ModelRecords, _super, api, tools } from "../../../core";
-import { UserError, ValidationError } from "../../../core/helper";
+import { api, tools } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, ModelRecords, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
 import { bool, copysign, extend, f, floatRound, len, setOptions, sum } from "../../../core/tools";
 
@@ -475,7 +477,7 @@ class AccountTax extends Model {
 
     // 2) Deal with the rounding methods
     let currency = options.currency;
-    if (!currency) {
+    if (!bool(currency)) {
       currency = await company.currencyId;
     }
     // By default, for each tax, tax amount will first be computed

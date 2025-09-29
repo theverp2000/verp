@@ -15,11 +15,11 @@ tour.register('blog_autocomplete_with_date', {
 }, {
     content: "Enter search term",
     trigger: '.o_searchbar_form input',
-    extra_trigger: '#o_wblog_posts_loop span:has(i.fa-calendar-o):has(a[href="/blog"])',
+    extraTrigger: '#o_wblog_posts_loop span:has(i.fa-calendar-o):has(a[href="/blog"])',
     run: 'text a',
 }, {
     content: "Wait for suggestions then click on search icon",
-    extra_trigger: '.o_searchbar_form .dropdown-menu .o_search_result_item',
+    extraTrigger: '.o_searchbar_form .dropdown-menu .o_search_result_item',
     trigger: '.o_searchbar_form button:has(i.fa-search)',
 }, {
     content: "Ensure both filters are applied",

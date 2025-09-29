@@ -1,10 +1,7 @@
 {
   "label": "KPI Digests",
   "category": "Marketing",
-  "descriptions": [
-    "Send KPI Digests periodically",
-    "============================="
-  ],
+  "description": "Send KPI Digests periodically\n=============================",
   "version": "1.1",
   "depends": ["mail", "portal", "resource"],
   "data": [

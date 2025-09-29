@@ -43,7 +43,7 @@ class MailMail extends Model {
   static bodyHtml = Fields.Text('Rich-text Contents', { help: "Rich-text/HTML message" })
   static references = Fields.Text('References', { help: 'Message references, such as identifiers of previous messages', readonly: 1 })
   static headers = Fields.Text('Headers', { copy: false })
-  // Auto-detected based on create() - if 'mail_message_id' was passed then this mail is a notification
+  // Auto-detected based on create() - if 'mailMessageId' was passed then this mail is a notification
   // and during unlink() we will not cascade delete the parent and its attachments
   static isNotification = Fields.Boolean('Notification Email', { help: 'Mail has been created to notify people of an existing mail.message' })
   // recipients: include inactive partners (they may have been archived after
@@ -547,7 +547,7 @@ class MailMail extends Model {
           await notifs.flush(['notificationStatus', 'failureType', 'failureReason'], notifs);
         }
 
-        // protect against ill-formatted emailFrom when formataddr was used on an already formatted email
+        // protect against ill-formatted email_from when formataddr was used on an already formatted email
         const emailsFrom = emailSplitAndFormat(await mail.emailFrom);
         const emailFrom = bool(emailsFrom) ? emailsFrom[0] : await mail.emailFrom;
 

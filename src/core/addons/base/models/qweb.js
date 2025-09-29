@@ -1,9 +1,9 @@
 import assert from 'assert';
 import _ from "lodash";
 import { format } from 'util';
-import { AbstractModel } from '../../..';
-import { XmlError } from "../../../helper";
-import { enumerate } from "../../../tools";
+import { XmlError } from "../../../helper/errors";
+import { AbstractModel } from '../../../models';
+import { enumerate } from "../../../tools/iterable";
 
 export class QWebException extends XmlError {
   constructor(message, qweb, options, error, kw = {}) {

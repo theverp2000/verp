@@ -1,12 +1,12 @@
 /** @verp-module **/
 
 import { qweb } from 'web.core';
-import fieldRegistry from 'web.field_registry';
-import { FieldSelection } from 'web.relational_fields';
+import fieldRegistry from 'web.fieldRegistry';
+import { FieldSelection } from 'web.relationalFields';
 
 /**
  * options :
- * `color_field` : The field that must be use to color the bubble. It must be in the view. (from 0 to 11). Default : grey.
+ * `colorField` : The field that must be use to color the bubble. It must be in the view. (from 0 to 11). Default : grey.
  */
 export const StatusWithColor = FieldSelection.extend({
     _template: 'project.statusWithColor',
@@ -16,8 +16,8 @@ export const StatusWithColor = FieldSelection.extend({
      */
     init: function () {
         this._super.apply(this, arguments);
-        this.color = this.recordData[this.nodeOptions.color_field];
-        if (this.nodeOptions.no_quick_edit) {
+        this.color = this.recordData[this.nodeOptions.colorField];
+        if (this.nodeOptions.noQuickEdit) {
             this._canQuickEdit = false;
         }
     },
@@ -28,7 +28,7 @@ export const StatusWithColor = FieldSelection.extend({
     _renderReadonly() {
         this._super.apply(this, arguments);
         if (this.value) {
-            this.$el.addClass('o_status_with_color');
+            this.$el.addClass('o-status-with-color');
             this.$el.prepend(qweb.render(this._template, {
                 color: this.color,
             }));
@@ -36,4 +36,4 @@ export const StatusWithColor = FieldSelection.extend({
     },
 });
 
-fieldRegistry.add('status_with_color', StatusWithColor);
+fieldRegistry.add('statusWithColor', StatusWithColor);

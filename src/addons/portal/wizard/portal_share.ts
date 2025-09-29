@@ -1,5 +1,8 @@
-import { Fields, MetaModel, TransientModel, _super, api } from "../../../core";
-import { bool, f, isInstance } from "../../../core/tools";
+import { Fields, api } from "../../../core";
+import { MetaModel, TransientModel, _super } from "../../../core/models";
+import { bool } from "../../../core/tools/bool";
+import { isInstance } from "../../../core/tools/func";
+import { f } from "../../../core/tools/utils";
 
 @MetaModel.define()
 class PortalShare extends TransientModel {

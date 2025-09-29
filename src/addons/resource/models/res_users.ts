@@ -1,5 +1,7 @@
-import { Fields, MetaModel, Model, _super } from "../../../core";
-import { bool, len } from "../../../core/tools";
+import { Fields } from "../../../core/fields";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { bool } from "../../../core/tools/bool";
+import { len } from "../../../core/tools/iterable";
 
 @MetaModel.define()
 class ResUsers extends Model {

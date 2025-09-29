@@ -1,6 +1,6 @@
 import { Dict } from "../helper";
 import { urlParse } from "../service/middleware/utils";
-import { rstringPart, split, stringPart } from "./string";
+import { rstringPart, split, stringPart } from "./func";
 
 interface Conditions {
   protocol?: string | string[] | undefined;

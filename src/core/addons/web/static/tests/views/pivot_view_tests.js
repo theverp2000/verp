@@ -4804,7 +4804,7 @@ QUnit.module("Views", (hooks) => {
         assert.verifySteps(["/web/webclient/loadMenus", "load_views", "readGroup", "readGroup"]);
 
         // switch to list view
-        await click(webClient.el.querySelector(".o-control-panel .o-switch-view.o_list"));
+        await click(webClient.el.querySelector(".o-control-panel .o-switch-view.o-list"));
         await legacyExtraNextTick();
 
         assert.containsOnce(webClient, ".o-list-view");
@@ -4850,7 +4850,7 @@ QUnit.module("Views", (hooks) => {
         assert.strictEqual(getCurrentValues(webClient), ["4", "2", "1", "1", "2"].join(","));
 
         // switch to list view
-        await click(webClient.el.querySelector(".o-control-panel .o-switch-view.o_list"));
+        await click(webClient.el.querySelector(".o-control-panel .o-switch-view.o-list"));
         await legacyExtraNextTick();
 
         assert.containsOnce(webClient, ".o-list-view");
@@ -4894,7 +4894,7 @@ QUnit.module("Views", (hooks) => {
         assert.strictEqual(getCurrentValues(webClient), ["32", "20", "12"].join(","));
 
         // switch to list view
-        await click(webClient.el.querySelector(".o-control-panel .o-switch-view.o_list"));
+        await click(webClient.el.querySelector(".o-control-panel .o-switch-view.o-list"));
         await legacyExtraNextTick();
 
         assert.containsOnce(webClient, ".o-list-view");

@@ -9,7 +9,7 @@
         <field name="timesheet_widget">float_time</field>
     </record>
 
-    <!-- Force Analytic account creation for projects allowing timesheet (default is True) -->
+    <!-- Force Analytic account creation for projects allowing timesheet (default is true) -->
     <function
         model="project.project"
         name="_init_data_analytic_account"

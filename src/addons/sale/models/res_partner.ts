@@ -1,5 +1,6 @@
-import { _super, Fields, MetaModel, Model } from "../../../core";
+import { Fields } from "../../../core";
 import { WARNING_HELP, WARNING_MESSAGE } from "../../../core/addons/base";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { bool } from "../../../core/tools";
 
 @MetaModel.define()

@@ -1,9 +1,13 @@
 import _ from "lodash";
 import { DateTime } from "luxon";
-import { BaseModel, Command, Fields, MetaModel, TransientModel, _super, api } from "../../..";
-import { DefaultDict, Dict, KeyError, UserError } from "../../../helper";
-import { _f, bool, chain, f, isInstance, len, partial, someAsync, sum, update } from "../../../tools";
-import { literalEval } from '../../../tools/save_eval';
+import { api } from "../../..";
+import { Command, Fields } from "../../../fields";
+import { DefaultDict, Dict } from "../../../helper";
+import { KeyError, UserError } from "../../../helper/errors";
+import { BaseModel, MetaModel, TransientModel, _super } from "../../../models";
+import { _f, bool, f, isInstance, partial, update } from "../../../tools";
+import { literalEval } from "../../../tools/ast";
+import { chain, len, someAsync, sum } from "../../../tools/iterable";
 
 @MetaModel.define()
 class MergePartnerLine extends TransientModel {

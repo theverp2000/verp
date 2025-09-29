@@ -1,7 +1,9 @@
-import { AbstractModel, MetaModel, api } from "../../../core";
-import { AccessError, UserError, ValidationError, ValueError } from "../../../core/helper";
-import { isInstance, update } from "../../../core/tools";
-import { InsufficientCreditError, iapJsonrpc } from "../../iap/tools";
+import { api } from "../../../core";
+import { AccessError, UserError, ValidationError, ValueError } from "../../../core/helper/errors";
+import { AbstractModel, MetaModel } from "../../../core/models";
+import { isInstance } from "../../../core/tools";
+import { update } from "../../../core/tools/misc";
+import { InsufficientCreditError, iapJsonrpc } from "../../iap/tools/iap_tools";
 
 @MetaModel.define()
 class IapAutocompleteEnrichAPI extends AbstractModel {

@@ -1,5 +1,7 @@
-import { api, Fields, MetaModel, TransientModel } from "../../..";
-import { len } from "../../../tools";
+import { api } from "../../..";
+import { Fields } from "../../../fields";
+import { MetaModel, TransientModel } from "../../../models"
+import { len } from "../../../tools/iterable";
 
 /**
  * Stores modules for which we could not install demo data

@@ -3,15 +3,15 @@
 
     <data noupdate="1">
 
-        <record id="access_project_sharing_task_portal" model="ir.model.access">
-            <field name="label">project_sharing_task_portal</field>
-            <field name="modelId" ref="model_project_task"/>
-            <field name="group_id" ref="base.group_portal"/>
+        <record id="accessProjectSharingTaskPortal" model="ir.model.access">
+            <field name="label">projectSharingTaskPortal</field>
+            <field name="modelId" ref="model_projectTask"/>
+            <field name="groupId" ref="base.groupPortal"/>
             <field name="active">0</field>
-            <field name="perm_read">0</field>
-            <field name="perm_write">1</field>
-            <field name="perm_create">1</field>
-            <field name="perm_unlink">0</field>
+            <field name="permRead">0</field>
+            <field name="permWrite">1</field>
+            <field name="permCreate">1</field>
+            <field name="permUnlink">0</field>
         </record>
 
     </data>

@@ -4,11 +4,17 @@ import fs from 'fs';
 import { Generator } from 'javascript-compiling-tokenizer';
 import _ from "lodash";
 import { format } from 'util';
-import { MetaModel } from '../../..';
-import { Dict, FrozenDict, FrozenSet, MapKey, ValueError } from "../../../helper";
-import * as xml from '../../../tools';
-import { UpCamelCase, bool, chain, count, enumerate, equal, extend, isDigit, isInstance, isIterable, iter, len, lstrip, markup, next, pop, popitem, range, repr, rstringPart, stringBase64, toText } from '../../../tools';
+import { Dict, FrozenDict, FrozenSet, MapKey } from "../../../helper/collections";
+import { ValueError } from "../../../helper/errors";
+import { MetaModel } from '../../../models';
+import { bool, stringBase64, toText } from '../../../tools';
+import { equal, isDigit, isInstance, rstringPart } from "../../../tools/func";
+import { chain, count, enumerate, extend, isIterable, iter, len, next, range } from "../../../tools/iterable";
+import { pop, popitem, repr } from '../../../tools/misc';
 import { compile, unsafeEval } from "../../../tools/save_eval";
+import { lstrip, UpCamelCase } from "../../../tools/utils";
+import * as xml from '../../../tools/xml';
+import { markup } from '../../../tools/xml';
 import { QWeb, QWebCodeFound, QWebException, dedent } from './qweb';
 
 function _debug(msg, ...args) {
@@ -178,7 +184,7 @@ export class IrQWebFactory extends QWeb {
       if (isNaN(indent)) {
         indent = 0;
       }
-      return [`${Array(indent).fill('    ').join('')}yield \`${text}\`;`];
+      return [`${_.fill(Array(indent), '    ').join('')}yield \`${text}\`;`];
     }
     else {
       return [];
@@ -189,7 +195,7 @@ export class IrQWebFactory extends QWeb {
     if (isNaN(indent)) {
       indent = 0;
     }
-    return _indent(code, Array(indent).fill('    ').join(''));
+    return _indent(code, _.fill(Array(indent), '    ').join(''));
   }
 
   _makeName(prefix = 'var') {
@@ -1214,7 +1220,7 @@ export class IrQWebFactory extends QWeb {
       const content = this._compileTagOpen(el, options, indent + 1, !withoutAttributes)
         .concat(this._compileTagClose(el, options))
         .concat(this._flushText(options, indent + 1));
-      if (len(content)) {
+      if (bool(content)) {
         code.push(this._indent("else if (forceDisplay) {", indent));
         extend(code, content);
         code.push(this._indent("}", indent));

@@ -1,8 +1,9 @@
 import _ from "lodash";
-import { _Date, _Datetime, _super, api, Fields, MetaModel, Model } from "../../../core";
-import { DefaultDict, MapKey, OrderedSet2, UserError, ValidationError } from "../../../core/helper";
-import { _f2, addDate, bool, dateMax, enumerate, f, floatCompare, floatIsZero, floatRound, formatDate, formatDatetime, groupbyAsync, isInstance, len, map, parseInt, stringify, sum, update } from "../../../core/tools";
 import { PROCUREMENT_PRIORITIES } from "../../stock";
+import { _Date, _Datetime, api, Fields } from "../../../core";
+import { DefaultDict, MapKey, OrderedSet2, UserError, ValidationError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models";
+import { _f2, addDate, bool, dateMax, enumerate, f, floatCompare, floatIsZero, floatRound, formatDate, formatDatetime, groupbyAsync, isInstance, len, map, parseInt, stringify, sum, update } from "../../../core/tools";
 
 const SIZE_BACK_ORDER_NUMERING = 3;
 
@@ -1866,9 +1867,9 @@ class MrpProduction extends Model {
             return name;
         }
         const seqBack = "-" + "0".repeat(SIZE_BACK_ORDER_NUMERING - 1 - parseInt(Math.log10(sequence))) + String(sequence);
-        const regex = /-\d+$/;
+        const regex = /-\d+$/g;
         if (regex.test(name) && sequence > 1) {
-            return name.replaceAll(regex, seqBack);
+            return name.replace(regex, seqBack);
         }
         return name + seqBack;
     }
@@ -2692,6 +2693,6 @@ class MrpProduction extends Model {
 
     async _generateBackorderProductionsMulti(serialNumbers, cancelRemainingQuantities = false) {
         console.warn("Method '_generateBackorderProductionsMulti()' is deprecated, use _splitProductions() instead.", 'DeprecationWarning');
-        await this._splitProductions(MapKey.fromEntries([[this, Array(len(serialNumbers)).fill(1)]]), cancelRemainingQuantities);
+        await this._splitProductions(MapKey.fromEntries([[this, _.fill(Array(len(serialNumbers)), 1)]]), cancelRemainingQuantities);
     }
 }

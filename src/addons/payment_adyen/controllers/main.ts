@@ -1,3 +1,5 @@
+// // Part of Verp. See LICENSE file for full copyright and licensing details.
+
 import { http } from "../../../core";
 import { ValidationError } from "../../../core/helper";
 import { WebRequest } from "../../../core/http";

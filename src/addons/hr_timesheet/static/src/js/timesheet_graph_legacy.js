@@ -15,7 +15,7 @@ verp.define('hr_timesheet.GraphView', function (require) {
             const currentCompanyId = session.user_context.allowed_company_ids[0];
             const currentCompany = session.user_companies.allowed_companies[currentCompanyId];
             const currentCompanyTimesheetUOMFactor = currentCompany.timesheet_uom_factor || 1;
-            const fields = ['unit_amount', 'effective_hours', 'planned_hours', 'remaining_hours', 'total_hours_spent', 'subtask_effective_hours',
+            const fields = ['unit_amount', 'effective_hours', 'plannedHours', 'remaining_hours', 'total_hours_spent', 'subtask_effective_hours',
             'overtime', 'number_hours', 'difference', 'hours_effective', 'hours_planned', 'timesheet_unit_amount'];
 
             if (fields.includes(this.chart.measure) && currentCompanyTimesheetUOMFactor !== 1) {

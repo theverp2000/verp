@@ -1,4 +1,5 @@
-import { MetaModel, Model, _super, api } from "../../../core";
+import { api } from "../../../core";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { SNAILMAIL_COUNTRIES } from "../country_utils";
 
 @MetaModel.define()

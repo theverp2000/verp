@@ -1,6 +1,9 @@
-import { Fields, MetaModel, Model, _super, api } from "../../../core";
+import { api } from "../../../core";
 import { getattr } from "../../../core/api";
-import { isHtmlEmpty, urlFor } from "../../../core/tools";
+import { Fields } from "../../../core/fields";
+import { MetaModel, Model, _super } from "../../../core/models"
+import { isHtmlEmpty } from "../../../core/tools";
+import { urlFor } from "../../../core/tools/slug";
 
 @MetaModel.define()
 class View extends Model {

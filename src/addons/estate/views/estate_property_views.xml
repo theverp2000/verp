@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <form string="Estate">
                 <sheet>
-                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <group>
                         <field name="id" invisible="true"/>
                         <field name="active" invisible="1"/>
@@ -66,7 +66,7 @@
         <field name="arch" type="xml">
             <form string="Portfolio">
                 <sheet>
-                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <group>
                         <field name="id" invisible="true"/>
                         <field name="active" invisible="1"/>

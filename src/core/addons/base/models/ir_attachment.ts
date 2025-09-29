@@ -4,10 +4,15 @@ import * as mimetypes from 'mime-types';
 import * as path from 'path';
 import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
-import { Fields, MetaModel, Model, _super, api, tools } from "../../..";
-import { Dict, Map2 } from "../../../helper/collections";
+import { api, tools } from "../../..";
+import { Fields } from "../../../fields";
+import { Map2, Dict } from "../../../helper/collections";
 import { AccessError, UserError, ValidationError } from "../../../helper/errors";
-import { ImageProcess, b64decode, b64encode, bool, config, extend, fileClose, fileWrite, guessMimetype, humanSize, isDir, isFile, isInstance, len, sameContent, setOptions, sha1, str2bool } from '../../../tools';
+import { MetaModel, Model, _super } from "../../../models";
+import { ImageProcess, b64decode, b64encode, bool, config, fileClose, fileWrite, humanSize, isDir, isFile, sameContent, setOptions, sha1, str2bool } from '../../../tools';
+import { isInstance } from "../../../tools/func";
+import { extend, len } from "../../../tools/iterable";
+import { guessMimetype } from '../../../tools/mimetypes';
 
 /**
  * Attachments are used to link binary files or url to any verp document.
@@ -15,8 +20,8 @@ import { ImageProcess, b64decode, b64encode, bool, config, extend, fileClose, fi
     External attachment storage
     ---------------------------
 
-    The computed field ``datas`` is implemented using ``_fileRead``,
-    ``_fileWrite`` and ``_fileDelete``, which can be overridden to implement
+    The computed field ``datas`` is implemented using ``_file_read``,
+    ``_file_write`` and ``_file_delete``, which can be overridden to implement
     other storage engines. Such methods should check for other location pseudo
     uri (example: hdfs://hadoopserver).
 
@@ -551,15 +556,6 @@ class IrAttachment extends Model {
     return sha1(binData || '');
   }
 
-  // @api.model()
-  // _sameContent_All(binData: Buffer, filepath: string) {
-  //   const temp = fs.readFileSync(filepath);
-  //   if (temp.compare(binData) !== 0) {
-  //     return false;
-  //   }
-  //   return true
-  // }
-
   async _checkContents(values) {
     const mimetype = values['mimetype'] = await this._computeMimetype(values);
     const xmlLike = mimetype.includes('ht') || (  // hta, html, xhtml, etc.
@@ -674,8 +670,8 @@ class IrAttachment extends Model {
           if (w > nw || h > nh) {
             img = await img.resize(nw, nh);
             const quality = parseInt(ICP('base.imageAutoresizeQuality', 80));
-            fnQuality = isRaw ? img.imageQuality : img.imageBase64;
-            values[isRaw && 'raw' || 'datas'] = await fnQuality(quality);
+            fnQuality = isRaw ? img.imageQuality : img.imageBase64
+            values[(isRaw && 'raw') ?? 'datas'] = await fnQuality(quality);
           }
         } catch (e) {
           if (isInstance(e, UserError)) {

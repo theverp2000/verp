@@ -1,6 +1,8 @@
+// export * from './controllers';
 export * from './models';
+export * from './populate';
+export * from './report';
 export * from './wizard';
-
 /**
  * Rewrite ICP's to force groups
  * @param cr 

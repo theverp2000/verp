@@ -35,7 +35,7 @@
                                </div>
                         </button>
                     </div>
-                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <field name="id" invisible="true"/>
                     <field name="image1920" widget="image" class="oe-avatar" options="{'previewImage': 'image128'}"/>
                     <div class="oe-title">
@@ -242,7 +242,7 @@
                 </header>
                 <sheet>
                     <div class="oe-button-box" name="buttonBox"/>
-                    <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                    <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <field name="active" invisible="1"/>
                     <field name="id" invisible="1"/>
                     <field name="companyId" invisible="1"/>

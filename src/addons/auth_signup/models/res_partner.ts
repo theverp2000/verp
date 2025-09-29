@@ -1,9 +1,12 @@
 import _ from "lodash";
 import { format as f } from 'util';
-import { Fields, MetaModel, Model, ModelRecords, api } from "../../../core";
-import { AccessDenied, Dict, Map2, UserError } from "../../../core/helper";
+import * as api from "../../../core/api";
+import { Fields } from "../../../core/fields";
+import { AccessDenied, Map2, Dict, UserError } from "../../../core/helper";
+import { MetaModel, Model, ModelRecords } from "../../../core/models";
 import { urlEncode, urlJoin } from "../../../core/service/middleware/utils";
-import { bool, randomToken } from "../../../core/tools";
+import { randomToken } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
 
 export class SignupError extends UserError {}
 

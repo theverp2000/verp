@@ -8,9 +8,9 @@ import { GraphView } from "@web/views/graph/graph_view";
 const viewRegistry = registry.category("views");
 
 const MEASURE_STRINGS = {
-    parent_res_id: _lt("Project"),
+    parentResId: _lt("Project"),
     rating: _lt("Rating Value (/5)"),
-    res_id: _lt("Task"),
+    resId: _lt("Task"),
 };
 
 class ProjectRatingArchParser extends GraphArchParser {
@@ -31,4 +31,4 @@ class ProjectRatingArchParser extends GraphArchParser {
 class ProjectRatingGraphView extends GraphView {}
 ProjectRatingGraphView.ArchParser = ProjectRatingArchParser;
 
-viewRegistry.add("project_rating_graph", ProjectRatingGraphView);
+viewRegistry.add("projectRatingGraph", ProjectRatingGraphView);

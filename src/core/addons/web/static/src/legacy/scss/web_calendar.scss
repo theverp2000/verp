@@ -836,7 +836,7 @@ $o-filter-colors: lighten(#000, 46.7%), #F06050, #F4A460, #F7CD1F, #6CC1ED, #814
     $color: nth($o-filter-colors, $i);
 
     .o-calendar-view .fc-view {
-        .o-calendar-hatched-#{$i - 1} {
+        .o-calendar-hatched_#{$i - 1} {
             background: repeating-linear-gradient(
                 45deg,
                 $color,
@@ -855,7 +855,7 @@ $o-filter-colors: lighten(#000, 46.7%), #F06050, #F4A460, #F7CD1F, #6CC1ED, #814
                 );
             }
         }
-        .o-calendar-striked-#{$i - 1} {
+        .o-calendar-striked_#{$i - 1} {
             background: linear-gradient(
                         transparent 0 45%,
                         $color 45% 55%,
@@ -870,7 +870,7 @@ $o-filter-colors: lighten(#000, 46.7%), #F06050, #F4A460, #F7CD1F, #6CC1ED, #814
             background-color: $color;
             opacity: 0.5;
         }
-        .fc-event.o-calendar-striked-#{$i - 1} {
+        .fc-event.o-calendar-striked_#{$i - 1} {
             border: none;
         }
         .fc-event.o-calendar-color-#{$i - 1} {

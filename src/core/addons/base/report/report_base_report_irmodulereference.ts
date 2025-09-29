@@ -1,6 +1,8 @@
 import _ from "lodash";
-import { AbstractModel, MetaModel, api } from "../../..";
-import { bool, sorted } from "../../../tools";
+import { api } from "../../..";
+import { AbstractModel } from "../../../models"
+import { MetaModel } from "../../../models"
+import { UpCamelCase, _toHyphen, bool, sorted } from "../../../tools";
 
 @MetaModel.define()
 class IrModelReferenceReport extends AbstractModel {

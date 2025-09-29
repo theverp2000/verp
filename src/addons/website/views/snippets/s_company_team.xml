@@ -11,7 +11,7 @@ o-editable-media class.
         <div class="container">
             <div class="row s-nb-column-fixed">
                 <div class="col-lg-6 pt24 pb24">
-                    <div class="row s-col-no-resize s-col-no-bgColor">
+                    <div class="row s-col-no-resize s-col-no-bgcolor">
                         <div class="col-lg-4 pb16 o-not-editable" contenteditable="false">
                             <img alt="" src="/web/image/website.sCompanyTeam_image_1" class="img-fluid rounded-circle mx-auto o-editable-media" contenteditable="true"/>
                         </div>
@@ -26,7 +26,7 @@ o-editable-media class.
                     </div>
                 </div>
                 <div class="col-lg-6 pt24 pb24">
-                    <div class="row s-col-no-resize s-col-no-bgColor">
+                    <div class="row s-col-no-resize s-col-no-bgcolor">
                         <div class="col-lg-4 pb16 o-not-editable" contenteditable="false">
                             <img alt="" src="/web/image/website.sCompanyTeamImage_2" class="img-fluid rounded-circle mx-auto o-editable-media" contenteditable="true"/>
                         </div>
@@ -37,7 +37,7 @@ o-editable-media class.
                     </div>
                 </div>
                 <div class="col-lg-6 pt24 pb24">
-                    <div class="row s-col-no-resize s-col-no-bgColor">
+                    <div class="row s-col-no-resize s-col-no-bgcolor">
                         <div class="col-lg-4 pb16 o-not-editable" contenteditable="false">
                             <img alt="" src="/web/image/website.sCompanyTeamImage_3" class="img-fluid rounded-circle mx-auto o-editable-media" contenteditable="true"/>
                         </div>
@@ -48,7 +48,7 @@ o-editable-media class.
                     </div>
                 </div>
                 <div class="col-lg-6 pt24 pb24">
-                    <div class="row s-col-no-resize s-col-no-bgColor">
+                    <div class="row s-col-no-resize s-col-no-bgcolor">
                         <div class="col-lg-4 pb16 o-not-editable" contenteditable="false">
                             <img alt="" src="/web/image/website.sCompanyTeamImage_4" class="img-fluid rounded-circle mx-auto o-editable-media" contenteditable="true"/>
                         </div>

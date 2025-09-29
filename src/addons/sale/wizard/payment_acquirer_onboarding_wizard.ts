@@ -1,4 +1,5 @@
-import { _super, Fields, MetaModel, TransientModel } from "../../../core";
+import { Fields } from "../../../core";
+import { _super, MetaModel, TransientModel } from "../../../core/models"
 
 /**
  * Override for the sale quotation onboarding panel.

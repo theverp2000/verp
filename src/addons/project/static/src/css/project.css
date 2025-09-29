@@ -1,8 +1,8 @@
-.o_form_project_tasks.o_form_editable .oe_title {
+.o-form-project-tasks.o-form-editable .oe-title {
   max-width: initial;
 }
 
-.o_form_project_tasks.o_form_editable .oe_title .o_task_name {
+.o-form-project-tasks.o-form-editable .oe-title .o-task-name {
   /*
    * should be (coming from addons/web/static/src/legacy/scss/form_view.scss):
    * max-width: map-get($container-max-widths, md) - (2 * $o-horizontal-padding);
@@ -11,55 +11,55 @@
   margin-right: auto;
 }
 
-.o_form_project_tasks .note-editable {
+.o-form-project-tasks .note-editable {
   border: 0;
 }
-.o_form_project_tasks .o_wysiwyg_resizer {
+.o-form-project-tasks .o-wysiwyg-resizer {
   border: 0;
   margin: 0 0px -40px 0px;
 }
-.o_form_project_tasks .o_form_sheet, .o_form_project_tasks .oe_form_field_html, .o_form_project_tasks .o_wysiwyg_wrapper {
+.o-form-project-tasks .o-form-sheet, .o-form-project-tasks .oe-form-field-html, .o-form-project-tasks .o-wysiwyg-wrapper {
   margin-bottom: 0 !important;
 }
 
-.o_kanban_project_tasks .oe_kanban_align.badge {
+.o-kanban-project-tasks .oe-kanban-align.badge {
   background: inherit;
   color: inherit;
   border: 1px solid var(--success);
 }
 
-.o_kanban_project_tasks .oe_kanban_align.badge-warning {
+.o-kanban-project-tasks .oe-kanban-align.badge-warning {
   border-color: var(--warning);
 }
 
-.o_kanban_project_tasks .oe_kanban_align.badge-danger {
+.o-kanban-project-tasks .oe-kanban-align.badge-danger {
   border-color: var(--danger);
 }
 
-.o_kanban_project_tasks .o_field_one2many_sub_task {
+.o-kanban-project-tasks .o-field-one2many-sub-task {
   margin-top:2px;
   margin-right: 6px;
 }
 
-.o_form_project_tasks .ribbon:not(.o_invisible_modifier) + div > h1 > div[name="kanban_state"] {
+.o-form-project-tasks .ribbon:not(.o-invisible-modifier) + div > h1 > div[name="kanbanState"] {
   margin-right: 150px;
   padding-left: 1rem;
 }
 
-.o_form_project_recurrence_message *:last-child {
+.o-form-project-recurrence-message *:last-child {
   margin-bottom: 0;
 }
 
-.o_project_portal_warning_dl {
+.o-project-portal-warning-dl {
     width: 100%;
     padding: 0;
     margin: 0
 }
-.o_project_portal_warning_dt {
+.o-project-portal-warning-dt {
     width: 4%;
     float: left;
 }
-.o_project_portal_warning_dd {
+.o-project-portal-warning-dd {
     width: 96%;
     float: left;
 }

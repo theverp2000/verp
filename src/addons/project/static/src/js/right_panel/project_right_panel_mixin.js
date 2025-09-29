@@ -9,7 +9,7 @@ export const RightPanelRendererMixin = {
      * @override
      */
     async start() {
-        this.$el.addClass('o_renderer_with_rightpanel');
+        this.$el.addClass('o-renderer-with-rightpanel');
         await Promise.all([this._render(), this._super()]);
     },
 };
@@ -33,8 +33,8 @@ export const RightPanelControllerMixin = {
     start: async function () {
         const promises = [this._super(...arguments)];
         this._rightPanelWrapper = new ComponentWrapper(this, this.rightSidePanel.Component, this.rightSidePanel.props);
-        const content = this.el.querySelector(':scope .o_content');
-        content.classList.add('o_controller_with_rightpanel');
+        const content = this.el.querySelector(':scope .o-content');
+        content.classList.add('o-controller-with-rightpanel');
         promises.push(this._rightPanelWrapper.mount(content, { position: this.rightPanelPosition }));
         await Promise.all(promises);
     },

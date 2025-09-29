@@ -1,6 +1,7 @@
-import { Fields, MetaModel, TransientModel, api } from "../../../core";
+import { Fields, api } from "../../../core";
 import { getattr } from "../../../core/api";
 import { ValidationError } from "../../../core/helper";
+import { MetaModel, TransientModel } from "../../../core/models";
 
 @MetaModel.define()
 class ResConfigSettings extends TransientModel {

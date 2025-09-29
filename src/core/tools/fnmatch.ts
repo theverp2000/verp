@@ -56,7 +56,7 @@ function compileRegex(patern) {
   else {
     res = translate(patern);
   }
-  return new RegExp(res);
+  return new RegExp(res, 'm');
 }
 
 /**
@@ -132,5 +132,5 @@ function translate(pat: string) {
     else
       res = res + _.escape(c);
   }
-  return `(?:${res})\\Z`
+  return `(?:${res})$`;//\Z`
 }

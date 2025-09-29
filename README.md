@@ -9,13 +9,11 @@ Verp is inspired by Odoo/OpenErp.
 
 ** Installation instructions:
 
-** ON WINDOWS:
-
 1) Get the Verp 1.0
 
   > git clone https://github.com/theverp2000/verp.git
 
-2) Install nodejs 22.18.0
+2) Install nodejs 20.15.1
 
   > https://nodejs.org/en/download/prebuilt-installer
 
@@ -53,7 +51,7 @@ Verp is inspired by Odoo/OpenErp.
   "smtpUser": "???@ethereal.email",\
   "smtpPassword": "???",\
 
-7) Install
+7) Isntall
 
   > npm i
 
@@ -65,8 +63,3 @@ Verp is inspired by Odoo/OpenErp.
 
   > http://localhost:7979 \
   (default password of master: admin)
-
-** ON LINUX
-
-  Just replace config.json by config.linux.json
-

@@ -1,7 +1,13 @@
 import xpath from "xpath";
-import { Command, Fields, MetaModel, Model, _super, api } from "../../../core";
-import { UserError, ValidationError } from "../../../core/helper";
-import { E, _f, bool, enumerate, f, getrootXml, len, parseXml, pop, serializeXml, sum, update } from "../../../core/tools";
+import { api } from "../../../core";
+import { Command, Fields } from "../../../core/fields";
+import { UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { bool } from "../../../core/tools/bool";
+import { enumerate, len, sum } from "../../../core/tools/iterable";
+import { pop, update } from "../../../core/tools/misc";
+import { _f, f } from "../../../core/tools/utils";
+import { E, getrootXml, parseXml, serializeXml } from "../../../core/tools/xml";
 
 @MetaModel.define()
 class AccountPayment extends Model {

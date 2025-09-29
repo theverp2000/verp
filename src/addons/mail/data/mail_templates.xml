@@ -69,12 +69,12 @@
 
         <template id="mailNotificationBorders">
             <div>
-                <table border="0" width="100%" cellpadding="0" bgColor="#ededed" style="padding: 20px; background-color: #ededed; border-collapse:separate;" summary="o-mail-notification">
+                <table border="0" width="100%" cellpadding="0" bgcolor="#ededed" style="padding: 20px; background-color: #ededed; border-collapse:separate;" summary="o-mail-notification">
                     <tbody>
                         <!-- HEADER -->
                         <tr>
                             <td align="center" style="min-width: 590px;">
-                                <table width="590" border="0" cellpadding="0" bgColor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px; border-collapse:separate;">
+                                <table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px; border-collapse:separate;">
                                     <tr><td valign="middle">
                                         <span style="font-size:20px; color:white; font-weight: bold;">
                                             <t t-esc="message.recordName"/>
@@ -88,7 +88,7 @@
                         <!-- CONTENT -->
                         <tr>
                             <td align="center" style="min-width: 590px;">
-                                <table width="590" border="0" cellpadding="0" bgColor="#ffffff" style="min-width: 590px; background-color: rgb(255, 255, 255); padding: 20px; border-collapse:separate;">
+                                <table width="590" border="0" cellpadding="0" bgcolor="#ffffff" style="min-width: 590px; background-color: rgb(255, 255, 255); padding: 20px; border-collapse:separate;">
                                     <tbody><td valign="top" style="font-family:Arial,Helvetica,sans-serif; color: #555; font-size: 14px;">
                                         <t t-out="message.body"/>
                                     </td></tbody>
@@ -98,7 +98,7 @@
                         <!-- FOOTER -->
                         <tr>
                             <td align="center" style="min-width: 590px;">
-                                <table width="590" border="0" cellpadding="0" bgColor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px; border-collapse:separate;">
+                                <table width="590" border="0" cellpadding="0" bgcolor="#875A7B" style="min-width: 590px; background-color: rgb(135,90,123); padding: 20px; border-collapse:separate;">
                                     <tr><td valign="middle" align="left" style="color: #fff; padding-top: 10px; padding-bottom: 10px; font-size: 12px;">
                                         <t t-esc="companyLabel"/><br/>
                                         <t t-esc="await company.phone"/>

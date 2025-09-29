@@ -311,7 +311,7 @@ verp.define("board.dashboard_tests", function (require) {
             },
         });
 
-        assert.containsOnce(form, ".o_action .o_list_view");
+        assert.containsOnce(form, ".o_action .o-list-view");
         assert.containsNone(form, ".o_action .o_control_panel");
 
         form.destroy();
@@ -376,7 +376,7 @@ verp.define("board.dashboard_tests", function (require) {
         });
 
         assert.strictEqual(
-            form.$(".oe_action:contains(ABC) .o_list_view").length,
+            form.$(".oe_action:contains(ABC) .o-list-view").length,
             1,
             "the list view (first view of action) should have been rendered correctly"
         );
@@ -618,7 +618,7 @@ verp.define("board.dashboard_tests", function (require) {
 
         var $firstAction = form.$(".oe_action:contains(ABC)");
         assert.strictEqual(
-            $firstAction.find(".o_list_view").length,
+            $firstAction.find(".o-list-view").length,
             1,
             "list view should be displayed in 'ABC' block"
         );
@@ -882,7 +882,7 @@ verp.define("board.dashboard_tests", function (require) {
             views: [[false, "list"]],
         });
 
-        assert.containsOnce(webClient, ".o_list_view", "should display the list view");
+        assert.containsOnce(webClient, ".o-list-view", "should display the list view");
 
         // Sort the list
         await testUtils.dom.click($(".o_column_sortable"));

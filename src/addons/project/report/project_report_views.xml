@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <verp>
 
-        <record id="view_task_project_user_pivot" model="ir.ui.view">
+        <record id="viewTaskProjectUserPivot" model="ir.ui.view">
             <field name="label">report.project.task.user.pivot</field>
             <field name="model">report.project.task.user</field>
             <field name="arch" type="xml">
-                <pivot string="Tasks Analysis" display_quantity="1" sample="1">
+                <pivot string="Tasks Analysis" displayQuantity="1" sample="1">
                     <field name="projectId" type="row"/>
                 </pivot>
             </field>
         </record>
 
-        <record id="view_task_project_user_graph" model="ir.ui.view">
+        <record id="viewTaskProjectUserGraph" model="ir.ui.view">
             <field name="label">report.project.task.user.graph</field>
             <field name="model">report.project.task.user</field>
             <field name="arch" type="xml">
                 <graph string="Tasks Analysis" sample="1">
                      <field name="projectId"/>
                      <field name="stageId"/>
-                     <field name="user_ids" invisible="1"/>
+                     <field name="userIds" invisible="1"/>
                      <field name="nbr" invisible="1"/>
                  </graph>
              </field>
         </record>
 
-        <record id="report_project_task_user_view_tree" model="ir.ui.view">
+        <record id="reportProjectTaskUserViewTree" model="ir.ui.view">
             <field name="label">report.project.task.user.view.tree</field>
             <field name="model">report.project.task.user</field>
             <field name="arch" type="xml">
@@ -32,14 +32,14 @@
                     <field name="label"/>
                     <field name="partnerId" optional="hide"/>
                     <field name="projectId" optional="show"/>
-                    <field name="user_ids" optional="show" widget="many2many_avatar_user"/>
+                    <field name="userIds" optional="show" widget="many2manyAvatarUser"/>
                     <field name="stageId" optional="show"/>
-                    <field name="companyId" optional="show" groups="base.group_multi_company"/>
+                    <field name="companyId" optional="show" groups="base.groupMultiCompany"/>
                 </tree>
             </field>
         </record>
 
-        <record id="view_task_project_user_search" model="ir.ui.view">
+        <record id="viewTaskProjectUserSearch" model="ir.ui.view">
             <field name="label">report.project.task.user.search</field>
             <field name="model">report.project.task.user</field>
             <field name="arch" type="xml">
@@ -47,50 +47,50 @@
                     <field name="projectId"/>
                     <field name="label" />
                     <field name="stageId"/>
-                    <field name="user_ids"/>
-                    <field name="partnerId" filter_domain="[('partnerId', 'child_of', self)]"/>
-                    <field name="label" string="Tags" filter_domain="[('taskId.tagIds', 'ilike', self)]"/>
-                    <field name="date_assign"/>
+                    <field name="userIds"/>
+                    <field name="partnerId" filterDomain="[['partnerId', 'childOf', self]]"/>
+                    <field name="label" string="Tags" filterDomain="[['taskId.tagIds', 'ilike', self]]"/>
+                    <field name="dateAssign"/>
                     <field name="dateEnd"/>
-                    <field name="date_deadline"/>
-                    <field name="date_last_stage_update"/>
-                    <filter string="My Projects" name="own_projects" domain="[('projectId.userId', '=', uid)]"/>
-                    <filter string="My Tasks" name="my_tasks" domain="[('taskId.user_ids', 'in', uid)]"/>
+                    <field name="dateDeadline"/>
+                    <field name="dateLastStageUpdate"/>
+                    <filter string="My Projects" name="ownProjects" domain="[['projectId.userId', '=', uid]]"/>
+                    <filter string="My Tasks" name="myTasks" domain="[['taskId.userIds', 'in', uid]]"/>
                     <separator/>
-                    <filter string="Starred" name="starred" domain="[('taskId.priority', 'in', [0, 1])]"/>
+                    <filter string="Starred" name="starred" domain="[['taskId.priority', 'in', [0, 1]]]"/>
                     <separator/>
-                    <filter string="Tasks Late" name="late" domain="[('taskId.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d')), ('taskId.is_closed', '=', False)]"/>
+                    <filter string="Tasks Late" name="late" domain="[['taskId.dateDeadline', '&lt;', contextToday().toFormat('yyyy-MM-dd')], ['taskId.isClosed', '=', false]]"/>
                     <separator/>
-                    <filter string="Unassigned Tasks" name="unassigned" domain="[('user_ids', '=', False)]"/>
+                    <filter string="Unassigned Tasks" name="unassigned" domain="[['userIds', '=', false]]"/>
                     <separator/>
-                    <filter string="Open tasks" name="open_tasks" domain="[('stageId.fold', '=', False), ('stageId.is_closed', '=', False)]"/>
+                    <filter string="Open tasks" name="openTasks" domain="[['stageId.fold', '=', false], ['stageId.isClosed', '=', false]]"/>
                     <separator/>
-                    <filter name="filter_date_deadline" date="date_deadline"/>
-                    <filter name="filter_date_assign" date="date_assign"/>
-                    <filter name="filter_date_last_stage_update" date="date_last_stage_update"/>
+                    <filter name="filterDateDeadline" date="dateDeadline"/>
+                    <filter name="filterDateAssign" date="dateAssign"/>
+                    <filter name="filterDateLastStageUpdate" date="dateLastStageUpdate"/>
                     <group expand="0" string="Extended Filters">
                         <field name="priority"/>
-                        <field name="companyId" groups="base.group_multi_company"/>
+                        <field name="companyId" groups="base.groupMultiCompany"/>
                     </group>
                     <group expand="1" string="Group By">
-                        <filter string="Project" name="project" context="{'group_by': 'projectId'}"/>
-                        <filter string="Stage" name="Stage" context="{'group_by': 'stageId'}"/>
-                        <filter string="Assignees" name="User" context="{'group_by': 'user_ids'}"/>
-                        <filter string="Customer" name="Customer" context="{'group_by': 'partnerId'}"/>
-                        <filter string="Deadline" name="deadline" context="{'group_by': 'date_deadline'}"/>
+                        <filter string="Project" name="project" context="{'groupby': 'projectId'}"/>
+                        <filter string="Stage" name="Stage" context="{'groupby': 'stageId'}"/>
+                        <filter string="Assignees" name="User" context="{'groupby': 'userIds'}"/>
+                        <filter string="Customer" name="Customer" context="{'groupby': 'partnerId'}"/>
+                        <filter string="Deadline" name="deadline" context="{'groupby': 'dateDeadline'}"/>
                     </group>
                 </search>
             </field>
         </record>
 
-       <record id="action_project_task_user_tree" model="ir.actions.actwindow">
+       <record id="actionProjectTaskUserTree" model="ir.actions.actwindow">
             <field name="label">Tasks Analysis</field>
             <field name="resModel">report.project.task.user</field>
             <field name="viewMode">graph,pivot</field>
-            <field name="search_view_id" ref="view_task_project_user_search"/>
-            <field name="context">{'group_by_no_leaf':1, 'group_by':[], 'graph_measure': '__count__'}</field>
+            <field name="searchViewId" ref="viewTaskProjectUserSearch"/>
+            <field name="context">{'groupby_noLeaf':1, 'groupby':[], 'graphMeasure': '__count__'}</field>
             <field name="help" type="html">
-                <p class="o_view_nocontent_empty_folder">
+                <p class="o-view-nocontent-empty-folder">
                     No data yet!
                 </p><p>
                     Analyze the performance of your tasks and your workers.

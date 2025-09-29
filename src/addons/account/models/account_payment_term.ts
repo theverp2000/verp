@@ -1,7 +1,10 @@
 import { DateTime } from "luxon";
-import { Fields, MetaModel, Model, _Date, _super, api } from "../../../core";
-import { UserError, ValidationError } from "../../../core/helper";
-import { bool, f, len } from "../../../core/tools";
+import { api } from "../../../core";
+import { Fields, _Date } from "../../../core/fields";
+import { UserError, ValidationError } from "../../../core/helper/errors";
+import { MetaModel, Model, _super } from "../../../core/models";
+import { bool, f } from "../../../core/tools";
+import { len } from "../../../core/tools/iterable";
 
 @MetaModel.define()
 class AccountPaymentTerm extends Model {
@@ -42,10 +45,10 @@ class AccountPaymentTerm extends Model {
     let amount = value;
     let sign = value < 0 ? -1 : 1;
     const result = [];
-    if (!currency && this.env.context['currencyId']) {
+    if (!bool(currency) && this.env.context['currencyId']) {
       currency = this.env.items('res.currency').browse(this.env.context['currencyId']);
     }
-    else if (!currency) {
+    else if (!bool(currency)) {
       currency = await (await this.env.company()).currencyId;
     }
     for (const line of await this['lineIds']) {

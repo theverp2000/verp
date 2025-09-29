@@ -1,5 +1,6 @@
-import { Fields, MetaModel, TransientModel } from "../../../core";
+import { Fields } from "../../../core";
 import { UserError } from "../../../core/helper";
+import { MetaModel, TransientModel } from "../../../core/models"
 
 /**
  * Wizard allowing to grant a badge to a user

@@ -3,10 +3,11 @@ import * as path from "path";
 import { categoryXmlid, moduleXmlid } from '../models';
 import { Cursor } from "../sql_db";
 import { _format, bool, doWith, extend, len } from '../tools';
-import { stringify } from '../tools/json';
 import { quoteList, tableExists } from '../tools/sql';
 import * as core from './../../core';
 import * as modules from "./modules";
+import { dbFactory } from '../service/db';
+import { stringify } from '../tools/json';
 
 export async function isInstailized(cr: Cursor): Promise<boolean> {
   try {

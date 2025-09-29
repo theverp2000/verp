@@ -1,4 +1,5 @@
-import { AbstractModel, MetaModel, Fields } from "../../..";
+import { Fields } from "../../../fields"
+import { AbstractModel, MetaModel } from "../../../models"
 
 @MetaModel.define()
 class ImageMixin extends AbstractModel {

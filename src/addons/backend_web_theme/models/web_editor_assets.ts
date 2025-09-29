@@ -1,4 +1,6 @@
-import { AbstractModel, MetaModel } from "../../../core";
+import { AbstractModel } from "../../../core/models"
+import { MetaModel } from "../../../core/models"
+import { decode } from "../../../core/tools/iri";
 
 @MetaModel.define()
 class ScssEditor extends AbstractModel {
@@ -23,7 +25,7 @@ class ScssEditor extends AbstractModel {
         for (const variable of variables) {
             const variableContent = `${variable['label']}: ${variable['value']};`;
             const regex = new RegExp(`${variable['label']}\\:?\\s(.*?);`, 'gm');
-            content = content.replaceAll(regex, variableContent);
+            content = content.replace(regex, variableContent);
         }
         return content;
     }

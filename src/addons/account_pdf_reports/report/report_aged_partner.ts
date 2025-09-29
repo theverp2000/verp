@@ -1,6 +1,10 @@
-import { _Date, AbstractModel, api, MetaModel } from "../../../core";
+import { _Date, api } from "../../../core";
 import { UserError } from "../../../core/helper";
-import { bool, ellipsis, floatIsZero, quoteList, range, subDate, sum, toDate, toDatetime, toFormat } from "../../../core/tools";
+import { AbstractModel, MetaModel } from "../../../core/models";
+import { ellipsis, floatIsZero, quoteList } from "../../../core/tools";
+import { bool } from "../../../core/tools/bool";
+import { subDate, toDate, toDatetime, toFormat } from "../../../core/tools/date_utils";
+import { range, sum } from "../../../core/tools/iterable";
 
 @MetaModel.define()
 class ReportAgedPartnerBalance extends AbstractModel {

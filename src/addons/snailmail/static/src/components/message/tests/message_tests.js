@@ -46,7 +46,7 @@ QUnit.test('Sent', async function (assert) {
     });
     this.data['mail.notification'].records.push({
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'sent',
         notification_type: 'snail',
         resPartnerId: 12,
@@ -122,7 +122,7 @@ QUnit.test('Canceled', async function (assert) {
     });
     this.data['mail.notification'].records.push({
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'canceled',
         notification_type: 'snail',
         resPartnerId: 12,
@@ -198,7 +198,7 @@ QUnit.test('Pending', async function (assert) {
     });
     this.data['mail.notification'].records.push({
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'ready',
         notification_type: 'snail',
         resPartnerId: 12,
@@ -275,7 +275,7 @@ QUnit.test('No Price Available', async function (assert) {
     this.data['mail.notification'].records.push({
         failureType: 'sn_price',
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'exception',
         notification_type: 'snail',
         resPartnerId: 12,
@@ -367,7 +367,7 @@ QUnit.test('Credit Error', async function (assert) {
     this.data['mail.notification'].records.push({
         failureType: 'sn_credit',
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'exception',
         notification_type: 'snail',
         resPartnerId: 12,
@@ -464,7 +464,7 @@ QUnit.test('Trial Error', async function (assert) {
     this.data['mail.notification'].records.push({
         failureType: 'sn_trial',
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'exception',
         notification_type: 'snail',
         resPartnerId: 12,
@@ -575,7 +575,7 @@ QUnit.test('Format Error', async function (assert) {
     this.data['mail.notification'].records.push({
         failureType: 'sn_format',
         id: 11,
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'exception',
         notification_type: 'snail',
         resPartnerId: 12,
@@ -633,7 +633,7 @@ QUnit.test('Missing Required Fields', async function (assert) {
     });
     this.data['mail.notification'].records.push({
         failureType: 'sn_fields',
-        mail_message_id: 10,
+        mailMessageId: 10,
         notification_status: 'exception',
         notification_type: 'snail',
     });

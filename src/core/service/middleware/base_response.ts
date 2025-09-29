@@ -1,6 +1,7 @@
 import http from 'http';
 import { Dict } from '../../helper/collections';
-import { formatBytes, isCallable, isInstance } from '../../tools';
+import { isCallable, isInstance } from '../../tools/func';
+import { formatBytes } from '../../tools/misc';
 import { cookieSerialize } from './cookie';
 import { httpDate, quoteEtag } from './utils';
 
@@ -100,10 +101,7 @@ export class BaseResponse extends Function {
     for (const content of this.contents) {
       length += content.length;
     }
-    if (length == 0 && req.url.startsWith('/web/assets')) {
-      // throw new Error('len=0 of ' + req.url);
-    }
-    console.log(req.httpRequest.method, this.httpResponse.statusCode, req.url, `(${formatBytes(length)} in ${(new Date().getTime() - req.httpRequest.createdAt.getTime()) / 1000}ms)`);
+    console.log(req.httpRequest.method, this.httpResponse.statusCode, req.httpRequest.url, `(${formatBytes(length)} in ${(new Date().getTime() - req.httpRequest.createdAt.getTime()) / 1000}ms)`);
     for (const content of this.contents) {
       this.httpResponse.write(content);
     }

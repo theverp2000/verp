@@ -232,7 +232,7 @@
         <!--submenu -->
         <menuitem id="menuModuleTree" parent="menuApps" name="Main Apps" sequence="5" action="openModuleTree" />
 
-        <menuitem id="themeStore" parent="menuApps" name="Theme Store" sequence="15"/>
+        <menuitem id="theme_store" parent="menuApps" name="Theme Store" sequence="15"/>
 
         <!--link to stores-->
         <record model='ir.actions.acturl' id='actionThirdParty'>

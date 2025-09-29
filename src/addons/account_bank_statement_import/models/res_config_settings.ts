@@ -1,4 +1,5 @@
-import { Fields, MetaModel, TransientModel } from "../../../core";
+import { Fields } from "../../../core";
+import { MetaModel, TransientModel } from "../../../core/models"
 import { getResourcePath } from "../../../core/modules";
 import { b64encode, fileClose, fileOpen, fileRead } from "../../../core/tools";
 

@@ -36,7 +36,7 @@
         <div t-attf-class="form-group s-website-form-field #{field.formatInfo.col or 'col-12'} #{field.custom and 's-website-form-custom' or ''} #{(field.required and 'sWebsiteFormRequired' or '') or (field.modelRequired and 'sWebsiteFormModelRequired' or '')} #{field.hidden and 's-website-form-field-hidden' or ''} #{field.dnone and 'sWebsiteFormDnone' or ''}"
             t-att-data-type="field.type"
             data-name="Field">
-            <div t-if="field.formatInfo.labelPosition != 'none' and field.formatInfo.labelPosition != 'top'" class="row s-col-no-resize s-col-no-bgColor">
+            <div t-if="field.formatInfo.labelPosition != 'none' and field.formatInfo.labelPosition != 'top'" class="row s-col-no-resize s-col-no-bgcolor">
                 <label t-attf-class="#{!field.isCheck and 'col-form-label' or ''} col-sm-auto s-website-form-label #{field.formatInfo.labelPosition == 'right' and 'text-right' or ''}" t-attf-style="width: #{field.formatInfo.labelWidth or '200px'}" t-att-for="field.id">
                      <t t-call="website.formLabelContent"/>
                 </label>
@@ -191,7 +191,7 @@
     <!-- Date Field -->
     <t t-name="website.formFieldDate">
         <t t-call="website.formField">
-            <t t-set="datepickerID" t-value="'datepicker' + Math.random().toString().substring(2)"/>
+            <t t-set="datepickerID" t-value="'datepicker' + Math.random().toString().slice(2)"/>
             <div class="s-website-form-date input-group date" t-att-id="datepickerID" data-target-input="nearest">
                 <input
                         type="text"
@@ -213,7 +213,7 @@
     <!-- Datetime Field -->
     <t t-name="website.formFieldDatetime">
         <t t-call="website.formField">
-            <t t-set="datetimepickerID" t-value="'datetimepicker' + Math.random().toString().substring(2)"/>
+            <t t-set="datetimepickerID" t-value="'datetimepicker' + Math.random().toString().slice(2)"/>
             <div class="s-website-form-datetime input-group date" t-att-id="datetimepickerID" data-target-input="nearest">
                 <input
                         type="text"
@@ -264,7 +264,7 @@
                     disabled=""
                 />
             </t>
-            <div class="row s-col-no-resize s-col-no-bgColor s-website-form-multiple" t-att-data-name="field.name" t-att-data-display="field.formatInfo.multiPosition">
+            <div class="row s-col-no-resize s-col-no-bgcolor s-website-form-multiple" t-att-data-name="field.name" t-att-data-display="field.formatInfo.multiPosition">
                 <t t-foreach="field.records" t-as="record">
                     <t t-call="website.formRadio"/>
                 </t>
@@ -338,7 +338,7 @@
                         disabled=""
                     />
                 </t>
-                <div class="row s-col-no-resize s-col-no-bgColor s-website-form-multiple" t-att-data-name="field.name" t-att-data-display="field.formatInfo.multiPosition">
+                <div class="row s-col-no-resize s-col-no-bgcolor s-website-form-multiple" t-att-data-name="field.name" t-att-data-display="field.formatInfo.multiPosition">
                     <t t-foreach="field.records" t-as="record">
                         <t t-call="website.formCheckbox"/>
                     </t>

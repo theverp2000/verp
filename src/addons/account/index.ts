@@ -1,8 +1,7 @@
-import { bool } from '../../core/tools';
+import { bool } from '../../core/tools/bool';
 
 export * from './controllers';
 export * from './models';
-// Load demo after models
 export * from './demo';
 export * from './wizard';
 export * from './report';

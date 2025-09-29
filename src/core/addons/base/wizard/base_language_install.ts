@@ -1,4 +1,6 @@
-import { api, Fields, MetaModel, TransientModel } from "../../..";
+import { api } from "../../..";
+import { Fields } from "../../../fields";
+import { MetaModel, TransientModel } from "../../../models";
 
 
 @MetaModel.define()

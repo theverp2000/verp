@@ -9,9 +9,7 @@ import { expression } from "../../../core/osv";
 import { bool, extend, isInstance, len, replaceAsync } from "../../../core/tools";
 import { generateTrackingMessageId, html2Text, isHtmlEmpty } from "../../../core/tools/mail";
 import { cleanContext, pop, update } from "../../../core/tools/misc";
-import { f } from "../../../core/tools/string";
-import { _f } from "../../../core/tools/string";
-import { ustr } from "../../../core/tools/string";
+import { _f, f, ustr } from "../../../core/tools/utils";
 
 const _imageDataUrlReg = /(data:image\/[a-z]+?);base64,(?<body>[a-z0-9+\/\n]{3,}=*)\n*(?:data-filename="([^"]*)")?/gi;
 
@@ -178,8 +176,8 @@ class Message extends Model {
   static emailLayoutXmlid = Fields.Char('Layout', { copy: false }) // xml id of layout
   static addSign = Fields.Boolean({ default: true })
   // `test_adv_activity`, `test_adv_activity_full`, `test_message_assignation_inbox`,...
-  // By setting an inverse for mail.mail_message_id, the number of SQL queries done by `modified` is reduced.
-  // 'mail.mail' inherits from `mail.message`: `_inherits = {'mail.message': 'mail_message_id'}`
+  // By setting an inverse for mail.mailMessageId, the number of SQL queries done by `modified` is reduced.
+  // 'mail.mail' inherits from `mail.message`: `_inherits = {'mail.message': 'mailMessageId'}`
   // Therefore, when changing a field on `mail.message`, this triggers the modification of the same field on `mail.mail`
   // By setting up the inverse one2many, we avoid to have to do a search to find the mails linked to the `mail.message`
   // as the cache value for this inverse one2many is up-to-date.
@@ -1008,7 +1006,7 @@ class Message extends Model {
     }
 
     for (const vals of valsList) {
-      const messageSudo = await (await this.browse(vals['id']).sudo()).withPrefetch(this.ids);
+      const messageSudo = (await this.browse(vals['id']).sudo()).withPrefetch(this.ids);
 
       // Author
       const [authorId, model, resId, parentId] = await messageSudo('authorId', 'model', 'resId', 'parentId');
@@ -1037,7 +1035,7 @@ class Message extends Model {
       }
       let recordName;
       if (model && resId) {
-        recordName = await (await (await this.env.items(model).browse(resId).sudo()).withPrefetch(threadIdsByModelName[model])).displayName;
+        recordName = await ((await this.env.items(model).browse(resId).sudo()).withPrefetch(threadIdsByModelName[model])).displayName;
       }
       else {
         recordName = false;
@@ -1161,7 +1159,7 @@ class Message extends Model {
     const noteId = await this.env.items('ir.model.data')._xmlidToResId('mail.mtNote');
 
     for (const vals of valsList) {
-      const messageSudo = await (await this.browse(vals['id']).sudo()).withPrefetch(this.ids);
+      const messageSudo = (await this.browse(vals['id']).sudo()).withPrefetch(this.ids);
       const notifs = await (await messageSudo.notificationIds).filtered((n) => n.resPartnerId)
       update(vals, {
         'needactionPartnerIds': (await (await notifs.filtered(async (n) => ! await n.isRead)).resPartnerId).ids,

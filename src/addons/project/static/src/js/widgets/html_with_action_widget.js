@@ -2,7 +2,7 @@
 
 import { device } from 'web.config';
 import { bus } from 'web.core';
-import fieldRegistry from 'web.field_registry';
+import fieldRegistry from 'web.fieldRegistry';
 import FieldHtml from 'web_editor.field.html';
 
 export const FieldHtmlWithAction = FieldHtml.extend({
@@ -30,13 +30,13 @@ export const FieldHtmlWithAction = FieldHtml.extend({
         const action = await this._rpc({
             model: this.model,
             method: event.target.name,
-            args: [this.res_id],
+            args: [this.resId],
             context: this.record.context,
         });
         if (action) {
-            this.do_action(action);
+            this.doAction(action);
         }
     }
 });
 
-fieldRegistry.add('html_with_action', FieldHtmlWithAction);
+fieldRegistry.add('htmlWithAction', FieldHtmlWithAction);

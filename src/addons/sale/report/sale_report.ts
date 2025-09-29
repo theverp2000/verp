@@ -1,4 +1,6 @@
-import { AbstractModel, api, Fields, MetaModel, Model } from "../../../core";
+import { api, Fields } from "../../../core";
+import { AbstractModel } from "../../../core/models";
+import { MetaModel, Model } from "../../../core/models"
 import { bool, dropViewIfExists, f } from "../../../core/tools";
 
 @MetaModel.define()

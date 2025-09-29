@@ -1,15 +1,16 @@
 require('./../globals');
 
-import assert from 'assert';
 import { accessSync, constants, existsSync, readdirSync } from 'fs';
-import _ from 'lodash';
 import * as path from 'path';
+import assert from 'assert';
+import _ from 'lodash';
 import { addons } from '..';
 import { getattr } from '../api/func';
 import { Dict } from '../helper/collections';
 import * as release from '../release';
-import { commonPrefix, extend, isDir, isFile, isIterable } from '../tools';
 import { config } from '../tools/config';
+import { extend, isIterable } from '../tools/iterable';
+import { commonPrefix, isDir, isFile } from '../tools/misc';
 import { fileRead } from '../tools/models';
 
 export const MANIFEST_NAMES = ['package.json', '__manifest__.json'];
@@ -69,7 +70,7 @@ export function getResourceFromPath(p: any) {
     // force trailing separator
     adpath = path.join(adpath, "");
     if (commonPrefix([adpath, p]) === adpath) {
-      resource = p.replaceAll(new RegExp(adpath, 'g'), '');
+      resource = p.replace(new RegExp(adpath, 'g'), '');
       break;
     }
   }

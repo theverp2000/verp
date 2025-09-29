@@ -1,9 +1,6 @@
 {
   "label": "snailmail_account",
-  "descriptions": [
-    "Allows users to send invoices by post",
-    "======================================"
-  ],
+  "description": "Allows users to send invoices by post\n=====================================================",
   "category": "Hidden/Tools",
   "version": "0.1",
   "depends": [

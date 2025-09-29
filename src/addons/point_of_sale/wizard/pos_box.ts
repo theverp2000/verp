@@ -1,5 +1,5 @@
-import { MetaModel, _super } from "../../../core/";
 import { UserError } from "../../../core/helper";
+import { MetaModel, TransientModel, _super } from "../../../core/models"
 import { bool } from "../../../core/tools";
 import { CashBox } from "../../account";
 

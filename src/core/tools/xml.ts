@@ -439,25 +439,25 @@ export function isDocumentFragment(el: any) {
  * @returns boolean
  */
 export function isNotationNode(el: any) {
-  return el && el.nodeType === NodeType.NOTATION_NODE; // 12
+  return el && el.nodeType === NodeType.NOTATION_NODE // 12
 }
 
-export function getAttributes(el: any, func?: Function) {
-  return Array.from<Attr>(el?.attributes ?? []).filter(attr => isAttribute(attr) && (func ? func(attr) : true));
+export function getAttributes(el: any, func: Function=(a)=>a) {
+  return Array.from<Attr>(el?.attributes ?? []).filter(attr => isAttribute(attr) && func(attr));
 }
 
-export function firstChild(el: Element, func?: Function) {
+export function firstChild(el: Element, func: Function=(a)=>a) {
   for (let i = 0; i < el.childNodes.length; i++) {
     const child = el.childNodes.item(i);
-    if (func ? func(child) : true) {
+    if (func(child)) {
       return child;
     }
   };
   return null;
 }
 
-export function childNodes<T=any>(el: Element, func?: Function) {
-  return Array.from<T>(el?.childNodes ?? [] as any).filter(child => func ? func(child): child);
+export function childNodes(el: Element, func: Function=(a)=>a) {
+  return Array.from<any>(el?.childNodes ?? []).filter(child => func(child));
 }
 
 export function getObjectAttributes(el: any, func: Function=(a)=>a) {
@@ -608,11 +608,11 @@ export function escapeHtml(unsafe: string) {
 
 export function unescapeHtml(htmlStr: string) {
   return htmlStr
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
+    .replaceAll(/&amp;/g, '&')
+    .replaceAll(/&lt;/g, '<')
+    .replaceAll(/&gt;/g, '>')
+    .replaceAll(/&quot;/g, '"')
+    .replaceAll(/&#39;/g, "'")
     ;
 }
 

@@ -1,9 +1,14 @@
 import assert from "assert";
 import _ from "lodash";
-import { AbstractModel, Fields, MetaModel, Model, _Datetime, _super, api } from "../../..";
-import { DefaultDict, Dict, UserError } from "../../../helper";
+import { Fields, _Datetime, api } from "../../..";
+import { DefaultDict, Dict } from "../../../helper/collections";
+import { UserError } from "../../../helper/errors";
+import { MetaModel, Model, _super } from "../../../models";
 import { AND, isTrueLeaf, normalizeDomain } from "../../../osv/expression";
-import { E, _f, allTimezones, b64encode, bool, dateSetTz, equal, formatDate, formatDatetime, getLang, isInstance, len, parseInt, pop, serializeXml, setOptions, startOf, stringPart, stringify } from "../../../tools";
+import { _f, allTimezones, b64encode, bool, dateSetTz, equal, formatDate, formatDatetime, getLang, isInstance, len, parseInt, pop, setOptions, startOf, stringPart } from "../../../tools";
+import { AbstractModel } from "../../../models";
+import { stringify } from "../../../tools/json";
+import { E, serializeXml } from "../../../tools/xml";
 
 const SEARCH_PANEL_ERROR_MESSAGE = _lt("Too many items to display.")
 

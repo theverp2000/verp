@@ -1,6 +1,7 @@
 import Imap from "imap";
-import { Fields, MetaModel, Model, _Datetime, _super, api } from "../../../core";
+import { Fields, _Datetime, api } from "../../../core";
 import { UserError, ValueError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models";
 import { _f, bool, isInstance, range, ustr } from "../../../core/tools";
 
 const MAX_POP_MESSAGES = 50;

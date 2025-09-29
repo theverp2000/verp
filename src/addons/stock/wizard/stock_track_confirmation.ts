@@ -1,4 +1,6 @@
-import { api, Fields, MetaModel, TransientModel } from "../../../core";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { MetaModel, TransientModel } from "../../../core/models"
 
 @MetaModel.define()
 class StockTrackConfirmation extends TransientModel {

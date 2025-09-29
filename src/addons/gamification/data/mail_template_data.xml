@@ -145,7 +145,7 @@
                         </div>
                     </tr>
                 </table>
-                <table cellspacing="0" cellpadding="0" width="100%" bgColor="#fff" style="background-color:#fff;">
+                <table cellspacing="0" cellpadding="0" width="100%" bgcolor="#fff" style="background-color:#fff;">
                     <tr><td style="padding: 15px;">
                         <t t-if="await object.visibilityMode == 'personal'">
                             <span style="color:#666666;font-size:13px;">Here is your current progress in the challenge <strong t-out="await object.label || ''"></strong>.</span>
@@ -216,7 +216,7 @@
                                                                 <t t-set="extraDiv" t-value="'&lt;div style=&quot;height:40px;&quot;&gt;&lt;/div&gt;'"/>
                                                                 <t t-set="heightA" t-value="95"/>
                                                                 <t t-set="heightB" t-value="75"/>
-                                                                <t t-set="bgColor" t-value="'#b898b0'"/>
+                                                                <t t-set="bgcolor" t-value="'#b898b0'"/>
                                                                 <t t-set="fontSize" t-value="50"/>
                                                                 <t t-set="podiumPosition" t-value="'2'"/>
                                                             </t>
@@ -224,7 +224,7 @@
                                                                 <t t-set="extraDiv" t-value="''"/>
                                                                 <t t-set="heightA" t-value="55"/>
                                                                 <t t-set="heightB" t-value="115"/>
-                                                                <t t-set="bgColor" t-value="'#9A6C8E'"/>
+                                                                <t t-set="bgcolor" t-value="'#9A6C8E'"/>
                                                                 <t t-set="fontSize" t-value="85"/>
                                                                 <t t-set="podiumPosition" t-value="'1'"/>
                                                             </t>
@@ -232,7 +232,7 @@
                                                                 <t t-set="extraDiv" t-value="'&lt;div style=&quot;height:60px;&quot;&gt;&lt;/div&gt;'"/>
                                                                 <t t-set="heightA" t-value="115"/>
                                                                 <t t-set="heightB" t-value="55"/>
-                                                                <t t-set="bgColor" t-value="'#c8afc1'"/>
+                                                                <t t-set="bgcolor" t-value="'#c8afc1'"/>
                                                                 <t t-set="fontSize" t-value="35"/>
                                                                 <t t-set="podiumPosition" t-value="'3'"/>
                                                             </t>
@@ -242,11 +242,11 @@
                                                                     <div style="height:55px;">
                                                                         <img style="margin-bottom:5px;width:50px;height:50px;border-radius:50%;object-fit:cover;" t-att-src="await imageDataUri(await (await object.env.items('res.users').browse(goal['userId']).partnerId).image128)" t-att-alt="goal['label']"/>
                                                                     </div>
-                                                                    <div align="center" t-attf-style ="color:{{ bgColor }};height:20px">
+                                                                    <div align="center" t-attf-style ="color:{{ bgcolor }};height:20px">
                                                                         <t t-out="goal['label'] || ''"></t>
                                                                     </div>
                                                                 </div>
-                                                                <div t-attf-style="background-color:{{ bgColor }};height:{{ heightB }}px;">
+                                                                <div t-attf-style="background-color:{{ bgcolor }};height:{{ heightB }}px;">
                                                                     <strong><span t-attf-style="color:#fff;font-size:{{ fontSize }}px;" t-out="podiumPosition || ''"></span></strong>
                                                                 </div>
                                                                 <div style="height:30px;">

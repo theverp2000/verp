@@ -679,7 +679,7 @@ QUnit.module("ActionManager", (hooks) => {
         await legacyExtraNextTick();
         assert.containsOnce(webClient, ".o-form-view");
 
-        await testUtils.dom.click(webClient.el.querySelector(".o_back_button"));
+        await testUtils.dom.click(webClient.el.querySelector(".o-back-button"));
         await legacyExtraNextTick();
 
         assert.containsOnce(webClient, ".o-list-view");

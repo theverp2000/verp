@@ -11,15 +11,13 @@ import { AbstractModel, MetaModel, _super, isSubclass } from "../../../core/mode
 import { expression } from "../../../core/osv";
 import { urlEncode } from "../../../core/service/middleware/utils";
 import { b64encode, bool, doWith, isInstance, setOptions, split } from "../../../core/tools";
-import { literalEval } from '../../../core/tools/save_eval';
+import { literalEval } from "../../../core/tools/ast";
 import { documentFromString } from "../../../core/tools/html";
 import { enumerate, isList, len, next, splitEvery } from "../../../core/tools/iterable";
 import { EmailMessage, decodeMessageHeader, emailNormalize, emailSplit, formataddr, generateTrackingMessageId, mailHeaderMsgidRe } from "../../../core/tools/mail";
 import { cleanContext, hash, pop, update } from "../../../core/tools/misc";
 import { slug } from "../../../core/tools/slug";
-import { f } from "../../../core/tools/string";
-import { _f } from "../../../core/tools/string";
-import { ustr } from "../../../core/tools/string";
+import { _f, f, ustr } from "../../../core/tools/utils";
 import { getAttribute, isElement, iterchildren, markup, parseHtml, serializeHtml } from "../../../core/tools/xml";
 
 class _Attachment {
@@ -144,7 +142,7 @@ class MailThread extends AbstractModel {
       ['resMmodel', '=', this._name],
       ['partnerId', '=', (await (await this.env.user()).partnerId).id],
     ]);
-    // Cases ('message_is_follower', '=', true) or  ('message_is_follower', '!=', false)
+    // Cases ('messageIsFollower', '=', true) or  ('messageIsFollower', '!=', false)
     if ((operator === '=' && operand) || (operator === '!=' && !operand)) {
       // using read() below is much faster than followers.mapped('resId')
       return [['id', 'in', (await followers.read(['resId'])).map(res => res['resId'])]];
@@ -677,16 +675,16 @@ class MailThread extends AbstractModel {
     // leading to a traceback in case the related messageId
     // doesn't exist
     const self = await this.withContext(cleanContext(this._context));
-    const templates = await self._trackTemplate(changes);
+    const templates = await this._trackTemplate(changes);
     for (const [fieldName, [template, postKwargs]] of Object.entries<any>(templates)) {
       if (!template) {
         continue;
       }
       if (typeof (template) === 'string') {
-        await (await self._fallbackLang()).messagePostWithView(template, postKwargs);
+        await (await this._fallbackLang()).messagePostWithView(template, postKwargs);
       }
       else {
-        await (await self._fallbackLang()).messagePostWithTemplate(template.id, postKwargs);
+        await (await this._fallbackLang()).messagePostWithTemplate(template.id, postKwargs);
       }
     }
     return true;
@@ -1112,7 +1110,7 @@ class MailThread extends AbstractModel {
       incomming mail match. We consider that if a mail arrives, we have to clear bounce for
       each model having bounce count.
  
-      :param emailFrom: email address that sent the incoming email.
+      :param email_from: email address that sent the incoming email.
    * @param emailMessage 
    * @param messageDict 
    */
@@ -1432,7 +1430,7 @@ class MailThread extends AbstractModel {
         existing_msg_ids = this.env.items('mail.message'].search([('messageId', '=', msg_dict['messageId'])], limit=1)
         if existing_msg_ids:
             _logger.info('Ignored mail from %s to %s with Message-Id %s: found duplicated Message-Id during processing',
-                         msg_dict.get('emailFrom'), msg_dict.get('to'), msg_dict.get('messageId'))
+                         msg_dict.get('email_from'), msg_dict.get('to'), msg_dict.get('messageId'))
             return false
   
         # find possible routes for the message
@@ -1727,7 +1725,7 @@ class MailThread extends AbstractModel {
     
               { 'messageId': msg_id,
                 'subject': subject,
-                'emailFrom': from,
+                'email_from': from,
                 'to': to + delivered-to,
                 'cc': cc,
                 'recipients': delivered-to + to + cc + resent-to + resent-cc,
@@ -1756,12 +1754,12 @@ class MailThread extends AbstractModel {
           if message.get('Subject'):
               msg_dict['subject'] = tools.decode_message_header(message, 'Subject')
     
-          emailFrom = tools.decode_message_header(message, 'From', separator=',')
+          email_from = tools.decode_message_header(message, 'From', separator=',')
           email_cc = tools.decode_message_header(message, 'cc', separator=',')
-          email_from_list = tools.email_split_and_format(emailFrom)
+          email_from_list = tools.email_split_and_format(email_from)
           email_cc_list = tools.email_split_and_format(email_cc)
-          msg_dict['emailFrom'] = email_from_list[0] if email_from_list else emailFrom
-          msg_dict['from'] = msg_dict['emailFrom']  # compatibility for message_new
+          msg_dict['email_from'] = email_from_list[0] if email_from_list else email_from
+          msg_dict['from'] = msg_dict['email_from']  # compatibility for message_new
           msg_dict['cc'] = ','.join(email_cc_list) if email_cc_list else email_cc
           # Delivered-To is a safe bet in most modern MTAs, but we have to fallback on To + Cc values
           # for all the odd MTAs out there, as there is no standard header for the envelope's `rcpt_to` value.
@@ -1796,7 +1794,7 @@ class MailThread extends AbstractModel {
                       # naive datetime, so we arbitrarily decide to make it
                       # UTC, there's no better choice. Should not happen,
                       # as RFC2822 requires timezone offset in Date headers.
-                      stored_date = parsed_date.replaceAll(tzinfo=pytz.utc)
+                      stored_date = parsed_date.replace(tzinfo=pytz.utc)
                   else:
                       stored_date = parsed_date.astimezone(tz=pytz.utc)
               except Exception:
@@ -2676,7 +2674,7 @@ class MailThread extends AbstractModel {
 
   /**
    * Tool method computing author information for messages. Purpose is
-      to ensure maximum coherence between author / current user / emailFrom
+      to ensure maximum coherence between author / current user / email_from
       when sending emails.
    * @param authorId 
    * @param emailFrom 
@@ -2969,7 +2967,7 @@ class MailThread extends AbstractModel {
         if (emailTo) {
           createValues['emailTo'] = emailTo;
         }
-        update(createValues, baseMailValues);  // mail_message_id, mail_server_id, autoDelete, references, headers
+        update(createValues, baseMailValues);  // mailMessageId, mail_server_id, autoDelete, references, headers
         const email = await SafeMail.create(createValues);
 
         if (email && recipientIds) {
@@ -3120,14 +3118,14 @@ class MailThread extends AbstractModel {
   notification email. Its base behavior is to compute model-specific
   headers.
  
-  :param dict base_mail_values: base mail.mail values, holding message
-  to notify (mail_message_id and its fields), server, references, subject.
+  :param dict baseMailValues: base mail.mail values, holding message
+  to notify (mailMessageId and its fields), server, references, subject.
    * @param baseMailValues 
    * @returns 
    */
   async _notifyByEmailAddValues(baseMailValues) {
-    const headers = (this as any)._notifyEmailHeaders();
-    if (headers) {
+    const headers = await (this as any)._notifyEmailHeaders();
+    if (bool(headers)) {
       baseMailValues['headers'] = headers;
     }
     return baseMailValues;
@@ -3510,7 +3508,7 @@ class MailThread extends AbstractModel {
       // fetch "parent" subscription data (aka: subtypes on project to propagate on task)
       const docData = updatedRelation.items().map(([model, fnames]) => [model, Array.from<string>(fnames).map(fname => updatedValues[fname])]);
       const res = await this.env.items('mail.followers')._getSubscriptionData(docData, null, true, true);
-      for (const { fid, rid, pid, subids, pshare, active } of res) {
+      for (const { pid, subids, pshare, active } of res) {
         // use project.task_new -> task.new link
         let sids = subids.map(sid => parent[sid]).filter(sid => bool(sid));
         // add checked subtypes matching modelName

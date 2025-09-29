@@ -1,4 +1,4 @@
-import { MetaModel, TransientModel } from "../../..";
+import { MetaModel, TransientModel } from "../../../models"
 import { forceDemo } from "../../../modules/loading";
 
 @MetaModel.define()

@@ -4,9 +4,9 @@
 <template name="Media List" id="sMediaList">
     <section class="s-media-list pt32 pb32 o-cc o-cc2" data-vcss="001">
         <div class="container">
-            <div class="row s-nb-column-fixed s-col-no-bgColor">
+            <div class="row s-nb-column-fixed s-col-no-bgcolor">
                 <div class="col-lg-12 s-media-list-item pt16 pb16" data-name="Media item">
-                    <div class="row s-col-no-resize s-col-no-bgColor no-gutters align-items-center o-cc o-cc1">
+                    <div class="row s-col-no-resize s-col-no-bgcolor no-gutters align-items-center o-cc o-cc1">
                         <div class="col-lg-4 align-self-stretch s-media-list-img-wrapper">
                             <img src="/web/image/website.sMediaListDefaultImage_1" class="s-media-list-img h-100 w-100" alt=""/>
                         </div>
@@ -18,7 +18,7 @@
                     </div>
                 </div>
                 <div class="col-lg-12 s-media-list-item pt16 pb16" data-name="Media item">
-                    <div class="row s-col-no-resize s-col-no-bgColor no-gutters align-items-center o-cc o-cc1">
+                    <div class="row s-col-no-resize s-col-no-bgcolor no-gutters align-items-center o-cc o-cc1">
                         <div class="col-lg-4 align-self-stretch s-media-list-img-wrapper">
                             <img src="/web/image/website.sMediaListDefaultImage_2" class="s-media-list-img h-100 w-100" alt=""/>
                         </div>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="col-lg-12 s-media-list-item pt16 pb16" data-name="Media item">
-                    <div class="row s-col-no-resize s-col-no-bgColor no-gutters align-items-center o-cc o-cc1">
+                    <div class="row s-col-no-resize s-col-no-bgcolor no-gutters align-items-center o-cc o-cc1">
                         <div class="col-lg-4 align-self-stretch s-media-list-img-wrapper">
                             <img src="/web/image/website.sMediaListDefaultImage_3" class="s-media-list-img h-100 w-100" alt=""/>
                         </div>

@@ -1,7 +1,8 @@
 import _ from "lodash";
 import { format } from "util";
 import { LookupError } from "../../helper/errors";
-import { _format, isInstance } from "../../tools";
+import { isInstance } from "../../tools";
+import { _format } from "../../tools/utils";
 import { BaseResponse } from "./base_response";
 
 export class HTTPException extends Function {

@@ -1,5 +1,6 @@
 import { MultiDict } from ".";
 import { getattr, setattr, setdefault } from "../api/func";
+import { isInstance } from "../tools/func";
 import { isIterable } from "../tools/iterable";
 
 class _Missing {

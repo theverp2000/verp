@@ -1,5 +1,6 @@
-import { Fields, MetaModel, Model, _Date, api } from "../../../core";
+import { Fields, _Date, api } from "../../../core";
 import { UserError } from "../../../core/helper";
+import { MetaModel, Model } from "../../../core/models";
 import { f, groupbyAsync, itemgetter, sortedAsync } from "../../../core/tools";
 
 @MetaModel.define()

@@ -1,6 +1,8 @@
-import { Fields, MetaModel, TransientModel, api } from "../../../core";
-import { NotImplementedError } from "../../../core/helper";
-import { bool, getLang } from "../../../core/tools";
+import { Fields, api } from "../../../core";
+import { NotImplementedError } from "../../../core/helper/errors";
+import { MetaModel, TransientModel } from "../../../core/models"
+import { bool } from "../../../core/tools/bool";
+import { getLang } from "../../../core/tools/models";
 
 @MetaModel.define()
 class AccountCommonReport extends TransientModel {

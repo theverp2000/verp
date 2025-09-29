@@ -1,5 +1,6 @@
-import { _Date, _super, api, Fields, MetaModel, Model } from "../../../core";
+import { _Date, api, Fields } from "../../../core";
 import { UserError } from "../../../core/helper";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { _convert$, _f, bool, f, floatRound, setDate } from "../../../core/tools";
 
 @MetaModel.define()

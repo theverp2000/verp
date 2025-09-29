@@ -18,11 +18,11 @@ verp.define("website_blog.tour", function (require) {
         position: "bottom",
     }, {
         trigger: "button.btn-continue",
-        extra_trigger: "form[id=\"editorNewBlog\"]",
+        extraTrigger: "form[id=\"editorNewBlog\"]",
         content: _t("Select the blog you want to add the post to."),
         // Without demo data (and probably in most user cases) there is only
         // one blog so this step would not be needed and would block the tour.
-        // We keep the step with "auto: true", so that the main javascript test
+        // We keep the step with "auto: true", so that the main python test
         // still works but never display this to the user anymore. We suppose
         // the user does not need guidance once that modal is opened. Note: if
         // you run the tour via your console without demo data, the tour will
@@ -30,7 +30,7 @@ verp.define("website_blog.tour", function (require) {
         auto: true,
     }, {
         trigger: "div[data-oe-expression=\"blogPost.label\"]",
-        extra_trigger: "#oeSnippets.o-loaded",
+        extraTrigger: "#oeSnippets.o-loaded",
         content: _t("Write a title, the subtitle is optional."),
         position: "top",
         // FIXME instead of using the default 'click' event that is used to mark

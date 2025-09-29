@@ -1,5 +1,6 @@
 import { http } from "../../../core";
-import { AccessError, MissingError, OrderedDict } from "../../../core/helper";
+import { OrderedDict } from "../../../core/helper/collections";
+import { AccessError, MissingError } from "../../../core/helper/errors";
 import { WebRequest } from "../../../core/http";
 import { isInstance, sorted, update } from "../../../core/tools";
 import { CustomerPortal, pager as portalPager } from "../../portal/controllers/portal";

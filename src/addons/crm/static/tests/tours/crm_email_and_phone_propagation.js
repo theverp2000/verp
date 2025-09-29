@@ -17,7 +17,7 @@ verp.define('crm.crm_email_and_phone_propagation', function (require) {
             run: 'click',
         }, {
             trigger: '.o_form_button_edit',
-            extraTrigger: '.o-lead-opportunity-form.o_form_readonly',
+            extraTrigger: '.o-lead-opportunity-form.o-form-readonly',
             content: 'Edit the lead',
             run: 'click',
         }, {
@@ -26,7 +26,7 @@ verp.define('crm.crm_email_and_phone_propagation', function (require) {
             content: 'Save the lead',
             run: 'click',
         }, {
-            trigger: '.o_form_readonly',
+            trigger: '.o-form-readonly',
         },
     ]);
 
@@ -57,11 +57,11 @@ verp.define('crm.crm_email_and_phone_propagation', function (require) {
         }, {
             trigger: '.o_form_button_save',
             // wait the the warning message to be visible
-            extraTrigger: '.o_form_sheet_bg .fa-exclamation-triangle:not(.o_invisible_modifier)',
+            extraTrigger: '.o_form_sheet_bg .fa-exclamation-triangle:not(.o-invisible-modifier)',
             content: 'Save the lead',
             run: 'click',
         }, {
-            trigger: '.o_form_readonly',
+            trigger: '.o-form-readonly',
         },
     ]);
 

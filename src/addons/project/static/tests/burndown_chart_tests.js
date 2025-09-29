@@ -15,42 +15,42 @@ QUnit.module("Project", {}, () => {
         hooks.beforeEach(async () => {
             serverData = {
                 models: {
-                    burndown_chart: {
+                    burndownChart: {
                         fields: {
                             date: { string: "Date", type: "date", store: true, sortable: true },
                             projectId: { string: "Project", type: "many2one", relation: "project", store: true, sortable: true },
                             stageId: { string: "Stage", type: "many2one", relation: "stage", store: true, sortable: true },
-                            nb_tasks: { string: "Number of Tasks", type: "integer", store: true, sortable: true, group_operator: "sum" }
+                            nbTasks: { string: "Number of Tasks", type: "integer", store: true, sortable: true, groupOperator: "sum" }
                         },
                         records: [
-                            { id: 1, projectId: 1, stageId: 1, date: "2020-01-01", nb_tasks: 10 },
-                            { id: 2, projectId: 1, stageId: 2, date: "2020-02-01", nb_tasks: 5 },
-                            { id: 3, projectId: 1, stageId: 3, date: "2020-03-01", nb_tasks: 2 },
+                            { id: 1, projectId: 1, stageId: 1, date: "2020-01-01", nbTasks: 10 },
+                            { id: 2, projectId: 1, stageId: 2, date: "2020-02-01", nbTasks: 5 },
+                            { id: 3, projectId: 1, stageId: 3, date: "2020-03-01", nbTasks: 2 },
                         ],
                     },
                     project: {
                         fields: {
                             name: { string: "Project Name", type: "char" },
                         },
-                        records: [{ id: 1, name: "Project A" }]
+                        records: [{ id: 1, label: "Project A" }]
                     },
                     stage: {
                         fields: {
                             name: { string: "Stage Name", type: "char" },
                         },
                         records: [
-                            { id: 1, name: "Todo" },
-                            { id: 2, name: "In Progress" },
-                            { id: 3, name: "Done" },
+                            { id: 1, label: "Todo" },
+                            { id: 2, label: "In Progress" },
+                            { id: 3, label: "Done" },
                         ],
                     }
                 },
                 views: {
-                    "burndown_chart,false,graph": `
+                    "burndownChart,false,graph": `
                         <graph type="line">
                             <field name="date" string="Date" interval="month"/>
                             <field name="stageId"/>
-                            <field name="nb_tasks" type="measure"/>
+                            <field name="nbTasks" type="measure"/>
                         </graph>
                     `,
                 },
@@ -66,8 +66,8 @@ QUnit.module("Project", {}, () => {
 
             const burndownChart = await makeView({
                 serverData,
-                resModel: "burndown_chart",
-                type: "burndown_chart",
+                resModel: "burndownChart",
+                type: "burndownChart",
             });
 
             assert.strictEqual(burndownChart.model.metaData.mode, "line", "should be in line chart mode.");
@@ -106,12 +106,12 @@ QUnit.module("Project", {}, () => {
             assert.expect(3);
             const burndownChart = await makeView({
                 serverData,
-                resModel: "burndown_chart",
-                type: "burndown_chart",
+                resModel: "burndownChart",
+                type: "burndownChart",
             });
             assert.ok(burndownChart.model.metaData.stacked, "graph should be a burndown chart.");
-            assert.containsOnce(burndownChart, `button.o_graph_button[data-tooltip="Stacked"]`);
-            const stackButton = burndownChart.el.querySelector(`button.o_graph_button[data-tooltip="Stacked"]`);
+            assert.containsOnce(burndownChart, `button.o-graph-button[data-tooltip="Stacked"]`);
+            const stackButton = burndownChart.el.querySelector(`button.o-graph-button[data-tooltip="Stacked"]`);
             await click(stackButton);
             assert.notOk(burndownChart.model.metaData.stacked, "graph should be a classic line chart.");
         });
@@ -121,11 +121,11 @@ QUnit.module("Project", {}, () => {
 
             const burndownChart = await makeView({
                 serverData,
-                resModel: "burndown_chart",
-                type: "burndown_chart",
+                resModel: "burndownChart",
+                type: "burndownChart",
             });
 
-            const stackButton = burndownChart.el.querySelector(`button.o_graph_button[data-tooltip="Stacked"]`);
+            const stackButton = burndownChart.el.querySelector(`button.o-graph-button[data-tooltip="Stacked"]`);
             await click(stackButton);
             assert.notOk(burndownChart.model.metaData.stacked, "graph should be a classic line chart.");
 

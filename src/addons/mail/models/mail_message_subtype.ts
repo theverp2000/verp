@@ -63,7 +63,7 @@ class MailMessageSubtype extends Model {
 
     Returned data
 
-      * childIds: all subtypes that are generic or related to task (resModel = false or modelName)
+      * child_ids: all subtypes that are generic or related to task (resModel = false or modelName)
       * def_ids: default subtypes ids (either generic or task specific)
       * all_int_ids: all internal-only subtypes ids (generic or task or project)
       * parent: dict(parent subtype id, child subtype id), i.e. {task_new.id: new.id}

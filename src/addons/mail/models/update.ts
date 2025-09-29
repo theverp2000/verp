@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { api, release } from "../../../core";
 import { UserError } from '../../../core/helper';
 import { AbstractModel, MetaModel } from "../../../core/models";
-import { literalEval } from '../../../core/tools/save_eval';
+import { literalEval } from '../../../core/tools/ast';
 import { bool } from '../../../core/tools/bool';
 import { config } from "../../../core/tools/config";
 import { stringify } from '../../../core/tools/json';

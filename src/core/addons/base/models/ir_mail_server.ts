@@ -3,9 +3,11 @@ import fs from "fs/promises";
 import uts46 from "idna-uts46";
 import nodemailer from "nodemailer";
 import tls from "tls";
-import { api, Fields, MetaModel, Model, tools } from "../../..";
+import { api, tools } from "../../..";
 import { getattr } from "../../../api";
+import { Fields } from "../../../fields";
 import { UserError } from "../../../helper";
+import { MetaModel, Model } from "../../../models";
 import { _f, b64decode, bool, config, emailDomainExtract, emailDomainNormalize, emailNormalize, encapsulateEmail, f, formataddr, html2Text, makeMsgid, stringPart, ustr } from "../../../tools";
 
 const SMTP_TIMEOUT = 60;
@@ -647,7 +649,7 @@ class IrMailServer extends Model {
     /**
      * Find the appropriate mail server for the given email address.
  
-        Returns: Record<ir.mail_server>, emailFrom
+        Returns: Record<ir.mail_server>, email_from
         - Mail server to use to send the email (null if we use the verp-bin arguments)
         - Email FROM to use to send the email (in some case, it might be impossible
           to use the given email address directly if no mail server is configured for)

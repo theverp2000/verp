@@ -53,8 +53,8 @@ access_product_pricelist_item_mrp_manager,product.pricelist.item mrp_manager,pro
 access_resource_calendar_manufacturinguser,resource.calendar manufacturing.user,resource.model_resourceCalendar,mrp.groupMrpUser,1,0,0,0
 access_mrp_unbuild,mrp.unbuild,model_mrpUnbuild,groupMrpUser,1,1,1,1
 access_mrp_unbuild_manager,mrp.unbuild manager,model_mrpUnbuild,groupMrpManager,1,1,1,1
-access_mrp_document_mrp_manager,mrp.document group_user,model_mrpDocument,groupMrpManager,1,1,1,1
-access_mrp_document_mrp_user,mrp.document group_user,model_mrpDocument,groupMrpUser,1,1,1,1
+access_mrp_document_mrp_manager,mrp.document groupUser,model_mrpDocument,groupMrpManager,1,1,1,1
+access_mrp_document_mrp_user,mrp.document groupUser,model_mrpDocument,groupMrpUser,1,1,1,1
 access_change_production_qty,access.change.production.qty,model_changeProductionQty,mrp.groupMrpUser,1,1,1,0
 access_stock_warn_insufficient_qty_unbuild,access.stock.warn.insufficient.qty.unbuild,model_stockWarnInsufficientQtyUnbuild,mrp.groupMrpUser,1,1,1,0
 access_mrp_production_backorder,access.mrp.production.backorder,model_mrpProductionBackorder,mrp.groupMrpUser,1,1,1,0

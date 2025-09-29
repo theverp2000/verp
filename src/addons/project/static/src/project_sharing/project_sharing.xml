@@ -2,11 +2,11 @@
 <templates xml:space="preserve">
 
     <t t-name="project.ProjectSharingWebClient" owl="1">
-        <body class="o_project_sharing">
+        <body class="o-project-sharing">
             <NotUpdatable>
                 <ActionContainer />
             </NotUpdatable>
-            <div class="o_dialog_container"/>
+            <div class="o-dialog-container"/>
             <MainComponentsContainer/>
         </body>
     </t>

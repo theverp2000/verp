@@ -22,8 +22,8 @@
                 <field name="showCancelMsg" invisible="1"/>
                 <sheet>
                     <field name="image128" widget="image" class="oe-avatar"/>
-                    <widget name="webRibbon" title="Disabled" bgColor="bg-danger" attrs="{'invisible': [['state', '!=', 'disabled']]}"/>
-                    <widget name="webRibbon" title="Test Mode" bgColor="bg-warning" attrs="{'invisible': [['state', '!=', 'test']]}"/>
+                    <widget name="webRibbon" title="Disabled" bgcolor="bg-danger" attrs="{'invisible': [['state', '!=', 'disabled']]}"/>
+                    <widget name="webRibbon" title="Test Mode" bgcolor="bg-warning" attrs="{'invisible': [['state', '!=', 'test']]}"/>
                     <div class="oe-title">
                         <h1><field name="label" placeholder="Name"/></h1>
                         <div attrs="{'invisible': ['|', ['moduleState', '=', 'installed'], ['moduleId', '=', false]]}">

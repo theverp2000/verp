@@ -1,8 +1,9 @@
 import _ from "lodash";
-import { _super, api, Fields, MetaModel, Model } from "../../../core";
-import { UserError, ValidationError, ValueError } from "../../../core/helper";
+import { api, Fields, tools } from "../../../core";
+import { _super, MetaModel, Model } from "../../../core/models"
 import { bool, f, html2Text, htmlTranslate, parseInt } from "../../../core/tools";
 import { getRequestWebsite } from "../../website/models";
+import { UserError, ValidationError, ValueError } from "../../../core/helper";
 
 @MetaModel.define()
 class ProductRibbon extends Model {
@@ -15,7 +16,7 @@ class ProductRibbon extends Model {
     }
 
     static html = Fields.Html({string: 'Ribbon html', required: true, translate: true, sanitize: false});
-    static bgColor = Fields.Char({string: 'Ribbon background color', required: false});
+    static bgcolor = Fields.Char({string: 'Ribbon background color', required: false});
     static textColor = Fields.Char({string: 'Ribbon text color', required: false});
     static htmlClass = Fields.Char({string: 'Ribbon class', required: true, default: ''});
 }

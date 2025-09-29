@@ -1,39 +1,39 @@
-.o_portal_project_rating {
+.o-portal-project-rating {
     .thumbnail{
         height: 240px;
     }
-    .o_top_partner_rating_image {
+    .o-top-partner-rating-image {
         height: 15px;
     }
-    .o_top_partner_image {
+    .o-top-partner-image {
         height: 30px;
         width: 30px;
     }
-    .o_top_partner_feedback{
+    .o-top-partner-feedback{
         word-wrap: break-word;
     }
-    .o_vertical_separator {
+    .o-vertical-separator {
         border-left: 1px solid #eeeeee
     }
-    .o_rating_progress {
+    .o-rating-progress {
         margin-bottom: 10px;
     }
-    .o_rating_count {
+    .o-rating-count {
         display: inline-block;
         min-width: 22px
     }
-    .o_smiley_no_padding_left {
+    .o-smiley-no-padding-left {
         padding-left: 0;
     }
-    .o_smiley_no_padding_right {
+    .o-smiley-no-padding-right {
         padding-right: 0;
     }
-    .o_lighter_smileys {
+    .o-lighter-smileys {
         opacity: 0.4
     }
 }
 
-.o_priority_star {
+.o-priority-star {
    display: inline-block;
 
    &.fa-star-o {
@@ -44,7 +44,7 @@
    }
 }
 
-.o_status {
+.o-status {
     display: block;
     background-color: gray('200');
     height: 12px;

@@ -25,7 +25,7 @@
                         attrs="{'invisible': ['|', ['active', '=', true], ['number', '=', false]]}"/>
                 </header>
                 <sheet>
-                <widget name="webRibbon" title="Archived" bgColor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
+                <widget name="webRibbon" title="Archived" bgcolor="bg-danger" attrs="{'invisible': [['active', '=', true]]}"/>
                     <group>
                         <group>
                             <field name="number"/>

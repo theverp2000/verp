@@ -4,7 +4,7 @@
         <record id="view_task_project_user_graph_inherited" model="ir.ui.view">
             <field name="label">report.project.task.user.graph.inherited</field>
             <field name="model">report.project.task.user</field>
-            <field name="inheritId" ref="project.view_task_project_user_graph" />
+            <field name="inherit_id" ref="project.view_task_project_user_graph" />
             <field name="arch" type="xml">
                 <xpath expr="//graph" position="attributes">
                     <attribute name="js_class">hr_timesheet_graphview</attribute>
@@ -20,7 +20,7 @@
         <record id="view_task_project_user_pivot_inherited" model="ir.ui.view">
             <field name="label">report.project.task.user.pivot.inherited</field>
             <field name="model">report.project.task.user</field>
-            <field name="inheritId" ref="project.view_task_project_user_pivot"/>
+            <field name="inherit_id" ref="project.view_task_project_user_pivot"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='projectId']" position='after'>
                     <field name="hours_planned" widget="timesheet_uom" type="measure"/>
@@ -33,16 +33,16 @@
         <record id="report_project_task_user_view_search" model="ir.ui.view">
             <field name="label">report.project.task.user.view.search.inherit.hr.timesheet</field>
             <field name="model">report.project.task.user</field>
-            <field name="inheritId" ref="project.view_task_project_user_search" />
+            <field name="inherit_id" ref="project.view_task_project_user_search" />
             <field name="arch" type="xml">
                 <xpath expr="//filter[@name='late']" position="after">
                     <filter string="Tasks in Overtime" name="overtime" domain="[('taskId.overtime', '&gt;', 0)]"/>
                 </xpath>
                 <xpath expr="//filter[@name='my_tasks']" position="before">
-                    <filter string="My Team's Projects" name="my_team_projects"  domain="[('projectId.userId.employee_id.parent_id.userId', '=', uid), ('projectId.userId', '!=', uid), ('user_ids', '!=', uid), ('user_ids', '!=', False)]"/>
+                    <filter string="My Team's Projects" name="my_team_projects"  domain="[('projectId.userId.employee_id.parentId.userId', '=', uid), ('projectId.userId', '!=', uid), ('userIds', '!=', uid), ('userIds', '!=', false)]"/>
                 </xpath>
                 <xpath expr="//filter[@name='my_tasks']" position="after">
-                    <filter string="My Team's Tasks" name="my_team_tasks" domain="[('taskId.user_ids.employee_id.parent_id.userId', '=', uid)]" />
+                    <filter string="My Team's Tasks" name="my_team_tasks" domain="[('taskId.userIds.employee_id.parentId.userId', '=', uid)]" />
                 </xpath>
              </field>
          </record>
@@ -50,9 +50,9 @@
         <record id="report_project_task_user_view_tree" model="ir.ui.view">
             <field name="label">report.project.task.user.view.tree.inherit.hr.timesheet</field>
             <field name="model">report.project.task.user</field>
-            <field name="inheritId" ref="project.report_project_task_user_view_tree"/>
+            <field name="inherit_id" ref="project.report_project_task_user_view_tree"/>
             <field name="arch" type="xml">
-                <field name="user_ids" position="after">
+                <field name="userIds" position="after">
                     <field name="hours_effective" optional="hide" widget="float_time"/>
                     <field name="progress" optional="hide" widget="progressbar"/>
                 </field>

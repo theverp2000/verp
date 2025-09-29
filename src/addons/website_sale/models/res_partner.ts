@@ -1,5 +1,6 @@
-import { Fields, MetaModel, Model } from "../../../core";
-import { getRequestWebsite } from "../../website";
+import { Fields } from "../../../core";
+import { MetaModel, Model } from "../../../core/models"
+import { getRequestWebsite } from "../../website/models";
 
 @MetaModel.define()
 class ResPartner extends Model {

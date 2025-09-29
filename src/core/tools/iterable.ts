@@ -140,6 +140,13 @@ export function* enumerate<T = any>(items: Iterable<T>, start: number = 0): Gene
   }
 }
 
+export async function* enumerateAsync<T = any>(items: Iterable<T>, start: number = 0) { // Generator<[number, T], void, unknown>
+  let index = start;
+  for await (const value of items) {
+    yield [index++, value];
+  }
+}
+
 export function* iter(items: any) {
   const type = typeof items;
   if (type !== 'string' && type !== 'object' && type !== 'function') {
@@ -219,10 +226,6 @@ export class CountingStream implements Generator {
     this.index = start;
   }
 
-  [Symbol.dispose](): Generator<unknown, any, any>  {
-    throw new Error("Method not implemented.");
-  }
-
   next(...args: [] | [any]): IteratorResult<any, any> {
     this.index += 1;
     const _next = this.stream.next();
@@ -267,45 +270,55 @@ export class CountingStream implements Generator {
   }
 }
 
-export function some(list: Iterable<any> | Generator<any>, func?: Function) {
+export function some(list: Iterable<any> | Generator<any>, func: Function = (e) => e) {
   for (const rec of list) {
-    if (bool(func ? func(rec) : rec )) {
+    if (bool(func(rec))) {
       return true;
     }
   }
   return false;
 }
 
-export async function someAsync(list: Iterable<any> | Generator<any>, func?: Function) {
+export async function someAsync(list: Iterable<any> | Generator<any>, func: Function = (e) => e) {
   for (const rec of list) {
-    if (bool(func ? await func(rec) : rec)) {
+    if (bool(await func(rec))) {
       return true;
     }
   }
   return false;
 }
 
-export function* map(list: Iterable<any> | Generator<any>, func?: Function) {
+export function* map(list: Iterable<any> | Generator<any>, func: Function = (e) => e) {
   for (const rec of list) {
-    yield func ? func(rec) : rec;
+    yield func(rec);
   }
 }
 
-export function* filter(list: Iterable<any> | Generator<any>, func?: Function) {
+export function* filter(list: Iterable<any> | Generator<any>, func: Function = (e) => e) {
   for (const rec of list) {
-    if (bool(func ? func(rec) : rec)) {
+    if (bool(func(rec))) {
       yield rec;
     }
   }
 }
 
-export function all(list: Iterable<any> | Generator<any>, func?: Function) {
+export function all(list: Iterable<any> | Generator<any>, func: Function = (e) => e) {
   for (const rec of list) {
-    if (bool(func ? func(rec) : rec)) {
+    if (bool(func(rec))) {
       return false;
     }
   }
   return true;
+}
+
+export function max(list: Iterable<any> | Generator<any>, func: Function = (e) => e) {
+  let res;
+  for (const rec of list) {
+    if (res == null || func(rec) > func(res)) {
+      res = rec;
+    }
+  }
+  return res;
 }
 
 export function includes(list: Iterable<any> | Generator<any>, item) {

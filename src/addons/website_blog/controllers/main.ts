@@ -1,10 +1,11 @@
-import { _Datetime, http } from "../../../core";
+import URL from 'node:url';
+import { _Datetime, http } from "../../../core"
 import { OrderedDict } from "../../../core/helper";
 import { WebRequest, WebResponse } from "../../../core/http";
 import { NotFound } from "../../../core/service";
-import { bool, f, getLang, groupby, html2Text, incrementFieldSkiplock, isInstance, len, parseInt, remove, slug, sortedAsync, stringPart, timezone, toFormat, unslug } from "../../../core/tools";
-import { buildUrlWParams } from '../../portal';
+import { bool, f, getLang, groupby, html2Text, incrementFieldSkiplock, isInstance, len, parseInt, remove, setOptions, slug, sortedAsync, stringPart, timezone, toFormat, unslug, URI } from "../../../core/tools";
 import { QueryURL, queryURL } from '../../website';
+import { buildUrlWParams } from '../../portal';
 
 @http.define()
 class WebsiteBlog extends http.Controller {
@@ -78,7 +79,7 @@ class WebsiteBlog extends http.Controller {
         const BlogTag = env.items('blog.tag');
 
         // prepare domain
-        let domain = req.website.websiteDomain();
+        let domain = await req.website.websiteDomain();
 
         if (bool(blog)) {
             domain = domain.concat([['blogId', '=', blog.id]]);
@@ -187,13 +188,13 @@ class WebsiteBlog extends http.Controller {
         return {
             'dateBegin': dateBegin,
             'dateEnd': dateEnd,
-            'firstPost': await firstPost.withPrefetch(postIds),
+            'firstPost': firstPost.withPrefetch(postIds),
             'otherTags': otherTags,
             'tagCategory': tagCategory,
             'navList': await this.navList(req, res),
             'tagsList': this.tagsList,
             'pager': pager,
-            'posts': await posts.withPrefetch(postIds),
+            'posts': posts.withPrefetch(postIds),
             'tag': tags,
             'activeTagIds': activeTags.ids,
             'domain': domain,
@@ -240,7 +241,7 @@ class WebsiteBlog extends http.Controller {
                 throw new NotFound(res);
             }
         }
-        const blogs = await Blog.search(req.website.websiteDomain(), {order: "createdAt asc, id asc"});
+        const blogs = await Blog.search(await req.website.websiteDomain(), {order: "createdAt asc, id asc"});
 
         if (!bool(blog) && len(blogs) == 1) {
             const url = await queryURL(f('/blog/%s', await blogs[0].slug()), opts);
@@ -316,7 +317,7 @@ class WebsiteBlog extends http.Controller {
         const BlogPost = env.items('blog.post');
         const [dateBegin, dateEnd] = [post['dateBegin'], post['dateEnd']];
 
-        const domain = req.website.websiteDomain();
+        const domain = await req.website.websiteDomain();
         const blogs = await blog.search(domain, {order: "createdAt, id asc"});
 
         let tag;

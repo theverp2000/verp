@@ -7,11 +7,11 @@ var tour = require('web_tour.tour');
 
 var _t = core._t;
 
-tour.register('account_tour', {
+tour.register('accountTour', {
     url: "/web",
     sequence: 60,
 }, [
-    ...tour.stepUtils.goToAppSteps('account.menu_finance', _t('Send invoices to your customers in no time with the <b>Invoicing app</b>.')),
+    ...tour.stepUtils.goToAppSteps('account.menuFinance', _t('Send invoices to your customers in no time with the <b>Invoicing app</b>.')),
     {
         trigger: "a.o-onboarding-step-action[data-method=actionOpenBaseOnboardingCompany]",
         content: _t("Start by checking your company's data."),

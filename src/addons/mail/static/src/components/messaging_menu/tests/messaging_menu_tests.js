@@ -306,7 +306,7 @@ QUnit.test('counter is taking into account failure notification', async function
     });
     // failure that is expected to be used in the test
     this.data['mail.notification'].records.push({
-        mail_message_id: 11, // id of the related message
+        mailMessageId: 11, // id of the related message
         notification_status: 'exception', // necessary value to have a failure
     });
     const { createMessagingMenuComponent } = await this.start();

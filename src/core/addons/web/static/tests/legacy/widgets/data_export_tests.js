@@ -53,7 +53,7 @@ QUnit.module('widgets', {
             if (route === '/web/export/getFields') {
                 return Promise.resolve([
                     {
-                        field_type: "one2many",
+                        fieldType: "one2many",
                         string: "Activities",
                         required: false,
                         value: "activityIds/id",
@@ -63,7 +63,7 @@ QUnit.module('widgets', {
                         children: true,
                     }, {
                         children: false,
-                        field_type: 'char',
+                        fieldType: 'char',
                         id: "foo",
                         relationField: null,
                         required: false,

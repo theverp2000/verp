@@ -953,7 +953,7 @@ QUnit.module('relationalFields', {
         form.destroy();
     });
 
-    QUnit.test('statusbar fold_field option and statusbarVisible attribute', async function (assert) {
+    QUnit.test('statusbar foldField option and statusbarVisible attribute', async function (assert) {
         assert.expect(2);
 
         this.data.partner.records[0].bar = false;
@@ -964,7 +964,7 @@ QUnit.module('relationalFields', {
             data: this.data,
             arch:
                 '<form string="Partners">' +
-                    '<header><field name="trululu" widget="statusbar" options="{\'fold_field\': \'bar\'}"/>' +
+                    '<header><field name="trululu" widget="statusbar" options="{\'foldField\': \'bar\'}"/>' +
                     '<field name="color" widget="statusbar" statusbarVisible="red"/></header>' +
                 '</form>',
             resId: 1,

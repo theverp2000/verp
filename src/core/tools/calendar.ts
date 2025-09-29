@@ -1,5 +1,5 @@
+import { format } from "util";
 import { ValueError } from "../helper/errors";
-import { f } from "./string";
 
 const MINYEAR = 1;
 const MAXYEAR = 9999;
@@ -18,7 +18,7 @@ class IllegalMonthError extends ValueError {
   }
 
   toString() {
-    return f("bad month number %s; must be 1-12", this.month);
+    return format("bad month number %s; must be 1-12", this.month);
   }
 }
 
@@ -31,7 +31,7 @@ class IllegalWeekdayError extends ValueError {
   }
 
   toStirng() {
-    return f("bad weekday number %s; must be 0 (Monday) to 6 (Sunday)", this.weekday);
+    return format("bad weekday number %s; must be 0 (Monday) to 6 (Sunday)", this.weekday);
   }
 }
 

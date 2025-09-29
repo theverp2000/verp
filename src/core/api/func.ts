@@ -3,7 +3,6 @@ import { KeyError } from "../helper/errors";
 import { isCallable, isInstance, isObject } from "../tools/func";
 import { len } from "../tools/iterable";
 import { pop } from "../tools/misc";
-import { isAsyncFunction } from "util/types";
 
 export function setattr(obj: any, attr: number | string | symbol, value: any, options?: {
   writable?: boolean,
@@ -240,9 +239,7 @@ async function _callKwModel(method: Function, self: any, args: any[] = [], kwarg
   [context, args, kwargs] = splitContext(args, kwargs);
   const recs = await self.withContext(context ?? {});
   method = recs[method.name];
-  const result = isAsyncFunction(method) 
-    ? await method.call(recs, ...args, kwargs)
-    : method.call(recs, ...args, kwargs);
+  const result = await method.call(recs, ...args, kwargs);
   return downgrade(method, result, recs, args, kwargs);
 }
 
@@ -251,9 +248,7 @@ async function _callKwModelCreate(method: Function, self: any, args: any[] = [],
   [context, args, kwargs] = splitContext(args, kwargs);
   const recs = await self.withContext(context ?? {});
   method = recs[method.name];
-  const result = isAsyncFunction(method) 
-    ? await method.call(recs, ...args, kwargs)
-    : method.call(recs, ...args, kwargs);
+  const result = await method.call(recs, ...args, kwargs);
   return isInstance(args[0], Array) ? result.ids : result.id;
 }
 
@@ -263,9 +258,7 @@ async function _callKwMulti(method: Function, self: any, args: any[] = [], kwarg
   [context, args, kwargs] = splitContext(args, kwargs);
   const recs = (await self.withContext(context ?? {})).browse(ids);
   method = recs[method.name];
-  const result = isAsyncFunction(method) 
-    ? await method.call(recs, ...args, kwargs)
-    : method.call(recs, ...args, kwargs);
+  const result = await method.call(recs, ...args, kwargs);
   return downgrade(method, result, recs, args, kwargs);
 }
 

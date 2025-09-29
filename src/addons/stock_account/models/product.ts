@@ -1,8 +1,9 @@
-import assert from "assert";
 import _, { extend } from "lodash";
-import { Fields, MetaModel, Model, _Date, _Datetime, _super, api } from "../../../core";
+import { Fields, _Date, _Datetime, api } from "../../../core";
 import { MapKey, UserError, ValidationError, ValueError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models"
 import { _f, bool, f, floatCompare, floatIsZero, floatRepr, floatRound, pop, sum, update } from "../../../core/tools";
+import assert from "assert";
 
 @MetaModel.define()
 class ProductTemplate extends Model {

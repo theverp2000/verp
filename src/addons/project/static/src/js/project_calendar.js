@@ -2,7 +2,7 @@
 
 import CalendarController from 'web.CalendarController';
 import CalendarView from 'web.CalendarView';
-import viewRegistry from 'web.view_registry';
+import viewRegistry from 'web.viewRegistry';
 import { ProjectControlPanel } from '@project/js/project_control_panel';
 
 const ProjectCalendarController = CalendarController.extend({
@@ -29,4 +29,4 @@ export const ProjectCalendarView = CalendarView.extend({
     }),
 });
 
-viewRegistry.add('project_calendar', ProjectCalendarView);
+viewRegistry.add('projectCalendar', ProjectCalendarView);

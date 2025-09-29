@@ -14,12 +14,12 @@ class ResConfigSettings(models.TransientModel):
     reminder_user_allow = fields.Boolean(string="Employee Reminder", help="If checked, send an email to all users who have not recorded their timesheet")
     reminder_manager_allow = fields.Boolean(string="Manager Reminder", help="If checked, send an email to all manager")
     project_time_mode_id = fields.Many2one(
-        'uom.uom', related='companyId.project_time_mode_id', string='Project Time Unit', readonly=False,
+        'uom.uom', related='company_id.project_time_mode_id', string='Project Time Unit', readonly=False,
         help="This will set the unit of measure used in projects and tasks.\n"
              "If you use the timesheet linked to projects, don't "
              "forget to setup the right unit of measure in your employees.")
     timesheet_encode_uom_id = fields.Many2one('uom.uom', string="Encoding Unit",
-        related='companyId.timesheet_encode_uom_id', readonly=False,
+        related='company_id.timesheet_encode_uom_id', readonly=False,
         help="""This will set the unit of measure used to encode timesheet. This will simply provide tools
         and widgets to help the encoding. All reporting will still be expressed in hours (default value).""")
     is_encode_uom_days = fields.Boolean(compute='_compute_is_encode_uom_days')

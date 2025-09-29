@@ -15,8 +15,8 @@ import { ValueError } from '../helper/errors';
 import { bool } from './bool';
 import { isAlpha, isInstance } from './func';
 import { enumerate, iter, len, range } from './iterable';
+import { stringify } from './json';
 import { whichSync } from './which';
-import { repr } from './string';
 
 export const DEFAULT_SERVER_DATE_FORMAT = "yyyy-MM-dd";
 export const DEFAULT_SERVER_TIME_FORMAT = "HH:mm:ss";
@@ -124,7 +124,7 @@ export function sameContent(binData: Buffer, filepath: string) {
   const BLOCK_SIZE = 1024;
   const fd = fs.openSync(filepath, 'r');
   let i = 0;
-  const data = Buffer.alloc(BLOCK_SIZE);
+  const data: any = Buffer.alloc(BLOCK_SIZE);
   while (true) {
     const num = fs.readSync(fd, data, 0, BLOCK_SIZE, null);
     if (!num) {
@@ -439,6 +439,13 @@ export async function groupbyAsync(iterable: Iterable<any>, fKeyObj?: Function, 
     groups.get(key)[1].push(elem);
   }
   return groups.values();
+}
+
+export function repr(obj: any) {
+  if ((typeof obj === 'object' || typeof obj === 'function') && ('repr' in obj)) {
+    return obj.repr();
+  }
+  return stringify(obj);
 }
 
 export function ignore(exc: any[], func: Function) {
@@ -1346,7 +1353,7 @@ export function sha1(key, encoding: BinaryToTextEncoding = 'hex') {
 
 export function hash(key, data?: any, algorithm: string = 'sha256', encoding: BinaryToTextEncoding = 'hex') {
   return crypto.createHmac(algorithm, key)
-    .update(data ? Buffer.from(data) : 'I love verp')
+    .update(data ? Buffer.from(data) : 'I love verp' as any)
     .digest(encoding);
 }
 
@@ -1366,7 +1373,7 @@ export async function hmac(env, scope, data, algorithm = 'sha256', encoding: Bin
   const key = await env.items('ir.config.parameter').getParam('database.secret');
   data = repr([scope, data]);
 
-  return crypto.createHmac(algorithm, Buffer.from(key, 'ascii'))
+  return crypto.createHmac(algorithm, Buffer.from(key, 'ascii') as any)
     .update(data, 'utf-8')
     .digest(encoding);
 }
@@ -1425,27 +1432,27 @@ async function processParserCsv(parser: Parser, maxLines?: number): Promise<[str
   return [fields, records, badLines];
 }
 
-const algorithm = 'aes-192-cbc';
-const salt = randomBytes(24); // 192/8
+const algorithm = 'aes-192-ccm';
+const salt = randomBytes(24) as any; // 192/8
 const lifetime = 25000;
 
-export function encrypt(pass) {
-  const hashedPassword = scryptSync(pass, salt, 24);
+export function encrypt(pass: any) {
+  const hashedPassword = scryptSync(pass, salt, 24) as any;
   console.log(hashedPassword.byteLength);
-  const iv = randomBytes(16);
+  const iv = randomBytes(16) as any;
   const cipher = createCipheriv(algorithm, hashedPassword, iv);
 
-  const encrypted = Buffer.concat([cipher.update(pass), cipher.final()]);
+  const encrypted = Buffer.concat([cipher.update(pass) as any, cipher.final() as any]);
   return { algorithm, key: hashedPassword.toString('hex'), iv: iv.toString('hex'), encrypted: encrypted.toString('hex'), lifetime };
 }
 
 export function decrypt(info) {
-  let key = Buffer.from(info.key, 'hex');
-  let iv = Buffer.from(info.iv, 'hex');
-  let encrypted = Buffer.from(info.encrypted, 'hex');
+  let key = Buffer.from(info.key, 'hex') as any;
+  let iv = Buffer.from(info.iv, 'hex') as any;
+  let encrypted = Buffer.from(info.encrypted, 'hex') as any;
 
   let decipher = createDecipheriv(info.algorithm, key, iv);
-  let decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
+  let decrypted = Buffer.concat([decipher.update(encrypted) as any, decipher.final() as any]);
   return decrypted.toString();
 }
 

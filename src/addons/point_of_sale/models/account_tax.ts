@@ -1,7 +1,7 @@
 import _ from "lodash";
-import { MetaModel, Model, _super } from "../../../core";
-import { UserError } from "../../../core/helper";
+import { MetaModel, Model, _super } from "../../../core/models"
 import { map, splitEvery, sum } from "../../../core/tools";
+import { UserError } from "../../../core/helper";
 
 @MetaModel.define()
 class AccountTax extends Model {

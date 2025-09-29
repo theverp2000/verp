@@ -1,11 +1,14 @@
 import fs from 'fs/promises';
 import { ServerResponse } from "http";
 import _ from "lodash";
-import { http, isSubclass } from "../../../core";
-import { AccessDenied, AccessError, MissingError, UserError, ValidationError } from "../../../core/helper";
+import { http } from "../../../core";
+import { Dict } from "../../../core/helper/collections";
+import { AccessDenied, AccessError, MissingError, UserError, ValidationError } from "../../../core/helper/errors";
 import { WebRequest, contentDisposition } from "../../../core/http";
+import { isSubclass } from "../../../core/models";
 import { urlEncode, urlParse } from "../../../core/service/middleware/utils";
-import { b64encode, bool, consteq, f, isDigit, isInstance, len, parseFloat, parseInt, pop, range, singleEmailRe, stringify, update } from "../../../core/tools";
+import { _t, b64encode, bool, consteq, f, isDigit, isInstance, len, parseFloat, parseInt, pop, range, singleEmailRe, update } from "../../../core/tools";
+import { stringify } from '../../../core/tools/json';
 
 /**
  * Generate a dict with required value to render `website.pager` template. This method compute url, page range to display, ... in the pager.
@@ -133,6 +136,27 @@ export function buildUrlWParams(urlString, queryParams, removeDuplicates = true)
   update(urlParams, queryParams || {});
   url.search = urlEncode(urlParams);
   return url.toString();
+}
+
+export async function documentCheckAccess(req: WebRequest, modelName, documentId, accessToken?: string) {
+  const document = (await req.getEnv()).items(modelName).browse([documentId]);
+  const documentSudo = await (await document.withUser(global.SUPERUSER_ID)).exists();
+  if (!bool(documentSudo)) {
+    throw new MissingError(await _t(await req.getEnv(), "This document does not exist."));
+  }
+  try {
+    await document.checkAccessRights('read'),
+    await document.checkAccessRule('read')
+  } catch (e) {
+    if (isInstance(e, AccessError)) {
+      if (!accessToken || ! await documentSudo.accessToken || !consteq(await documentSudo.accessToken, accessToken)) {
+        throw e;
+      }
+    } else {
+      throw e;
+    }
+  }
+  return documentSudo;
 }
 
 @http.define()
@@ -444,26 +468,7 @@ export class CustomerPortal extends http.Controller {
   }
 
   async _documentCheckAccess(req: WebRequest, modelName, documentId, accessToken?: string) {
-    const document = (await req.getEnv()).items(modelName).browse([documentId]);
-    const documentSudo = await (await document.withUser(global.SUPERUSER_ID)).exists();
-    if (!bool(documentSudo)) {
-      throw new MissingError(await this._t(await req.getEnv(), "This document does not exist."));
-    }
-    try {
-      // await Promise.all([
-        await document.checkAccessRights('read'),
-        await document.checkAccessRule('read')
-      // ]);
-    } catch (e) {
-      if (isInstance(e, AccessError)) {
-        if (!accessToken || ! await documentSudo.accessToken || !consteq(await documentSudo.accessToken, accessToken)) {
-          throw e;
-        }
-      } else {
-        throw e;
-      }
-    }
-    return documentSudo;
+    return documentCheckAccess(req, modelName, documentId, accessToken);
   }
 
   async _getPageViewValues(req: WebRequest, document, accessToken, values, sessionHistory, noBreadcrumbs, opts = {}) {

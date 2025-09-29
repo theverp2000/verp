@@ -1,5 +1,7 @@
-import { api, Fields, MetaModel, TransientModel } from "../../../core";
-import { bool } from "../../../core/tools";
+import { api } from "../../../core";
+import { Fields } from "../../../core/fields";
+import { MetaModel, TransientModel } from "../../../core/models"
+import { bool } from "../../../core/tools/bool";
 
 @MetaModel.define()
 class ChooseDestinationLocation extends TransientModel {

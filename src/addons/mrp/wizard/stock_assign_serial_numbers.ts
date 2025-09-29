@@ -1,6 +1,7 @@
 import _ from "lodash";
-import { api, Fields, MetaModel, TransientModel } from "../../../core";
+import { api, Fields } from "../../../core";
 import { Counter, MapKey, UserError } from "../../../core/helper";
+import { MetaModel, TransientModel } from "../../../core/models"
 import { bool, len } from "../../../core/tools";
 
 @MetaModel.define()
@@ -74,7 +75,7 @@ class StockAssignSerialNumbers extends TransientModel{
         const serialNumbers = await this._getSerialNumbers();
         const production = await this['productionId'];
         const productions = await production._splitProductions(
-            MapKey.fromEntries([[production, Array(len(serialNumbers)).fill(1)]]), cancelRemainingQuantity, true);
+            MapKey.fromEntries([[production, _.fill(Array(len(serialNumbers)), 1)]]), cancelRemainingQuantity, true);
         const productionLotsVals = [];
         for (const serialName of serialNumbers) {
             productionLotsVals.push({

@@ -40,7 +40,7 @@ export default class ProjectRightPanel extends owl.Component {
         }
         const data = await this.rpc({
             model: 'project.project',
-            method: 'get_panel_data',
+            method: 'getPanelData',
             args: [this.projectId],
             kwargs: {
                 context: this.context
@@ -53,13 +53,13 @@ export default class ProjectRightPanel extends owl.Component {
     async onProjectActionClick(event) {
         event.stopPropagation();
         let action = event.currentTarget.dataset.action;
-        const additionalContext = JSON.parse(event.currentTarget.dataset.additional_context || "{}");
+        const additionalContext = JSON.parse(event.currentTarget.dataset.additionalContext || "{}");
         if (event.currentTarget.dataset.type === "object") {
             action = await this.rpc({
-                // Use the call_button method in order to have an action
+                // Use the callButton method in order to have an action
                 // with the correct view naming, i.e. list view is named
                 // 'list' rather than 'tree'.
-                route: '/web/dataset/call_button',
+                route: '/web/dataset/callButton',
                 params: {
                     model: 'project.project',
                     method: event.currentTarget.dataset.action,
@@ -71,7 +71,7 @@ export default class ProjectRightPanel extends owl.Component {
             });
         }
         this._doAction(action, {
-            additional_context: additionalContext
+            additionalContext: additionalContext
         });
     }
 

@@ -1,7 +1,7 @@
 /** @verp-module alias=hr_timesheet.task_with_hours **/
 
-import field_registry from 'web.field_registry';
-import { FieldMany2One } from 'web.relational_fields';
+import field_registry from 'web.fieldRegistry';
+import { FieldMany2One } from 'web.relationalFields';
 
 const TaskWithHours = FieldMany2One.extend({
     /**
