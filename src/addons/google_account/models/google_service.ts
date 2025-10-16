@@ -211,7 +211,7 @@ class GoogleService extends AbstractModel {
             else {
                 throw new Error(await this._t('Method not supported [%s] not in [GET, POST, PUT, PATCH or DELETE]!', method));
             }
-            await res.raiseForStatus();
+            res.raiseForStatus();
             status = res.statusCode;
 
             if (parseInt(status) == 204) {  // Page not found, no response

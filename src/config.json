@@ -1,6 +1,7 @@
 {
   "addonsPath": "./src/core/addons,./src/addons",
-  "adminPasswd": "",
+  "adminPasswd": "1735395390448$36180582da6805207a9ddcf6470e0deaea684f5c702dd76bb1cc7de99b653e4e8d206a2f2644b310edc5ad4e18da93e6d3eee36f44afec5205f60cfab8058038.72ac5741529eb0732ffa581c78341ac8",
+  "appsServer": "http://localhost:7979/apps",
   "binPath": "thirdparty",
   "chromePath": "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
   "csvInternalSep": ",",

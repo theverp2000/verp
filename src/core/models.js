@@ -9,7 +9,7 @@ import * as api from './api';
 import { CopyMode, Meta } from './api/api';
 import { discardattr, getattr, hasattr, setattr } from './api/func';
 import { Command, Field, Fields, _Datetime } from './fields';
-import { DefaultDict, Dict, LastOrderedSet, List, Map2, OrderedSet2 } from './helper/collections';
+import { DefaultDict, Dict, frozenList, LastOrderedSet, List, Map2, OrderedSet2 } from './helper/collections';
 import { AccessError, KeyError, MissingError, NotImplementedError, UserError, ValidationError, ValueError } from './helper/errors';
 import { showConstraints } from './modules/db';
 import { Query, expression } from "./osv";
@@ -2704,7 +2704,7 @@ export class BaseModel extends Function {
 
   _hash() {
     if (hasattr(this, '_ids')) {
-      return hash(stringify([this._name, Array.from(new Set(this._ids)).sort()]));
+      return hash(stringify([this._name, frozenList(this._ids)]));
     }
     else {
       return hash(this._name);

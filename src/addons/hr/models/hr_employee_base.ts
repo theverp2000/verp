@@ -85,7 +85,7 @@ class HrEmployeeBase extends AbstractModel {
     @api.depends('userId')
     async _computeLastActivity() {
         let presences = await this.env.items('bus.presence').searchRead([['userId', 'in', (await this.mapped('userId')).ids]], ['userId', 'lastPresence']);
-        // transform the result to a dict with this format {user.id: last_presence}
+        // transform the result to a dict with this format {[user.id]: lastPresence}
         presences = Dict.from(presences.map(p => [p['userId'][0], p['lastPresence']]));
 
         for (const employee of this) {
@@ -174,11 +174,11 @@ class HrEmployeeBase extends AbstractModel {
                 }
             }
             else if (await employee.hrPresenceState === 'absent') {
-                // employee is not in the working_now_list and he has a userId
+                // employee is not in the workingNowList and he has a userId
                 icon = 'presenceAbsent';
             }
             else {
-                // without attendance, default employee state is 'to_define' without confirmed presence/absence
+                // without attendance, default employee state is 'toDefine' without confirmed presence/absence
                 // we need to check why they are not there
                 if (bool(await employee.userId)) {
                     // Display an orange icon on internal users.

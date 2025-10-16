@@ -22,7 +22,7 @@ class Shell extends Command {
       const cr = registry.cursor();
       if (cr) {
         const uid = global.SUPERUSER_ID;
-        const ctx = (await core.api.Environment.new(cr, uid)).models['res.users'].contextGet();
+        const ctx = (await core.api.Environment.new(cr, uid)).items('res.users').contextGet();
         const env = await core.api.Environment.new(cr, uid, ctx);
         localVars['env'] = env;
         localVars['this'] = await env.user();

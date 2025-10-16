@@ -102,7 +102,7 @@ class AccountBankStatementImport extends TransientModel {
                         let values: {}, sheet: XLSX.Sheet;
                         try {
                             const fd: temp.OpenFile = await temp.open({ suffix: '.xlsx'});//, delete: false});
-                            await fsPro.writeFile(fd.path, b64encode(await dataFile.datas));
+                            await fsPro.writeFile(fd.path, b64encode(await dataFile.datas) as any);
                             values = {}
                             const workbook = XLSX.read(fd.path);
                             sheet = workbook.Sheets[workbook.SheetNames[0]];

@@ -1228,8 +1228,8 @@ class Message extends Model {
         const record = this.env.items(message.model).browse(resId);
         let err;
         try {
-          record.check_access_rights('read')
-          record.check_access_rule('read')
+          await record.checkAccessRights('read');
+          await record.checkAccessRule('read');
         } catch (e) {
           if (isInstance(e, AccessError)) {
             continue;

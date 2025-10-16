@@ -5,7 +5,7 @@ import assert from 'node:assert';
 import { api, tools } from '../../..';
 import { Environment } from '../../../api/api';
 import { getattr, hasattr } from '../../../api/func';
-import { Map2, Dict, FrozenDict } from "../../../helper/collections";
+import { Map2, Dict, frozenDict } from "../../../helper/collections";
 import { AccessDenied, AccessError, UserError, ValidationError } from '../../../helper/errors';
 import { WebRequest } from '../../../http';
 import { MetaModel, Model } from "../../../models";
@@ -982,7 +982,7 @@ class Users extends Model {
     // use read() to not read other fields: this must work while modifying
     // the schema of models res.users or res.partner
     const values = (await user.read(nameToKey.keys(), { load: false }))[0];
-    return new FrozenDict<any>(nameToKey.items().map(([name, key]) => [key, values[name]])
+    return frozenDict<any>(nameToKey.items().map(([name, key]) => [key, values[name]])
     );
   }
 

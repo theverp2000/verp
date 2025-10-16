@@ -262,9 +262,9 @@ class AdyenController extends http.Controller {
             const PaymentTransaction = (await req.getEnv()).items('payment.transaction');
             let err, acquirerSudo;
             try {
-                acquirerSudo = PaymentTransaction.sudo()._get_tx_from_feedback_data(
+                acquirerSudo = await (await (await PaymentTransaction.sudo())._getTxFromFeedbackData(
                     'adyen', notificationData
-                ).acquirerId  // Find the acquirer based on the transaction
+                )).acquirerId;  // Find the acquirer based on the transaction
             } catch (e) {
                 err = e;
                 if (isInstance(e, ValidationError)) {

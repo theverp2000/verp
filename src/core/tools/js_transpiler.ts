@@ -449,8 +449,8 @@ const EXPORT_FCT_DEFAULT_RE = /^(?<space>\s*)export\s+default\s+(?<type>(async\s
  * @returns 
  */
 function convertExportFunctionDefault(content: string): string {
-  function repl(matchobj: string, space: string, type: string, identifier: string) {
-    return `${space}__exports[Symbol.for("default")] = ${identifier}; ${type} ${identifier}`;
+  function repl(matchobj: string, space: string, type: string, async: string, identifier: string) {
+    return `${space}__exports[Symbol.for("default")] = ${identifier};\n${space}${type} ${identifier}`;
   }
   return content.replace(EXPORT_FCT_DEFAULT_RE, repl);
 }
@@ -466,7 +466,7 @@ const EXPORT_CLASS_DEFAULT_RE = /^(?<space>\s*)export\s+default\s+(?<type>(async
  * @returns 
  */
 function convertExportClassDefault(content: string): string {
-  function repl(matchobj: string, space: string, type: string, identifier: string) {
+  function repl(matchobj: string, space: string, type: string, async: string, identifier: string) {
     return `${space}const ${identifier} = __exports[Symbol.for("default")] = ${type} ${identifier}`;
   }
   return content.replace(EXPORT_CLASS_DEFAULT_RE, repl);
@@ -508,9 +508,9 @@ const EXPORT_DEFAULT_RE = /^(?<space>\s*)export\s+default(\s+\w+\s*=)?/gm;
  * @returns 
  */
 function convertDefaultExport(content: string): string {
-  let newContent = convertExportFunctionDefault(content);
-  newContent = convertExportClassDefault(newContent);
-  newContent = convertVariableExportDefault(newContent);
+  content = convertExportFunctionDefault(content);
+  content = convertExportClassDefault(content);
+  content = convertVariableExportDefault(content);
 
   function repl(matchobj, space, optional) {
     return `${space}__exports[Symbol.for("default")] =`;

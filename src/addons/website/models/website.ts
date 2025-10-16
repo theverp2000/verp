@@ -710,7 +710,7 @@ class Website extends Model {
         ]
         for (const footerId of footerIds) {
             try {
-                const viewId = this.env.items('website').viewref(footerId);
+                const viewId = await this.env.items('website').viewref(footerId);
                 if (bool(viewId)) {
                     // Deliberately hardcode dynamic code inside the view arch,
                     // it will be transformed into static nodes after a save/edit

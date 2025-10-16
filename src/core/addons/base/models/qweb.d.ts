@@ -1,4 +1,3 @@
-import { FrozenSet } from "../../../helper/collections";
 import { XmlError } from "../../../helper/errors";
 import { AbstractModel } from '../../../models';
 
@@ -57,7 +56,7 @@ declare const _allowedGlobals: RegExp;
 
 declare class QWeb extends AbstractModel {
      // A void element is an element whose content model never allows it to have contents under any circumstances. Void elements can have attributes.
-     get _voidElements(): FrozenSet<any>;
+     get _voidElements(): Set<any>;
 
      // _availableObjects builtins is not security safe (it's dangerous), is overridden by irQweb to only expose the safeEval builtins.
      get _nameGen(): Generator<number, void, unknown>;

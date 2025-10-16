@@ -475,7 +475,7 @@ class View extends Model {
             }
             if (!['password', 'connected'].includes(visibility)) {
                 try {
-                    self._checkViewAccess()
+                    await self._checkViewAccess()
                 } catch (e) {
                     if (isInstance(e, AccessError)) {
                         error = new Forbidden();

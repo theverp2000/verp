@@ -1,5 +1,5 @@
 import { setattr } from "../api";
-import { DefaultDict } from "../helper/collections";
+import { DefaultDict, frozenList } from "../helper/collections";
 import { getArgumentNames, isInstance } from "./func";
 import { isList } from "./iterable";
 import { unsafeEval } from "./save_eval";
@@ -66,7 +66,7 @@ class Ormcache extends Function {
     else {
       code = f("async (self, %s) => []", args.join(','));
     }
-    this.key = unsafeEval(code);
+    this.key = unsafeEval(code, {frozenList});
   }
 
   lru(model) {

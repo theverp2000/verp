@@ -1,5 +1,5 @@
 import { format } from "node:util";
-import { FrozenSet, NotImplementedError, ValueError } from "../../helper";
+import { frozenSet, NotImplementedError, ValueError } from "../../helper";
 import { isInstance } from "../../tools";
 
 const IPV4LENGTH = 32
@@ -86,10 +86,10 @@ class _BaseV4 extends _BaseNetwork {
   _version = 4;
   // Equivalent to 255.255.255.255 or 32 bits of 1's.
   _ALL_ONES = (2**IPV4LENGTH) - 1
-  _DECIMAL_DIGITS = new FrozenSet('0123456789');
+  _DECIMAL_DIGITS = frozenSet('0123456789');
 
   // the valid octets for host and netmasks. only useful for IPv4.
-  _validMaskOctets = new FrozenSet([255, 254, 252, 248, 240, 224, 192, 128, 0]);
+  _validMaskOctets = frozenSet([255, 254, 252, 248, 240, 224, 192, 128, 0]);
 
   _maxPrefixlen = IPV4LENGTH;
   // There are only a handful of valid v4 netmasks, so we cache them all

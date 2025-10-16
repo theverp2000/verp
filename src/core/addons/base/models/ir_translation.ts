@@ -1112,7 +1112,7 @@ class IrTranslation extends Model {
   }
 
   @api.model()
-  @tools.ormcache('Array.from(mods)', 'lang')
+  @tools.ormcache('frozenList(mods)', 'lang')
   async getWebTranslationsHash(mods, lang) {
     const [translations, langParams] = await this.getTranslationsForWebclient(mods, lang);
     const translationCache = {

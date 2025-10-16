@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { Fields, _Date, _Datetime, api, registry } from "../../../core";
-import { DefaultDict, Dict, FrozenDict } from "../../../core/helper/collections";
+import { DefaultDict, Dict, frozenDict } from "../../../core/helper/collections";
 import { RedirectWarning, UserError, ValidationError } from "../../../core/helper/errors";
 import { MetaModel, Model, _super } from "../../../core/models";
 import { expression } from "../../../core/osv";
@@ -294,7 +294,7 @@ class StockWarehouseOrderpoint extends Model {
                 continue;
             }
             const orderpointContext = await orderpoint._getProductContext();
-            const productContext = stringify(new FrozenDict({...this.env.context, ...orderpointContext}));
+            const productContext = stringify(frozenDict({...this.env.context, ...orderpointContext}));
             orderpointsContexts[productContext] = orderpointsContexts[productContext].or(orderpoint);
         }
         for (const [orderpointContext, orderpointsByContext] of orderpointsContexts.items()) {

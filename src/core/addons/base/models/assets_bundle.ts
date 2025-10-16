@@ -966,11 +966,11 @@ class JavascriptAsset extends WebAsset {
 }
 
 class StylesheetAsset extends WebAsset {
-  rxImport = /@import\s+('|")(?!'|"|\/|https?:\/\/)/u;
-  rxUrl = /url\s*\(\s*('|"|)(?!'|"|\/|https?:\/\/|data:)/u;
-  rxSourceMap = /(\/\*# sourceMappingURL=.*)/u;
-  rxCharset = /(@charset "[^"]+";)/u;
-  rxIndent = /'^( +|\t+)/m;
+  rxImport = /@import\s+('|")(?!'|"|\/|https?:\/\/)/gu;
+  rxUrl = /url\s*\(\s*('|"|)(?!'|"|\/|https?:\/\/|data:)/gu;
+  rxSourceMap = /(\/\*# sourceMappingURL=.*)/gu;
+  rxCharset = /(@charset "[^"]+";)/gu;
+  rxIndent = /'^( +|\t+)/gm;
 
   media: any;
   direction: any;

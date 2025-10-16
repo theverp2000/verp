@@ -232,7 +232,7 @@
         <!--submenu -->
         <menuitem id="menuModuleTree" parent="menuApps" name="Main Apps" sequence="5" action="openModuleTree" />
 
-        <menuitem id="theme_store" parent="menuApps" name="Theme Store" sequence="15"/>
+        <menuitem id="themeStore" parent="menuApps" name="Theme Store" sequence="15"/>
 
         <!--link to stores-->
         <record model='ir.actions.acturl' id='actionThirdParty'>
@@ -253,14 +253,14 @@
             <field name="label">App Store</field>
             <field name="tag">apps</field>
         </record>
-        <menuitem id="moduleMi" parent="base.menuManagement" sequence="10" action="modulesActCl" groups="base.groupNoOne"/>
+        <menuitem id="moduleMi" parent="base.menuManagement" name="App Store" sequence="10" action="modulesActCl" groups="base.groupNoOne"/>
 
         <record model="ir.actions.client" id="modulesUpdatesActCl">
             <field name="label">Updates</field>
             <field name="tag">apps.updates</field>
             <field name="params">{}</field>
         </record>
-        <menuitem id="menuModuleUpdates" parent="base.menuManagement" sequence="20" action="modulesUpdatesActCl" groups="base.groupNoOne"/>
+        <menuitem id="menuModuleUpdates" parent="base.menuManagement" name="Updates" sequence="20" action="modulesUpdatesActCl" groups="base.groupNoOne"/>
 
     </data>
 </verp>

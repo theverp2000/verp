@@ -53,13 +53,13 @@ class IrUiMenu extends Model {
   }
 
   @api.model()
-  async _search(args, options: { offset?: 0, limit?: null, order?: null, count?: false, accessRightsUid?: null, debug?: boolean } = {}) {
+  async _search(args, options: { offset?: 0, limit?: null, order?: null, count?: false, accessRightsUid?: null } = {}) {
     let menuIds: any = await _super(IrUiMenu, this)._search(args, options);
     let menus: any = this.browse(menuIds);
     if (menus.ok) {
       // menu filtering is done only on main menu tree, not other menu lists
       if (!this._context['ir.ui.menu.fullList']) {
-        menus = await menus._filterVisibleMenus(options.debug);
+        menus = await menus._filterVisibleMenus();
       }
       if (options.offset) {
         menus = menus(options.offset);
@@ -77,7 +77,7 @@ class IrUiMenu extends Model {
    * @returns 
    */
   @api.model()
-  @tools.ormcache('(await (await self.env.user()).groupsId).ids', 'debug')
+  @tools.ormcache('frozenList((await (await self.env.user()).groupsId).ids)', 'debug')
   async _visibleMenuIds(debug = false) {
     // retrieve all menus, and determine which ones are visible
     const context = { 'ir.ui.menu.fullList': true };
@@ -96,9 +96,9 @@ class IrUiMenu extends Model {
 
     // take apart menus that have an action
     // actionId is baseActionId, set in convert._tagMenuitem()
-    const actionMenus = await menus.filtered(async (m) => {
-      const action = await m.action;
-      if (action) {
+    const actionMenus = await menus.filtered(async (menu) => {
+      const action = await menu.action;
+      if (bool(action)) {
         return this.env.items(action._name).browse(action.id).exists();
       } else {
         return false;
@@ -127,12 +127,12 @@ class IrUiMenu extends Model {
         }
       }
     }
-    return visible.ids;
+    return [...new Set<number>(visible.ids)].sort((a,b) => a-b);
   }
 
   @api.returns('self')
-  async _filterVisibleMenus(debug?: any) {
-    const visibleIds = await this._visibleMenuIds(debug);
+  async _filterVisibleMenus() {
+    const visibleIds = await this._visibleMenuIds(this.env.req?.session ? this.env.req.session['debug'] : false);
     return this.filtered((menu) => visibleIds.includes(menu.id));
   }
 

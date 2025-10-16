@@ -80,7 +80,6 @@ function _parseDateTz(value) {
     }
     if (i > 0) {
       data.pop();
-      // data[3:] = [s[:i], s[i:]];
       data = data.concat([...s.slice(0, i), ...s.slice(i)])
     }
     else {

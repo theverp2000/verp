@@ -284,7 +284,6 @@ export class SharedDataMiddleware {
     if (isCallable(startResponse)) {
       startResponse(200, "OK", headers);
       res.end(wrapFile(res, fd));
-      // return startResponse(req, res, {name: realFilename, fd: fd}, {headers: headers});
     } else {
       res.writeHead(200, "OK", headers);
       res.end();

@@ -2308,7 +2308,7 @@ class View extends Model {
   @api.model()
   @tools.conditional(
     !tools.config.options['devMode'].includes('xml'),
-    tools.ormcache('(await (await self.env.user()).groupsId).ids', 'viewId', 'self._readTemplateKeys().map(k => self._context[k])'),
+    tools.ormcache('frozenList((await (await self.env.user()).groupsId).ids)', 'viewId', 'self._readTemplateKeys().map(k => self._context[k])'),
   )
   async _readTemplate(viewId) {
     const archTree = await this.browse(viewId)._getCombinedArch();

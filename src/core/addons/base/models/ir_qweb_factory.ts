@@ -4,7 +4,7 @@ import fs from 'fs';
 import { Generator } from 'javascript-compiling-tokenizer';
 import _ from "lodash";
 import { format } from 'util';
-import { Dict, FrozenDict, FrozenSet, MapKey } from "../../../helper/collections";
+import { Dict, frozenDict, frozenSet, MapKey } from "../../../helper/collections";
 import { ValueError } from "../../../helper/errors";
 import { MetaModel } from '../../../models';
 import { bool, stringBase64, toText } from '../../../tools';
@@ -15,7 +15,7 @@ import { compile, unsafeEval } from "../../../tools/save_eval";
 import { lstrip, UpCamelCase } from "../../../tools/utils";
 import * as xml from '../../../tools/xml';
 import { markup } from '../../../tools/xml';
-import { QWeb, QWebCodeFound, QWebException, dedent } from './qweb';
+import { dedent, QWeb, QWebCodeFound, QWebException } from './qweb';
 
 function _debug(msg, ...args) {
   console.log(msg, ...args);
@@ -81,7 +81,7 @@ const _FORMAT_REGEX = /(?:#\{(.+?)\})|(?:\{\{(.+?)\}\})/g;
 
 const _VARNAME_REGEX = /\W/g;
 
-const _VOID_ELEMENTS = new FrozenSet([
+const _VOID_ELEMENTS = frozenSet([
   'area', 'base', 'br', 'col', 'command', 'embed', 'hr', 'img', 'input', 'keygen',
   'link', 'meta', 'param', 'source', 'track', 'wbr', 'menuitem',]);
 
@@ -132,7 +132,7 @@ export class IrQWebFactory extends QWeb {
    */
   _prepareGlobals(globalsDict: {} = {}, options: {} = {}) {
     return Object.assign(globalsDict, {
-      Dict, 
+      Dict,
       MapKey,
       f: format,
       escape: _.escape,
@@ -784,7 +784,7 @@ export class IrQWebFactory extends QWeb {
     const varname = options['tOptionsVarname'] ?? 'tOptions';
     const code = [];
     const dictArg = [];
-    for (const {name} of xml.getAttributes(el)) {
+    for (const { name } of xml.getAttributes(el)) {
       if (name.startsWith('t-options-')) {
         const value = xml.popAttribute(el, name);
         const optionName = name.slice(10);
@@ -1342,7 +1342,7 @@ export class IrQWebFactory extends QWeb {
     options['refXml'] = typeof (document) === 'string' ? document : String(document);//, 'utf-8')
 
     const _options = Dict.from(options);
-    options = new FrozenDict<any>(options);
+    options = frozenDict<any>(options);
 
     // Initial template value send to render method (not in the froozen dict because it may be
     // different from one render to another. Indeed, it may be the view ID or the key)

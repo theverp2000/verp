@@ -2,7 +2,7 @@
 <verp>
     <data noupdate="1">
         <!-- user 1 is the technical admin user -->
-        <record model="res.users" id="base.userRoot">
+        <record id="userRoot" model="res.users">
             <field name="partnerId" ref="base.partnerRoot"/>
             <field name="companyId" ref="mainCompany"/>
             <field name="companyIds" eval="[Command.link(refId('mainCompany'))]"/>

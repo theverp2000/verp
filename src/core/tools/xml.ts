@@ -1,6 +1,6 @@
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import { getattr } from '../api/func';
-import { FrozenSet } from '../helper/collections';
+import { frozenSet } from '../helper/collections';
 import { ParseError, ValueError, XmlError } from '../helper/errors';
 import { isBasestring, isObject } from './func';
 import { extend, sorted } from './iterable';
@@ -155,7 +155,7 @@ const _archiveRe = /[^ ]+/g;
 const _parseMetaRefreshUrl = /[^;=]*;\s*(?:url\s*=\s*)?(?<url>.*)$/i;
 const _iterCssUrls = new RegExp('url\((' + '["][^"]*["]|' + "['][^']*[']|" + '[^)]*)\)', 'i');
 
-const linkAttrs = new FrozenSet([
+const linkAttrs = frozenSet([
   'action', 'archive', 'background', 'cite', 'classid',
   'codebase', 'data', 'href', 'longdesc', 'profile', 'src',
   'usemap',

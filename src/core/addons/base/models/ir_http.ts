@@ -430,7 +430,7 @@ class IrHttp extends AbstractModel {
         if (!record.env.su) {
           record._cache.clear();
         }
-        await record['__lastUpdate'];
+        // await record['__lastUpdate'];
       } catch (e) {
         if (isInstance(e, AccessError)) {
           return [null, 403];

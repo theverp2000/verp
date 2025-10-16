@@ -1,4 +1,4 @@
-import { Dict, FrozenSet } from "../../helper/collections";
+import { Dict, frozenSet } from "../../helper/collections";
 import { iter } from "../../tools/iterable";
 import { generateEtag, httpDate, quoteEtag, unquoteEtag } from "./utils";
 
@@ -42,14 +42,14 @@ export class IfRange {
 }
 
 export class ETags extends Function {
-  _strong: FrozenSet<any>;
-  _weak: FrozenSet<any>;
+  _strong: Set<any>;
+  _weak: Set<any>;
   starTag: boolean;
 
   constructor(strongEtags?: any, weakEtags?: any, starTag=false) {
     super();
-    this._strong = new FrozenSet(!starTag && strongEtags || []);
-    this._weak = new FrozenSet(weakEtags || []);
+    this._strong = frozenSet(!starTag && strongEtags || []);
+    this._weak = frozenSet(weakEtags || []);
     this.starTag = starTag;
 
     return new Proxy(this, {

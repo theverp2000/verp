@@ -93,8 +93,8 @@ class AccountMove extends Model {
         const lineIds = await (await this.mapped('lineIds')).filtered(async (line) => some(await (await line.saleLineIds).mapped('isDownpayment')));
         for (const line of lineIds) {
             try {
-                line.sale_line_ids.taxId = line.tax_ids
-                line.sale_line_ids.priceUnit = line.priceUnit
+                await (await line.saleLineIds).set('taxId', await line.taxIds);
+                await (await line.saleLineIds).set('priceUnit', await line.priceUnit);
             } catch (e) {
                 if (!isInstance(e, UserError)) {
                     // a UserError here means the SO was locked, which prevents changing the taxes

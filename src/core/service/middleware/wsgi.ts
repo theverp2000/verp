@@ -5,6 +5,7 @@ import { lstrip, rstrip } from "../../tools/utils";
 import { _encodeIdna, wsgiGetBytes } from "./idna";
 import { BaseRequest } from "./base_request";
 import { uriToIri, urlQuote } from "./utils";
+import { SecurityError } from "../../helper";
 
 export function getCurrentUrl(
   req: BaseRequest,
@@ -15,7 +16,7 @@ export function getCurrentUrl(
     trustedHosts?: string[],
   } = {}
 ) {
-  const tmp = [req.uri.protocol, "://", getHost(req, options.trustedHosts)];
+  const tmp = [req.protocol, "://", getHost(req, options.trustedHosts)];
   if (options.hostOnly) {
     return uriToIri(tmp.join('') + "/");
   }
@@ -43,11 +44,13 @@ export function getCurrentUrl(
                          all subdomains as well.
  */
 export function hostIsTrusted(hostname?: string, trustedList: string[] = []) {
-  if (!hostname)
-    return false
+  if (!hostname) {
+    return false;
+  }
 
-  if (typeof (trustedList) === 'string')
+  if (typeof trustedList === 'string') {
     trustedList = [trustedList];
+  }
 
   function _normalize(hostname: string) {
     if (hostname.includes(':')) {
@@ -103,28 +106,28 @@ export function hostIsTrusted(hostname?: string, trustedList: string[] = []) {
  */
 export function getHost(request: BaseRequest, trustedHosts?: string[]): string {
   let rv;
-  // if ("HTTP_HOST" in request) {
-  //   rv = request["HTTP_HOST"];
-  //   if (request["wsgi.urlScheme"] === "http" && rv.endsWith(":80")) {
-  //     rv = rv.slice(0,-3);
-  //   }
-  //   else if (request["wsgi.urlScheme"] === "https" && rv.endsWith(":443")) {
-  //     rv = rv.slice(0,-4);
-  //   }
-  // }
-  // else {
-  //   rv = request["SERVER_NAME"];
-  //   if ((request["wsgi.urlScheme"] !== 'https' && request["SERVER_PORT"] !== '443') ||
-  //       (request["wsgi.urlScheme"] !== 'http' && request["SERVER_PORT"] !== '80')) {
-  //     rv += ":" + request["SERVER_PORT"];
-  //   }
-  // }
-  // if (trustedHosts != null) {
-  //   if (! hostIsTrusted(rv, trustedHosts)) {
-  //     throw new SecurityError('Host "%s" is not trusted', rv);
-  //   }
-  // }
-  rv = request.headers['host'];
+  const uri = request.uri;
+  if (request.host) {
+    rv = request.host;
+    if (request.protocol === "http" && rv.endsWith(":80")) {
+      rv = rv.slice(0,-3);
+    }
+    else if (request.protocol === "https" && rv.endsWith(":443")) {
+      rv = rv.slice(0,-4);
+    }
+  }
+  else {
+    rv = request.headers['server-name'];
+    if ((request.protocol !== 'https' && uri.port !== '443') ||
+        (request.protocol !== 'http' && request.headers["server-port"] !== '80')) {
+      rv += ":" + request.headers["server-port"];
+    }
+  }
+  if (trustedHosts != null) {
+    if (! hostIsTrusted(rv, trustedHosts)) {
+      throw new SecurityError('Host "%s" is not trusted', rv);
+    }
+  }
   return rv;
 }
 

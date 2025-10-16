@@ -8,15 +8,18 @@ import * as html from "./html";
 import { extend } from "./iterable";
 import { f, isASCII } from "./utils";
 import { escapeHtml, markup } from "./xml";
+import { frozenList } from "../helper";
 
-export const safeAttrs = new Set(Array.from(html.safeAttrs).concat(['style',
+const allowedTags = frozenList('article bdi section header footer hgroup nav aside figure main'.split(' '));
+
+export const safeAttrs = new Set(Array.from(html.safeAttrs).concat(frozenList(['style',
   'data-o-mail-quote',  // quote detection
   'data-oe-model', 'data-oe-id', 'data-oe-field', 'data-oe-type', 'data-oe-expression', 'data-oe-translation-id', 'data-oe-nodeid',
   'data-last-history-steps',
   'data-publish', 'data-id', 'data-resId', 'data-interval', 'data-member_id', 'data-scroll-background-ratio', 'data-view-id',
   'data-class', 'data-mimetype', 'data-original-src', 'data-original-id', 'data-gl-filter', 'data-quality', 'data-resize-width',
   'data-shape', 'data-shape-colors', 'data-file-name', 'data-original-mimetype',
-]));
+])));
 
 const SPACE = ' ';
 const COMMASPACE = ', ';

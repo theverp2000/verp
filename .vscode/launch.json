@@ -11,7 +11,7 @@
       ],
       "args": [
         "${workspaceFolder}/src/index",
-        // "-i", "project",
+        // "-i", "web",
       ]
     },
     {
@@ -26,7 +26,7 @@
         "${workspaceFolder}/src/index",
         "start",
         "-r",
-        "-i", "base",
+        "-i", "base_setup",
       ],
       "resolveSourceMapLocations": [
         "${workspaceFolder}/**/*.js",
@@ -87,7 +87,7 @@
         "ts-node/register"
       ],
       "args": [
-        "${workspaceFolder}/src/test/test_sharp/test_ico",
+        "${workspaceFolder}/src/test/test_file/readlines",
       ]
     },
     {

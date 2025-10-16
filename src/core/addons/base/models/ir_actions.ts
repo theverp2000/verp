@@ -98,7 +98,7 @@ class IrActions extends Model {
                 actions, where the latter is given by calling the method
                 ``read`` on the action record.
    */
-  @tools.ormcache('(await (await self.env.user()).groupsId).ids', 'modelName', 'debug')
+  @tools.ormcache('frozenList((await (await self.env.user()).groupsId).ids)', 'modelName', 'debug')
   async _getBindings(modelName, debug: boolean = false) {
     const cr = this.env.cr;
     const IrModelAccess = this.env.items('ir.model.access');

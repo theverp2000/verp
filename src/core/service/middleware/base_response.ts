@@ -128,10 +128,7 @@ export class BaseResponse extends Function {
   setData(value: any) {
     if (typeof(value) === 'string') {
       value = (new TextDecoder(this.charset)).decode(Buffer.from(value));
-      // value = Buffer.from(value, 'base64').toString();
     }
-    // else
-    //   value = bytes(value)
     this.contents.push(value);
     // if (this.automaticallySetContentLength) {
     //   this.setHeader("content-length", len(value));
@@ -182,25 +179,6 @@ export class BaseResponse extends Function {
       if (!this.hasHeader("date")) {
         this.setHeader("Date", httpDate());
       }
-      // acceptRanges = _cleanAcceptRanges(acceptRanges);
-      // is206 = self._process_range_request(request, complete_length, accept_ranges)
-      // if not is206 and not is_resource_modified(
-      //     request,
-      //     self.headers.get("etag"),
-      //     None,
-      //     self.headers.get("last-modified"),
-      // ):
-      //     if parse_etags(request.get("HTTP_IF_MATCH")):
-      //         self.status_code = 412
-      //     else:
-      //         self.status_code = 304
-      // if (
-      //     self.automatically_set_content_length
-      //     and "content-length" not in self.headers
-      // ):
-      //     length = self.calculate_content_length()
-      //     if length is not None:
-      //         self.headers["Content-Length"] = length
     }
     return this;
   }

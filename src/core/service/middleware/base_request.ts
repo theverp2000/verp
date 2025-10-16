@@ -38,9 +38,16 @@ export class BaseRequest extends http.IncomingMessage {
     self._body = {};
     self.httpRequest = req;
     self.uri = new URI(req.url);
-    self.uri.host = self.uri.host ?? req.headers.host;
     self.params = MultiDict.from(self.uri.searchQuery || {}); // parse from url string
     return self;
+  }
+
+  get protocol() {
+    return this.httpRequest.socket['encrypted'] ? 'https' : 'http';
+  }
+
+  get host() {
+    return this.headers.host;
   }
 
   get createdAt() {

@@ -36,8 +36,7 @@ export class BaseConverter {
 
     This is the default validator.
 
-    Example::
-
+    Example:
         new Rule('/pages/<page>'),
         new Rule('/<string(length=2):lang_code>')
 
@@ -68,7 +67,7 @@ export class UnicodeConverter extends BaseConverter {
 
 /**
  * Matches one of the items provided.  Items can either be Javascript
-    identifiers or strings::
+    identifiers or strings:
 
         new Rule('/<any(about, help, imprint, class, "foo,bar"):pageName>')
 
@@ -85,7 +84,7 @@ export class AnyConverter extends BaseConverter {
 
 /**
  * Like the default class `UnicodeConverter`, but it also matches
-    slashes.  This is useful for wikis and similar applications::
+    slashes.  This is useful for wikis and similar applications:
 
         new Rule('/<path:wikipage>')
         new Rule('/<path:wikipage>/edit')

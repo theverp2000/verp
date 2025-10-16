@@ -803,46 +803,6 @@ export class OrderedMultiDict<T> extends Dict<T> { }
 
 export class OrderedDict<T> extends Dict<T> { }
 
-export class FrozenDict<T> extends Dict<T> {
-  readonly [index: indexType]: any;
-
-  static from<T>(obj: any): FrozenDict<T> {
-    throw new NotImplementedError("static 'from' not supported on FrozenDict");
-  }
-
-  static fill<T>(dict: Dict<T>, obj: any): Dict<T> {
-    throw new NotImplementedError("static 'fill' not supported on FrozenDict");
-  }
-
-  static fromKeys<T>(list: any[], value: T | null): FrozenDict<T> {
-    throw new NotImplementedError("static fromKeys' not supported on FrozenDict");
-  }
-
-  set(key: indexType, value: T) {
-    throw new NotImplementedError("'set' not supported on FrozenDict");
-  }
-
-  setdefault(key: indexType, value: T): T {
-    throw new NotImplementedError("'setdefault' not supported on FrozenDict");
-  }
-
-  updateFrom(obj: any) {
-    throw new NotImplementedError("'updateFrom' not supported on FrozenDict");
-  }
-
-  pop(key: indexType, value?: T): T {
-    throw new NotImplementedError("'pop' not supported on FrozenDict");
-  }
-
-  popitem(): [string, T] {
-    throw new NotImplementedError("'popitem' not supported on FrozenDict");
-  }
-
-  clear() {
-    throw new NotImplementedError("'clear' not supported on FrozenDict");
-  }
-}
-
 export class MapKey<K = any, V = any> extends Map<K, V> {
   constructor(fKey: Function = (item) => MapKey._hash(item)) {
     super();
@@ -1380,22 +1340,36 @@ export class LastOrderedSet extends OrderedSet2 {
   }
 }
 
-export class FrozenSet<T> extends Set<T> {
+function bannedFunction(cls: Function, method: string) {
+  return () => {
+    throw new NotImplementedError(`method '${method}' not supported on ${cls.name}`);
+  }
+}
+
+class FrozenSet<T=any> extends Set<T> {
   constructor(elems: Iterable<T> = []) {
-    super();
-    for (const e of elems) {
-      super.add(e);
-    }
+    super(Array.from<any>(elems).sort((a,b) => a-b));
   }
-  add(value: T): this {
-    throw new NotImplementedError("method 'add' not supported on FrozenSet");
-  }
-  clear() {
-    throw new NotImplementedError("method 'clear' not supported on FrozenSet");
-  }
-  delete(value: T): boolean {
-    throw new NotImplementedError("method 'delete' not supported on FrozenSet");
-  }
+  add = bannedFunction(FrozenSet, 'add');
+  clear = bannedFunction(FrozenSet, 'clear');
+  delete = bannedFunction(FrozenSet, 'delete');
+}
+
+export function frozenSet(elems: any) {
+  return new FrozenSet(elems);
+}
+
+export function frozenList(elems: any) {
+  const list = Array.from(new Set(Array.from<any>(elems).sort((a,b) => a-b)));
+  // Freeze the list
+  Object.freeze(list);
+  return list;
+}
+
+export function frozenDict<T=any>(obj?: any) {
+  const dict = new Dict<T>(obj);
+  Object.freeze(dict);
+  return dict;
 }
 
 export class Counter extends Dict<any> {

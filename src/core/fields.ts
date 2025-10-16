@@ -4220,7 +4220,7 @@ class _Many2many extends _RelationalMulti {
         for (const [y, xs] of yToXs) {
           const corecord = comodel.browse(y);
           try {
-            const ids0 = await cache.get(corecord, invf);
+            const ids0 = cache.get(corecord, invf);
             const ids1 = ids0.filter(id => !xs.includes(id));
             cache.set(corecord, invf, ids1);
           } catch (e) {

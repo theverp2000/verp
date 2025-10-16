@@ -1402,7 +1402,7 @@ class ProductTemplate extends Model {
    * @param filteredCombination 
    * @returns 
    */
-  @tools.ormcache('self.id', 'filteredCombination.ids')
+  @tools.ormcache('self.id', 'frozenList(filteredCombination.ids)')
   async _getVariantIdForCombination(filteredCombination) {
     this.ensureOne();
     let domain = [['productTemplateId', '=', this.id]];

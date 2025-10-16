@@ -11,8 +11,9 @@ const processFile = async (maxLines?: number): Promise<[any[], any[], any[]][]> 
   const parser = fs
     .createReadStream(fileName)
     .pipe(parseCsv({
-      skip_empty_lines: true
+      skipEmptyLines: true
     }));
+  const t0 = new Date();
   for await (const record of parser) {
     if (lineNumber == 0) {
       fields = record;
@@ -29,10 +30,12 @@ const processFile = async (maxLines?: number): Promise<[any[], any[], any[]][]> 
       break;
     }
   }
+  const t1 = new Date();
+  console.log('Parse csv %s records in %s ms', lineNumber, t1.getTime() - t0.getTime());
   return [fields, records, badLines];
 };
 
 (async () => {
-  const [fields, records, badLines] = await processFile(3);
-  console.info(fields, records, badLines);
+  const [fields, records, badLines] = await processFile();
+  // console.info(fields, records, badLines);
 })();

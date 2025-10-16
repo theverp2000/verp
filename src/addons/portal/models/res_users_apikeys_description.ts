@@ -8,7 +8,7 @@ class APIKeyDescription extends TransientModel {
 
   async checkAccessMakeKey() {
     try {
-      return _super(APIKeyDescription, this).checkAccessMakeKey();
+      return await _super(APIKeyDescription, this).checkAccessMakeKey();
     } catch(e) {
     // except AccessError:
       if (await (await this.env.items('ir.config.parameter').sudo()).getParam('portal.allowApiKeys')) {

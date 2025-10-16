@@ -10,7 +10,7 @@ import * as core from '.';
 import { Headers } from '../core/service/middleware/datastructures';
 import { Environment } from "./api";
 import { getattr, hasattr, mro, setattr } from "./api/func";
-import { CombinedMultiDict, Map2, Dict, FrozenDict, Stack, MultiDict } from "./helper/collections";
+import { CombinedMultiDict, Map2, Dict, frozenDict, Stack, MultiDict } from "./helper/collections";
 import { AccessDenied, KeyError, NotImplementedError, RedirectWarning, RuntimeError, UserError, ValueError } from "./helper/errors";
 import { getModule, getmembers } from "./models";
 import { getDirectories, readManifest } from "./modules/modules";
@@ -601,7 +601,7 @@ export class VERPSession extends sessions.Session {
    */
   async getContext(req: WebRequest) {
     assert(this.uid, "The user needs to be logged-in to initialize his context");
-    this.context = await (await req.getEnv()).items('res.users').contextGet() ?? {};
+    this.context = Dict.from(await (await req.getEnv()).items('res.users').contextGet());
     this.context['uid'] = this.uid;
     this._fixLang(this.context);
     return this.context;
@@ -838,7 +838,7 @@ export class WebResponse extends BaseResponse {
 
 export class Endpoint {
   _controller: any;
-  routing: FrozenDict<any>;
+  routing: Dict<any>;
   cls: any;
   method: any;
   original: any;
@@ -848,7 +848,7 @@ export class Endpoint {
     this.cls = cls;
     this.method = method;
     this.original = getattr(method, 'originalFunc', method);
-    this.routing = new FrozenDict(routing);
+    this.routing = frozenDict(routing);
     this.args = {};
   }
 
@@ -907,13 +907,13 @@ export class WebRequest {
 
   get context() {
     if (this._context == null) {
-      this._context = new FrozenDict(this.session.context);
+      this._context = frozenDict(this.session.context);
     }
     return this._context;
   }
 
   set context(val) {
-    this._context = new FrozenDict(val);
+    this._context = frozenDict(val);
     this._env = null;
   }
 

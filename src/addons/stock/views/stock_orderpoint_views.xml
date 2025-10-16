@@ -105,7 +105,7 @@
                 <field name="locationId" groups="stock.groupStockMultiLocations"/>
                 <filter string="To Reorder" name="filterToReorder" domain="[['qtyToOrder', '&gt;', 0.0]]"/>
                 <separator/>
-                <filter string="Not Snoozed" name="filterNotSnoozed" domain="['|', ['snoozedUntil', '=', false], ['snoozedUntil', '&lt;=', toTormat(today(), 'yyyy-MM-dd')]]"/>
+                <filter string="Not Snoozed" name="filterNotSnoozed" domain="['|', ['snoozedUntil', '=', false], ['snoozedUntil', '&lt;=', toFormat(today(), 'yyyy-MM-dd')]]"/>
                 <group expand="0" string="Group By">
                     <filter string="Warehouse" name="groupbyWarehouse" domain="[]"  context="{'groupby': 'warehouseId'}" groups="stock.groupStockMultiWarehouses"/>
                     <filter string="Location" name="groupbyLocation" domain="[]" context="{'groupby': 'locationId'}" groups="stock.groupStockMultiLocations"/>

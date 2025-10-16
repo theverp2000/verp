@@ -4,7 +4,7 @@ import { DateTime } from 'luxon';
 import URL from 'node:url';
 import { encode } from 'utf8';
 import { getattr } from "../../api/func";
-import { FrozenSet } from '../../helper';
+import { frozenSet } from '../../helper';
 import { iterMultiItems } from "../../helper/datastructures";
 import { UnicodeError, ValueError } from "../../helper/errors";
 import { WebResponse } from '../../http';
@@ -112,7 +112,7 @@ export function urlQuote(str, options?: { charset?: string, errors?: string, saf
   if (typeof (unsafe) === 'string')
     unsafe = encoder.encode(unsafe)
   safe = _.intersection(safe, Array.from(_alwaysSafe))// - frozenset(bytearray(unsafe))
-  let rv = Buffer.from('');
+  let rv: any = Buffer.from('');
   for (const char of str) {
     if (safe.includes(char)) {
       rv = Buffer.concat([rv, Buffer.from([char])]);
@@ -159,7 +159,7 @@ function _unquoteToBytes(str, unsafe: any = "") {
     unsafe = encode(unsafe);
   }
 
-  unsafe = new FrozenSet(Buffer.from(unsafe));
+  unsafe = frozenSet(Buffer.from(unsafe));
   const groups = iter(str.split("%"));
   let result: any = Buffer.from(next(groups) ?? "");
 
@@ -282,28 +282,6 @@ export function urlUnparse(components) {
 export function _fastUrlQuote(buf: any, options?: { charset?: string, errors?: string, safe?: string, unsafe?: string }): string {
   buf = Buffer.from(buf || '');
   return encodeURI(buf);
-
-  setOptions(options, { charset: "utf-8", errors: "strict", safe: "/:", unsafe: "" })
-  let encoder = new TextEncoder();
-  let decoder = new TextDecoder(options.charset);
-
-  let safe, unsafe;
-  if (typeof (options.safe) === 'string') {
-    safe = encoder.encode(options.safe); // => String to Uint8Array
-  }
-
-  if (typeof (options.unsafe) === 'string') {
-    unsafe = encoder.encode(options.unsafe);// => String to Uint8Array
-  }
-
-  safe = _.difference(_.union(Array.from(safe), Array.from(_alwaysSafe)), Array.from(unsafe));
-  const table: any[] = range(256).map(c => safe.includes(c) ? String.fromCharCode(c) : `%${c.toString(16).padStart(2, '0').toUpperCase()}`);
-
-  // function quote(buf: Buffer) {
-  //   buf.map(c => table[c]).join('');
-  // }
-
-  return buf.map(c => table[c]).join('');
 }
 
 function _fastUrlQuotePlus(string) {

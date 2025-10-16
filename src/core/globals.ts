@@ -17,7 +17,7 @@ global.ormcacheContext = true;
 global._geoipResolver = null;
 global._phonenumbersLibWarning = false;
 global.processing = false;
-global.logHttp = false;
+global.logHttp = true;
 global.logXml = false;
 global.mustInstall = false;
 

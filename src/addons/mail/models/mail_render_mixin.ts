@@ -240,7 +240,7 @@ class MailRenderMixin extends AbstractModel {
   async _renderEncapsulate(layoutXmlid, html, addContext?: any, contextRecord?: any) {
     let template, err;
     try {
-      template = this.env.ref(layoutXmlid, true);
+      template = await this.env.ref(layoutXmlid, true);
     } catch (e) {
       err = e;
       if (isInstance(e, ValueError)) {
